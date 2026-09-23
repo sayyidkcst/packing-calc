@@ -1,0 +1,1965 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Packing Calculator · Windows 7 style</title>
+  <style>
+    /* ---------- WINDOWS 7 AERO GLOBAL ---------- */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', 'Trebuchet MS', Tahoma, sans-serif;
+      user-select: none;
+    }
+    body {
+      background: #1b3d5c;
+      background: radial-gradient(circle at 20% 20%, #3d6c92, #0f2b40);
+      min-height: 100vh;
+      overflow: hidden;
+      position: relative;
+      margin: 0;
+    }
+
+    /* ---------- MAIN WINDOW ---------- */
+    .window {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      width: 580px;
+      max-width: calc(100vw - 40px);
+      background: rgba(220, 235, 250, 0.78);
+      backdrop-filter: blur(12px);
+      border-radius: 10px 10px 8px 8px;
+      box-shadow: 
+        0 0 0 1px rgba(255, 255, 255, 0.5) inset,
+        0 0 0 1px #1e3f5a,
+        0 12px 35px rgba(0, 0, 0, 0.6),
+        0 2px 8px rgba(0, 0, 0, 0.5);
+      border-top: 1px solid #a8c8e8;
+      border-left: 1px solid #8bb1d4;
+      border-right: 1px solid #6a93b8;
+      border-bottom: 1px solid #4b769b;
+      overflow: hidden;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      max-height: calc(100vh - 40px);
+    }
+
+    /* ---------- PRICE LIST WINDOW ---------- */
+    .window-price {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 580px;
+      max-width: calc(100vw - 40px);
+      background: rgba(220, 235, 250, 0.78);
+      backdrop-filter: blur(12px);
+      border-radius: 10px 10px 8px 8px;
+      box-shadow: 
+        0 0 0 1px rgba(255, 255, 255, 0.5) inset,
+        0 0 0 1px #1e3f5a,
+        0 12px 35px rgba(0, 0, 0, 0.6),
+        0 2px 8px rgba(0, 0, 0, 0.5);
+      border-top: 1px solid #a8c8e8;
+      border-left: 1px solid #8bb1d4;
+      border-right: 1px solid #6a93b8;
+      border-bottom: 1px solid #4b769b;
+      overflow: hidden;
+      z-index: 11;
+      display: flex;
+      flex-direction: column;
+      max-height: calc(100vh - 40px);
+    }
+
+    /* ---------- TITLE BAR ---------- */
+    .title-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 10px 6px 14px;
+      background: rgba(180, 210, 240, 0.45);
+      background: linear-gradient(180deg, rgba(215, 235, 255, 0.9) 0%, rgba(170, 205, 235, 0.8) 50%, rgba(140, 180, 220, 0.7) 100%);
+      border-bottom: 1px solid #6b8fae;
+      box-shadow: 0 1px 0 rgba(255, 255, 255, 0.6) inset, 0 -1px 0 rgba(0, 0, 0, 0.1) inset;
+      backdrop-filter: blur(8px);
+      border-radius: 10px 10px 0 0;
+      cursor: move;
+      cursor: grab;
+      flex-shrink: 0;
+    }
+    .title-bar:active {
+      cursor: grabbing;
+    }
+    .title-text {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #0b1e2c;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      pointer-events: none;
+    }
+    .caption-buttons {
+      display: flex;
+      gap: 2px;
+    }
+    .caption-btn {
+      width: 28px;
+      height: 20px;
+      background: rgba(230, 245, 255, 0.65);
+      border: 1px solid #6f94b2;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      color: #0b2e44;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1), inset 0 1px 0 white;
+      cursor: default;
+      font-weight: 500;
+      line-height: 1;
+    }
+    .caption-btn.close {
+      background: #d66d6d;
+      border-color: #8e3e3e;
+      color: white;
+      text-shadow: 0 1px 0 #5e1e1e;
+      box-shadow: inset 0 1px 0 #f0a0a0, 0 1px 2px rgba(0,0,0,0.3);
+      cursor: pointer;
+    }
+    .caption-btn.close:hover {
+      background: #e68181;
+    }
+
+    /* Status indicator */
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #9aa8b5;
+      margin-left: 6px;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.3);
+      transition: 0.3s;
+    }
+    .status-dot.online { background: #4caf50; box-shadow: 0 0 6px #4caf50; }
+    .status-dot.offline { background: #e74c3c; box-shadow: 0 0 6px #e74c3c; }
+    .status-dot.syncing { background: #f39c12; box-shadow: 0 0 6px #f39c12; animation: pulse 1s infinite; }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    /* ---------- WINDOW CONTENT ---------- */
+    .window-content {
+      padding: 14px 16px 16px 16px;
+      background: rgba(245, 250, 255, 0.6);
+      backdrop-filter: blur(4px);
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    /* ---------- INFO BAR ---------- */
+    .aero-info {
+      background: rgba(220, 235, 250, 0.7);
+      border: 1px solid #9bb8d4;
+      border-radius: 6px;
+      padding: 7px 12px;
+      margin-bottom: 14px;
+      box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.05), 0 1px 0 white;
+      font-size: 0.75rem;
+      color: #142f44;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      font-weight: 500;
+    }
+    .aero-info .badge {
+      background: #2b5b7c;
+      color: white;
+      border-radius: 40px;
+      padding: 2px 10px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      box-shadow: inset 0 1px 2px #ffffff60, 0 1px 2px #00000030;
+    }
+
+    /* ---------- FIELDSETS ---------- */
+    .fieldset {
+      background: rgba(235, 245, 255, 0.6);
+      border: 1px solid #8eb0ce;
+      border-radius: 8px;
+      padding: 16px 14px 12px 14px;
+      margin-bottom: 14px;
+      box-shadow: inset 0 1px 6px rgba(255, 255, 255, 0.9), 0 2px 4px rgba(0, 0, 0, 0.08);
+      position: relative;
+    }
+    .fieldset-legend {
+      font-weight: 600;
+      font-size: 0.75rem;
+      color: #1f4462;
+      padding: 0 10px;
+      background: linear-gradient(180deg, #f0f8ff, #d6e7f5);
+      border-radius: 20px;
+      border: 1px solid #9db9d6;
+      text-shadow: 0 1px 0 white;
+      margin-left: 8px;
+      display: inline-block;
+      box-shadow: 0 1px 0 white;
+      position: relative;
+      top: -24px;
+      margin-bottom: -22px;
+    }
+
+    /* ---------- INPUT ROW ---------- */
+    .input-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 18px;
+      align-items: flex-end;
+    }
+    .input-group {
+      flex: 1 1 0;
+      min-width: 100px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .input-group.full-width {
+      flex: 1 1 100%;
+      min-width: 100%;
+    }
+    .input-group label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: #1c3e5a;
+      text-shadow: 0 1px 0 white;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-left: 4px;
+      letter-spacing: 0.2px;
+    }
+
+    /* ---------- SMALL TEXT BOXES ---------- */
+    .input-wrap {
+      display: flex;
+      align-items: center;
+      background: white;
+      border: 1px solid #7f9db9;
+      border-radius: 5px;
+      box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.1), 0 1px 0 white;
+      padding: 1px 4px 1px 8px;
+      transition: 0.1s;
+      width: 100%;
+    }
+    .input-wrap:focus-within {
+      border-color: #3c7bb0;
+      box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.1), 0 0 0 2px rgba(96, 173, 240, 0.4);
+    }
+    .input-wrap input {
+      border: none;
+      outline: none;
+      background: transparent;
+      font-size: 0.9rem;
+      font-weight: 600;
+      padding: 5px 0;
+      width: 100%;
+      color: #102c3f;
+      font-family: 'Segoe UI', Consolas, monospace;
+      text-align: right;
+      min-width: 0;
+    }
+    .input-wrap input[type="number"] {
+      -moz-appearance: textfield;
+    }
+    .input-wrap input::-webkit-outer-spin-button,
+    .input-wrap input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    .input-wrap .unit {
+      background: #c1d9ec;
+      color: #10344b;
+      font-size: 0.62rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 40px;
+      letter-spacing: 0.2px;
+      border: 1px solid #8dafcc;
+      box-shadow: inset 0 1px 2px #ffffff90;
+      white-space: nowrap;
+      margin-left: 4px;
+      flex-shrink: 0;
+    }
+
+    /* ---------- COMBO BOX ---------- */
+    .combo-wrap {
+      display: flex;
+      align-items: center;
+      background: white;
+      border: 1px solid #7f9db9;
+      border-radius: 5px;
+      box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.1), 0 1px 0 white;
+      padding: 0;
+      transition: 0.1s;
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+    .combo-wrap:focus-within {
+      border-color: #3c7bb0;
+      box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.1), 0 0 0 2px rgba(96, 173, 240, 0.4);
+    }
+    .combo-wrap select {
+      flex: 1;
+      border: none;
+      outline: none;
+      background: transparent;
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 6px 4px 6px 8px;
+      color: #102c3f;
+      font-family: 'Segoe UI', sans-serif;
+      cursor: pointer;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      width: 100%;
+      min-width: 0;
+      text-overflow: ellipsis;
+    }
+    .combo-wrap select option {
+      background: white;
+      color: #102c3f;
+      padding: 4px;
+    }
+    .combo-wrap .combo-arrow {
+      background: linear-gradient(180deg, #e9f2fb 0%, #c3d9ed 100%);
+      border-left: 1px solid #8eb0ce;
+      padding: 0 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.6rem;
+      color: #10344b;
+      pointer-events: none;
+      flex-shrink: 0;
+      height: 100%;
+      min-height: 26px;
+      font-weight: 700;
+    }
+    .combo-wrap .combo-icon {
+      background: #c1d9ec;
+      color: #10344b;
+      font-size: 0.58rem;
+      font-weight: 700;
+      padding: 4px 6px;
+      border-left: 1px solid #8dafcc;
+      flex-shrink: 0;
+      min-height: 26px;
+      display: flex;
+      align-items: center;
+    }
+
+    /* ---------- TOP ROW ---------- */
+    .top-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 10px;
+      align-items: stretch;
+    }
+    .top-row .combo-wrap {
+      flex: 0 0 180px;
+      min-width: 0;
+    }
+    .top-row .search-wrap {
+      flex: 1 1 auto;
+      min-width: 0;
+      margin-bottom: 0;
+    }
+
+    /* bag preview */
+    .bag-preview {
+      background: #d9ebfc;
+      border: 1px solid #86aac9;
+      border-radius: 40px;
+      padding: 5px 12px 5px 16px;
+      font-size: 0.72rem;
+      color: #0b2b41;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+      box-shadow: inset 0 1px 4px #ffffff, 0 1px 4px rgba(0, 0, 0, 0.1);
+    }
+    .bag-preview .highlight {
+      background: #1d4c6e;
+      color: white;
+      padding: 3px 14px;
+      border-radius: 30px;
+      font-weight: 600;
+      box-shadow: inset 0 1px 3px #b0d4f0, 0 1px 3px #00000030;
+      font-size: 0.68rem;
+    }
+
+    /* ---------- RESULT PANEL ---------- */
+    .result-panel {
+      background: rgba(248, 253, 255, 0.8);
+      border: 1px solid #83a7c7;
+      border-radius: 8px;
+      padding: 12px 14px 14px 14px;
+      box-shadow: inset 0 1px 8px white, 0 2px 6px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(2px);
+    }
+    .result-header {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #1a3e5a;
+      text-shadow: 0 1px 0 white;
+      border-bottom: 1px solid #aac2db;
+      padding-bottom: 6px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      letter-spacing: 0.3px;
+    }
+    .result-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 10px;
+    }
+    .result-card {
+      background: #e7f2fc;
+      border: 1px solid #9ab9d6;
+      border-radius: 6px;
+      padding: 8px 8px;
+      flex: 1 1 100px;
+      text-align: center;
+      box-shadow: inset 0 1px 4px #ffffff, 0 2px 4px rgba(0, 0, 0, 0.08);
+    }
+    .result-card .big {
+      font-size: 1.7rem;
+      font-weight: 700;
+      color: #0f3146;
+      line-height: 1.1;
+      text-shadow: 0 1px 0 white;
+      font-family: 'Segoe UI', Consolas, monospace;
+    }
+    .result-card .label {
+      font-size: 0.6rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #1f5677;
+      background: #c6def5;
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 30px;
+      letter-spacing: 0.5px;
+      margin-top: 3px;
+      border: 1px solid #a5c2dd;
+    }
+    .result-card .sub {
+      font-size: 0.65rem;
+      color: #2a5777;
+      margin-top: 3px;
+      font-weight: 500;
+    }
+    .summary-bar {
+      background: #dcecfc;
+      border: 1px solid #98b9da;
+      border-radius: 40px;
+      padding: 6px 14px;
+      font-size: 0.78rem;
+      color: #10344b;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 8px 14px;
+      margin-top: 4px;
+      box-shadow: inset 0 1px 6px white, 0 1px 4px rgba(0, 0, 0, 0.1);
+      font-weight: 500;
+    }
+    .summary-bar .value {
+      font-weight: 700;
+      font-size: 1.1rem;
+      background: #1d4a6b;
+      color: white;
+      padding: 2px 16px;
+      border-radius: 40px;
+      box-shadow: inset 0 1px 3px #bbdaff, 0 1px 4px #00000040;
+      font-family: 'Segoe UI', Consolas, monospace;
+      letter-spacing: 0.5px;
+    }
+    .error-msg {
+      background: #ffdede;
+      border: 1px solid #c26b6b;
+      border-radius: 40px;
+      padding: 8px 16px;
+      color: #8b2c2c;
+      font-weight: 600;
+      text-shadow: 0 1px 0 #ffe7e7;
+      box-shadow: inset 0 1px 5px white;
+      display: inline-block;
+      width: 100%;
+      text-align: center;
+      font-size: 0.8rem;
+    }
+    .empty-hint {
+      text-align: center;
+      padding: 18px 8px;
+      color: #3a6382;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+    .empty-hint .small {
+      font-size: 0.7rem;
+      color: #5a7f9a;
+      margin-top: 6px;
+      display: block;
+    }
+
+    /* ---------- FOOTER ---------- */
+    .footer-note {
+      font-size: 0.62rem;
+      color: #316385;
+      text-align: center;
+      margin-top: 10px;
+      text-shadow: 0 1px 0 #d9ecff;
+      border-top: 1px solid #a7c2db;
+      padding-top: 8px;
+      letter-spacing: 0.2px;
+    }
+
+    /* ---------- PRICE LIST ---------- */
+    .price-top-actions {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    .search-wrap {
+      display: flex;
+      align-items: center;
+      background: white;
+      border: 1px solid #7f9db9;
+      border-radius: 5px;
+      box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.1), 0 1px 0 white;
+      padding: 2px 6px 2px 10px;
+      transition: 0.1s;
+      flex-shrink: 0;
+    }
+    .search-wrap:focus-within {
+      border-color: #3c7bb0;
+      box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.1), 0 0 0 2px rgba(96, 173, 240, 0.4);
+    }
+    .search-wrap .search-icon {
+      font-size: 0.8rem;
+      margin-right: 4px;
+      color: #4a7ba3;
+    }
+    .search-wrap input {
+      border: none;
+      outline: none;
+      background: transparent;
+      font-size: 0.8rem;
+      font-weight: 500;
+      padding: 6px 0;
+      width: 100%;
+      color: #102c3f;
+      font-family: 'Segoe UI', sans-serif;
+      min-width: 0;
+    }
+    .search-wrap .clear-search {
+      background: #c1d9ec;
+      color: #10344b;
+      border: 1px solid #8dafcc;
+      border-radius: 50%;
+      width: 16px;
+      height: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.62rem;
+      font-weight: 700;
+      cursor: pointer;
+      flex-shrink: 0;
+      margin-left: 4px;
+      line-height: 1;
+    }
+    .search-wrap .clear-search:hover {
+      background: #a8c8e0;
+    }
+
+    /* Table */
+    .price-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: 0.78rem;
+      background: white;
+      border: 1px solid #9ab9d6;
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow: inset 0 1px 4px #ffffff, 0 2px 4px rgba(0, 0, 0, 0.08);
+    }
+    .price-table thead th {
+      background: linear-gradient(180deg, #e3eff9 0%, #c3d9ed 100%);
+      color: #10344b;
+      font-weight: 700;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      padding: 9px 8px;
+      text-align: left;
+      border-bottom: 1px solid #8eb0ce;
+      text-shadow: 0 1px 0 white;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+    .price-table thead th:last-child {
+      text-align: right;
+    }
+    .price-table tbody td {
+      padding: 8px 8px;
+      border-bottom: 1px solid #d5e3ef;
+      color: #1a3e5a;
+      font-weight: 500;
+      vertical-align: middle;
+    }
+    .price-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+    .price-table tbody tr:nth-child(even) {
+      background: #f4faff;
+    }
+    .price-table tbody tr:hover {
+      background: #e1effc;
+      cursor: pointer;
+    }
+    .price-table tbody tr.selected-row {
+      background: #c8dff5 !important;
+      box-shadow: inset 0 0 0 1px #5b8bb5;
+    }
+    .price-table tbody td.price-cell {
+      text-align: right;
+      font-weight: 700;
+      color: #0f3146;
+      font-family: 'Segoe UI', Consolas, monospace;
+      white-space: nowrap;
+    }
+    .price-table tbody td.name-cell {
+      font-weight: 600;
+      color: #10344b;
+    }
+    .price-table tbody td.customer-cell {
+      font-weight: 500;
+      color: #5a3a7e;
+      font-size: 0.72rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100px;
+    }
+    .price-table tbody td.pcs-cell {
+      color: #2a5777;
+      font-weight: 600;
+      font-family: 'Segoe UI', Consolas, monospace;
+      text-align: center;
+    }
+    .price-table tbody td.action-cell {
+      text-align: center;
+      width: 32px;
+      padding: 4px;
+    }
+    .row-delete-btn {
+      background: #f5d5d5;
+      border: 1px solid #c26b6b;
+      color: #8b2c2c;
+      border-radius: 4px;
+      width: 22px;
+      height: 22px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.1s;
+      line-height: 1;
+      padding: 0;
+    }
+    .row-delete-btn:hover {
+      background: #e8a5a5;
+      color: white;
+    }
+    .table-container {
+      flex: 1;
+      overflow-y: auto;
+      border-radius: 6px;
+      padding-right: 2px;
+      margin-bottom: 10px;
+      min-height: 120px;
+    }
+    .no-results {
+      text-align: center;
+      padding: 20px 8px;
+      color: #3a6382;
+      font-size: 0.8rem;
+      font-weight: 500;
+      background: #f4faff;
+      border: 1px dashed #b4d1e6;
+      border-radius: 6px;
+    }
+    .no-results .small {
+      display: block;
+      font-size: 0.68rem;
+      color: #6a8ba5;
+      margin-top: 6px;
+    }
+
+    /* Loading overlay */
+    .loading-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(220, 235, 250, 0.7);
+      backdrop-filter: blur(2px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      border-radius: 10px;
+    }
+    .loading-overlay.active {
+      display: flex;
+    }
+    .loading-spinner {
+      width: 32px;
+      height: 32px;
+      border: 3px solid #8eb0ce;
+      border-top-color: #1d4a6b;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* ---------- AERO BUTTONS ---------- */
+    .aero-btn {
+      border: 1px solid #6f95b6;
+      background: linear-gradient(180deg, #f5faff 0%, #d5e6f5 45%, #b3cee5 100%);
+      border-radius: 6px;
+      padding: 8px 14px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: #0f3146;
+      box-shadow: 0 1px 0 #ffffff inset, 0 0 0 1px #ffffff50 inset, 0 2px 5px rgba(0, 0, 0, 0.15);
+      cursor: pointer;
+      transition: 0.06s linear;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      text-shadow: 0 1px 0 white;
+      flex: 1 1 auto;
+      min-width: 0;
+      white-space: nowrap;
+    }
+    .aero-btn:hover {
+      background: linear-gradient(180deg, #ffffff 0%, #e0f0ff 45%, #c2dcf5 100%);
+      border-color: #4c7ea5;
+    }
+    .aero-btn:active {
+      background: linear-gradient(180deg, #aac4dd 0%, #c3d9ed 50%, #dcecfc 100%);
+      box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.2);
+      transform: translateY(1px);
+    }
+    .aero-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .aero-btn.primary {
+      background: linear-gradient(180deg, #4a85b3 0%, #2a6088 45%, #15415f 100%);
+      color: white;
+      border-color: #1b4260;
+      text-shadow: 0 1px 1px #0a1f2e;
+      box-shadow: inset 0 1px 0 #a0c8f0, 0 3px 8px #00000040;
+    }
+    .aero-btn.primary:hover {
+      background: linear-gradient(180deg, #5f9ac9 0%, #356e97 45%, #1b4d6f 100%);
+      border-color: #2b5e82;
+    }
+    .aero-btn.danger {
+      background: linear-gradient(180deg, #d98b8b 0%, #b85555 45%, #8b3232 100%);
+      color: white;
+      border-color: #6b2323;
+      text-shadow: 0 1px 1px #3a1010;
+      box-shadow: inset 0 1px 0 #f0b0b0, 0 3px 8px #00000040;
+      flex: 0 0 auto;
+    }
+    .aero-btn.danger:hover {
+      background: linear-gradient(180deg, #e69b9b 0%, #c56565 45%, #9b3e3e 100%);
+    }
+
+    /* ---------- TOAST ---------- */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: #1d4a6b;
+      color: white;
+      padding: 10px 24px;
+      border-radius: 40px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.4), inset 0 1px 0 #a0c8f0;
+      border: 1px solid #0d2f44;
+      opacity: 0;
+      transition: 0.3s ease;
+      z-index: 99999;
+      pointer-events: none;
+      max-width: calc(100vw - 40px);
+      text-align: center;
+    }
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+    .toast.success { background: #1e6b3a; }
+    .toast.error { background: #8b2c2c; }
+    .toast.warning { background: #b87333; }
+
+    /* ---------- MODAL ---------- */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 20, 40, 0.55);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+    .modal-overlay.active {
+      display: flex;
+    }
+    .modal {
+      background: rgba(230, 242, 252, 0.95);
+      border-radius: 10px;
+      border: 1px solid #6b8fae;
+      box-shadow: 
+        0 0 0 1px rgba(255, 255, 255, 0.6) inset,
+        0 12px 35px rgba(0, 0, 0, 0.6),
+        0 2px 8px rgba(0, 0, 0, 0.5);
+      width: 400px;
+      max-width: calc(100vw - 40px);
+      overflow: hidden;
+      animation: modalPop 0.2s ease;
+    }
+    @keyframes modalPop {
+      from { transform: scale(0.92); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .modal .title-bar {
+      cursor: default;
+    }
+    .modal .title-bar:active {
+      cursor: default;
+    }
+    .modal-content {
+      padding: 16px 18px 18px 18px;
+      background: rgba(245, 250, 255, 0.7);
+    }
+    .modal-field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 12px;
+    }
+    .modal-field label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #1c3e5a;
+      text-shadow: 0 1px 0 white;
+    }
+    .modal-field .input-wrap {
+      padding: 2px 8px;
+    }
+    .modal-field .input-wrap input {
+      text-align: left;
+      padding: 7px 0;
+    }
+    .modal-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+      margin-top: 6px;
+    }
+
+    /* Scrollbar styling */
+    .table-container::-webkit-scrollbar,
+    .window-content::-webkit-scrollbar {
+      width: 8px;
+    }
+    .table-container::-webkit-scrollbar-track,
+    .window-content::-webkit-scrollbar-track {
+      background: rgba(200, 220, 240, 0.4);
+      border-radius: 10px;
+    }
+    .table-container::-webkit-scrollbar-thumb,
+    .window-content::-webkit-scrollbar-thumb {
+      background: #9bb9d6;
+      border-radius: 10px;
+      border: 1px solid #7a9bb8;
+    }
+
+    /* Drag hint */
+    .drag-hint {
+      position: fixed;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.7rem;
+      color: #b8d4ec;
+      background: rgba(20, 40, 60, 0.7);
+      padding: 6px 18px;
+      border-radius: 40px;
+      border: 1px solid #3d6c92;
+      text-shadow: 0 1px 2px black;
+      z-index: 100;
+      pointer-events: none;
+      letter-spacing: 0.3px;
+    }
+
+    /* Responsive */
+    @media (max-width: 1200px) {
+      .window, .window-price {
+        position: relative;
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
+        margin: 0 auto 20px auto;
+        max-width: 580px;
+        width: 100%;
+      }
+      body {
+        overflow-y: auto;
+        padding: 20px 12px;
+      }
+      .drag-hint { display: none; }
+    }
+
+    @media (max-width: 480px) {
+      .top-row {
+        flex-direction: column;
+      }
+      .top-row .combo-wrap {
+        flex: 1 1 auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- ================= LEFT WINDOW (Calculator) ================= -->
+  <div class="window" id="calcWindow">
+    <div class="title-bar" id="calcTitleBar">
+      <div class="title-text">
+        <span>📦</span> Packing Calculator
+        <span class="status-dot" id="calcStatusDot" title="Database status"></span>
+      </div>
+      <div class="caption-buttons">
+        <div class="caption-btn" title="Minimize">—</div>
+        <div class="caption-btn" title="Maximize">□</div>
+        <div class="caption-btn close" title="Close">✕</div>
+      </div>
+    </div>
+
+    <div class="window-content">
+      <div class="aero-info">
+        <span>⚖️</span> Auto-calculates · Enter to next field · Last field saves &amp; resets
+        <span class="badge" id="syncBadge">Connecting…</span>
+      </div>
+
+      <!-- PRODUCT & BAG SETUP -->
+      <div class="fieldset">
+        <div class="fieldset-legend">📋 Product & bag setup</div>
+        <div class="input-row">
+          <div class="input-group">
+            <label><span>⚖️</span> Weight per pc</label>
+            <div class="input-wrap">
+              <input type="number" id="weightPerPc" min="0.001" step="0.001" placeholder="0.000" tabindex="1">
+              <span class="unit">kg</span>
+            </div>
+          </div>
+          <div class="input-group">
+            <label><span>🛍️</span> Pcs per bag</label>
+            <div class="input-wrap">
+              <input type="number" id="pcsPerBag" min="1" step="1" placeholder="0" tabindex="2">
+              <span class="unit">pcs</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="bag-preview">
+          <span>📐 1 bag = <span id="bagWeightPreview">0.000</span> kg</span>
+          <span class="highlight" id="bagPcsPreview">0 pcs</span>
+        </div>
+      </div>
+
+      <!-- PACKING QUANTITIES -->
+      <div class="fieldset">
+        <div class="fieldset-legend">🧺 Packing quantities</div>
+        <div class="input-row">
+          <div class="input-group">
+            <label><span>🧺</span> Number of bags</label>
+            <div class="input-wrap">
+              <input type="number" id="numBags" min="0" step="1" placeholder="0" tabindex="3">
+              <span class="unit">bag</span>
+            </div>
+          </div>
+          <div class="input-group">
+            <label><span>🔹</span> Extra loose pcs</label>
+            <div class="input-wrap">
+              <input type="number" id="extraPcs" min="0" step="1" placeholder="0" tabindex="4">
+              <span class="unit">pcs</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RESULT -->
+      <div class="result-panel" id="resultArea">
+        <div class="result-header"><span>📋</span> Packing summary (live)</div>
+        <div id="resultContent">
+          <div class="empty-hint">
+            📝 Enter values above to calculate
+            <span class="small">Press Enter in the last field to save to database &amp; reset</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-note">
+        ⚡ Windows 7 Aero · auto-calc · Enter → next field (last field saves &amp; resets)
+      </div>
+    </div>
+
+    <!-- Loading overlay -->
+    <div class="loading-overlay" id="calcLoading">
+      <div class="loading-spinner"></div>
+    </div>
+  </div>
+
+  <!-- ================= RIGHT WINDOW (Products) ================= -->
+  <div class="window-price" id="priceWindow">
+    <div class="title-bar" id="priceTitleBar">
+      <div class="title-text">
+        <span>💰</span> Products
+        <span class="badge" id="priceCount" style="background:#2b5b7c; color:white; border-radius:40px; padding:1px 10px; font-size:0.65rem; font-weight:600;">0</span>
+        <span class="status-dot" id="priceStatusDot" title="Database status"></span>
+      </div>
+      <div class="caption-buttons">
+        <div class="caption-btn" title="Minimize">—</div>
+        <div class="caption-btn" title="Maximize">□</div>
+        <div class="caption-btn close" title="Close">✕</div>
+      </div>
+    </div>
+
+    <div class="window-content" style="flex:1; display:flex; flex-direction:column;">
+      <!-- ACTION BUTTONS -->
+      <div class="price-top-actions">
+        <button class="aero-btn primary" id="addProductBtn" type="button">
+          <span>📦➕</span> Add Product
+        </button>
+        <button class="aero-btn danger" id="clearAllBtn" type="button">
+          <span>🗑️</span> Clear All
+        </button>
+      </div>
+
+      <!-- CUSTOMER COMBO + SEARCH ON SAME LINE -->
+      <div class="top-row">
+        <div class="combo-wrap">
+          <select id="customerFilter" tabindex="5">
+            <option value="">👤 All Customers</option>
+          </select>
+          <span class="combo-arrow">▼</span>
+          <span class="combo-icon">👤</span>
+        </div>
+        <div class="search-wrap">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="searchInput" placeholder="Search product..." tabindex="6">
+          <span class="clear-search" id="clearSearchBtn" title="Clear search">✕</span>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="table-container">
+        <table class="price-table">
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Customer</th>
+              <th>Pcs/Bag</th>
+              <th>Price</th>
+              <th style="width:32px;"></th>
+            </tr>
+          </thead>
+          <tbody id="priceTableBody">
+            <tr><td colspan="5">
+              <div class="no-results">📦 No products yet<span class="small">Click "Add Product" to create your first entry</span></div>
+            </td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Loading overlay -->
+    <div class="loading-overlay" id="priceLoading">
+      <div class="loading-spinner"></div>
+    </div>
+  </div>
+
+  <!-- MODAL -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal" id="modalBox">
+      <div class="title-bar">
+        <div class="title-text" id="modalTitle">➕ Add Product</div>
+        <div class="caption-buttons">
+          <div class="caption-btn close" id="modalCloseBtn" title="Close">✕</div>
+        </div>
+      </div>
+      <div class="modal-content" id="modalContent"></div>
+    </div>
+  </div>
+
+  <div class="drag-hint">🖱️ Drag the title bar to move windows</div>
+  <div class="toast" id="toast">✅ Done</div>
+
+  <!-- ===================== SUPABASE SDK ===================== -->
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+    // ==================== SUPABASE CONFIG ====================
+    const SUPABASE_URL = 'https://rrtpnknbrrcwzmlqeyha.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_S8YKuWueI4Bs3IKXaYSNzg_pH5wCyYC';
+    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    // Expose to window for inline script
+    window.supabase = supabase;
+
+    // Dispatch ready event for inline script
+    window.dispatchEvent(new Event('supabase-ready'));
+  </script>
+
+  <script>
+    // ==================== APP LOGIC (runs after Supabase loads) ====================
+    window.addEventListener('supabase-ready', async () => {
+      const supabase = window.supabase;
+
+      // ==================== DRAGGABLE ====================
+      function makeDraggable(windowEl, handleEl) {
+        let isDragging = false, startX = 0, startY = 0, startLeft = 0, startTop = 0;
+        windowEl.style.position = 'absolute';
+
+        handleEl.addEventListener('mousedown', (e) => {
+          if (e.target.closest('.caption-btn')) return;
+          e.preventDefault();
+          isDragging = true;
+          const rect = windowEl.getBoundingClientRect();
+          startLeft = rect.left; startTop = rect.top;
+          windowEl.style.left = startLeft + 'px';
+          windowEl.style.top = startTop + 'px';
+          windowEl.style.right = 'auto';
+          windowEl.style.margin = '0';
+          startX = e.clientX; startY = e.clientY;
+          bringToFront(windowEl);
+          document.body.style.cursor = 'grabbing';
+          document.addEventListener('mousemove', onMouseMove);
+          document.addEventListener('mouseup', onMouseUp);
+        });
+
+        function onMouseMove(e) {
+          if (!isDragging) return;
+          const dx = e.clientX - startX, dy = e.clientY - startY;
+          let nl = startLeft + dx, nt = startTop + dy;
+          const ml = window.innerWidth - windowEl.offsetWidth - 5;
+          const mt = window.innerHeight - windowEl.offsetHeight - 5;
+          if (nl < 5) nl = 5;
+          if (nt < 5) nt = 5;
+          if (nl > ml) nl = ml;
+          if (nt > mt) nt = mt;
+          windowEl.style.left = nl + 'px';
+          windowEl.style.top = nt + 'px';
+        }
+
+        function onMouseUp() {
+          isDragging = false;
+          document.body.style.cursor = '';
+          document.removeEventListener('mousemove', onMouseMove);
+          document.removeEventListener('mouseup', onMouseUp);
+        }
+
+        handleEl.addEventListener('touchstart', (e) => {
+          if (e.target.closest('.caption-btn')) return;
+          const touch = e.touches[0];
+          e.preventDefault();
+          isDragging = true;
+          const rect = windowEl.getBoundingClientRect();
+          startLeft = rect.left; startTop = rect.top;
+          windowEl.style.left = startLeft + 'px';
+          windowEl.style.top = startTop + 'px';
+          windowEl.style.right = 'auto';
+          startX = touch.clientX; startY = touch.clientY;
+          bringToFront(windowEl);
+          document.addEventListener('touchmove', onTouchMove, { passive: false });
+          document.addEventListener('touchend', onTouchEnd);
+        });
+
+        function onTouchMove(e) {
+          if (!isDragging) return;
+          const touch = e.touches[0];
+          const dx = touch.clientX - startX, dy = touch.clientY - startY;
+          let nl = startLeft + dx, nt = startTop + dy;
+          const ml = window.innerWidth - windowEl.offsetWidth - 5;
+          const mt = window.innerHeight - windowEl.offsetHeight - 5;
+          if (nl < 5) nl = 5;
+          if (nt < 5) nt = 5;
+          if (nl > ml) nl = ml;
+          if (nt > mt) nt = mt;
+          windowEl.style.left = nl + 'px';
+          windowEl.style.top = nt + 'px';
+        }
+
+        function onTouchEnd() {
+          isDragging = false;
+          document.removeEventListener('touchmove', onTouchMove);
+          document.removeEventListener('touchend', onTouchEnd);
+        }
+      }
+
+      let highestZ = 10;
+      function bringToFront(el) { highestZ++; el.style.zIndex = highestZ; }
+
+      // ==================== ELEMENTS ====================
+      const weightPerPcInput = document.getElementById('weightPerPc');
+      const pcsPerBagInput = document.getElementById('pcsPerBag');
+      const numBagsInput = document.getElementById('numBags');
+      const extraPcsInput = document.getElementById('extraPcs');
+
+      const bagWeightPreview = document.getElementById('bagWeightPreview');
+      const bagPcsPreview = document.getElementById('bagPcsPreview');
+
+      const resultContent = document.getElementById('resultContent');
+      const toast = document.getElementById('toast');
+
+      const customerFilter = document.getElementById('customerFilter');
+      const priceTableBody = document.getElementById('priceTableBody');
+      const priceCount = document.getElementById('priceCount');
+      const searchInput = document.getElementById('searchInput');
+      const clearSearchBtn = document.getElementById('clearSearchBtn');
+      const addProductBtn = document.getElementById('addProductBtn');
+      const clearAllBtn = document.getElementById('clearAllBtn');
+
+      const calcWindow = document.getElementById('calcWindow');
+      const priceWindow = document.getElementById('priceWindow');
+      const calcTitleBar = document.getElementById('calcTitleBar');
+      const priceTitleBar = document.getElementById('priceTitleBar');
+
+      const modalOverlay = document.getElementById('modalOverlay');
+      const modalTitle = document.getElementById('modalTitle');
+      const modalContent = document.getElementById('modalContent');
+      const modalCloseBtn = document.getElementById('modalCloseBtn');
+
+      const calcStatusDot = document.getElementById('calcStatusDot');
+      const priceStatusDot = document.getElementById('priceStatusDot');
+      const syncBadge = document.getElementById('syncBadge');
+      const calcLoading = document.getElementById('calcLoading');
+      const priceLoading = document.getElementById('priceLoading');
+
+      makeDraggable(calcWindow, calcTitleBar);
+      makeDraggable(priceWindow, priceTitleBar);
+
+      calcWindow.addEventListener('mousedown', () => bringToFront(calcWindow));
+      priceWindow.addEventListener('mousedown', () => bringToFront(priceWindow));
+
+      // Field order for left window Enter navigation
+      const fieldOrder = [weightPerPcInput, pcsPerBagInput, numBagsInput, extraPcsInput];
+
+      // ==================== STATE ====================
+      let products = [];
+      let filteredProducts = [];
+      let selectedProductId = null;
+      let selectedProductName = '';
+      let selectedCustomerName = '';
+      let isOnline = false;
+
+      // ==================== HELPERS ====================
+      const formatKg = (value) => {
+        if (value === 0) return '0.000';
+        let str = value.toFixed(3);
+        str = str.replace(/\.?0+$/, '');
+        if (str === '' || str === '-') str = '0';
+        return str;
+      };
+
+      const formatPrice = (value) => '₹' + Number(value).toFixed(2);
+
+      function showToast(message, type = '') {
+        toast.textContent = message;
+        toast.className = 'toast show' + (type ? ' ' + type : '');
+        setTimeout(() => {
+          toast.classList.remove('show');
+        }, 2200);
+      }
+
+      function setOnlineStatus(online) {
+        isOnline = online;
+        const cls = online ? 'online' : 'offline';
+        calcStatusDot.className = 'status-dot ' + cls;
+        priceStatusDot.className = 'status-dot ' + cls;
+        syncBadge.textContent = online ? '🟢 Connected' : '🔴 Offline';
+        syncBadge.style.background = online ? '#1e6b3a' : '#8b2c2c';
+      }
+
+      function setSyncing() {
+        calcStatusDot.className = 'status-dot syncing';
+        priceStatusDot.className = 'status-dot syncing';
+        syncBadge.textContent = '🟡 Syncing…';
+      }
+
+      function showLoading(which) {
+        if (which === 'calc') calcLoading.classList.add('active');
+        if (which === 'price') priceLoading.classList.add('active');
+      }
+
+      function hideLoading(which) {
+        if (which === 'calc') calcLoading.classList.remove('active');
+        if (which === 'price') priceLoading.classList.remove('active');
+      }
+
+      // ==================== DATABASE: LOAD PRODUCTS ====================
+      async function loadProducts() {
+        showLoading('price');
+        setSyncing();
+        try {
+          const { data, error } = await supabase
+            .from('products')
+            .select('*')
+            .order('created_at', { ascending: false });
+
+          if (error) throw error;
+
+          products = (data || []).map(p => ({
+            id: p.id,
+            name: p.name,
+            customer: p.customer,
+            pcsPerBag: p.pcs_per_bag,
+            price: Number(p.price)
+          }));
+          filteredProducts = [...products];
+          setOnlineStatus(true);
+          renderCustomerFilter();
+          applyFilters();
+        } catch (err) {
+          console.error('Load products error:', err);
+          setOnlineStatus(false);
+          showToast('⚠️ Could not load products from database', 'error');
+          // Ensure table schema hint
+          priceTableBody.innerHTML = `
+            <tr><td colspan="5">
+              <div class="no-results">
+                ⚠️ Database error
+                <span class="small">${err.message || 'Check that the "products" table exists'}</span>
+              </div>
+            </td></tr>`;
+        } finally {
+          hideLoading('price');
+        }
+      }
+
+      // ==================== DATABASE: SAVE PRODUCT ====================
+      async function saveProduct(product) {
+        setSyncing();
+        try {
+          const { data, error } = await supabase
+            .from('products')
+            .insert([{
+              name: product.name,
+              customer: product.customer,
+              pcs_per_bag: product.pcsPerBag,
+              price: product.price
+            }])
+            .select()
+            .single();
+
+          if (error) throw error;
+          setOnlineStatus(true);
+          return {
+            id: data.id,
+            name: data.name,
+            customer: data.customer,
+            pcsPerBag: data.pcs_per_bag,
+            price: Number(data.price)
+          };
+        } catch (err) {
+          console.error('Save product error:', err);
+          setOnlineStatus(false);
+          throw err;
+        }
+      }
+
+      // ==================== DATABASE: DELETE PRODUCT ====================
+      async function deleteProduct(id) {
+        setSyncing();
+        try {
+          const { error } = await supabase
+            .from('products')
+            .delete()
+            .eq('id', id);
+
+          if (error) throw error;
+          setOnlineStatus(true);
+          return true;
+        } catch (err) {
+          console.error('Delete product error:', err);
+          setOnlineStatus(false);
+          throw err;
+        }
+      }
+
+      // ==================== DATABASE: CLEAR ALL ====================
+      async function clearAllProducts() {
+        setSyncing();
+        try {
+          const { error } = await supabase
+            .from('products')
+            .delete()
+            .neq('id', '00000000-0000-0000-0000-000000000000'); // delete all
+
+          if (error) throw error;
+          setOnlineStatus(true);
+          return true;
+        } catch (err) {
+          console.error('Clear all error:', err);
+          setOnlineStatus(false);
+          throw err;
+        }
+      }
+
+      // ==================== DATABASE: SAVE PACKING RECORD ====================
+      async function savePackingRecord(record) {
+        setSyncing();
+        try {
+          const { data, error } = await supabase
+            .from('packing_records')
+            .insert([{
+              customer: record.customer,
+              product_name: record.productName,
+              weight_per_pc: record.weightPerPc,
+              pcs_per_bag: record.pcsPerBag,
+              num_bags: record.numBags,
+              extra_pcs: record.extraPcs,
+              total_kg: record.totalKg,
+              total_pcs: record.totalPcs
+            }])
+            .select()
+            .single();
+
+          if (error) throw error;
+          setOnlineStatus(true);
+          return data;
+        } catch (err) {
+          console.error('Save packing record error:', err);
+          setOnlineStatus(false);
+          throw err;
+        }
+      }
+
+      // ==================== RENDER CUSTOMER FILTER ====================
+      function renderCustomerFilter() {
+        const uniqueCustomers = [...new Set(products.map(p => p.customer))].sort();
+        const currentValue = customerFilter.value;
+        let html = '<option value="">👤 All Customers</option>';
+        uniqueCustomers.forEach(c => {
+          html += `<option value="${c}">${c}</option>`;
+        });
+        customerFilter.innerHTML = html;
+        if (currentValue && uniqueCustomers.includes(currentValue)) {
+          customerFilter.value = currentValue;
+        }
+      }
+
+      // ==================== RENDER PRICE TABLE ====================
+      function renderPriceTable() {
+        if (filteredProducts.length === 0) {
+          if (products.length === 0) {
+            priceTableBody.innerHTML = `
+              <tr><td colspan="5">
+                <div class="no-results">📦 No products yet<span class="small">Click "Add Product" to create your first entry</span></div>
+              </td></tr>`;
+          } else {
+            priceTableBody.innerHTML = `
+              <tr><td colspan="5">
+                <div class="no-results">🔍 No products match your filter<span class="small">Try a different customer or product name</span></div>
+              </td></tr>`;
+          }
+          priceCount.textContent = '0';
+          return;
+        }
+        let html = '';
+        filteredProducts.forEach(p => {
+          const selected = (p.id === selectedProductId) ? ' selected-row' : '';
+          html += `<tr class="${selected}" data-id="${p.id}" data-name="${p.name}" data-customer="${p.customer}" data-pcs="${p.pcsPerBag}" data-price="${p.price}">
+            <td class="name-cell">${escapeHtml(p.name)}</td>
+            <td class="customer-cell">👤 ${escapeHtml(p.customer)}</td>
+            <td class="pcs-cell">${p.pcsPerBag}</td>
+            <td class="price-cell">${formatPrice(p.price)}</td>
+            <td class="action-cell">
+              <button class="row-delete-btn" data-delete-id="${p.id}" title="Delete">✕</button>
+            </td>
+          </tr>`;
+        });
+        priceTableBody.innerHTML = html;
+        priceCount.textContent = filteredProducts.length;
+      }
+
+      function escapeHtml(s) {
+        return String(s).replace(/[&<>"']/g, c => ({
+          '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+        }[c]));
+      }
+
+      // ==================== FILTER ====================
+      function applyFilters() {
+        const customerQuery = customerFilter.value;
+        const searchQuery = searchInput.value.trim().toLowerCase();
+
+        filteredProducts = products.filter(p => {
+          const customerMatch = !customerQuery || p.customer === customerQuery;
+          let searchMatch = true;
+          if (searchQuery) {
+            if (customerQuery) {
+              searchMatch = p.name.toLowerCase().includes(searchQuery);
+            } else {
+              searchMatch = p.name.toLowerCase().includes(searchQuery) ||
+                            p.customer.toLowerCase().includes(searchQuery);
+            }
+          }
+          return customerMatch && searchMatch;
+        });
+        renderPriceTable();
+      }
+
+      // ==================== APPLY PRODUCT ====================
+      function applyProduct(product) {
+        selectedProductId = product.id;
+        selectedProductName = product.name;
+        selectedCustomerName = product.customer;
+        pcsPerBagInput.value = product.pcsPerBag;
+        weightPerPcInput.focus();
+        weightPerPcInput.select();
+        updateBagPreview();
+        calculateTotal();
+        renderPriceTable();
+      }
+
+      // ==================== PREVIEW / CALC ====================
+      function updateBagPreview() {
+        const w = parseFloat(weightPerPcInput.value) || 0;
+        const p = parseFloat(pcsPerBagInput.value) || 0;
+        bagWeightPreview.textContent = (w * p).toFixed(3);
+        bagPcsPreview.textContent = p + ' pcs';
+      }
+
+      function showEmptyHint() {
+        resultContent.innerHTML = `
+          <div class="empty-hint">📝 Enter values above to calculate
+            <span class="small">Press Enter in the last field to save to database &amp; reset</span>
+          </div>`;
+      }
+
+      function calculateTotal() {
+        const weightPerPc = parseFloat(weightPerPcInput.value);
+        const pcsPerBag = parseFloat(pcsPerBagInput.value);
+        const numBags = parseFloat(numBagsInput.value);
+        const extraPcs = parseFloat(extraPcsInput.value);
+
+        const anyEmpty = weightPerPcInput.value === '' || pcsPerBagInput.value === '' ||
+                         numBagsInput.value === '' || extraPcsInput.value === '';
+        if (anyEmpty) { showEmptyHint(); return null; }
+
+        if (isNaN(weightPerPc) || weightPerPc <= 0) {
+          resultContent.innerHTML = `<div class="error-msg">⚠️ Weight per piece must be greater than 0.</div>`;
+          return null;
+        }
+        if (isNaN(pcsPerBag) || pcsPerBag <= 0 || !Number.isInteger(pcsPerBag)) {
+          resultContent.innerHTML = `<div class="error-msg">⚠️ Pieces per bag must be a positive whole number.</div>`;
+          return null;
+        }
+        if (isNaN(numBags) || numBags < 0 || !Number.isInteger(numBags)) {
+          resultContent.innerHTML = `<div class="error-msg">⚠️ Number of bags must be a non-negative whole number.</div>`;
+          return null;
+        }
+        if (isNaN(extraPcs) || extraPcs < 0 || !Number.isInteger(extraPcs)) {
+          resultContent.innerHTML = `<div class="error-msg">⚠️ Extra loose pieces must be a non-negative whole number.</div>`;
+          return null;
+        }
+
+        const totalFromBagsKg = numBags * (weightPerPc * pcsPerBag);
+        const totalFromLooseKg = extraPcs * weightPerPc;
+        const totalKg = totalFromBagsKg + totalFromLooseKg;
+        const totalPcs = numBags * pcsPerBag + extraPcs;
+        const productName = selectedProductName || '—';
+        const customerName = selectedCustomerName || '—';
+
+        let html = `
+          <div class="result-grid">
+            <div class="result-card"><div class="big">${numBags}</div><div class="label">bags</div><div class="sub">${pcsPerBag} pcs each</div></div>
+            <div class="result-card"><div class="big">${extraPcs}</div><div class="label">loose pcs</div><div class="sub">${weightPerPc} kg/pc</div></div>
+            <div class="result-card" style="background:#d9e9fa; border-color:#7ea5c9;">
+              <div class="big">${formatKg(totalKg)}</div><div class="label">total kg</div><div class="sub">${totalPcs} pcs total</div>
+            </div>
+          </div>
+          <div class="summary-bar">
+            <span>👤 ${escapeHtml(customerName)}</span>
+            <span>📦 ${escapeHtml(productName)}</span>
+            <span>${numBags} bag${numBags !== 1 ? 's' : ''} × ${pcsPerBag} pcs</span>
+            <span>➕ ${extraPcs} loose</span>
+            <span class="value">${formatKg(totalKg)} kg</span>
+          </div>`;
+
+        html += `
+          <div style="font-size:0.68rem; color:#1e567a; margin-top: 8px; text-align: center; background: #deedfd; padding: 5px 10px; border-radius: 40px; border: 1px solid #aac6e2; font-weight:500;">
+            🧮 ${numBags} bag(s) = ${formatKg(totalFromBagsKg)} kg &nbsp;|&nbsp; 
+            ${extraPcs} pc(s) = ${formatKg(totalFromLooseKg)} kg
+          </div>`;
+
+        resultContent.innerHTML = html;
+
+        return {
+          weightPerPc, pcsPerBag, numBags, extraPcs, totalKg, totalPcs,
+          productName, customerName
+        };
+      }
+
+      function fullRecalc() { updateBagPreview(); return calculateTotal(); }
+
+      let debounceTimer;
+      function autoRecalc() {
+        if (debounceTimer) clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => fullRecalc(), 120);
+      }
+
+      [weightPerPcInput, pcsPerBagInput, numBagsInput, extraPcsInput].forEach(inp => {
+        inp.addEventListener('input', autoRecalc);
+      });
+
+      // ==================== CLIPBOARD ====================
+      function copyToClipboard(text) {
+        if (navigator.clipboard && navigator.clipboard.writeText) return navigator.clipboard.writeText(text);
+        return new Promise((resolve, reject) => {
+          const ta = document.createElement('textarea');
+          ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+          document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); resolve(); } catch (e) { reject(e); }
+          finally { document.body.removeChild(ta); }
+        });
+      }
+
+      function resetAllFields() {
+        weightPerPcInput.value = '';
+        pcsPerBagInput.value = '';
+        numBagsInput.value = '';
+        extraPcsInput.value = '';
+        bagWeightPreview.textContent = '0.000';
+        bagPcsPreview.textContent = '0 pcs';
+        showEmptyHint();
+      }
+
+      // ==================== ENTER NAV ====================
+      async function handleEnterKey(e, currentIndex) {
+        if (e.key !== 'Enter') return;
+        e.preventDefault();
+
+        if (currentIndex === fieldOrder.length - 1) {
+          // Last field: save to database, copy to clipboard, reset
+          const result = fullRecalc();
+          if (result === null) { showToast('⚠️ Please fill all fields correctly', 'warning'); return; }
+
+          const kgText = formatKg(result.totalKg);
+
+          showLoading('calc');
+          let saved = false;
+          try {
+            await savePackingRecord({
+              customer: result.customerName,
+              productName: result.productName,
+              weightPerPc: result.weightPerPc,
+              pcsPerBag: result.pcsPerBag,
+              numBags: result.numBags,
+              extraPcs: result.extraPcs,
+              totalKg: result.totalKg,
+              totalPcs: result.totalPcs
+            });
+            saved = true;
+          } catch (err) {
+            console.error('Save failed:', err);
+            showToast('⚠️ Saved locally (DB offline)', 'warning');
+          } finally {
+            hideLoading('calc');
+          }
+
+          copyToClipboard(kgText)
+            .then(() => {
+              if (saved) showToast(`✅ ${kgText} kg saved & copied`, 'success');
+              else showToast(`📋 ${kgText} kg copied (not saved)`, 'warning');
+            })
+            .catch(() => {
+              showToast(`📋 Total: ${kgText} kg`, '');
+            });
+
+          resetAllFields();
+          resultContent.innerHTML = `
+            <div class="empty-hint">✅ Saved <strong>${kgText} kg</strong> — ready for next entry
+              <span class="small">Fill the fields above to calculate again</span>
+            </div>`;
+          weightPerPcInput.focus();
+        } else {
+          const nextField = fieldOrder[currentIndex + 1];
+          if (nextField) { nextField.focus(); if (nextField.select) nextField.select(); }
+        }
+      }
+
+      fieldOrder.forEach((input, index) => {
+        input.addEventListener('keydown', (e) => handleEnterKey(e, index));
+      });
+
+      // ==================== MODAL ====================
+      function openModal(title, contentHTML, onSave) {
+        modalTitle.innerHTML = title;
+        modalContent.innerHTML = contentHTML;
+        modalOverlay.classList.add('active');
+
+        const saveBtn = modalContent.querySelector('#modalSaveBtn');
+        const cancelBtn = modalContent.querySelector('#modalCancelBtn');
+
+        const closeModal = () => {
+          modalOverlay.classList.remove('active');
+          modalContent.innerHTML = '';
+        };
+
+        if (saveBtn) {
+          saveBtn.addEventListener('click', async () => {
+            const ok = await onSave(modalContent);
+            if (ok === true) closeModal();
+          });
+        }
+        if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
+
+        const firstInput = modalContent.querySelector('input');
+        if (firstInput) setTimeout(() => firstInput.focus(), 50);
+      }
+
+      modalContent.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && e.target.tagName === 'INPUT') {
+          const saveBtn = modalContent.querySelector('#modalSaveBtn');
+          if (saveBtn) { e.preventDefault(); saveBtn.click(); }
+        }
+      });
+
+      modalCloseBtn.addEventListener('click', () => modalOverlay.classList.remove('active'));
+      modalOverlay.addEventListener('click', (e) => {
+        if (e.target === modalOverlay) modalOverlay.classList.remove('active');
+      });
+
+      // ==================== ADD PRODUCT ====================
+      addProductBtn.addEventListener('click', () => {
+        const uniqueCustomers = [...new Set(products.map(p => p.customer))].sort();
+        let datalistOptions = '';
+        uniqueCustomers.forEach(c => {
+          datalistOptions += `<option value="${escapeHtml(c)}">`;
+        });
+
+        const html = `
+          <div class="modal-field">
+            <label>📦 Product Name</label>
+            <div class="input-wrap"><input type="text" id="modalProductName" placeholder="Enter product name"></div>
+          </div>
+          <div class="modal-field">
+            <label>👤 Customer Name</label>
+            <div class="input-wrap">
+              <input type="text" id="modalCustomerName" list="customerList" placeholder="Enter customer name">
+            </div>
+            <datalist id="customerList">${datalistOptions}</datalist>
+          </div>
+          <div class="modal-field">
+            <label>🛍️ Pieces per Bag</label>
+            <div class="input-wrap"><input type="number" id="modalProductPcs" min="1" step="1" placeholder="e.g. 40"></div>
+          </div>
+          <div class="modal-field">
+            <label>💰 Price (₹)</label>
+            <div class="input-wrap"><input type="number" id="modalProductPrice" min="0" step="0.01" placeholder="e.g. 25.00"></div>
+          </div>
+          <div class="modal-actions">
+            <button class="aero-btn" id="modalCancelBtn" type="button">Cancel</button>
+            <button class="aero-btn primary" id="modalSaveBtn" type="button">➕ Save to Database</button>
+          </div>`;
+
+        openModal('📦 Add Product', html, async (content) => {
+          const name = content.querySelector('#modalProductName').value.trim();
+          const customer = content.querySelector('#modalCustomerName').value.trim();
+          const pcs = content.querySelector('#modalProductPcs').value;
+          const price = content.querySelector('#modalProductPrice').value;
+
+          if (name === '') { showToast('⚠️ Please enter a product name', 'warning'); return false; }
+          if (customer === '') { showToast('⚠️ Please enter a customer name', 'warning'); return false; }
+          if (!pcs || isNaN(pcs) || parseInt(pcs) <= 0) { showToast('⚠️ Enter a valid positive number for pcs per bag', 'warning'); return false; }
+          if (!price || isNaN(price) || parseFloat(price) < 0) { showToast('⚠️ Enter a valid price', 'warning'); return false; }
+          if (products.some(p => p.name.toLowerCase() === name.toLowerCase() && p.customer.toLowerCase() === customer.toLowerCase())) {
+            showToast(`⚠️ "${name}" already exists for ${customer}`, 'warning'); return false;
+          }
+
+          const saveBtn = content.querySelector('#modalSaveBtn');
+          saveBtn.disabled = true;
+          saveBtn.textContent = '⏳ Saving…';
+
+          try {
+            const saved = await saveProduct({
+              name,
+              customer,
+              pcsPerBag: parseInt(pcs),
+              price: parseFloat(price)
+            });
+            products.unshift(saved);
+            filteredProducts = [...products];
+            renderCustomerFilter();
+            applyFilters();
+            showToast(`✅ "${name}" saved to database`, 'success');
+            return true;
+          } catch (err) {
+            showToast(`❌ Save failed: ${err.message || 'Check DB'}`, 'error');
+            saveBtn.disabled = false;
+            saveBtn.textContent = '➕ Save to Database';
+            return false;
+          }
+        });
+      });
+
+      // ==================== DELETE ROW ====================
+      priceTableBody.addEventListener('click', async (e) => {
+        // Delete button
+        const delBtn = e.target.closest('.row-delete-btn');
+        if (delBtn) {
+          e.stopPropagation();
+          const id = delBtn.dataset.deleteId;
+          if (!id) return;
+
+          const product = products.find(p => p.id === id);
+          if (!product) return;
+
+          if (!confirm(`Delete "${product.name}" for ${product.customer}?`)) return;
+
+          showLoading('price');
+          try {
+            await deleteProduct(id);
+            products = products.filter(p => p.id !== id);
+            if (selectedProductId === id) {
+              selectedProductId = null;
+              selectedProductName = '';
+              selectedCustomerName = '';
+            }
+            filteredProducts = [...products];
+            renderCustomerFilter();
+            applyFilters();
+            showToast(`🗑️ Deleted "${product.name}"`, 'success');
+          } catch (err) {
+            showToast(`❌ Delete failed: ${err.message}`, 'error');
+          } finally {
+            hideLoading('price');
+          }
+          return;
+        }
+
+        // Row click (apply product)
+        const row = e.target.closest('tr');
+        if (!row || !row.dataset.id) return;
+        const product = products.find(p => p.id === row.dataset.id);
+        if (product) {
+          applyProduct(product);
+          showToast(`📦 ${product.name} · 👤 ${product.customer}`);
+        }
+      });
+
+      // ==================== CLEAR ALL ====================
+      clearAllBtn.addEventListener('click', async () => {
+        if (products.length === 0) {
+          showToast('📭 No products to clear', 'warning');
+          return;
+        }
+        if (!confirm(`Delete ALL ${products.length} products from the database? This cannot be undone.`)) return;
+
+        showLoading('price');
+        try {
+          await clearAllProducts();
+          products = [];
+          filteredProducts = [];
+          selectedProductId = null;
+          selectedProductName = '';
+          selectedCustomerName = '';
+          renderCustomerFilter();
+          applyFilters();
+          showToast('🗑️ All products cleared', 'success');
+        } catch (err) {
+          showToast(`❌ Clear failed: ${err.message}`, 'error');
+        } finally {
+          hideLoading('price');
+        }
+      });
+
+      // ==================== FILTER EVENTS ====================
+      customerFilter.addEventListener('change', () => {
+        const c = customerFilter.value;
+        if (c) showToast(`👤 Filtering by: ${c}`);
+        else showToast('👤 Showing all customers');
+        applyFilters();
+      });
+
+      searchInput.addEventListener('input', applyFilters);
+      clearSearchBtn.addEventListener('click', () => { searchInput.value = ''; applyFilters(); searchInput.focus(); });
+
+      searchInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') e.preventDefault(); });
+
+      // ==================== WINDOW RESIZE ====================
+      window.addEventListener('resize', () => {
+        [calcWindow, priceWindow].forEach(win => {
+          const rect = win.getBoundingClientRect();
+          if (rect.right > window.innerWidth) win.style.left = Math.max(5, window.innerWidth - win.offsetWidth - 5) + 'px';
+          if (rect.bottom > window.innerHeight) win.style.top = Math.max(5, window.innerHeight - win.offsetHeight - 5) + 'px';
+          if (rect.left < 0) win.style.left = '5px';
+          if (rect.top < 0) win.style.top = '5px';
+        });
+      });
+
+      // ==================== INIT ====================
+      resetAllFields();
+      await loadProducts();
+      weightPerPcInput.focus();
+    });
+  </script>
+</body>
+</html>
