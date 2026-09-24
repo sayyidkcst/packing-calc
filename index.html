@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Packing Calculator · Windows 7 style</title>
+  <title>KCST Packing Calculator</title>
   <style>
     /* ---------- WINDOWS 7 AERO GLOBAL ---------- */
     * {
@@ -44,6 +44,317 @@
       pointer-events: none;
     }
 
+    /* ---------- BOOT / CONNECTING OVERLAY ---------- */
+    .boot-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 999999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 22px;
+      background: radial-gradient(circle at 50% 40%, rgba(20, 60, 100, 0.35) 0%, rgba(5, 20, 40, 0.75) 100%);
+      backdrop-filter: blur(3px);
+      opacity: 1;
+      transition: opacity 0.5s ease;
+      pointer-events: auto;
+    }
+    .boot-overlay.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    .boot-logo {
+      font-size: 3.2rem;
+      line-height: 1;
+      filter: drop-shadow(0 4px 18px rgba(120, 200, 255, 0.7));
+      animation: bootPulse 2s ease-in-out infinite;
+    }
+    @keyframes bootPulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.08); opacity: 0.85; }
+    }
+    .boot-title {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: #e8f4ff;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7), 0 0 20px rgba(120, 200, 255, 0.5);
+      letter-spacing: 0.06em;
+    }
+    .boot-status {
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: #b8d4ec;
+      text-shadow: 0 1px 6px rgba(0, 0, 0, 0.7);
+      letter-spacing: 0.04em;
+      min-height: 1.2em;
+    }
+    .boot-status.error { color: #ff9e9e; }
+    .boot-status.ok { color: #a6f0b8; }
+
+    .boot-progress {
+      width: 220px;
+      height: 12px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.4), 0 1px 0 rgba(255, 255, 255, 0.12);
+      overflow: hidden;
+      position: relative;
+    }
+    .boot-progress::after {
+      content: '';
+      position: absolute;
+      top: 0; bottom: 0;
+      width: 40%;
+      border-radius: 8px;
+      background: linear-gradient(90deg, transparent 0%, #7fc5f5 25%, #ffffff 50%, #7fc5f5 75%, transparent 100%);
+      box-shadow: 0 0 14px rgba(140, 220, 255, 0.9);
+      animation: bootBar 1.4s linear infinite;
+    }
+    @keyframes bootBar {
+      0% { left: -45%; }
+      100% { left: 105%; }
+    }
+    .boot-spinner {
+      width: 34px; height: 34px;
+      border: 3px solid rgba(180, 220, 255, 0.28);
+      border-top-color: #a0d8ff;
+      border-radius: 50%;
+      animation: bootSpin 0.85s linear infinite;
+      filter: drop-shadow(0 0 8px rgba(140, 200, 255, 0.7));
+    }
+    @keyframes bootSpin { to { transform: rotate(360deg); } }
+
+    body.not-connected .desktop-gadget,
+    body.not-connected .window,
+    body.not-connected .window-price,
+    body.not-connected .window-load,
+    body.not-connected .startbar,
+    body.not-connected .start-menu {
+      opacity: 0 !important;
+      pointer-events: none !important;
+      visibility: hidden !important;
+    }
+
+    .desktop-gadget, .startbar { transition: opacity 0.6s ease; }
+    .window, .window-price, .window-load { transition: opacity 0.2s, transform 0.2s, top 0.15s, left 0.15s, width 0.15s, height 0.15s; }
+
+    /* ---------- DESKTOP CLOCK GADGET ---------- */
+    .desktop-gadget {
+      position: fixed;
+      top: 30px;
+      right: 30px;
+      z-index: 5;
+      width: 240px;
+      background: radial-gradient(circle at 50% 30%, rgba(255, 255, 255, 0.28) 0%, rgba(220, 235, 250, 0.18) 40%, rgba(140, 180, 220, 0.14) 100%);
+      border-radius: 14px;
+      border-top: 1px solid rgba(255, 255, 255, 0.55);
+      border-left: 1px solid rgba(255, 255, 255, 0.35);
+      border-right: 1px solid rgba(120, 160, 200, 0.4);
+      border-bottom: 1px solid rgba(80, 120, 160, 0.5);
+      box-shadow: 
+        0 0 0 1px rgba(255, 255, 255, 0.25) inset,
+        0 0 0 1px rgba(30, 63, 90, 0.5),
+        0 12px 35px rgba(0, 0, 0, 0.55),
+        0 2px 10px rgba(0, 0, 0, 0.4),
+        inset 0 1px 20px rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(16px);
+      padding: 18px 16px 16px 16px;
+      text-align: center;
+      cursor: grab;
+      transition: box-shadow 0.2s ease, transform 0.2s ease;
+      overflow: hidden;
+    }
+    .desktop-gadget::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 10%; right: 10%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.9), transparent);
+      pointer-events: none;
+    }
+    .desktop-gadget::after {
+      content: '';
+      position: absolute;
+      top: 6px; left: 6px; right: 6px;
+      height: 40%;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.18) 0%, transparent 100%);
+      border-radius: 10px 10px 50% 50%;
+      pointer-events: none;
+    }
+    .desktop-gadget:active { cursor: grabbing; }
+    .desktop-gadget.dragging {
+      box-shadow: 
+        0 0 0 1px rgba(255, 255, 255, 0.35) inset,
+        0 0 0 1px rgba(30, 63, 90, 0.6),
+        0 18px 45px rgba(0, 0, 0, 0.7),
+        0 4px 14px rgba(0, 0, 0, 0.5);
+      transform: scale(1.02);
+    }
+
+    .gadget-time {
+      position: relative;
+      font-family: 'Segoe UI Light', 'Segoe UI', 'Consolas', monospace;
+      font-size: 3.2rem;
+      font-weight: 300;
+      color: #ffffff;
+      letter-spacing: 0.02em;
+      line-height: 1;
+      text-shadow: 
+        0 2px 4px rgba(0, 0, 0, 0.5),
+        0 0 20px rgba(140, 200, 255, 0.55),
+        0 0 40px rgba(100, 170, 240, 0.35);
+      margin-bottom: 2px;
+      transition: opacity 0.3s;
+      z-index: 1;
+    }
+    .gadget-time .seconds {
+      font-size: 1.4rem;
+      font-weight: 300;
+      color: rgba(220, 240, 255, 0.85);
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5), 0 0 12px rgba(140, 200, 255, 0.4);
+      margin-left: 4px;
+      vertical-align: 0.35em;
+    }
+    .gadget-time .ampm {
+      font-size: 1.1rem;
+      font-weight: 400;
+      color: rgba(220, 240, 255, 0.9);
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5), 0 0 12px rgba(140, 200, 255, 0.4);
+      margin-left: 6px;
+      vertical-align: 0.55em;
+      letter-spacing: 0.06em;
+    }
+    .gadget-date {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: rgba(235, 245, 255, 0.92);
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.55), 0 0 10px rgba(140, 200, 255, 0.35);
+      letter-spacing: 0.04em;
+      margin-bottom: 12px;
+      z-index: 1;
+      position: relative;
+    }
+    .gadget-day {
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.22em;
+      color: rgba(200, 225, 250, 0.75);
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+      border-top: 1px solid rgba(255, 255, 255, 0.22);
+      padding-top: 10px;
+      margin-top: 6px;
+      z-index: 1;
+      position: relative;
+    }
+
+    .gadget-analog {
+      width: 118px;
+      height: 118px;
+      margin: 0 auto 10px auto;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.42) 0%, rgba(220, 235, 250, 0.18) 55%, rgba(90, 130, 170, 0.25) 100%);
+      border: 2px solid rgba(255, 255, 255, 0.45);
+      box-shadow: 
+        0 4px 14px rgba(0, 0, 0, 0.5),
+        inset 0 2px 8px rgba(255, 255, 255, 0.35),
+        inset 0 -2px 8px rgba(0, 20, 40, 0.35);
+      position: relative;
+      z-index: 1;
+    }
+    .gadget-analog::before {
+      content: '';
+      position: absolute;
+      inset: 8px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      pointer-events: none;
+    }
+    .gadget-hand {
+      position: absolute;
+      bottom: 50%;
+      left: 50%;
+      transform-origin: bottom center;
+      border-radius: 4px;
+      transition: transform 0.3s cubic-bezier(0.4, 2.4, 0.55, 0.8);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+    }
+    .gadget-hand.hour {
+      width: 4px;
+      height: 30px;
+      background: linear-gradient(180deg, #ffffff, #cfe4f7);
+      margin-left: -2px;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.6), 0 0 6px rgba(180, 220, 255, 0.6);
+    }
+    .gadget-hand.minute {
+      width: 3px;
+      height: 42px;
+      background: linear-gradient(180deg, #eaf6ff, #b8d8f0);
+      margin-left: -1.5px;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.6), 0 0 6px rgba(180, 220, 255, 0.6);
+    }
+    .gadget-hand.second {
+      width: 2px;
+      height: 48px;
+      background: linear-gradient(180deg, #ffb37a, #e8734a);
+      margin-left: -1px;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.6), 0 0 8px rgba(255, 160, 100, 0.8);
+      transition: transform 0.1s cubic-bezier(0.4, 2.4, 0.55, 0.8);
+    }
+    .gadget-center-dot {
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 8px; height: 8px;
+      margin: -4px 0 0 -4px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #ffffff 0%, #b8d8f0 60%, #5a8ab0 100%);
+      box-shadow: 0 0 6px rgba(180, 220, 255, 0.9), 0 1px 2px rgba(0, 0, 0, 0.5);
+      z-index: 3;
+    }
+    .gadget-tick {
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 2px; height: 6px;
+      background: rgba(255, 255, 255, 0.55);
+      border-radius: 1px;
+      transform-origin: center 55px;
+      box-shadow: 0 0 3px rgba(180, 220, 255, 0.4);
+    }
+    .gadget-tick.major {
+      width: 3px; height: 9px;
+      background: rgba(255, 255, 255, 0.85);
+      box-shadow: 0 0 5px rgba(180, 220, 255, 0.7);
+    }
+
+    .gadget-grip {
+      position: absolute;
+      top: 4px; left: 50%;
+      transform: translateX(-50%);
+      width: 40px; height: 3px;
+      border-radius: 3px;
+      background: rgba(255, 255, 255, 0.18);
+      opacity: 0;
+      transition: opacity 0.2s;
+      pointer-events: none;
+    }
+    .desktop-gadget:hover .gadget-grip { opacity: 1; }
+
+    @media (max-width: 1200px) {
+      .desktop-gadget { width: 200px; top: 20px; right: 20px; padding: 14px 12px 12px 12px; }
+      .gadget-time { font-size: 2.6rem; }
+      .gadget-analog { width: 96px; height: 96px; }
+      .gadget-tick { transform-origin: center 44px; }
+    }
+    @media (max-width: 600px) {
+      .desktop-gadget { width: 170px; padding: 12px 10px 10px 10px; }
+      .gadget-time { font-size: 2.1rem; }
+      .gadget-analog { width: 80px; height: 80px; }
+      .gadget-tick { transform-origin: center 36px; }
+      .gadget-date { font-size: 0.72rem; }
+    }
+
     /* ---------- WINDOW BASE ---------- */
     .window, .window-price, .window-load {
       position: absolute;
@@ -68,7 +379,7 @@
     }
 
     .window { top: 20px; left: 20px; width: 580px; max-width: calc(100vw - 40px); }
-    .window-price { top: 20px; right: 20px; width: 580px; max-width: calc(100vw - 40px); z-index: 11; }
+    .window-price { top: 20px; right: 320px; width: 580px; max-width: calc(100vw - 340px); z-index: 11; }
     .window-load { top: 460px; left: 20px; width: 580px; max-width: calc(100vw - 40px); z-index: 12; }
 
     .window.minimized, .window-price.minimized, .window-load.minimized { display: none; }
@@ -82,6 +393,11 @@
     }
     .window.maximized .title-bar, .window-price.maximized .title-bar, .window-load.maximized .title-bar {
       border-radius: 0; cursor: default !important;
+    }
+
+    .window.snap-left, .window-price.snap-left, .window-load.snap-left,
+    .window.snap-right, .window-price.snap-right, .window-load.snap-right {
+      transition: top 0.15s ease, left 0.15s ease, width 0.15s ease, height 0.15s ease;
     }
 
     .title-bar {
@@ -413,14 +729,21 @@
       font-family: 'Segoe UI', Consolas, monospace;
       text-align: center;
     }
-    .price-table tbody td.action-cell { text-align: center; width: 32px; padding: 4px; }
-    .row-delete-btn {
-      background: #f5d5d5; border: 1px solid #c26b6b;
-      color: #8b2c2c; border-radius: 4px;
+    .price-table tbody td.action-cell { text-align: center; width: 60px; padding: 4px; }
+    .row-edit-btn, .row-delete-btn {
+      border-radius: 4px;
       width: 22px; height: 22px;
       display: inline-flex; align-items: center; justify-content: center;
       font-size: 0.75rem; font-weight: 700;
       cursor: pointer; transition: 0.1s; line-height: 1; padding: 0;
+      margin: 0 1px;
+    }
+    .row-edit-btn {
+      background: #d5e8f5; border: 1px solid #5b8bb5; color: #1d4a6b;
+    }
+    .row-edit-btn:hover { background: #a8c8e0; color: white; }
+    .row-delete-btn {
+      background: #f5d5d5; border: 1px solid #c26b6b; color: #8b2c2c;
     }
     .row-delete-btn:hover { background: #e8a5a5; color: white; }
     .table-container {
@@ -729,12 +1052,13 @@
       color: #e8f4ff; text-shadow: 0 1px 2px black;
       font-size: 0.68rem; line-height: 1.15;
       font-weight: 500; letter-spacing: 0.2px;
-      min-width: 70px; padding-left: 8px;
+      min-width: 100px; padding-left: 8px;
     }
     .clock .time {
-      font-weight: 700; font-size: 0.78rem;
+      font-weight: 700; font-size: 0.72rem;
       font-family: 'Segoe UI', Consolas, monospace;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.3px;
+      white-space: nowrap;
     }
     .clock .date { font-size: 0.62rem; color: #b8d4ec; }
 
@@ -839,6 +1163,7 @@
         left: auto !important; right: auto !important;
         margin: 0 auto 20px auto; max-width: 580px; width: 100%;
       }
+      .window-price { right: auto; }
       body { overflow-y: auto; padding: 20px 12px calc(var(--taskbar-height) + 20px) 12px; }
     }
     @media (max-width: 480px) {
@@ -852,8 +1177,33 @@
     }
   </style>
 </head>
-<body>
+<body class="not-connected">
   <div class="wallpaper-layer" id="wallpaperLayer"></div>
+
+  <!-- ================= BOOT / CONNECTING OVERLAY ================= -->
+  <div class="boot-overlay" id="bootOverlay">
+    <div class="boot-logo">📦</div>
+    <div class="boot-title">Packing Calculator</div>
+    <div class="boot-spinner"></div>
+    <div class="boot-progress"></div>
+    <div class="boot-status" id="bootStatus">Connecting to database…</div>
+  </div>
+
+  <!-- ================= DESKTOP CLOCK GADGET ================= -->
+  <div class="desktop-gadget" id="desktopGadget" title="Drag to move">
+    <div class="gadget-grip"></div>
+
+    <div class="gadget-analog" id="gadgetAnalog">
+      <div class="gadget-hand hour" id="gadgetHourHand"></div>
+      <div class="gadget-hand minute" id="gadgetMinuteHand"></div>
+      <div class="gadget-hand second" id="gadgetSecondHand"></div>
+      <div class="gadget-center-dot"></div>
+    </div>
+
+    <div class="gadget-time" id="gadgetTime">--:--</div>
+    <div class="gadget-date" id="gadgetDate">--/--/----</div>
+    <div class="gadget-day" id="gadgetDay">---</div>
+  </div>
 
   <!-- ================= LEFT WINDOW (Packing Calculator) ================= -->
   <div class="window" id="calcWindow">
@@ -865,13 +1215,12 @@
       <div class="caption-buttons">
         <div class="caption-btn minimize" data-minimize="calcWindow" title="Minimize">—</div>
         <div class="caption-btn maximize" data-maximize="calcWindow" title="Maximize">□</div>
-        <div class="caption-btn close" title="Close">✕</div>
+        <div class="caption-btn close" data-close="calcWindow" title="Close (remove from taskbar)">✕</div>
       </div>
     </div>
 
     <div class="window-content">
       <div class="aero-info">
-        <span>⚖️</span> Auto-calculates · Enter to next field · Last field saves &amp; resets
         <span class="badge" id="syncBadge">Connecting…</span>
       </div>
 
@@ -883,9 +1232,8 @@
         </div>
         <div class="tq-bags" id="totalBagsValue">0 bags</div>
       </div>
-
       <div class="fieldset">
-        <div class="fieldset-legend">📋 Product & bag setup</div>
+
         <div class="input-row">
           <div class="input-group">
             <label><span>⚖️</span> Weight per pc</label>
@@ -909,7 +1257,7 @@
       </div>
 
       <div class="fieldset">
-        <div class="fieldset-legend">🧺 Packing quantities</div>
+
         <div class="input-row">
           <div class="input-group">
             <label><span>🧺</span> Number of bags</label>
@@ -929,7 +1277,7 @@
       </div>
 
       <div class="result-panel" id="resultArea">
-        <div class="result-header"><span>📋</span> Packing summary (live)</div>
+        <div class="result-header"><span>📋</span> Packing summary</div>
         <div id="resultContent">
           <div class="empty-hint">
             📝 Enter values above to calculate
@@ -938,9 +1286,6 @@
         </div>
       </div>
 
-      <div class="footer-note">
-        ⚡ Windows 7 Aero · auto-calc · Enter → next field (last field saves &amp; resets)
-      </div>
     </div>
 
     <div class="loading-overlay" id="calcLoading"><div class="loading-spinner"></div></div>
@@ -957,7 +1302,7 @@
       <div class="caption-buttons">
         <div class="caption-btn minimize" data-minimize="priceWindow" title="Minimize">—</div>
         <div class="caption-btn maximize" data-maximize="priceWindow" title="Maximize">□</div>
-        <div class="caption-btn close" title="Close">✕</div>
+        <div class="caption-btn close" data-close="priceWindow" title="Close (remove from taskbar)">✕</div>
       </div>
     </div>
 
@@ -994,7 +1339,7 @@
               <th>Customer</th>
               <th>Pcs/Bag</th>
               <th>Price</th>
-              <th style="width:32px;"></th>
+              <th style="width:60px;"></th>
             </tr>
           </thead>
           <tbody id="priceTableBody">
@@ -1016,14 +1361,11 @@
       <div class="caption-buttons">
         <div class="caption-btn minimize" data-minimize="loadWindow" title="Minimize">—</div>
         <div class="caption-btn maximize" data-maximize="loadWindow" title="Maximize">□</div>
-        <div class="caption-btn close" title="Close">✕</div>
+        <div class="caption-btn close" data-close="loadWindow" title="Close (remove from taskbar)">✕</div>
       </div>
     </div>
 
     <div class="window-content">
-      <div class="aero-info">
-        <span>🚚</span> Calculate how many pieces &amp; bags from total kg
-        <span class="badge">kg → qty</span>
       </div>
 
       <div class="fieldset">
@@ -1064,8 +1406,6 @@
           </div>
         </div>
       </div>
-
-      <div class="footer-note">⚡ Windows 7 Aero · auto-calc · live breakdown</div>
     </div>
   </div>
 
@@ -1169,15 +1509,15 @@
 
     <div class="taskbar-divider"></div>
 
-    <div class="taskbar-item" id="taskbarCalc" data-restore="calcWindow">
+    <div class="taskbar-item" id="taskbarCalc" data-restore="calcWindow" style="display:none;">
       <span class="tb-icon">📦</span>
       <span class="tb-label">Packing Calculator</span>
     </div>
-    <div class="taskbar-item" id="taskbarPrice" data-restore="priceWindow">
+    <div class="taskbar-item" id="taskbarPrice" data-restore="priceWindow" style="display:none;">
       <span class="tb-icon">💰</span>
       <span class="tb-label">Products</span>
     </div>
-    <div class="taskbar-item" id="taskbarLoad" data-restore="loadWindow">
+    <div class="taskbar-item" id="taskbarLoad" data-restore="loadWindow" style="display:none;">
       <span class="tb-icon">🚚</span>
       <span class="tb-label">Load Calculator</span>
     </div>
@@ -1187,7 +1527,7 @@
       <span class="tray-icon" title="Network">🌐</span>
       <span class="tray-icon" title="Volume">🔊</span>
       <div class="clock">
-        <span class="time" id="clockTime">--:--:--</span>
+        <span class="time" id="clockTime">--:--:-- --</span>
         <span class="date" id="clockDate">--/--/----</span>
       </div>
     </div>
@@ -1206,11 +1546,43 @@
   </script>
 
   <script>
+    // ==================== BOOT OVERLAY CONTROL ====================
+    const bootOverlay = document.getElementById('bootOverlay');
+    const bootStatus = document.getElementById('bootStatus');
+
+    function setBootStatus(text, type = '') {
+      if (!bootStatus) return;
+      bootStatus.textContent = text;
+      bootStatus.className = 'boot-status' + (type ? ' ' + type : '');
+    }
+
+    window.addEventListener('error', (e) => {
+      if (document.body.classList.contains('not-connected')) {
+        setBootStatus('⚠️ Error loading — retrying…', 'error');
+      }
+    });
+
+    function revealDesktop() {
+      document.body.classList.remove('not-connected');
+      if (bootOverlay) {
+        setBootStatus('✅ Connected — loading workspace…', 'ok');
+        bootOverlay.classList.add('hidden');
+        setTimeout(() => { bootOverlay.style.display = 'none'; }, 600);
+      }
+    }
+
+    const bootTimeout = setTimeout(() => {
+      if (document.body.classList.contains('not-connected')) {
+        setBootStatus('⚠️ Database slow — loading anyway…', 'error');
+        revealDesktop();
+      }
+    }, 15000);
+
     window.addEventListener('supabase-ready', async () => {
       const supabase = window.supabase;
       const TASKBAR_HEIGHT = 40;
 
-      // ==================== WALLPAPER SYSTEM (DB-BACKED) ====================
+      // ==================== WALLPAPER SYSTEM ====================
       const DEFAULT_WALLPAPER = 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1920&q=80';
       const WALLPAPER_SETTING_KEY = 'wallpaper';
 
@@ -1367,14 +1739,98 @@
       });
 
       document.body.addEventListener('contextmenu', (e) => {
-        if (e.target.closest('.window, .window-price, .window-load, .startbar, .start-menu, .modal-overlay')) return;
+        if (e.target.closest('.window, .window-price, .window-load, .startbar, .start-menu, .modal-overlay, .desktop-gadget')) return;
         e.preventDefault();
         openWallpaperModal();
       });
 
-      // ==================== DRAGGABLE ====================
+      // ==================== DRAGGABLE + AERO SNAP ====================
+      let snapPreview = null;
+
+      function createSnapPreview() {
+        if (!snapPreview) {
+          snapPreview = document.createElement('div');
+          snapPreview.style.cssText = `
+            position: fixed;
+            z-index: 999999;
+            pointer-events: none;
+            background: rgba(100, 180, 255, 0.35);
+            border: 2px solid rgba(120, 200, 255, 0.9);
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(100, 180, 255, 0.5), inset 0 0 30px rgba(150, 220, 255, 0.3);
+            backdrop-filter: blur(4px);
+            transition: all 0.12s ease;
+            display: none;
+          `;
+          document.body.appendChild(snapPreview);
+        }
+        return snapPreview;
+      }
+
+      function showSnapPreview(side) {
+        const preview = createSnapPreview();
+        const halfW = Math.floor(window.innerWidth / 2);
+        const taskbarH = TASKBAR_HEIGHT;
+        const totalH = window.innerHeight - taskbarH;
+
+        preview.style.display = 'block';
+        preview.style.top = '0px';
+        preview.style.height = totalH + 'px';
+
+        if (side === 'left') {
+          preview.style.left = '0px';
+          preview.style.width = halfW + 'px';
+        } else if (side === 'right') {
+          preview.style.left = halfW + 'px';
+          preview.style.width = (window.innerWidth - halfW) + 'px';
+        }
+      }
+
+      function hideSnapPreview() {
+        if (snapPreview) {
+          snapPreview.style.display = 'none';
+        }
+      }
+
+      function snapWindowToSide(winEl, side) {
+        const halfW = Math.floor(window.innerWidth / 2);
+        const totalH = window.innerHeight - TASKBAR_HEIGHT;
+
+        const stateKey = winEl.id;
+        if (windowState[stateKey] && !windowState[stateKey].origRect) {
+          const rect = winEl.getBoundingClientRect();
+          windowState[stateKey].origRect = {
+            top: rect.top + 'px', left: rect.left + 'px',
+            right: 'auto', width: rect.width + 'px', height: rect.height + 'px'
+          };
+        }
+
+        if (winEl.classList.contains('maximized')) {
+          winEl.classList.remove('maximized');
+          windowState[stateKey].maximized = false;
+          const maxBtn = winEl.querySelector('.caption-btn.maximize');
+          if (maxBtn) { maxBtn.textContent = '□'; maxBtn.title = 'Maximize'; }
+        }
+
+        winEl.classList.add('snap-' + side);
+        winEl.style.top = '0px';
+        winEl.style.left = (side === 'left' ? '0' : halfW) + 'px';
+        winEl.style.width = halfW + 'px';
+        winEl.style.height = totalH + 'px';
+        winEl.style.right = 'auto';
+        winEl.style.maxWidth = 'none';
+        winEl.style.maxHeight = 'none';
+
+        bringToFront(winEl);
+      }
+
+      function unsnapWindow(winEl) {
+        winEl.classList.remove('snap-left', 'snap-right');
+      }
+
       function makeDraggable(windowEl, handleEl) {
         let isDragging = false, startX = 0, startY = 0, startLeft = 0, startTop = 0;
+        let wasSnapped = false;
         windowEl.style.position = 'absolute';
 
         handleEl.addEventListener('mousedown', (e) => {
@@ -1383,6 +1839,8 @@
           if (windowEl.classList.contains('maximized')) return;
           e.preventDefault();
           isDragging = true;
+          wasSnapped = windowEl.classList.contains('snap-left') || windowEl.classList.contains('snap-right');
+
           const rect = windowEl.getBoundingClientRect();
           startLeft = rect.left; startTop = rect.top;
           windowEl.style.left = startLeft + 'px';
@@ -1400,6 +1858,27 @@
           if (!isDragging) return;
           const dx = e.clientX - startX, dy = e.clientY - startY;
           let nl = startLeft + dx, nt = startTop + dy;
+
+          if (wasSnapped && (Math.abs(dx) > 20 || Math.abs(dy) > 20)) {
+            unsnapWindow(windowEl);
+            wasSnapped = false;
+            const rect = windowEl.getBoundingClientRect();
+            startLeft = rect.left; startTop = rect.top;
+            startX = e.clientX; startY = e.clientY;
+            nl = startLeft; nt = startTop;
+          }
+
+          const snapEdge = 15;
+          const screenW = window.innerWidth;
+
+          if (e.clientX <= snapEdge && !windowEl.classList.contains('maximized')) {
+            showSnapPreview('left');
+          } else if (e.clientX >= screenW - snapEdge && !windowEl.classList.contains('maximized')) {
+            showSnapPreview('right');
+          } else {
+            hideSnapPreview();
+          }
+
           if (nt < 5) nt = 5;
           const maxTop = window.innerHeight - TASKBAR_HEIGHT - windowEl.offsetHeight;
           if (nt > maxTop) nt = maxTop;
@@ -1410,11 +1889,24 @@
           windowEl.style.top = nt + 'px';
         }
 
-        function onMouseUp() {
+        function onMouseUp(e) {
           isDragging = false;
           document.body.style.cursor = '';
           document.removeEventListener('mousemove', onMouseMove);
           document.removeEventListener('mouseup', onMouseUp);
+
+          const snapEdge = 15;
+          const screenW = window.innerWidth;
+
+          if (e.clientX <= snapEdge && !windowEl.classList.contains('maximized')) {
+            snapWindowToSide(windowEl, 'left');
+            showToast('📐 Snapped left');
+          } else if (e.clientX >= screenW - snapEdge && !windowEl.classList.contains('maximized')) {
+            snapWindowToSide(windowEl, 'right');
+            showToast('📐 Snapped right');
+          }
+
+          hideSnapPreview();
         }
 
         handleEl.addEventListener('touchstart', (e) => {
@@ -1424,6 +1916,8 @@
           const touch = e.touches[0];
           e.preventDefault();
           isDragging = true;
+          wasSnapped = windowEl.classList.contains('snap-left') || windowEl.classList.contains('snap-right');
+
           const rect = windowEl.getBoundingClientRect();
           startLeft = rect.left; startTop = rect.top;
           windowEl.style.left = startLeft + 'px';
@@ -1440,6 +1934,26 @@
           const touch = e.touches[0];
           const dx = touch.clientX - startX, dy = touch.clientY - startY;
           let nl = startLeft + dx, nt = startTop + dy;
+
+          if (wasSnapped && (Math.abs(dx) > 20 || Math.abs(dy) > 20)) {
+            unsnapWindow(windowEl);
+            wasSnapped = false;
+            const rect = windowEl.getBoundingClientRect();
+            startLeft = rect.left; startTop = rect.top;
+            startX = touch.clientX; startY = touch.clientY;
+            nl = startLeft; nt = startTop;
+          }
+
+          const snapEdge = 15;
+          const screenW = window.innerWidth;
+          if (touch.clientX <= snapEdge && !windowEl.classList.contains('maximized')) {
+            showSnapPreview('left');
+          } else if (touch.clientX >= screenW - snapEdge && !windowEl.classList.contains('maximized')) {
+            showSnapPreview('right');
+          } else {
+            hideSnapPreview();
+          }
+
           if (nt < 5) nt = 5;
           const maxTop = window.innerHeight - TASKBAR_HEIGHT - windowEl.offsetHeight;
           if (nt > maxTop) nt = maxTop;
@@ -1450,15 +1964,140 @@
           windowEl.style.top = nt + 'px';
         }
 
-        function onTouchEnd() {
+        function onTouchEnd(e) {
           isDragging = false;
           document.removeEventListener('touchmove', onTouchMove);
           document.removeEventListener('touchend', onTouchEnd);
+          hideSnapPreview();
+
+          const touch = e.changedTouches[0];
+          if (!touch) return;
+          const snapEdge = 15;
+          const screenW = window.innerWidth;
+
+          if (touch.clientX <= snapEdge && !windowEl.classList.contains('maximized')) {
+            snapWindowToSide(windowEl, 'left');
+            showToast('📐 Snapped left');
+          } else if (touch.clientX >= screenW - snapEdge && !windowEl.classList.contains('maximized')) {
+            snapWindowToSide(windowEl, 'right');
+            showToast('📐 Snapped right');
+          }
         }
       }
 
       let highestZ = 10;
       function bringToFront(el) { highestZ++; el.style.zIndex = highestZ; }
+
+      // ==================== DESKTOP GADGET CLOCK ====================
+      const desktopGadget = document.getElementById('desktopGadget');
+      const gadgetAnalog = document.getElementById('gadgetAnalog');
+      const gadgetHourHand = document.getElementById('gadgetHourHand');
+      const gadgetMinuteHand = document.getElementById('gadgetMinuteHand');
+      const gadgetSecondHand = document.getElementById('gadgetSecondHand');
+      const gadgetTime = document.getElementById('gadgetTime');
+      const gadgetDate = document.getElementById('gadgetDate');
+      const gadgetDay = document.getElementById('gadgetDay');
+
+      (function generateTicks() {
+        for (let i = 0; i < 12; i++) {
+          const tick = document.createElement('div');
+          tick.className = 'gadget-tick' + (i % 3 === 0 ? ' major' : '');
+          tick.style.transform = `translate(-50%, -50%) rotate(${i * 30}deg) translateY(-54px)`;
+          gadgetAnalog.appendChild(tick);
+        }
+      })();
+
+      function updateGadgetClock() {
+        const now = new Date();
+        let h = now.getHours();
+        const ampm = h >= 12 ? 'PM' : 'AM';
+        h = h % 12; h = h ? h : 12;
+        const m = now.getMinutes();
+        const s = now.getSeconds();
+
+        const pad = (n) => String(n).padStart(2, '0');
+        gadgetTime.innerHTML = `${pad(h)}:${pad(m)}<span class="seconds">:${pad(s)}</span><span class="ampm">${ampm}</span>`;
+        gadgetDate.textContent = `${pad(now.getDate())}/${pad(now.getMonth() + 1)}/${now.getFullYear()}`;
+        const dayNames = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
+        gadgetDay.textContent = dayNames[now.getDay()];
+
+        const secDeg = s * 6;
+        const minDeg = m * 6 + s * 0.1;
+        const hourDeg = (h % 12) * 30 + m * 0.5;
+
+        gadgetSecondHand.style.transform = `rotate(${secDeg}deg)`;
+        gadgetMinuteHand.style.transform = `rotate(${minDeg}deg)`;
+        gadgetHourHand.style.transform = `rotate(${hourDeg}deg)`;
+      }
+      updateGadgetClock();
+      setInterval(updateGadgetClock, 1000);
+
+      (function makeGadgetDraggable() {
+        let isDragging = false, startX = 0, startY = 0, startLeft = 0, startTop = 0;
+
+        function startDrag(clientX, clientY) {
+          isDragging = true;
+          const rect = desktopGadget.getBoundingClientRect();
+          startLeft = rect.left; startTop = rect.top;
+          desktopGadget.style.left = startLeft + 'px';
+          desktopGadget.style.top = startTop + 'px';
+          desktopGadget.style.right = 'auto';
+          startX = clientX; startY = clientY;
+          desktopGadget.classList.add('dragging');
+        }
+
+        function moveDrag(clientX, clientY) {
+          if (!isDragging) return;
+          const dx = clientX - startX, dy = clientY - startY;
+          let nl = startLeft + dx, nt = startTop + dy;
+          const w = desktopGadget.offsetWidth, h = desktopGadget.offsetHeight;
+          if (nl < 5) nl = 5;
+          if (nl > window.innerWidth - w - 5) nl = window.innerWidth - w - 5;
+          if (nt < 5) nt = 5;
+          if (nt > window.innerHeight - TASKBAR_HEIGHT - h - 5) nt = window.innerHeight - TASKBAR_HEIGHT - h - 5;
+          desktopGadget.style.left = nl + 'px';
+          desktopGadget.style.top = nt + 'px';
+        }
+
+        function endDrag() {
+          isDragging = false;
+          desktopGadget.classList.remove('dragging');
+        }
+
+        desktopGadget.addEventListener('mousedown', (e) => {
+          if (e.button !== 0) return;
+          e.preventDefault();
+          startDrag(e.clientX, e.clientY);
+          document.addEventListener('mousemove', onMouseMove);
+          document.addEventListener('mouseup', onMouseUp);
+        });
+
+        function onMouseMove(e) { moveDrag(e.clientX, e.clientY); }
+        function onMouseUp() {
+          endDrag();
+          document.removeEventListener('mousemove', onMouseMove);
+          document.removeEventListener('mouseup', onMouseUp);
+        }
+
+        desktopGadget.addEventListener('touchstart', (e) => {
+          const touch = e.touches[0];
+          startDrag(touch.clientX, touch.clientY);
+          document.addEventListener('touchmove', onTouchMove, { passive: false });
+          document.addEventListener('touchend', onTouchEnd);
+        }, { passive: false });
+
+        function onTouchMove(e) {
+          if (!isDragging) return;
+          e.preventDefault();
+          const touch = e.touches[0];
+          moveDrag(touch.clientX, touch.clientY);
+        }
+        function onTouchEnd() {
+          endDrag();
+          document.removeEventListener('touchmove', onTouchMove);
+          document.removeEventListener('touchend', onTouchEnd);
+        }
+      })();
 
       // ==================== ELEMENTS ====================
       const weightPerPcInput = document.getElementById('weightPerPc');
@@ -1591,17 +2230,19 @@
         }[c]));
       }
 
-      // ==================== CLOCK (24-HOUR FORMAT) ====================
+      // ==================== CLOCK ====================
       function updateClock() {
         const now = new Date();
-        // 24-hour format with seconds
-        const h = String(now.getHours()).padStart(2, '0');
+        let h = now.getHours();
+        const ampm = h >= 12 ? 'PM' : 'AM';
+        h = h % 12;
+        h = h ? h : 12;
         const m = String(now.getMinutes()).padStart(2, '0');
         const s = String(now.getSeconds()).padStart(2, '0');
         const d = String(now.getDate()).padStart(2, '0');
         const mo = String(now.getMonth() + 1).padStart(2, '0');
         const y = now.getFullYear();
-        document.getElementById('clockTime').textContent = `${h}:${m}:${s}`;
+        document.getElementById('clockTime').textContent = `${String(h).padStart(2, '0')}:${m}:${s} ${ampm}`;
         document.getElementById('clockDate').textContent = `${d}/${mo}/${y}`;
       }
       updateClock();
@@ -1661,22 +2302,41 @@
         showToast('🗗 All windows restored');
       });
 
-      // ==================== MINIMIZE / MAXIMIZE ====================
+      // ==================== MINIMIZE / MAXIMIZE / CLOSE ====================
       function updateTaskbar() {
         const tbCalc = document.getElementById('taskbarCalc');
         const tbPrice = document.getElementById('taskbarPrice');
         const tbLoad = document.getElementById('taskbarLoad');
         [['calcWindow', tbCalc], ['priceWindow', tbPrice], ['loadWindow', tbLoad]].forEach(([id, tb]) => {
           const state = windowState[id];
-          tb.classList.toggle('active', state.minimized);
-          tb.classList.toggle('maximized', state.maximized);
+          // Only update visual state if the taskbar item is visible
+          if (tb.style.display !== 'none') {
+            tb.classList.toggle('active', state.minimized);
+            tb.classList.toggle('maximized', state.maximized);
+          }
         });
+      }
+
+      function showTaskbarItem(winId) {
+        const taskbarItem = document.querySelector(`.taskbar-item[data-restore="${winId}"]`);
+        if (taskbarItem) {
+          taskbarItem.style.display = 'flex';
+        }
+      }
+
+      function hideTaskbarItem(winId) {
+        const taskbarItem = document.querySelector(`.taskbar-item[data-restore="${winId}"]`);
+        if (taskbarItem) {
+          taskbarItem.style.display = 'none';
+        }
       }
 
       function restoreWindowFromTaskbar(winId) {
         const winEl = document.getElementById(winId);
         if (!winEl) return;
         const state = windowState[winId];
+        // Ensure the taskbar item is visible when the window is shown
+        showTaskbarItem(winId);
         if (state.minimized) {
           winEl.classList.remove('minimized');
           state.minimized = false;
@@ -1687,6 +2347,7 @@
         updateTaskbar();
       }
 
+      // Minimize button: hide window, keep taskbar item
       document.querySelectorAll('.caption-btn.minimize').forEach(btn => {
         btn.addEventListener('click', (e) => {
           e.stopPropagation();
@@ -1697,10 +2358,14 @@
           if (windowState[winId].maximized) restoreFromMaximize(winId);
           winEl.classList.add('minimized');
           windowState[winId].minimized = true;
+          // Taskbar item remains visible
+          showTaskbarItem(winId);
           updateTaskbar();
+          showToast('🗕 Window minimized');
         });
       });
 
+      // Maximize button
       document.querySelectorAll('.caption-btn.maximize').forEach(btn => {
         btn.addEventListener('click', (e) => {
           e.stopPropagation();
@@ -1715,6 +2380,25 @@
         });
       });
 
+      // Close button: hide window AND remove taskbar item
+      document.querySelectorAll('.caption-btn.close[data-close]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const winId = btn.dataset.close;
+          if (!winId) return;
+          const winEl = document.getElementById(winId);
+          if (!winEl) return;
+          if (windowState[winId].maximized) restoreFromMaximize(winId);
+          // Close = fully remove from screen AND from taskbar
+          winEl.classList.add('minimized');
+          windowState[winId].minimized = true;
+          // Hide taskbar item
+          hideTaskbarItem(winId);
+          updateTaskbar();
+          showToast('✕ Window closed & removed from taskbar');
+        });
+      });
+
       function maximizeWindow(winId, winEl) {
         const state = windowState[winId];
         if (!state.origRect) {
@@ -1724,12 +2408,15 @@
             right: 'auto', width: rect.width + 'px', height: rect.height + 'px'
           };
         }
+        winEl.classList.remove('snap-left', 'snap-right');
         winEl.classList.remove('minimized');
         state.minimized = false;
         winEl.classList.add('maximized');
         state.maximized = true;
         const maxBtn = winEl.querySelector('.caption-btn.maximize');
         if (maxBtn) { maxBtn.textContent = '❐'; maxBtn.title = 'Restore'; }
+        // Show taskbar item when maximizing
+        showTaskbarItem(winId);
         bringToFront(winEl);
       }
 
@@ -1738,12 +2425,15 @@
         const state = windowState[winId];
         winEl.classList.remove('maximized');
         state.maximized = false;
+        winEl.classList.remove('snap-left', 'snap-right');
         if (state.origRect) {
           winEl.style.top = state.origRect.top;
           winEl.style.left = state.origRect.left;
           winEl.style.right = state.origRect.right;
           winEl.style.width = state.origRect.width;
           winEl.style.height = state.origRect.height;
+          winEl.style.maxWidth = '';
+          winEl.style.maxHeight = '';
         }
         const maxBtn = winEl.querySelector('.caption-btn.maximize');
         if (maxBtn) { maxBtn.textContent = '□'; maxBtn.title = 'Maximize'; }
@@ -1845,6 +2535,29 @@
         }
       }
 
+      async function updateProduct(id, updates) {
+        setSyncing();
+        try {
+          const { data, error } = await supabase
+            .from('products')
+            .update({
+              name: updates.name,
+              customer: updates.customer,
+              pcs_per_bag: updates.pcsPerBag,
+              price: updates.price
+            })
+            .eq('id', id)
+            .select().single();
+          if (error) throw error;
+          setOnlineStatus(true);
+          return { id: data.id, name: data.name, customer: data.customer, pcsPerBag: data.pcs_per_bag, price: Number(data.price) };
+        } catch (err) {
+          console.error('Update product error:', err);
+          setOnlineStatus(false);
+          throw err;
+        }
+      }
+
       async function deleteProduct(id) {
         setSyncing();
         try {
@@ -1923,7 +2636,10 @@
             <td class="customer-cell">👤 ${escapeHtml(p.customer)}</td>
             <td class="pcs-cell">${p.pcsPerBag}</td>
             <td class="price-cell">${formatPrice(p.price)}</td>
-            <td class="action-cell"><button class="row-delete-btn" data-delete-id="${p.id}" title="Delete">✕</button></td>
+            <td class="action-cell">
+              <button class="row-edit-btn" data-edit-id="${p.id}" title="Edit">✎</button>
+              <button class="row-delete-btn" data-delete-id="${p.id}" title="Delete">✕</button>
+            </td>
           </tr>`;
         });
         priceTableBody.innerHTML = html;
@@ -2226,8 +2942,76 @@
         });
       });
 
+      // ==================== EDIT PRODUCT ====================
+      async function openEditModal(product) {
+        const uniqueCustomers = [...new Set(products.map(p => p.customer))].sort();
+        let datalistOptions = '';
+        uniqueCustomers.forEach(c => { datalistOptions += `<option value="${escapeHtml(c)}">`; });
+        const html = `
+          <div class="modal-field"><label>📦 Product Name</label><div class="input-wrap"><input type="text" id="modalEditName" value="${escapeHtml(product.name)}" placeholder="Enter product name"></div></div>
+          <div class="modal-field"><label>👤 Customer Name</label><div class="input-wrap"><input type="text" id="modalEditCustomer" list="editCustomerList" value="${escapeHtml(product.customer)}" placeholder="Enter customer name"></div><datalist id="editCustomerList">${datalistOptions}</datalist></div>
+          <div class="modal-field"><label>🛍️ Pieces per Bag</label><div class="input-wrap"><input type="number" id="modalEditPcs" min="1" step="1" value="${product.pcsPerBag}" placeholder="e.g. 40"></div></div>
+          <div class="modal-field"><label>💰 Price (₹)</label><div class="input-wrap"><input type="number" id="modalEditPrice" min="0" step="0.01" value="${product.price}" placeholder="e.g. 25.00"></div></div>
+          <div class="modal-actions">
+            <button class="aero-btn" id="modalCancelBtn" type="button">Cancel</button>
+            <button class="aero-btn primary" id="modalSaveBtn" type="button">💾 Update Product</button>
+          </div>`;
+        openModal('✎ Edit Product', html, async (content) => {
+          const name = content.querySelector('#modalEditName').value.trim();
+          const customer = content.querySelector('#modalEditCustomer').value.trim();
+          const pcs = content.querySelector('#modalEditPcs').value;
+          const price = content.querySelector('#modalEditPrice').value;
+          if (name === '') { showToast('⚠️ Please enter a product name', 'warning'); return false; }
+          if (customer === '') { showToast('⚠️ Please enter a customer name', 'warning'); return false; }
+          if (!pcs || isNaN(pcs) || parseInt(pcs) <= 0) { showToast('⚠️ Enter a valid positive number for pcs per bag', 'warning'); return false; }
+          if (!price || isNaN(price) || parseFloat(price) < 0) { showToast('⚠️ Enter a valid price', 'warning'); return false; }
+          if (products.some(p => p.id !== product.id && p.name.toLowerCase() === name.toLowerCase() && p.customer.toLowerCase() === customer.toLowerCase())) {
+            showToast(`⚠️ "${name}" already exists for ${customer}`, 'warning'); return false;
+          }
+          const saveBtn = content.querySelector('#modalSaveBtn');
+          saveBtn.disabled = true; saveBtn.textContent = '⏳ Updating…';
+          try {
+            const updated = await updateProduct(product.id, {
+              name, customer,
+              pcsPerBag: parseInt(pcs),
+              price: parseFloat(price)
+            });
+            const idx = products.findIndex(p => p.id === product.id);
+            if (idx !== -1) products[idx] = updated;
+            filteredProducts = [...products];
+            if (selectedProductId === product.id) {
+              selectedProductName = updated.name;
+              selectedCustomerName = updated.customer;
+            }
+            renderCustomerFilter();
+            applyFilters();
+            if (selectedProductId === product.id) {
+              pcsPerBagInput.value = updated.pcsPerBag;
+              fullRecalc();
+            }
+            showToast(`✅ "${name}" updated successfully`, 'success');
+            return true;
+          } catch (err) {
+            showToast(`❌ Update failed: ${err.message || 'Check DB'}`, 'error');
+            saveBtn.disabled = false; saveBtn.textContent = '💾 Update Product';
+            return false;
+          }
+        });
+      }
+
       // ==================== TABLE CLICKS ====================
       priceTableBody.addEventListener('click', async (e) => {
+        const editBtn = e.target.closest('.row-edit-btn');
+        if (editBtn) {
+          e.stopPropagation();
+          const id = editBtn.dataset.editId;
+          if (!id) return;
+          const product = products.find(p => p.id === id);
+          if (!product) return;
+          await openEditModal(product);
+          return;
+        }
+
         const delBtn = e.target.closest('.row-delete-btn');
         if (delBtn) {
           e.stopPropagation();
@@ -2254,6 +3038,7 @@
           finally { hideLoading('price'); }
           return;
         }
+
         const row = e.target.closest('tr');
         if (!row || !row.dataset.id) return;
         const product = products.find(p => p.id === row.dataset.id);
@@ -2296,6 +3081,21 @@
           const win = document.getElementById(id);
           if (!win) return;
           if (win.classList.contains('minimized') || win.classList.contains('maximized')) return;
+
+          if (win.classList.contains('snap-left') || win.classList.contains('snap-right')) {
+            const halfW = Math.floor(window.innerWidth / 2);
+            const totalH = window.innerHeight - TASKBAR_HEIGHT;
+            if (win.classList.contains('snap-left')) {
+              win.style.left = '0px';
+              win.style.width = halfW + 'px';
+            } else {
+              win.style.left = halfW + 'px';
+              win.style.width = (window.innerWidth - halfW) + 'px';
+            }
+            win.style.height = totalH + 'px';
+            return;
+          }
+
           const rect = win.getBoundingClientRect();
           if (rect.right > window.innerWidth) win.style.left = Math.max(5, window.innerWidth - win.offsetWidth - 5) + 'px';
           if (rect.left < 5) win.style.left = '5px';
@@ -2307,6 +3107,11 @@
             windowState[id].origRect = { top: newRect.top + 'px', left: newRect.left + 'px', right: 'auto', width: newRect.width + 'px', height: newRect.height + 'px' };
           }
         });
+        if (desktopGadget) {
+          const rect = desktopGadget.getBoundingClientRect();
+          if (rect.right > window.innerWidth) desktopGadget.style.left = Math.max(5, window.innerWidth - rect.width - 5) + 'px';
+          if (rect.bottom > window.innerHeight - TASKBAR_HEIGHT) desktopGadget.style.top = Math.max(5, window.innerHeight - TASKBAR_HEIGHT - rect.height - 5) + 'px';
+        }
       });
 
       // ==================== INIT ====================
@@ -2314,7 +3119,21 @@
       resetAllFields();
       calculateLoad();
       await loadProducts();
-      weightPerPcInput.focus();
+
+      // At startup: hide windows from screen but KEEP taskbar items HIDDEN (as if closed)
+      ['calcWindow', 'priceWindow', 'loadWindow'].forEach(id => {
+        const winEl = document.getElementById(id);
+        if (winEl) {
+          winEl.classList.add('minimized');
+          windowState[id].minimized = true;
+        }
+        // At startup, taskbar items start hidden (as if windows are "closed")
+        hideTaskbarItem(id);
+      });
+      updateTaskbar();
+
+      clearTimeout(bootTimeout);
+      revealDesktop();
     });
   </script>
 </body>
