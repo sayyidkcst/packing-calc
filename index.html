@@ -127,9 +127,11 @@
     @keyframes bootSpin { to { transform: rotate(360deg); } }
 
     body.not-connected .desktop-gadget,
+    body.not-connected .desktop-calendar,
     body.not-connected .window,
     body.not-connected .window-price,
     body.not-connected .window-load,
+    body.not-connected .window-cash,
     body.not-connected .startbar,
     body.not-connected .start-menu {
       opacity: 0 !important;
@@ -137,8 +139,8 @@
       visibility: hidden !important;
     }
 
-    .desktop-gadget, .startbar { transition: opacity 0.6s ease; }
-    .window, .window-price, .window-load { transition: opacity 0.2s, transform 0.2s, top 0.15s, left 0.15s, width 0.15s, height 0.15s; }
+    .desktop-gadget, .desktop-calendar, .startbar { transition: opacity 0.6s ease; }
+    .window, .window-price, .window-load, .window-cash { transition: opacity 0.2s, transform 0.2s, top 0.15s, left 0.15s, width 0.15s, height 0.15s; }
 
     /* ---------- DESKTOP CLOCK GADGET ---------- */
     .desktop-gadget {
@@ -451,7 +453,7 @@
     }
 
     /* ---------- WINDOW BASE ---------- */
-    .window, .window-price, .window-load {
+    .window, .window-price, .window-load, .window-cash {
       position: absolute;
       background: rgba(220, 235, 250, 0.78);
       backdrop-filter: blur(12px);
@@ -476,22 +478,23 @@
     .window { top: 20px; left: 20px; width: 500px; max-width: calc(100vw - 40px); }
     .window-price { top: 20px; right: 240px; width: 540px; max-width: calc(100vw - 260px); z-index: 11; }
     .window-load { top: 400px; left: 20px; width: 500px; max-width: calc(100vw - 40px); z-index: 12; }
+    .window-cash { top: 120px; left: 540px; width: 520px; max-width: calc(100vw - 560px); z-index: 13; }
 
-    .window.minimized, .window-price.minimized, .window-load.minimized { display: none; }
+    .window.minimized, .window-price.minimized, .window-load.minimized, .window-cash.minimized { display: none; }
 
-    .window.maximized, .window-price.maximized, .window-load.maximized {
+    .window.maximized, .window-price.maximized, .window-load.maximized, .window-cash.maximized {
       top: 0 !important; left: 0 !important; right: 0 !important;
       width: 100vw !important; max-width: 100vw !important;
       height: calc(100vh - var(--taskbar-height)) !important;
       max-height: calc(100vh - var(--taskbar-height)) !important;
       border-radius: 0; border-top: none; border-left: none; border-right: none; border-bottom: none;
     }
-    .window.maximized .title-bar, .window-price.maximized .title-bar, .window-load.maximized .title-bar {
+    .window.maximized .title-bar, .window-price.maximized .title-bar, .window-load.maximized .title-bar, .window-cash.maximized .title-bar {
       border-radius: 0; cursor: default !important;
     }
 
-    .window.snap-left, .window-price.snap-left, .window-load.snap-left,
-    .window.snap-right, .window-price.snap-right, .window-load.snap-right {
+    .window.snap-left, .window-price.snap-left, .window-load.snap-left, .window-cash.snap-left,
+    .window.snap-right, .window-price.snap-right, .window-load.snap-right, .window-cash.snap-right {
       transition: top 0.15s ease, left 0.15s ease, width 0.15s ease, height 0.15s ease;
     }
 
@@ -995,6 +998,15 @@
     .aero-btn.danger:hover {
       background: linear-gradient(180deg, #e69b9b 0%, #c56565 45%, #9b3e3e 100%);
     }
+    .aero-btn.success {
+      background: linear-gradient(180deg, #5cb85c 0%, #3d8b3d 45%, #2a6b2a 100%);
+      color: white; border-color: #1e4d1e;
+      text-shadow: 0 1px 1px #0a2a0a;
+      box-shadow: inset 0 1px 0 #a0e8a0, 0 3px 8px #00000040;
+    }
+    .aero-btn.success:hover {
+      background: linear-gradient(180deg, #6fc96f 0%, #4a9e4a 45%, #357a35 100%);
+    }
 
     /* ---------- RESET BUTTON ROW ---------- */
     .calc-actions-row {
@@ -1242,7 +1254,6 @@
       to { transform: translateY(0); opacity: 1; }
     }
 
-    /* User profile header */
     .start-user-header {
       display: flex;
       align-items: center;
@@ -1471,8 +1482,196 @@
     .sync-badge-mini.saved { background: #1e6b3a; }
     .sync-badge-mini.error { background: #8b2c2c; }
 
+    /* ========== CASH COLLECTION SPECIFIC ========== */
+    .cash-section {
+      background: rgba(235, 245, 255, 0.6);
+      border: 1px solid #8eb0ce; border-radius: 8px;
+      padding: 12px 10px 10px 10px; margin-bottom: 10px;
+      box-shadow: inset 0 1px 6px rgba(255, 255, 255, 0.9), 0 2px 4px rgba(0, 0, 0, 0.08);
+      position: relative;
+    }
+    .cash-section-legend {
+      font-weight: 600; font-size: 0.72rem; color: #1f4462;
+      padding: 0 10px;
+      background: linear-gradient(180deg, #f0f8ff, #d6e7f5);
+      border-radius: 20px; border: 1px solid #9db9d6;
+      text-shadow: 0 1px 0 white;
+      margin-left: 8px; display: inline-block;
+      box-shadow: 0 1px 0 white;
+      position: relative; top: -20px; margin-bottom: -18px;
+    }
+
+    .cash-top-row {
+      display: flex;
+      gap: 8px;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+    .cash-top-row .input-group {
+      flex: 1 1 140px;
+      min-width: 120px;
+      max-width: none;
+    }
+    .cash-top-row .input-group label {
+      font-size: 0.68rem;
+    }
+
+    .currency-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: 0.76rem;
+      background: white;
+      border: 1px solid #9ab9d6;
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow: inset 0 1px 4px #ffffff, 0 2px 4px rgba(0, 0, 0, 0.08);
+      margin-top: 6px;
+    }
+    .currency-table thead th {
+      background: linear-gradient(180deg, #e3eff9 0%, #c3d9ed 100%);
+      color: #10344b;
+      font-weight: 700;
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      padding: 7px 8px;
+      text-align: left;
+      border-bottom: 1px solid #8eb0ce;
+      text-shadow: 0 1px 0 white;
+    }
+    .currency-table thead th:nth-child(2),
+    .currency-table thead th:nth-child(3) { text-align: center; }
+    .currency-table thead th:nth-child(4) { text-align: right; }
+    .currency-table tbody td {
+      padding: 5px 8px;
+      border-bottom: 1px solid #d5e3ef;
+      color: #1a3e5a;
+      vertical-align: middle;
+    }
+    .currency-table tbody tr:last-child td { border-bottom: none; }
+    .currency-table tbody tr:nth-child(even) { background: #f4faff; }
+    .currency-table tbody td.denom-cell {
+      font-weight: 700;
+      color: #0f3146;
+      font-family: 'Segoe UI', Consolas, monospace;
+      white-space: nowrap;
+    }
+    .currency-table tbody td.count-cell {
+      text-align: center;
+      width: 100px;
+    }
+    .currency-table tbody td.amount-cell {
+      text-align: right;
+      font-weight: 700;
+      color: #0f3146;
+      font-family: 'Segoe UI', Consolas, monospace;
+      white-space: nowrap;
+    }
+    .currency-table tbody td.count-cell input {
+      width: 80px;
+      border: 1px solid #7f9db9;
+      border-radius: 4px;
+      padding: 4px 6px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      text-align: center;
+      color: #102c3f;
+      font-family: 'Segoe UI', Consolas, monospace;
+      background: white;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+      outline: none;
+      transition: 0.1s;
+    }
+    .currency-table tbody td.count-cell input:focus {
+      border-color: #3c7bb0;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.1), 0 0 0 2px rgba(96, 173, 240, 0.4);
+    }
+    .currency-table tbody td.count-cell input::-webkit-outer-spin-button,
+    .currency-table tbody td.count-cell input::-webkit-inner-spin-button {
+      -webkit-appearance: none; margin: 0;
+    }
+    .currency-table tbody td.count-cell input[type="number"] { -moz-appearance: textfield; }
+
+    .cash-total-row {
+      background: linear-gradient(180deg, #d9e9fa 0%, #c3d9ed 100%) !important;
+      font-weight: 700;
+    }
+    .cash-total-row td {
+      border-top: 2px solid #7ea5c9 !important;
+      font-size: 0.78rem;
+    }
+
+    .cash-result {
+      background: linear-gradient(135deg, #1d4a6b 0%, #2a6088 100%);
+      border-radius: 10px;
+      padding: 14px 18px;
+      margin-top: 10px;
+      color: white;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.2), 0 4px 12px rgba(0,0,0,0.3);
+      text-align: center;
+    }
+    .cash-result .result-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      opacity: 0.85;
+      margin-bottom: 4px;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+    }
+    .cash-result .result-value {
+      font-size: 2rem;
+      font-weight: 800;
+      font-family: 'Segoe UI', Consolas, monospace;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.4);
+      letter-spacing: -0.01em;
+      line-height: 1.1;
+    }
+    .cash-result.positive {
+      background: linear-gradient(135deg, #1e6b3a 0%, #2d8b4e 100%);
+    }
+    .cash-result.negative {
+      background: linear-gradient(135deg, #8b2c2c 0%, #b83e3e 100%);
+    }
+    .cash-result .result-sub {
+      font-size: 0.68rem;
+      opacity: 0.85;
+      margin-top: 6px;
+      font-weight: 500;
+    }
+
+    .cash-breakdown {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      justify-content: center;
+      margin-top: 8px;
+    }
+    .cash-breakdown .bd-item {
+      background: rgba(255,255,255,0.15);
+      border-radius: 20px;
+      padding: 3px 10px;
+      font-size: 0.68rem;
+      font-weight: 600;
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+
+    .cash-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+    .cash-actions .aero-btn {
+      flex: 1 1 auto;
+      min-width: 100px;
+    }
+
     @media (max-width: 1200px) {
-      .window, .window-price, .window-load {
+      .window, .window-price, .window-load, .window-cash {
         position: relative; top: auto !important;
         left: auto !important; right: auto !important;
         margin: 0 auto 20px auto; max-width: 540px; width: 100%;
@@ -1493,6 +1692,7 @@
       .wallpaper-mini-window { width: 96vw; }
       .input-group { max-width: 100%; }
       .input-row-five .input-group { flex: 1 1 30%; width: auto; }
+      .cash-top-row .input-group { flex: 1 1 100%; }
     }
   </style>
 </head>
@@ -1748,6 +1948,86 @@
     </div>
   </div>
 
+  <!-- ================= CASH COLLECTION WINDOW ================= -->
+  <div class="window-cash" id="cashWindow">
+    <div class="title-bar" id="cashTitleBar">
+      <div class="title-text"><span>💵</span> Cash Collection</div>
+      <div class="caption-buttons">
+        <div class="caption-btn minimize" data-minimize="cashWindow" title="Minimize">—</div>
+        <div class="caption-btn maximize" data-maximize="cashWindow" title="Maximize">□</div>
+        <div class="caption-btn close" data-close="cashWindow" title="Close (remove from taskbar)">✕</div>
+      </div>
+    </div>
+
+    <div class="window-content">
+      <!-- AMOUNT SECTION -->
+      <div class="cash-section">
+        <div class="cash-section-legend">💰 Amount & Expenses</div>
+        <div class="cash-top-row">
+          <div class="input-group">
+            <label><span>💵</span> Total Amount (₹)</label>
+            <div class="input-wrap">
+              <input type="number" id="cashAmount" min="0" max="9999999" step="0.01" placeholder="0.00" tabindex="10">
+              <span class="unit">₹</span>
+            </div>
+          </div>
+          <div class="input-group">
+            <label><span>💸</span> Expense (₹)</label>
+            <div class="input-wrap">
+              <input type="number" id="cashExpense" min="0" max="9999999" step="0.01" placeholder="0.00" tabindex="11">
+              <span class="unit">₹</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CURRENCY DENOMINATIONS SECTION -->
+      <div class="cash-section">
+        <div class="cash-section-legend">🪙 Currency Denominations</div>
+        <table class="currency-table">
+          <thead>
+            <tr>
+              <th>Denomination</th>
+              <th style="text-align:center;">Count</th>
+              <th style="text-align:center;">×</th>
+              <th style="text-align:right;">Amount</th>
+            </tr>
+          </thead>
+          <tbody id="currencyTableBody">
+            <!-- Populated by JS -->
+          </tbody>
+          <tfoot>
+            <tr class="cash-total-row">
+              <td colspan="3" style="text-align:right;">Total Currency:</td>
+              <td class="amount-cell" id="currencyTotalDisplay">₹0.00</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <!-- RESULT SECTION -->
+      <div class="cash-result" id="cashResult">
+        <div class="result-label">Net Result (Amount − Currency − Expense)</div>
+        <div class="result-value" id="cashResultValue">₹0.00</div>
+        <div class="result-sub" id="cashResultSub">Enter values to calculate</div>
+        <div class="cash-breakdown" id="cashBreakdown"></div>
+      </div>
+
+      <!-- ACTIONS -->
+      <div class="cash-actions">
+        <button class="aero-btn" id="cashResetBtn" type="button">
+          <span>🔄</span> Reset
+        </button>
+        <button class="aero-btn" id="cashClearCountsBtn" type="button">
+          <span>🧹</span> Clear Counts
+        </button>
+        <button class="aero-btn success" id="cashSaveBtn" type="button">
+          <span>💾</span> Save Record
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- ================= ADD PRODUCT MODAL ================= -->
   <div class="modal-overlay" id="modalOverlay">
     <div class="modal" id="modalBox">
@@ -1836,6 +2116,9 @@
     <div class="start-menu-item" data-restore="loadWindow">
       <span class="smi-icon">🚚</span> Load Calculator
     </div>
+    <div class="start-menu-item" data-restore="cashWindow">
+      <span class="smi-icon">💵</span> Cash Collection
+    </div>
     <div class="start-menu-header">Personalize</div>
     <div class="start-menu-item" id="startChangeWallpaper">
       <span class="smi-icon">🖼️</span> Change Wallpaper
@@ -1866,6 +2149,10 @@
     <div class="taskbar-item" id="taskbarLoad" data-restore="loadWindow" style="display:none;">
       <span class="tb-icon">🚚</span>
       <span class="tb-label">Load Calculator</span>
+    </div>
+    <div class="taskbar-item" id="taskbarCash" data-restore="cashWindow" style="display:none;">
+      <span class="tb-icon">💵</span>
+      <span class="tb-label">Cash Collection</span>
     </div>
 
     <div class="system-tray">
@@ -2157,7 +2444,7 @@
       document.getElementById('trayWallpaper').addEventListener('click', openWallpaperMini);
 
       document.body.addEventListener('contextmenu', (e) => {
-        if (e.target.closest('.window, .window-price, .window-load, .startbar, .start-menu, .modal-overlay, .desktop-gadget, .desktop-calendar, .wallpaper-mini-window')) return;
+        if (e.target.closest('.window, .window-price, .window-load, .window-cash, .startbar, .start-menu, .modal-overlay, .desktop-gadget, .desktop-calendar, .wallpaper-mini-window')) return;
         e.preventDefault();
         openWallpaperMini();
       });
@@ -2649,14 +2936,29 @@
       const calcWindow = document.getElementById('calcWindow');
       const priceWindow = document.getElementById('priceWindow');
       const loadWindow = document.getElementById('loadWindow');
+      const cashWindow = document.getElementById('cashWindow');
       const calcTitleBar = document.getElementById('calcTitleBar');
       const priceTitleBar = document.getElementById('priceTitleBar');
       const loadTitleBar = document.getElementById('loadTitleBar');
+      const cashTitleBar = document.getElementById('cashTitleBar');
 
       const loadWeightPerPc = document.getElementById('loadWeightPerPc');
       const loadPcsPerBag = document.getElementById('loadPcsPerBag');
       const loadTotalKg = document.getElementById('loadTotalKg');
       const loadResultContent = document.getElementById('loadResultContent');
+
+      // Cash Collection elements
+      const cashAmount = document.getElementById('cashAmount');
+      const cashExpense = document.getElementById('cashExpense');
+      const currencyTableBody = document.getElementById('currencyTableBody');
+      const currencyTotalDisplay = document.getElementById('currencyTotalDisplay');
+      const cashResult = document.getElementById('cashResult');
+      const cashResultValue = document.getElementById('cashResultValue');
+      const cashResultSub = document.getElementById('cashResultSub');
+      const cashBreakdown = document.getElementById('cashBreakdown');
+      const cashResetBtn = document.getElementById('cashResetBtn');
+      const cashClearCountsBtn = document.getElementById('cashClearCountsBtn');
+      const cashSaveBtn = document.getElementById('cashSaveBtn');
 
       const modalOverlay = document.getElementById('modalOverlay');
       const modalTitle = document.getElementById('modalTitle');
@@ -2685,11 +2987,13 @@
       makeDraggable(calcWindow, calcTitleBar);
       makeDraggable(priceWindow, priceTitleBar);
       makeDraggable(loadWindow, loadTitleBar);
+      makeDraggable(cashWindow, cashTitleBar);
       makeDraggable(confirmBox, confirmBox.querySelector('.title-bar'));
 
       calcWindow.addEventListener('mousedown', () => bringToFront(calcWindow));
       priceWindow.addEventListener('mousedown', () => bringToFront(priceWindow));
       loadWindow.addEventListener('mousedown', () => bringToFront(loadWindow));
+      cashWindow.addEventListener('mousedown', () => bringToFront(cashWindow));
 
       const fieldOrder = [weightPerPcInput, pcsPerBagInput, numBagsInput, extraPcsInput, returnPcsInput];
 
@@ -2704,7 +3008,8 @@
       const windowState = {
         calcWindow: { minimized: false, maximized: false, origRect: null },
         priceWindow: { minimized: false, maximized: false, origRect: null },
-        loadWindow: { minimized: false, maximized: false, origRect: null }
+        loadWindow: { minimized: false, maximized: false, origRect: null },
+        cashWindow: { minimized: false, maximized: false, origRect: null }
       };
 
       // ==================== HELPERS ====================
@@ -2717,6 +3022,7 @@
       };
 
       const formatPrice = (value) => '₹' + Number(value).toFixed(2);
+      const formatCurrency = (value) => '₹' + Number(value).toFixed(2);
 
       function showToast(message, type = '') {
         toast.textContent = message;
@@ -2795,7 +3101,7 @@
 
       document.getElementById('startMinimizeAll').addEventListener('click', () => {
         startMenu.classList.remove('open');
-        ['calcWindow', 'priceWindow', 'loadWindow'].forEach(id => {
+        ['calcWindow', 'priceWindow', 'loadWindow', 'cashWindow'].forEach(id => {
           const winEl = document.getElementById(id);
           if (winEl && !windowState[id].minimized) {
             if (windowState[id].maximized) restoreFromMaximize(id);
@@ -2812,7 +3118,8 @@
         const tbCalc = document.getElementById('taskbarCalc');
         const tbPrice = document.getElementById('taskbarPrice');
         const tbLoad = document.getElementById('taskbarLoad');
-        [['calcWindow', tbCalc], ['priceWindow', tbPrice], ['loadWindow', tbLoad]].forEach(([id, tb]) => {
+        const tbCash = document.getElementById('taskbarCash');
+        [['calcWindow', tbCalc], ['priceWindow', tbPrice], ['loadWindow', tbLoad], ['cashWindow', tbCash]].forEach(([id, tb]) => {
           const state = windowState[id];
           if (tb.style.display !== 'none') {
             tb.classList.toggle('active', state.minimized);
@@ -3130,6 +3437,29 @@
         }
       }
 
+      async function saveCashRecord(record) {
+        setSyncing();
+        try {
+          const { data, error } = await supabase
+            .from('cash_collections')
+            .insert([{
+              amount: record.amount,
+              expense: record.expense,
+              currency_total: record.currencyTotal,
+              net_result: record.netResult,
+              denominations: record.denominations
+            }])
+            .select().single();
+          if (error) throw error;
+          setOnlineStatus(true);
+          return data;
+        } catch (err) {
+          console.error('Save cash record error:', err);
+          setOnlineStatus(false);
+          throw err;
+        }
+      }
+
       // ==================== RENDER ====================
       function renderCustomerFilter() {
         const uniqueCustomers = [...new Set(products.map(p => p.customer))].sort();
@@ -3371,6 +3701,175 @@
           loadDebounce = setTimeout(calculateLoad, 120);
         });
       });
+
+      // ==================== CASH COLLECTION ====================
+      // Indian currency denominations
+      const DENOMINATIONS = [
+        { value: 2000, label: '₹2000', type: 'note' },
+        { value: 500, label: '₹500', type: 'note' },
+        { value: 200, label: '₹200', type: 'note' },
+        { value: 100, label: '₹100', type: 'note' },
+        { value: 50, label: '₹50', type: 'note' },
+        { value: 20, label: '₹20', type: 'note' },
+        { value: 10, label: '₹10', type: 'note' },
+        { value: 5, label: '₹5', type: 'coin' },
+        { value: 2, label: '₹2', type: 'coin' },
+        { value: 1, label: '₹1', type: 'coin' }
+      ];
+
+      function buildCurrencyTable() {
+        let html = '';
+        DENOMINATIONS.forEach((d, idx) => {
+          const icon = d.type === 'note' ? '💵' : '🪙';
+          html += `<tr>
+            <td class="denom-cell">${icon} ${d.label}</td>
+            <td class="count-cell">
+              <input type="number" min="0" max="99999" step="1" placeholder="0"
+                     data-denom="${d.value}" class="denom-count-input" id="denom_${d.value}">
+            </td>
+            <td style="text-align:center; color:#5a7f9a; font-weight:700;">×</td>
+            <td class="amount-cell" id="denom_amount_${d.value}">₹0.00</td>
+          </tr>`;
+        });
+        currencyTableBody.innerHTML = html;
+
+        // Attach input listeners
+        currencyTableBody.querySelectorAll('.denom-count-input').forEach(inp => {
+          inp.addEventListener('input', () => {
+            const val = parseInt(inp.value) || 0;
+            if (val < 0) inp.value = 0;
+            if (val > 99999) inp.value = 99999;
+            calculateCash();
+          });
+          inp.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+              e.preventDefault();
+              // Move to next denomination input
+              const inputs = [...currencyTableBody.querySelectorAll('.denom-count-input')];
+              const currentIdx = inputs.indexOf(inp);
+              if (currentIdx < inputs.length - 1) {
+                inputs[currentIdx + 1].focus();
+                inputs[currentIdx + 1].select();
+              } else {
+                // Last one - focus amount field
+                cashAmount.focus();
+              }
+            }
+          });
+        });
+      }
+
+      function calculateCash() {
+        const amount = parseFloat(cashAmount.value) || 0;
+        const expense = parseFloat(cashExpense.value) || 0;
+
+        let currencyTotal = 0;
+        const breakdown = [];
+
+        DENOMINATIONS.forEach(d => {
+          const inp = document.getElementById(`denom_${d.value}`);
+          const count = inp ? (parseInt(inp.value) || 0) : 0;
+          const subtotal = count * d.value;
+          currencyTotal += subtotal;
+
+          const amountEl = document.getElementById(`denom_amount_${d.value}`);
+          if (amountEl) amountEl.textContent = formatCurrency(subtotal);
+
+          if (count > 0) {
+            breakdown.push({ label: d.label, count, subtotal });
+          }
+        });
+
+        currencyTotalDisplay.textContent = formatCurrency(currencyTotal);
+
+        const netResult = amount - currencyTotal - expense;
+
+        cashResultValue.textContent = formatCurrency(Math.abs(netResult));
+        if (netResult < 0) {
+          cashResultValue.textContent = '−' + formatCurrency(Math.abs(netResult));
+        }
+
+        // Update result card style
+        cashResult.classList.remove('positive', 'negative');
+        if (Math.abs(netResult) < 0.005) {
+          cashResultSub.textContent = '✅ Balanced — perfectly matched';
+        } else if (netResult > 0) {
+          cashResult.classList.add('positive');
+          cashResultSub.textContent = '✅ Extra cash received (surplus)';
+        } else {
+          cashResult.classList.add('negative');
+          cashResultSub.textContent = '⚠️ Short by ' + formatCurrency(Math.abs(netResult));
+        }
+
+        // Build breakdown chips
+        let bdHtml = '';
+        bdHtml += `<span class="bd-item">💵 Amount: ${formatCurrency(amount)}</span>`;
+        bdHtml += `<span class="bd-item">🪙 Currency: ${formatCurrency(currencyTotal)}</span>`;
+        bdHtml += `<span class="bd-item">💸 Expense: ${formatCurrency(expense)}</span>`;
+        if (breakdown.length > 0) {
+          bdHtml += `<span class="bd-item" style="background:rgba(255,255,255,0.25);">📋 ${breakdown.length} denomination${breakdown.length > 1 ? 's' : ''}</span>`;
+        }
+        cashBreakdown.innerHTML = bdHtml;
+
+        return { amount, expense, currencyTotal, netResult, breakdown };
+      }
+
+      [cashAmount, cashExpense].forEach(inp => {
+        inp.addEventListener('input', calculateCash);
+        inp.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            if (inp === cashAmount) {
+              cashExpense.focus();
+              cashExpense.select();
+            } else {
+              // Focus first denomination input
+              const firstDenom = currencyTableBody.querySelector('.denom-count-input');
+              if (firstDenom) { firstDenom.focus(); firstDenom.select(); }
+            }
+          }
+        });
+      });
+
+      cashResetBtn.addEventListener('click', () => {
+        cashAmount.value = '';
+        cashExpense.value = '';
+        currencyTableBody.querySelectorAll('.denom-count-input').forEach(inp => { inp.value = ''; });
+        calculateCash();
+        showToast('🔄 Cash collection reset', 'success');
+      });
+
+      cashClearCountsBtn.addEventListener('click', () => {
+        currencyTableBody.querySelectorAll('.denom-count-input').forEach(inp => { inp.value = ''; });
+        calculateCash();
+        showToast('🧹 Currency counts cleared', 'success');
+      });
+
+      cashSaveBtn.addEventListener('click', async () => {
+        const result = calculateCash();
+        if (result.amount === 0 && result.currencyTotal === 0 && result.expense === 0) {
+          showToast('⚠️ Nothing to save — enter some values first', 'warning');
+          return;
+        }
+
+        showToast('💾 Saving cash record…', '');
+        try {
+          await saveCashRecord({
+            amount: result.amount,
+            expense: result.expense,
+            currencyTotal: result.currencyTotal,
+            netResult: result.netResult,
+            denominations: result.breakdown
+          });
+          showToast('✅ Cash record saved to database', 'success');
+        } catch (err) {
+          showToast('⚠️ Saved locally (DB offline)', 'warning');
+        }
+      });
+
+      // Initialize currency table
+      buildCurrencyTable();
+      calculateCash();
 
       // ==================== CLIPBOARD ====================
       function copyToClipboard(text) {
@@ -3804,7 +4303,7 @@
 
       // ==================== WINDOW RESIZE ====================
       window.addEventListener('resize', () => {
-        ['calcWindow', 'priceWindow', 'loadWindow'].forEach(id => {
+        ['calcWindow', 'priceWindow', 'loadWindow', 'cashWindow'].forEach(id => {
           const win = document.getElementById(id);
           if (!win) return;
           if (win.classList.contains('minimized') || win.classList.contains('maximized')) return;
@@ -3855,9 +4354,10 @@
       await loadWallpaper();
       resetAllFields();
       calculateLoad();
+      calculateCash();
       await loadProducts();
 
-      ['calcWindow', 'priceWindow', 'loadWindow'].forEach(id => {
+      ['calcWindow', 'priceWindow', 'loadWindow', 'cashWindow'].forEach(id => {
         const winEl = document.getElementById(id);
         if (winEl) {
           winEl.classList.add('minimized');
@@ -3869,6 +4369,7 @@
 
       setTimeout(() => {
         restoreWindowFromTaskbar('calcWindow');
+        restoreWindowFromTaskbar('cashWindow');
       }, 400);
 
       clearTimeout(bootTimeout);
