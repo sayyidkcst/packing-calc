@@ -379,8 +379,16 @@
     }
 
     .window { top: 20px; left: 20px; width: 500px; max-width: calc(100vw - 40px); }
-    /* ========== PRODUCT WINDOW: REDUCED WIDTH ========== */
-    .window-price { top: 20px; right: 360px; width: 440px; max-width: calc(100vw - 380px); z-index: 11; }
+    /* ========== PRODUCT WINDOW: REDUCED WIDTH & HEIGHT ========== */
+    .window-price { 
+      top: 20px; 
+      right: 360px; 
+      width: 440px; 
+      max-width: calc(100vw - 380px);
+      max-height: 340px;
+      height: 340px;
+      z-index: 11; 
+    }
     .window-load { top: 400px; left: 20px; width: 500px; max-width: calc(100vw - 40px); z-index: 12; }
 
     .window.minimized, .window-price.minimized, .window-load.minimized { display: none; }
@@ -703,7 +711,7 @@
       padding-top: 6px; letter-spacing: 0.2px;
     }
 
-    .price-top-actions { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+    .price-top-actions { display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
 
     /* ========== COMPACT SEARCH WRAP ========== */
     .search-wrap {
@@ -747,14 +755,14 @@
       background: linear-gradient(180deg, #e3eff9 0%, #c3d9ed 100%);
       color: #10344b; font-weight: 700; font-size: 0.72rem;
       text-transform: uppercase; letter-spacing: 0.4px;
-      padding: 8px 8px; text-align: left;
+      padding: 6px 8px; text-align: left;
       border-bottom: 1px solid #8eb0ce;
       text-shadow: 0 1px 0 white;
       position: sticky; top: 0; z-index: 2;
     }
     .price-table thead th:last-child { text-align: right; }
     .price-table tbody td {
-      padding: 8px 8px; border-bottom: 1px solid #d5e3ef;
+      padding: 6px 8px; border-bottom: 1px solid #d5e3ef;
       color: #1a3e5a; font-weight: 500; vertical-align: middle;
     }
     .price-table tbody tr:last-child td { border-bottom: none; }
@@ -779,7 +787,7 @@
       font-family: 'Segoe UI', Consolas, monospace;
       text-align: center;
     }
-    .price-table tbody td.action-cell { text-align: center; width: 60px; padding: 5px; }
+    .price-table tbody td.action-cell { text-align: center; width: 60px; padding: 4px; }
     .row-edit-btn, .row-delete-btn {
       border-radius: 4px;
       width: 22px; height: 22px;
@@ -798,10 +806,10 @@
     .row-delete-btn:hover { background: #e8a5a5; color: white; }
     .table-container {
       flex: 1; overflow-y: auto; border-radius: 6px;
-      padding-right: 2px; margin-bottom: 8px; min-height: 120px;
+      padding-right: 2px; margin-bottom: 4px; min-height: 60px;
     }
     .no-results {
-      text-align: center; padding: 18px 8px;
+      text-align: center; padding: 14px 8px;
       color: #3a6382; font-size: 0.8rem; font-weight: 500;
       background: #f4faff; border: 1px dashed #b4d1e6;
       border-radius: 6px;
@@ -1371,7 +1379,7 @@
         left: auto !important; right: auto !important;
         margin: 0 auto 20px auto; max-width: 500px; width: 100%;
       }
-      .window-price { right: auto; }
+      .window-price { right: auto; height: auto; max-height: none; }
       body { overflow-y: auto; padding: 20px 12px calc(var(--taskbar-height) + 20px) 12px; }
       .input-row-four { flex-wrap: wrap; }
       .input-row-four .input-group { flex: 1 1 45%; width: auto; }
@@ -2501,7 +2509,6 @@
 
       // ========== NOTIFICATIONS REMOVED — showToast is a no-op ==========
       function showToast(message, type = '') {
-        // Notifications disabled
         return;
       }
 
