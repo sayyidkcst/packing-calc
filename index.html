@@ -2122,7 +2122,6 @@
 
       <!-- RESULT SECTION -->
       <div class="cash-result" id="cashResult">
-        <div class="result-label">Net Result (Amount − Currency − Expense)</div>
         <div class="result-value" id="cashResultValue">₹0.00</div>
         <div class="result-sub" id="cashResultSub">Enter values to calculate</div>
         <div class="cash-breakdown" id="cashBreakdown"></div>
@@ -2130,7 +2129,6 @@
 
       <!-- CURRENCY DENOMINATIONS SECTION -->
       <div class="cash-section">
-        <div class="cash-section-legend">🪙 Currency Denominations</div>
         <table class="currency-table">
           <thead>
             <tr>
@@ -4194,9 +4192,7 @@
 
         // Build breakdown chips
         let bdHtml = '';
-        bdHtml += `<span class="bd-item">💵 Amount: ${formatCurrency(amount)}</span>`;
-        bdHtml += `<span class="bd-item">🪙 Currency: ${formatCurrency(currencyTotal)}</span>`;
-        bdHtml += `<span class="bd-item">💸 Expense: ${formatCurrency(expense)}</span>`;
+
         if (breakdown.length > 0) {
           bdHtml += `<span class="bd-item" style="background:rgba(255,255,255,0.25);">📋 ${breakdown.length} denomination${breakdown.length > 1 ? 's' : ''}</span>`;
         }
