@@ -1670,6 +1670,88 @@
       min-width: 100px;
     }
 
+    /* Staff Row */
+    .staff-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+      flex-wrap: nowrap;
+    }
+
+    .staff-row .staff-photo-small {
+      width: 42px;
+      height: 42px;
+      border-radius: 6px;
+      border: 2px solid #7f9db9;
+      background: #d0e6fa;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      overflow: hidden;
+      flex-shrink: 0;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.1);
+    }
+    .staff-row .staff-photo-small img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* Medium-width combo */
+    .combo-wrap.staff-combo-medium {
+      flex: 1 1 auto;
+      min-width: 140px;
+      max-width: 240px;
+      min-height: 34px;
+    }
+    .combo-wrap.staff-combo-medium select {
+      font-size: 0.82rem;
+      padding: 7px 4px 7px 10px;
+    }
+
+    /* Action buttons group */
+    .staff-action-buttons {
+      display: flex;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+    .staff-action-buttons .aero-btn {
+      padding: 6px 10px;
+      min-width: 34px;
+      min-height: 34px;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 480px) {
+      .staff-row { flex-wrap: wrap; }
+      .combo-wrap.staff-combo-medium { flex: 1 1 100%; max-width: none; }
+    }
+
+    /* Photo preview inside modal */
+    .photo-preview {
+      width: 70px;
+      height: 70px;
+      border-radius: 8px;
+      border: 2px solid #7f9db9;
+      background: #e0edf9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      color: #4a7ba3;
+      overflow: hidden;
+      box-shadow: inset 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .photo-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
     /* ========== DESKTOP RIGHT-CLICK CONTEXT MENU ========== */
     .desktop-context-menu {
       position: fixed;
@@ -2008,25 +2090,42 @@
     </div>
 
     <div class="window-content">
-      <!-- AMOUNT SECTION -->
-      <div class="cash-section">
-        <div class="cash-section-legend">💰 Amount & Expenses</div>
-        <div class="cash-top-row">
-          <div class="input-group">
-            <label><span>💵</span> Total Amount (₹)</label>
-            <div class="input-wrap">
-              <input type="number" id="cashAmount" min="0" max="9999999" step="0.01" placeholder="0.00" tabindex="10">
-              <span class="unit">₹</span>
-            </div>
-          </div>
-          <div class="input-group">
-            <label><span>💸</span> Expense (₹)</label>
-            <div class="input-wrap">
-              <input type="number" id="cashExpense" min="0" max="9999999" step="0.01" placeholder="0.00" tabindex="11">
-              <span class="unit">₹</span>
-            </div>
-          </div>
+
+      <!-- STAFF ROW: photo + combo + buttons -->
+      <div class="staff-row">
+        <!-- Photo (small, left of combo) -->
+        <div class="staff-photo-small" id="staffPhotoSmall" title="Staff photo">
+          <span>👤</span>
         </div>
+
+        <!-- Medium-sized combo -->
+        <div class="combo-wrap staff-combo-medium">
+          <select id="staffCombo" tabindex="10">
+            <option value="">👤 Select Staff</option>
+          </select>
+          <span class="combo-arrow">▼</span>
+        </div>
+
+        <!-- Action buttons -->
+        <div class="staff-action-buttons">
+          <button class="aero-btn primary" id="addStaffBtn" type="button" tabindex="11" title="Add new staff">
+            <span>➕</span>
+          </button>
+          <button class="aero-btn" id="editStaffBtn" type="button" tabindex="12" title="Edit selected staff" disabled>
+            <span>✎</span>
+          </button>
+          <button class="aero-btn danger" id="deleteStaffBtn" type="button" tabindex="13" title="Delete selected staff" disabled>
+            <span>🗑️</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- RESULT SECTION -->
+      <div class="cash-result" id="cashResult">
+        <div class="result-label">Net Result (Amount − Currency − Expense)</div>
+        <div class="result-value" id="cashResultValue">₹0.00</div>
+        <div class="result-sub" id="cashResultSub">Enter values to calculate</div>
+        <div class="cash-breakdown" id="cashBreakdown"></div>
       </div>
 
       <!-- CURRENCY DENOMINATIONS SECTION -->
@@ -2053,12 +2152,25 @@
         </table>
       </div>
 
-      <!-- RESULT SECTION -->
-      <div class="cash-result" id="cashResult">
-        <div class="result-label">Net Result (Amount − Currency − Expense)</div>
-        <div class="result-value" id="cashResultValue">₹0.00</div>
-        <div class="result-sub" id="cashResultSub">Enter values to calculate</div>
-        <div class="cash-breakdown" id="cashBreakdown"></div>
+      <!-- AMOUNT & EXPENSE SECTION -->
+      <div class="cash-section">
+        <div class="cash-section-legend">💰 Amount & Expenses</div>
+        <div class="cash-top-row">
+          <div class="input-group">
+            <label><span>💵</span> Total Amount (₹)</label>
+            <div class="input-wrap">
+              <input type="number" id="cashAmount" min="0" max="9999999" step="0.01" placeholder="0.00" tabindex="12">
+              <span class="unit">₹</span>
+            </div>
+          </div>
+          <div class="input-group">
+            <label><span>💸</span> Expense (₹)</label>
+            <div class="input-wrap">
+              <input type="number" id="cashExpense" min="0" max="9999999" step="0.01" placeholder="0.00" tabindex="13">
+              <span class="unit">₹</span>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- ACTIONS -->
@@ -3081,6 +3193,13 @@
       const cashClearCountsBtn = document.getElementById('cashClearCountsBtn');
       const cashSaveBtn = document.getElementById('cashSaveBtn');
 
+      // Staff elements
+      const staffCombo = document.getElementById('staffCombo');
+      const addStaffBtn = document.getElementById('addStaffBtn');
+      const editStaffBtn = document.getElementById('editStaffBtn');
+      const deleteStaffBtn = document.getElementById('deleteStaffBtn');
+      const staffPhotoSmall = document.getElementById('staffPhotoSmall');
+
       const modalOverlay = document.getElementById('modalOverlay');
       const modalTitle = document.getElementById('modalTitle');
       const modalContent = document.getElementById('modalContent');
@@ -3125,6 +3244,7 @@
       let selectedProductName = '';
       let selectedCustomerName = '';
       let isOnline = false;
+      let staffList = [];
 
       const windowState = {
         calcWindow: { minimized: false, maximized: false, origRect: null },
@@ -3445,6 +3565,115 @@
         }
       }
 
+      async function loadStaff() {
+        try {
+          const { data, error } = await supabase
+            .from('staff')
+            .select('*')
+            .order('name', { ascending: true });
+          if (error) throw error;
+          staffList = (data || []).map(s => ({
+            id: s.id || s.staff_id,
+            name: s.name || '',
+            section: s.section || '',
+            photo: s.photo || null
+          })).filter(s => s.name);
+          renderStaffCombo();
+        } catch (err) {
+          console.warn('Could not load staff from DB:', err.message);
+          staffList = [];
+          renderStaffCombo();
+        }
+      }
+
+      async function saveStaff(staff) {
+        setSyncing();
+        const basePayload = {
+          name: staff.name,
+          section: staff.section
+        };
+        if (staff.photo) basePayload.photo = staff.photo;
+
+        // Try a few variants to be robust to different schemas
+        const attempts = [
+          () => supabase.from('staff').insert([basePayload]).select().single(),
+          () => supabase.from('staff').insert([{
+            ...basePayload,
+            staff_id: 'STAFF-' + Date.now() + '-' + Math.floor(Math.random()*10000)
+          }]).select().single(),
+          () => supabase.from('staff').insert([{
+            ...basePayload,
+            staff_id: crypto.randomUUID()
+          }]).select().single(),
+          () => supabase.from('staff').insert([{
+            name: staff.name,
+            section: staff.section
+          }]).select().single()
+        ];
+
+        let lastError = null;
+        for (let i = 0; i < attempts.length; i++) {
+          try {
+            const { data, error } = await attempts[i]();
+            if (error) { lastError = error; continue; }
+            if (!data) { lastError = new Error('No data returned'); continue; }
+            setOnlineStatus(true);
+            return {
+              id: data.id || data.staff_id,
+              name: data.name,
+              section: data.section || '',
+              photo: data.photo || null
+            };
+          } catch (err) {
+            lastError = err;
+          }
+        }
+        setOnlineStatus(false);
+        console.error('All saveStaff attempts failed:', lastError);
+        throw lastError || new Error('Could not save staff');
+      }
+
+      async function updateStaff(id, updates) {
+        setSyncing();
+        try {
+          const payload = { name: updates.name, section: updates.section };
+          if (updates.photo !== undefined) payload.photo = updates.photo;
+
+          const { data, error } = await supabase
+            .from('staff')
+            .update(payload)
+            .eq('id', id)
+            .select().single();
+
+          if (error) throw error;
+          setOnlineStatus(true);
+          return {
+            id: data.id,
+            name: data.name,
+            section: data.section || '',
+            photo: data.photo || null
+          };
+        } catch (err) {
+          console.error('Update staff error:', err);
+          setOnlineStatus(false);
+          throw err;
+        }
+      }
+
+      async function deleteStaff(id) {
+        setSyncing();
+        try {
+          const { error } = await supabase.from('staff').delete().eq('id', id);
+          if (error) throw error;
+          setOnlineStatus(true);
+          return true;
+        } catch (err) {
+          console.error('Delete staff error:', err);
+          setOnlineStatus(false);
+          throw err;
+        }
+      }
+
       async function saveProduct(product) {
         setSyncing();
         try {
@@ -3571,7 +3800,10 @@
               expense: record.expense,
               currency_total: record.currencyTotal,
               net_result: record.netResult,
-              denominations: record.denominations
+              denominations: record.denominations,
+              staff_name: record.staffName,
+              section: record.section,
+              photo_data: record.photoData
             }])
             .select().single();
           if (error) throw error;
@@ -3593,6 +3825,45 @@
         customerFilter.innerHTML = html;
         if (currentValue && uniqueCustomers.includes(currentValue)) customerFilter.value = currentValue;
       }
+
+      function renderStaffCombo() {
+        const currentValue = staffCombo.value;
+        let html = '<option value="">👤 Select Staff</option>';
+        staffList.forEach(s => {
+          html += `<option value="${s.id}">${escapeHtml(s.name)} — ${escapeHtml(s.section)}</option>`;
+        });
+        staffCombo.innerHTML = html;
+        if (currentValue) staffCombo.value = currentValue;
+        updateStaffInfo();
+      }
+
+      function updateStaffInfo() {
+        const staffId = staffCombo.value;
+        if (!staffId) {
+          staffPhotoSmall.innerHTML = '<span>👤</span>';
+          staffCombo.title = '';
+          editStaffBtn.disabled = true;
+          deleteStaffBtn.disabled = true;
+          return;
+        }
+        const staff = staffList.find(s => s.id === staffId);
+        if (!staff) {
+          staffPhotoSmall.innerHTML = '<span>👤</span>';
+          editStaffBtn.disabled = true;
+          deleteStaffBtn.disabled = true;
+          return;
+        }
+        if (staff.photo) {
+          staffPhotoSmall.innerHTML = `<img src="${staff.photo}" alt="${escapeHtml(staff.name)}">`;
+        } else {
+          staffPhotoSmall.innerHTML = '<span>👤</span>';
+        }
+        staffCombo.title = `${staff.name} — ${staff.section}`;
+        editStaffBtn.disabled = false;
+        deleteStaffBtn.disabled = false;
+      }
+
+      staffCombo.addEventListener('change', updateStaffInfo);
 
       function renderPriceTable() {
         if (filteredProducts.length === 0) {
@@ -3950,6 +4221,142 @@
         });
       });
 
+      // ========== STAFF FORM MODAL (Add/Edit) ==========
+      function openStaffFormModal(existingStaff = null) {
+        const isEdit = !!existingStaff;
+        const title = isEdit ? '✎ Edit Staff' : '👤 Add New Staff';
+        const html = `
+          <div class="modal-field">
+            <label>👤 Staff Name</label>
+            <div class="input-wrap">
+              <input type="text" id="modalStaffName" placeholder="Enter staff name" value="${isEdit ? escapeHtml(existingStaff.name) : ''}">
+            </div>
+          </div>
+          <div class="modal-field">
+            <label>🏷️ Section</label>
+            <div class="input-wrap">
+              <input type="text" id="modalStaffSection" placeholder="e.g. Packing" value="${isEdit ? escapeHtml(existingStaff.section) : ''}">
+            </div>
+          </div>
+          <div class="modal-field">
+            <label>📷 Photo (optional)</label>
+            <div style="display:flex; gap:10px; align-items:center;">
+              <div class="photo-preview" id="modalPhotoPreview">
+                ${isEdit && existingStaff.photo ? `<img src="${existingStaff.photo}">` : '📷'}
+              </div>
+              <div style="flex:1;">
+                <input type="file" id="modalStaffPhoto" accept="image/*" style="font-size:0.78rem;">
+                <div style="font-size:0.62rem; color:#6a8ba5; margin-top:3px;">Max 2MB · optional</div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-actions">
+            <button class="aero-btn" id="modalCancelBtn" type="button">Cancel</button>
+            <button class="aero-btn primary" id="modalSaveBtn" type="button">${isEdit ? '💾 Update Staff' : '💾 Save Staff'}</button>
+          </div>`;
+        openModal(title, html, async (content) => {
+          const name = content.querySelector('#modalStaffName').value.trim();
+          const section = content.querySelector('#modalStaffSection').value.trim();
+          const photoInput = content.querySelector('#modalStaffPhoto');
+
+          if (name === '') { showToast('⚠️ Please enter staff name', 'warning'); return false; }
+          if (section === '') { showToast('⚠️ Please enter section', 'warning'); return false; }
+
+          let photoData = isEdit ? (existingStaff.photo || null) : null;
+          if (photoInput.files && photoInput.files[0]) {
+            const file = photoInput.files[0];
+            if (file.size > 2 * 1024 * 1024) {
+              showToast('⚠️ Large image (>2MB) may be slow to save', 'warning');
+            }
+            photoData = await new Promise((resolve) => {
+              const reader = new FileReader();
+              reader.onload = (e) => resolve(e.target.result);
+              reader.readAsDataURL(file);
+            });
+          }
+
+          const saveBtn = content.querySelector('#modalSaveBtn');
+          saveBtn.disabled = true;
+          saveBtn.textContent = isEdit ? '⏳ Updating…' : '⏳ Saving…';
+
+          try {
+            if (isEdit) {
+              const updated = await updateStaff(existingStaff.id, { name, section, photo: photoData });
+              const idx = staffList.findIndex(s => s.id === existingStaff.id);
+              if (idx !== -1) staffList[idx] = updated;
+              renderStaffCombo();
+              staffCombo.value = updated.id;
+              updateStaffInfo();
+              showToast(`✅ Staff "${name}" updated`, 'success');
+            } else {
+              const saved = await saveStaff({ name, section, photo: photoData });
+              staffList.push(saved);
+              staffList.sort((a, b) => a.name.localeCompare(b.name));
+              renderStaffCombo();
+              staffCombo.value = saved.id;
+              updateStaffInfo();
+              showToast(`✅ Staff "${name}" added`, 'success');
+            }
+            return true;
+          } catch (err) {
+            showToast(`❌ ${isEdit ? 'Update' : 'Save'} failed: ${err.message || 'Check DB'}`, 'error');
+            saveBtn.disabled = false;
+            saveBtn.textContent = isEdit ? '💾 Update Staff' : '💾 Save Staff';
+            return false;
+          }
+        });
+
+        // Live preview
+        setTimeout(() => {
+          const fileInp = document.getElementById('modalStaffPhoto');
+          const prev = document.getElementById('modalPhotoPreview');
+          if (fileInp && prev) {
+            fileInp.addEventListener('change', (e) => {
+              const f = e.target.files[0];
+              if (!f) return;
+              const r = new FileReader();
+              r.onload = (ev) => { prev.innerHTML = `<img src="${ev.target.result}" style="width:100%;height:100%;object-fit:cover;">`; };
+              r.readAsDataURL(f);
+            });
+          }
+        }, 50);
+      }
+
+      addStaffBtn.addEventListener('click', () => openStaffFormModal(null));
+      editStaffBtn.addEventListener('click', () => {
+        const staffId = staffCombo.value;
+        if (!staffId) { showToast('⚠️ Select a staff member first', 'warning'); return; }
+        const staff = staffList.find(s => s.id === staffId);
+        if (!staff) { showToast('⚠️ Staff not found', 'error'); return; }
+        openStaffFormModal(staff);
+      });
+      deleteStaffBtn.addEventListener('click', async () => {
+        const staffId = staffCombo.value;
+        if (!staffId) { showToast('⚠️ Select a staff member first', 'warning'); return; }
+        const staff = staffList.find(s => s.id === staffId);
+        if (!staff) { showToast('⚠️ Staff not found', 'error'); return; }
+
+        const confirmed = await showConfirm({
+          title: '🗑️ Delete Staff',
+          message: `Are you sure you want to delete <strong>"${escapeHtml(staff.name)}"</strong> (${escapeHtml(staff.section)})?<br><br>This cannot be undone.`,
+          confirmLabel: 'Yes, Delete',
+          type: 'danger',
+          icon: '🗑️'
+        });
+        if (!confirmed) return;
+
+        try {
+          await deleteStaff(staff.id);
+          staffList = staffList.filter(s => s.id !== staff.id);
+          renderStaffCombo();
+          staffCombo.value = '';
+          updateStaffInfo();
+          showToast(`🗑️ Staff "${staff.name}" deleted`, 'success');
+        } catch (err) {
+          showToast(`❌ Delete failed: ${err.message}`, 'error');
+        }
+      });
+
       cashResetBtn.addEventListener('click', () => {
         cashAmount.value = '';
         cashExpense.value = '';
@@ -3971,6 +4378,18 @@
           return;
         }
 
+        const staffId = staffCombo.value;
+        if (!staffId) {
+          showToast('⚠️ Please select a staff member', 'warning');
+          staffCombo.focus();
+          return;
+        }
+        const staff = staffList.find(s => s.id === staffId);
+        if (!staff) {
+          showToast('⚠️ Selected staff not found', 'error');
+          return;
+        }
+
         showToast('💾 Saving cash record…', '');
         try {
           await saveCashRecord({
@@ -3978,7 +4397,10 @@
             expense: result.expense,
             currencyTotal: result.currencyTotal,
             netResult: result.netResult,
-            denominations: result.breakdown
+            denominations: result.breakdown,
+            staffName: staff.name,
+            section: staff.section,
+            photoData: staff.photo
           });
           showToast('✅ Cash record saved to database', 'success');
         } catch (err) {
@@ -4471,6 +4893,7 @@
 
       // ==================== INIT ====================
       await loadWallpaper();
+      await loadStaff();
       resetAllFields();
       calculateLoad();
       calculateCash();
