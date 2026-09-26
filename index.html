@@ -475,10 +475,10 @@
       z-index: 10;
     }
 
-    .window { top: 20px; left: 20px; width: 500px; max-width: calc(100vw - 40px); }
-    .window-price { top: 20px; right: 240px; width: 540px; max-width: calc(100vw - 260px); z-index: 11; }
-    .window-load { top: 400px; left: 20px; width: 500px; max-width: calc(100vw - 40px); z-index: 12; }
-    .window-cash { top: 120px; left: 540px; width: 520px; max-width: calc(100vw - 560px); z-index: 13; }
+    .window { width: 500px; max-width: calc(100vw - 40px); }
+    .window-price { width: 540px; max-width: calc(100vw - 40px); z-index: 11; }
+    .window-load { width: 500px; max-width: calc(100vw - 40px); z-index: 12; }
+    .window-cash { width: 520px; max-width: calc(100vw - 40px); z-index: 13; }
 
     .window.minimized, .window-price.minimized, .window-load.minimized, .window-cash.minimized { display: none; }
 
@@ -1670,6 +1670,54 @@
       min-width: 100px;
     }
 
+    /* ========== DESKTOP RIGHT-CLICK CONTEXT MENU ========== */
+    .desktop-context-menu {
+      position: fixed;
+      z-index: 100001;
+      min-width: 200px;
+      background: linear-gradient(180deg, rgba(240, 248, 255, 0.97) 0%, rgba(220, 235, 250, 0.97) 100%);
+      border: 1px solid #6b8fae;
+      border-radius: 6px;
+      box-shadow: 
+        0 0 0 1px rgba(255, 255, 255, 0.6) inset,
+        0 10px 30px rgba(0, 0, 0, 0.5),
+        0 2px 8px rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(12px);
+      padding: 5px 0;
+      display: none;
+      animation: ctxMenuPop 0.12s ease;
+    }
+    .desktop-context-menu.open { display: block; }
+    @keyframes ctxMenuPop {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .ctx-menu-item {
+      padding: 9px 16px 9px 14px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: #10344b;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: 0.08s;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
+    }
+    .ctx-menu-item:hover {
+      background: linear-gradient(90deg, rgba(100, 165, 220, 0.5) 0%, rgba(150, 200, 240, 0.4) 100%);
+    }
+    .ctx-menu-item .ctx-icon {
+      font-size: 0.95rem;
+      width: 20px;
+      text-align: center;
+    }
+    .ctx-menu-divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent 5%, #aac2db 50%, transparent 95%);
+      margin: 4px 8px;
+    }
+
     @media (max-width: 1200px) {
       .window, .window-price, .window-load, .window-cash {
         position: relative; top: auto !important;
@@ -2168,6 +2216,16 @@
 
   <div class="toast" id="toast">✅ Done</div>
 
+  <!-- ================= DESKTOP RIGHT-CLICK CONTEXT MENU ================= -->
+  <div class="desktop-context-menu" id="desktopContextMenu">
+    <div class="ctx-menu-item" id="ctxReload">
+      <span class="ctx-icon">🔄</span> Reload
+    </div>
+    <div class="ctx-menu-item" id="ctxPersonalize">
+      <span class="ctx-icon">🎨</span> Personalize
+    </div>
+  </div>
+
   <!-- ===================== SUPABASE SDK ===================== -->
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
@@ -2443,11 +2501,57 @@
       });
       document.getElementById('trayWallpaper').addEventListener('click', openWallpaperMini);
 
-      document.body.addEventListener('contextmenu', (e) => {
-        if (e.target.closest('.window, .window-price, .window-load, .window-cash, .startbar, .start-menu, .modal-overlay, .desktop-gadget, .desktop-calendar, .wallpaper-mini-window')) return;
-        e.preventDefault();
+      // ==================== DESKTOP CONTEXT MENU ====================
+      const desktopContextMenu = document.getElementById('desktopContextMenu');
+      const ctxReload = document.getElementById('ctxReload');
+      const ctxPersonalize = document.getElementById('ctxPersonalize');
+
+      function showDesktopContextMenu(x, y) {
+        desktopContextMenu.classList.add('open');
+        // Make sure menu fits on screen
+        const menuRect = desktopContextMenu.getBoundingClientRect();
+        const maxX = window.innerWidth - menuRect.width - 8;
+        const maxY = window.innerHeight - menuRect.height - 8;
+        const posX = Math.min(x, maxX);
+        const posY = Math.min(y, maxY);
+        desktopContextMenu.style.left = posX + 'px';
+        desktopContextMenu.style.top = posY + 'px';
+      }
+
+      function hideDesktopContextMenu() {
+        desktopContextMenu.classList.remove('open');
+      }
+
+      ctxReload.addEventListener('click', () => {
+        hideDesktopContextMenu();
+        showToast('🔄 Reloading…', '');
+        setTimeout(() => window.location.reload(), 300);
+      });
+
+      ctxPersonalize.addEventListener('click', () => {
+        hideDesktopContextMenu();
         openWallpaperMini();
       });
+
+      document.body.addEventListener('contextmenu', (e) => {
+        // If user right-clicks inside an app window or UI element, don't show desktop menu
+        if (e.target.closest('.window, .window-price, .window-load, .window-cash, .startbar, .start-menu, .modal-overlay, .desktop-gadget, .desktop-calendar, .wallpaper-mini-window, .desktop-context-menu')) return;
+        e.preventDefault();
+        showDesktopContextMenu(e.clientX, e.clientY);
+      });
+
+      // Hide context menu when clicking elsewhere
+      document.addEventListener('mousedown', (e) => {
+        if (!e.target.closest('.desktop-context-menu')) {
+          hideDesktopContextMenu();
+        }
+      });
+
+      // Hide context menu on Escape key or scroll
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') hideDesktopContextMenu();
+      });
+      window.addEventListener('blur', hideDesktopContextMenu);
 
       // ==================== DRAGGABLE + AERO SNAP ====================
       let snapPreview = null;
@@ -2692,6 +2796,23 @@
 
       let highestZ = 10;
       function bringToFront(el) { highestZ++; el.style.zIndex = highestZ; }
+
+      // ==================== CENTER WINDOWS ON SCREEN ====================
+      function centerWindow(winEl) {
+        if (!winEl) return;
+        // Ensure it's not minimized/maximized when centering
+        if (winEl.classList.contains('minimized') || winEl.classList.contains('maximized')) return;
+        winEl.style.position = 'fixed';
+        const rect = winEl.getBoundingClientRect();
+        const w = rect.width;
+        const h = rect.height;
+        const left = Math.max(10, (window.innerWidth - w) / 2);
+        const top = Math.max(10, (window.innerHeight - TASKBAR_HEIGHT - h) / 2);
+        winEl.style.left = left + 'px';
+        winEl.style.top = top + 'px';
+        winEl.style.right = 'auto';
+        winEl.style.margin = '0';
+      }
 
       // ==================== DESKTOP GADGET CLOCK ====================
       const desktopGadget = document.getElementById('desktopGadget');
@@ -3146,14 +3267,17 @@
         const winEl = document.getElementById(winId);
         if (!winEl) return;
         const state = windowState[winId];
+        const wasMinimized = state.minimized;
         showTaskbarItem(winId);
         if (state.minimized) {
           winEl.classList.remove('minimized');
           state.minimized = false;
-          bringToFront(winEl);
-        } else {
-          bringToFront(winEl);
         }
+        // If first time opening (no explicit position set), center it
+        if (!winEl.style.left && !winEl.style.top) {
+          centerWindow(winEl);
+        }
+        bringToFront(winEl);
         updateTaskbar();
       }
 
@@ -3703,9 +3827,8 @@
       });
 
       // ==================== CASH COLLECTION ====================
-      // Indian currency denominations
+      // Indian currency denominations (without 2000)
       const DENOMINATIONS = [
-        { value: 2000, label: '₹2000', type: 'note' },
         { value: 500, label: '₹500', type: 'note' },
         { value: 200, label: '₹200', type: 'note' },
         { value: 100, label: '₹100', type: 'note' },
@@ -3713,7 +3836,6 @@
         { value: 20, label: '₹20', type: 'note' },
         { value: 10, label: '₹10', type: 'note' },
         { value: 5, label: '₹5', type: 'coin' },
-        { value: 2, label: '₹2', type: 'coin' },
         { value: 1, label: '₹1', type: 'coin' }
       ];
 
@@ -3744,14 +3866,12 @@
           inp.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
               e.preventDefault();
-              // Move to next denomination input
               const inputs = [...currencyTableBody.querySelectorAll('.denom-count-input')];
               const currentIdx = inputs.indexOf(inp);
               if (currentIdx < inputs.length - 1) {
                 inputs[currentIdx + 1].focus();
                 inputs[currentIdx + 1].select();
               } else {
-                // Last one - focus amount field
                 cashAmount.focus();
               }
             }
@@ -3823,7 +3943,6 @@
               cashExpense.focus();
               cashExpense.select();
             } else {
-              // Focus first denomination input
               const firstDenom = currencyTableBody.querySelector('.denom-count-input');
               if (firstDenom) { firstDenom.focus(); firstDenom.select(); }
             }
@@ -4357,6 +4476,7 @@
       calculateCash();
       await loadProducts();
 
+      // Hide all windows initially — do NOT auto-open on boot
       ['calcWindow', 'priceWindow', 'loadWindow', 'cashWindow'].forEach(id => {
         const winEl = document.getElementById(id);
         if (winEl) {
@@ -4367,10 +4487,7 @@
       });
       updateTaskbar();
 
-      setTimeout(() => {
-        restoreWindowFromTaskbar('calcWindow');
-        restoreWindowFromTaskbar('cashWindow');
-      }, 400);
+      // No auto-open on boot (removed restoreWindowFromTaskbar calls)
 
       clearTimeout(bootTimeout);
       revealDesktop();
