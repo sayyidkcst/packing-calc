@@ -11,7 +11,3505 @@
       margin: 0;
       padding: 0;
       font-family: 'Segoe UI', 'Trebuchet MS', Tahoma, sans-serif;
+      user-select: none;<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KCST Windows · Packing + Return</title>
+  <style>
+    /* ---------- WINDOWS 7 AERO GLOBAL ---------- */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', 'Trebuchet MS', Tahoma, sans-serif;
       user-select: none;
+    }
+    body {
+      min-height: 100vh;
+      overflow: hidden;
+      position: relative;
+      margin: 0;
+      background: #0a3a5c url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1920&q=80') center/cover no-repeat fixed;
+      transition: background-image 0.3s ease;
+    }
+
+    :root {
+      --taskbar-height: 40px;
+    }
+
+    .wallpaper-layer {
+      position: fixed;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      z-index: 0;
+      transition: background-image 0.3s ease, filter 0.3s ease;
+    }
+
+    .wallpaper-layer::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 50%, transparent 40%, rgba(0, 20, 40, 0.35) 100%);
+      pointer-events: none;
+    }
+
+    /* ---------- BOOT / CONNECTING OVERLAY ---------- */
+    .boot-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 999999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 22px;
+      background: radial-gradient(circle at 50% 40%, rgba(20, 60, 100, 0.35) 0%, rgba(5, 20, 40, 0.75) 100%);
+      backdrop-filter: blur(3px);
+      opacity: 1;
+      transition: opacity 0.5s ease;
+      pointer-events: auto;
+    }
+    .boot-overlay.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    .boot-logo {
+      font-size: 3.2rem;
+      line-height: 1;
+      filter: drop-shadow(0 4px 18px rgba(120, 200, 255, 0.7));
+      animation: bootPulse 2s ease-in-out infinite;
+    }
+    @keyframes bootPulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.08); opacity: 0.85; }
+    }
+    .boot-title {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: #e8f4ff;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7), 0 0 20px rgba(120, 200, 255, 0.5);
+      letter-spacing: 0.06em;
+    }
+    .boot-status {
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: #b8d4ec;
+      text-shadow: 0 1px 6px rgba(0, 0, 0, 0.7);
+      letter-spacing: 0.04em;
+      min-height: 1.2em;
+    }
+    .boot-status.error { color: #ff9e9e; }
+    .boot-status.ok { color: #a6f0b8; }
+
+    .boot-progress {
+      width: 220px;
+      height: 12px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.4), 0 1px 0 rgba(255, 255, 255, 0.12);
+      overflow: hidden;
+      position: relative;
+    }
+    .boot-progress::after {
+      content: '';
+      position: absolute;
+      top: 0; bottom: 0;
+      width: 40%;
+      border-radius: 8px;
+      background: linear-gradient(90deg, transparent 0%, #7fc5f5 25%, #ffffff 50%, #7fc5f5 75%, transparent 100%);
+      box-shadow: 0 0 14px rgba(140, 220, 255, 0.9);
+      animation: bootBar 1.4s linear infinite;
+    }
+    @keyframes bootBar {
+      0% { left: -45%; }
+      100% { left: 105%; }
+    }
+    .boot-spinner {
+      width: 34px; height: 34px;
+      border: 3px solid rgba(180, 220, 255, 0.28);
+      border-top-color: #a0d8ff;
+      border-radius: 50%;
+      animation: bootSpin 0.85s linear infinite;
+      filter: drop-shadow(0 0 8px rgba(140, 200, 255, 0.7));
+    }
+    @keyframes bootSpin { to { transform: rotate(360deg); } }
+
+    body.not-connected .desktop-gadget,
+    body.not-connected .window,
+    body.not-connected .window-price,
+    body.not-connected .window-load,
+    body.not-connected .startbar,
+    body.not-connected .start-menu {
+      opacity: 0 !important;
+      pointer-events: none !important;
+      visibility: hidden !important;
+    }
+
+    .desktop-gadget, .startbar { transition: opacity 0.6s ease; }
+    .window, .window-price, .window-load { transition: opacity 0.2s, transform 0.2s, top 0.15s, left 0.15s, width 0.15s, height 0.15s; }
+
+    /* ---------- DESKTOP CLOCK GADGET ---------- */
+    .desktop-gadget {
+      position: fixed;
+      top: 30px;
+      right: 30px;
+      z-index: 5;
+      width: 240px;
+      background: radial-gradient(circle at 50% 30%, rgba(255, 255, 255, 0.28) 0%, rgba(220, 235, 250, 0.18) 40%, rgba(140, 180, 220, 0.14) 100%);
+      border-radius: 14px;
+      border-top: 1px solid rgba(255, 255, 255, 0.55);
+      border-left: 1px solid rgba(255, 255, 255, 0.35);
+      border-right: 1px solid rgba(120, 160, 200, 0.4);
+      border-bottom: 1px solid rgba(80, 120, 160, 0.5);
+      box-shadow: 
+        0 0 0 1px rgba(255, 255, 255, 0.25) inset,
+        0 0 0 1px rgba(30, 63, 90, 0.5),
+        0 12px 35px rgba(0, 0, 0, 0.55),
+        0 2px 10px rgba(0, 0, 0, 0.4),
+        inset 0 1px 20px rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(16px);
+      padding: 18px 16px 16px 16px;
+      text-align: center;
+      cursor: grab;
+      transition: box-shadow 0.2s ease, transform 0.2s ease;
+      overflow: hidden;
+    }
+    .desktop-gadget::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 10%; right: 10%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.9), transparent);
+      pointer-events: none;
+    }
+    .desktop-gadget::after {
+      content: '';
+      position: absolute;
+      top: 6px; left: 6px; right: 6px;
+      height: 40%;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.18) 0%, transparent 100%);
+      border-radius: 10px 10px 50% 50%;
+      pointer-events: none;
+    }
+    .desktop-gadget:active { cursor: grabbing; }
+    .desktop-gadget.dragging {
+      box-shadow: 
+        0 0 0 1px rgba(255, 255, 255, 0.35) inset,
+        0 0 0 1px rgba(30, 63, 90, 0.6),
+        0 18px 45px rgba(0, 0, 0, 0.7),
+        0 4px 14px rgba(0, 0, 0, 0.5);
+      transform: scale(1.02);
+    }
+
+    .gadget-time {
+      position: relative;
+      font-family: 'Segoe UI Light', 'Segoe UI', 'Consolas', monospace;
+      font-size: 3.2rem;
+      font-weight: 300;
+      color: #ffffff;
+      letter-spacing: 0.02em;
+      line-height: 1;
+      text-shadow: 
+        0 2px 4px rgba(0, 0, 0, 0.5),
+        0 0 20px rgba(140, 200, 255, 0.55),
+        0 0 40px rgba(100, 170, 240, 0.35);
+      margin-bottom: 2px;
+      transition: opacity 0.3s;
+      z-index: 1;
+    }
+    .gadget-time .seconds {
+      font-size: 1.4rem;
+      font-weight: 300;
+      color: rgba(220, 240, 255, 0.85);
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5), 0 0 12px rgba(140, 200, 255, 0.4);
+      margin-left: 4px;
+      vertical-align: 0.35em;
+    }
+    .gadget-time .ampm {
+      font-size: 1.1rem;
+      font-weight: 400;
+      color: rgba(220, 240, 255, 0.9);
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5), 0 0 12px rgba(140, 200, 255, 0.4);
+      margin-left: 6px;
+      vertical-align: 0.55em;
+      letter-spacing: 0.06em;
+    }
+    .gadget-date {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: rgba(235, 245, 255, 0.92);
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.55), 0 0 10px rgba(140, 200, 255, 0.35);
+      letter-spacing: 0.04em;
+      margin-bottom: 12px;
+      z-index: 1;
+      position: relative;
+    }
+    .gadget-day {
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.22em;
+      color: rgba(200, 225, 250, 0.75);
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+      border-top: 1px solid rgba(255, 255, 255, 0.22);
+      padding-top: 10px;
+      margin-top: 6px;
+      z-index: 1;
+      position: relative;
+    }
+
+    .gadget-analog {
+      width: 118px;
+      height: 118px;
+      margin: 0 auto 10px auto;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.42) 0%, rgba(220, 235, 250, 0.18) 55%, rgba(90, 130, 170, 0.25) 100%);
+      border: 2px solid rgba(255, 255, 255, 0.45);
+      box-shadow: 
+        0 4px 14px rgba(0, 0, 0, 0.5),
+        inset 0 2px 8px rgba(255, 255, 255, 0.35),
+        inset 0 -2px 8px rgba(0, 20, 40, 0.35);
+      position: relative;
+      z-index: 1;
+    }
+    .gadget-analog::before {
+      content: '';
+      position: absolute;
+      inset: 8px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      pointer-events: none;
+    }
+    .gadget-hand {
+      position: absolute;
+      bottom: 50%;
+      left: 50%;
+      transform-origin: bottom center;
+      border-radius: 4px;
+      transition: transform 0.3s cubic-bezier(0.4, 2.4, 0.55, 0.8);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+    }
+    .gadget-hand.hour {
+      width: 4px;
+      height: 30px;
+      background: linear-gradient(180deg, #ffffff, #cfe4f7);
+      margin-left: -2px;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.6), 0 0 6px rgba(180, 220, 255, 0.6);
+    }
+    .gadget-hand.minute {
+      width: 3px;
+      height: 42px;
+      background: linear-gradient(180deg, #eaf6ff, #b8d8f0);
+      margin-left: -1.5px;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.6), 0 0 6px rgba(180, 220, 255, 0.6);
+    }
+    .gadget-hand.second {
+      width: 2px;
+      height: 48px;
+      background: linear-gradient(180deg, #ffb37a, #e8734a);
+      margin-left: -1px;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.6), 0 0 8px rgba(255, 160, 100, 0.8);
+      transition: transform 0.1s cubic-bezier(0.4, 2.4, 0.55, 0.8);
+    }
+    .gadget-center-dot {
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 8px; height: 8px;
+      margin: -4px 0 0 -4px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #ffffff 0%, #b8d8f0 60%, #5a8ab0 100%);
+      box-shadow: 0 0 6px rgba(180, 220, 255, 0.9), 0 1px 2px rgba(0, 0, 0, 0.5);
+      z-index: 3;
+    }
+    .gadget-tick {
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 2px; height: 6px;
+      background: rgba(255, 255, 255, 0.55);
+      border-radius: 1px;
+      transform-origin: center 55px;
+      box-shadow: 0 0 3px rgba(180, 220, 255, 0.4);
+    }
+    .gadget-tick.major {
+      width: 3px; height: 9px;
+      background: rgba(255, 255, 255, 0.85);
+      box-shadow: 0 0 5px rgba(180, 220, 255, 0.7);
+    }
+
+    .gadget-grip {
+      position: absolute;
+      top: 4px; left: 50%;
+      transform: translateX(-50%);
+      width: 40px; height: 3px;
+      border-radius: 3px;
+      background: rgba(255, 255, 255, 0.18);
+      opacity: 0;
+      transition: opacity 0.2s;
+      pointer-events: none;
+    }
+    .desktop-gadget:hover .gadget-grip { opacity: 1; }
+
+    @media (max-width: 1200px) {
+      .desktop-gadget { width: 200px; top: 20px; right: 20px; padding: 14px 12px 12px 12px; }
+      .gadget-time { font-size: 2.6rem; }
+      .gadget-analog { width: 96px; height: 96px; }
+      .gadget-tick { transform-origin: center 44px; }
+    }
+    @media (max-width: 600px) {
+      .desktop-gadget { width: 170px; padding: 12px 10px 10px 10px; }
+      .gadget-time { font-size: 2.1rem; }
+      .gadget-analog { width: 80px; height: 80px; }
+      .gadget-tick { transform-origin: center 36px; }
+      .gadget-date { font-size: 0.72rem; }
+    }
+
+    /* ---------- WINDOW BASE ---------- */
+    .window, .window-price, .window-load {
+      position: absolute;
+      background: rgba(220, 235, 250, 0.78);
+      backdrop-filter: blur(12px);
+      border-radius: 10px 10px 8px 8px;
+      box-shadow: 
+        0 0 0 1px rgba(255, 255, 255, 0.5) inset,
+        0 0 0 1px #1e3f5a,
+        0 12px 35px rgba(0, 0, 0, 0.6),
+        0 2px 8px rgba(0, 0, 0, 0.5);
+      border-top: 1px solid #a8c8e8;
+      border-left: 1px solid #8bb1d4;
+      border-right: 1px solid #6a93b8;
+      border-bottom: 1px solid #4b769b;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      max-height: calc(100vh - var(--taskbar-height) - 20px);
+      transition: opacity 0.2s, transform 0.2s, top 0.15s, left 0.15s, width 0.15s, height 0.15s;
+      z-index: 10;
+    }
+
+    .window { top: 20px; left: 20px; width: 500px; max-width: calc(100vw - 40px); }
+    /* ========== PRODUCT WINDOW: REDUCED WIDTH & HEIGHT ========== */
+    .window-price { 
+      top: 20px; 
+      right: 360px; 
+      width: 440px; 
+      max-width: calc(100vw - 380px);
+      max-height: 340px;
+      height: 340px;
+      z-index: 11; 
+    }
+    .window-load { top: 400px; left: 20px; width: 500px; max-width: calc(100vw - 40px); z-index: 12; }
+
+    .window.minimized, .window-price.minimized, .window-load.minimized { display: none; }
+
+    .window.maximized, .window-price.maximized, .window-load.maximized {
+      top: 0 !important; left: 0 !important; right: 0 !important;
+      width: 100vw !important; max-width: 100vw !important;
+      height: calc(100vh - var(--taskbar-height)) !important;
+      max-height: calc(100vh - var(--taskbar-height)) !important;
+      border-radius: 0; border-top: none; border-left: none; border-right: none; border-bottom: none;
+    }
+    .window.maximized .title-bar, .window-price.maximized .title-bar, .window-load.maximized .title-bar {
+      border-radius: 0; cursor: default !important;
+    }
+
+    .window.snap-left, .window-price.snap-left, .window-load.snap-left,
+    .window.snap-right, .window-price.snap-right, .window-load.snap-right {
+      transition: top 0.15s ease, left 0.15s ease, width 0.15s ease, height 0.15s ease;
+    }
+
+    .title-bar {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 6px 12px 6px 16px;
+      background: linear-gradient(180deg, rgba(215, 235, 255, 0.9) 0%, rgba(170, 205, 235, 0.8) 50%, rgba(140, 180, 220, 0.7) 100%);
+      border-bottom: 1px solid #6b8fae;
+      box-shadow: 0 1px 0 rgba(255, 255, 255, 0.6) inset, 0 -1px 0 rgba(0, 0, 0, 0.1) inset;
+      backdrop-filter: blur(8px); border-radius: 10px 10px 0 0;
+      cursor: move; cursor: grab; flex-shrink: 0;
+    }
+    .title-bar:active { cursor: grabbing; }
+    .title-text {
+      font-size: 0.9rem; font-weight: 600; color: #0b1e2c;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
+      display: flex; align-items: center; gap: 6px; pointer-events: none;
+    }
+    .caption-buttons { display: flex; gap: 2px; }
+    .caption-btn {
+      width: 28px; height: 20px;
+      background: rgba(230, 245, 255, 0.65);
+      border: 1px solid #6f94b2; border-radius: 4px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.8rem; color: #0b2e44;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1), inset 0 1px 0 white;
+      cursor: pointer; font-weight: 500; line-height: 1; transition: 0.1s;
+    }
+    .caption-btn:hover { background: rgba(245, 255, 255, 0.95); border-color: #3f6e96; }
+    .caption-btn.close {
+      background: #d66d6d; border-color: #8e3e3e; color: white;
+      text-shadow: 0 1px 0 #5e1e1e;
+      box-shadow: inset 0 1px 0 #f0a0a0, 0 1px 2px rgba(0,0,0,0.3);
+    }
+    .caption-btn.close:hover { background: #e68181; }
+    .caption-btn.minimize:hover { background: #ffe9b0; }
+    .caption-btn.maximize:hover { background: #c4e4ff; }
+
+    .status-dot {
+      width: 8px; height: 8px; border-radius: 50%; background: #9aa8b5; margin-left: 6px;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.3); transition: 0.3s;
+    }
+    .status-dot.online { background: #4caf50; box-shadow: 0 0 6px #4caf50; }
+    .status-dot.offline { background: #e74c3c; box-shadow: 0 0 6px #e74c3c; }
+    .status-dot.syncing { background: #f39c12; box-shadow: 0 0 6px #f39c12; animation: pulse 1s infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+    .window-content {
+      padding: 12px 14px 14px 14px;
+      background: rgba(245, 250, 255, 0.6);
+      backdrop-filter: blur(4px);
+      overflow-y: auto; flex: 1;
+    }
+
+    .aero-info {
+      background: rgba(220, 235, 250, 0.7);
+      border: 1px solid #9bb8d4; border-radius: 6px;
+      padding: 5px 12px; margin-bottom: 12px;
+      box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.05), 0 1px 0 white;
+      font-size: 0.76rem; color: #142f44;
+      display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font-weight: 500;
+    }
+    .aero-info .badge {
+      background: #2b5b7c; color: white; border-radius: 40px;
+      padding: 2px 12px; font-size: 0.7rem; font-weight: 600;
+      letter-spacing: 0.3px;
+      box-shadow: inset 0 1px 2px #ffffff60, 0 1px 2px #00000030;
+    }
+
+    .fieldset {
+      background: rgba(235, 245, 255, 0.6);
+      border: 1px solid #8eb0ce; border-radius: 8px;
+      padding: 12px 10px 8px 10px; margin-bottom: 10px;
+      box-shadow: inset 0 1px 6px rgba(255, 255, 255, 0.9), 0 2px 4px rgba(0, 0, 0, 0.08);
+      position: relative;
+    }
+    .fieldset-legend {
+      font-weight: 600; font-size: 0.72rem; color: #1f4462;
+      padding: 0 10px;
+      background: linear-gradient(180deg, #f0f8ff, #d6e7f5);
+      border-radius: 20px; border: 1px solid #9db9d6;
+      text-shadow: 0 1px 0 white;
+      margin-left: 8px; display: inline-block;
+      box-shadow: 0 1px 0 white;
+      position: relative; top: -20px; margin-bottom: -18px;
+    }
+
+    /* ========== TINY ONE-LINE INPUT ROW (4 fields, max 4 digits) ========== */
+    .input-row-four {
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 5px;
+      align-items: flex-end;
+    }
+    .input-row-four .input-group {
+      flex: 0 0 auto;
+      width: 88px;
+      min-width: 0;
+      max-width: none;
+    }
+    .input-row-four .input-group label {
+      font-size: 0.6rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-left: 2px;
+      gap: 2px;
+    }
+    .input-row-four .input-wrap {
+      padding: 1px 3px 1px 5px;
+      min-height: 24px;
+    }
+    .input-row-four .input-wrap input {
+      font-size: 0.75rem;
+      padding: 2px 0;
+      text-align: center;
+      letter-spacing: 0.5px;
+    }
+    .input-row-four .input-wrap .unit {
+      font-size: 0.5rem;
+      padding: 1px 4px;
+      margin-left: 2px;
+    }
+
+    /* ========== NARROWER INPUT ROW ========== */
+    .input-row { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: flex-end; }
+    .input-group { flex: 0 1 auto; min-width: 80px; max-width: 150px; display: flex; flex-direction: column; gap: 3px; }
+    .input-group.full-width { flex: 0 1 auto; min-width: 140px; max-width: 240px; }
+    .input-group label {
+      font-size: 0.7rem; font-weight: 600; color: #1c3e5a;
+      text-shadow: 0 1px 0 white;
+      display: flex; align-items: center; gap: 4px;
+      margin-left: 4px; letter-spacing: 0.2px;
+      white-space: nowrap;
+    }
+
+    /* ========== COMPACT INPUT WRAP ========== */
+    .input-wrap {
+      display: flex; align-items: center; background: white;
+      border: 1px solid #7f9db9; border-radius: 5px;
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 0 white;
+      padding: 1px 5px 1px 8px;
+      transition: 0.1s; width: 100%;
+      min-height: 28px;
+    }
+    .input-wrap:focus-within {
+      border-color: #3c7bb0;
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 0 2px rgba(96, 173, 240, 0.4);
+    }
+    .input-wrap input {
+      border: none; outline: none; background: transparent;
+      font-size: 0.85rem; font-weight: 600; padding: 4px 0;
+      width: 100%; color: #102c3f;
+      font-family: 'Segoe UI', Consolas, monospace;
+      text-align: right; min-width: 0;
+      line-height: 1.1;
+    }
+    .input-wrap input[type="number"] { -moz-appearance: textfield; }
+    .input-wrap input::-webkit-outer-spin-button, .input-wrap input::-webkit-inner-spin-button {
+      -webkit-appearance: none; margin: 0;
+    }
+    .input-wrap .unit {
+      background: #c1d9ec; color: #10344b;
+      font-size: 0.6rem; font-weight: 700;
+      padding: 2px 6px; border-radius: 40px;
+      letter-spacing: 0.2px; border: 1px solid #8dafcc;
+      box-shadow: inset 0 1px 2px #ffffff90;
+      white-space: nowrap; margin-left: 4px; flex-shrink: 0;
+    }
+
+    /* ========== COMPACT COMBO / SEARCH ========== */
+    .combo-wrap {
+      display: flex; align-items: center; background: white;
+      border: 1px solid #7f9db9; border-radius: 5px;
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 0 white;
+      padding: 0; transition: 0.1s; width: 100%;
+      position: relative; overflow: hidden;
+      min-height: 30px;
+    }
+    .combo-wrap:focus-within {
+      border-color: #3c7bb0;
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 0 2px rgba(96, 173, 240, 0.4);
+    }
+    .combo-wrap select {
+      flex: 1; border: none; outline: none; background: transparent;
+      font-size: 0.78rem; font-weight: 600; padding: 6px 4px 6px 8px;
+      color: #102c3f; font-family: 'Segoe UI', sans-serif;
+      cursor: pointer; appearance: none; -webkit-appearance: none; -moz-appearance: none;
+      width: 100%; min-width: 0; text-overflow: ellipsis;
+    }
+    .combo-wrap select option { background: white; color: #102c3f; padding: 4px; }
+    .combo-wrap .combo-arrow {
+      background: linear-gradient(180deg, #e9f2fb 0%, #c3d9ed 100%);
+      border-left: 1px solid #8eb0ce;
+      padding: 0 6px; display: flex; align-items: center; justify-content: center;
+      font-size: 0.6rem; color: #10344b; pointer-events: none;
+      flex-shrink: 0; height: 100%; min-height: 28px; font-weight: 700;
+    }
+    .combo-wrap .combo-icon {
+      background: #c1d9ec; color: #10344b;
+      font-size: 0.62rem; font-weight: 700;
+      padding: 4px 6px; border-left: 1px solid #8dafcc;
+      flex-shrink: 0; min-height: 28px;
+      display: flex; align-items: center;
+    }
+
+    .top-row { display: flex; gap: 8px; margin-bottom: 10px; align-items: stretch; }
+    .top-row .combo-wrap { flex: 0 0 150px; min-width: 0; }
+    .top-row .search-wrap { flex: 1 1 auto; min-width: 0; margin-bottom: 0; }
+
+    .bag-preview {
+      background: #d9ebfc; border: 1px solid #86aac9;
+      border-radius: 40px; padding: 4px 10px 4px 12px;
+      font-size: 0.7rem; color: #0b2b41; font-weight: 500;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 6px; margin-top: 8px;
+      box-shadow: inset 0 1px 4px #ffffff, 0 1px 4px rgba(0, 0, 0, 0.1);
+    }
+    .bag-preview .highlight {
+      background: #1d4c6e; color: white;
+      padding: 3px 10px; border-radius: 30px;
+      font-weight: 600;
+      box-shadow: inset 0 1px 3px #b0d4f0, 0 1px 3px #00000030;
+      font-size: 0.66rem;
+    }
+
+    .result-panel {
+      background: rgba(248, 253, 255, 0.8);
+      border: 1px solid #83a7c7; border-radius: 8px;
+      padding: 8px 10px 10px 10px;
+      box-shadow: inset 0 1px 8px white, 0 2px 6px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(2px);
+    }
+    .result-header {
+      font-size: 0.8rem; font-weight: 700; color: #1a3e5a;
+      text-shadow: 0 1px 0 white;
+      border-bottom: 1px solid #aac2db;
+      padding-bottom: 5px; margin-bottom: 8px;
+      display: flex; align-items: center; gap: 6px;
+      letter-spacing: 0.3px;
+    }
+    .result-grid {
+      display: flex; flex-wrap: wrap; gap: 8px;
+      justify-content: center; margin-bottom: 8px;
+    }
+    .result-card {
+      background: #e7f2fc; border: 1px solid #9ab9d6;
+      border-radius: 6px; padding: 6px 6px;
+      flex: 1 1 80px; text-align: center;
+      box-shadow: inset 0 1px 4px #ffffff, 0 2px 4px rgba(0, 0, 0, 0.08);
+    }
+    .result-card .big {
+      font-size: 1.4rem; font-weight: 700; color: #0f3146;
+      line-height: 1.1; text-shadow: 0 1px 0 white;
+      font-family: 'Segoe UI', Consolas, monospace;
+    }
+    .result-card .label {
+      font-size: 0.58rem; font-weight: 700; text-transform: uppercase;
+      color: #1f5677; background: #c6def5;
+      display: inline-block; padding: 2px 8px; border-radius: 30px;
+      letter-spacing: 0.5px; margin-top: 3px; border: 1px solid #a5c2dd;
+    }
+    .result-card .sub { font-size: 0.62rem; color: #2a5777; margin-top: 3px; font-weight: 500; }
+    .summary-bar {
+      background: #dcecfc; border: 1px solid #98b9da;
+      border-radius: 40px; padding: 4px 10px;
+      font-size: 0.72rem; color: #10344b;
+      display: flex; align-items: center; justify-content: center;
+      flex-wrap: wrap; gap: 6px 10px; margin-top: 4px;
+      box-shadow: inset 0 1px 6px white, 0 1px 4px rgba(0, 0, 0, 0.1);
+      font-weight: 500;
+    }
+    .summary-bar .value {
+      font-weight: 700; font-size: 0.96rem;
+      background: #1d4a6b; color: white;
+      padding: 2px 12px; border-radius: 40px;
+      box-shadow: inset 0 1px 3px #bbdaff, 0 1px 4px #00000040;
+      font-family: 'Segoe UI', Consolas, monospace;
+      letter-spacing: 0.5px;
+    }
+    .error-msg {
+      background: #ffdede; border: 1px solid #c26b6b;
+      border-radius: 40px; padding: 6px 12px;
+      color: #8b2c2c; font-weight: 600;
+      text-shadow: 0 1px 0 #ffe7e7;
+      box-shadow: inset 0 1px 5px white;
+      display: inline-block; width: 100%;
+      text-align: center; font-size: 0.76rem;
+    }
+    .empty-hint {
+      text-align: center; padding: 12px 8px;
+      color: #3a6382; font-size: 0.8rem; font-weight: 500;
+    }
+    .empty-hint .small {
+      font-size: 0.68rem; color: #5a7f9a;
+      margin-top: 5px; display: block;
+    }
+
+    .footer-note {
+      font-size: 0.6rem; color: #316385; text-align: center;
+      margin-top: 8px; text-shadow: 0 1px 0 #d9ecff;
+      border-top: 1px solid #a7c2db;
+      padding-top: 6px; letter-spacing: 0.2px;
+    }
+
+    .price-top-actions { display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
+
+    /* ========== COMPACT SEARCH WRAP ========== */
+    .search-wrap {
+      display: flex; align-items: center; background: white;
+      border: 1px solid #7f9db9; border-radius: 5px;
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 0 white;
+      padding: 1px 6px 1px 10px; transition: 0.1s; flex-shrink: 0;
+      min-height: 30px;
+    }
+    .search-wrap:focus-within {
+      border-color: #3c7bb0;
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 0 2px rgba(96, 173, 240, 0.4);
+    }
+    .search-wrap .search-icon { font-size: 0.8rem; margin-right: 4px; color: #4a7ba3; }
+    .search-wrap input {
+      border: none; outline: none; background: transparent;
+      font-size: 0.8rem; font-weight: 500; padding: 5px 0;
+      width: 100%; color: #102c3f;
+      font-family: 'Segoe UI', sans-serif; min-width: 0;
+    }
+    .search-wrap .clear-search {
+      background: #c1d9ec; color: #10344b;
+      border: 1px solid #8dafcc; border-radius: 50%;
+      width: 18px; height: 18px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.65rem; font-weight: 700;
+      cursor: pointer; flex-shrink: 0;
+      margin-left: 4px; line-height: 1;
+    }
+    .search-wrap .clear-search:hover { background: #a8c8e0; }
+
+    /* ========== PRODUCT TABLE: READABLE TEXT ========== */
+    .price-table {
+      width: 100%; border-collapse: separate; border-spacing: 0;
+      font-size: 0.8rem; background: white;
+      border: 1px solid #9ab9d6; border-radius: 6px;
+      overflow: hidden;
+      box-shadow: inset 0 1px 4px #ffffff, 0 2px 4px rgba(0, 0, 0, 0.08);
+    }
+    .price-table thead th {
+      background: linear-gradient(180deg, #e3eff9 0%, #c3d9ed 100%);
+      color: #10344b; font-weight: 700; font-size: 0.72rem;
+      text-transform: uppercase; letter-spacing: 0.4px;
+      padding: 6px 8px; text-align: left;
+      border-bottom: 1px solid #8eb0ce;
+      text-shadow: 0 1px 0 white;
+      position: sticky; top: 0; z-index: 2;
+    }
+    .price-table thead th:last-child { text-align: right; }
+    .price-table tbody td {
+      padding: 6px 8px; border-bottom: 1px solid #d5e3ef;
+      color: #1a3e5a; font-weight: 500; vertical-align: middle;
+    }
+    .price-table tbody tr:last-child td { border-bottom: none; }
+    .price-table tbody tr:nth-child(even) { background: #f4faff; }
+    .price-table tbody tr:hover { background: #e1effc; cursor: pointer; }
+    .price-table tbody tr.selected-row {
+      background: #c8dff5 !important;
+      box-shadow: inset 0 0 0 1px #5b8bb5;
+    }
+    .price-table tbody td.price-cell {
+      text-align: right; font-weight: 700; color: #0f3146;
+      font-family: 'Segoe UI', Consolas, monospace; white-space: nowrap;
+    }
+    .price-table tbody td.name-cell { font-weight: 600; color: #10344b; }
+    .price-table tbody td.customer-cell {
+      font-weight: 500; color: #5a3a7e; font-size: 0.76rem;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      max-width: 90px;
+    }
+    .price-table tbody td.pcs-cell {
+      color: #2a5777; font-weight: 600;
+      font-family: 'Segoe UI', Consolas, monospace;
+      text-align: center;
+    }
+    .price-table tbody td.action-cell { text-align: center; width: 60px; padding: 4px; }
+    .row-edit-btn, .row-delete-btn {
+      border-radius: 4px;
+      width: 22px; height: 22px;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 0.75rem; font-weight: 700;
+      cursor: pointer; transition: 0.1s; line-height: 1; padding: 0;
+      margin: 0 1px;
+    }
+    .row-edit-btn {
+      background: #d5e8f5; border: 1px solid #5b8bb5; color: #1d4a6b;
+    }
+    .row-edit-btn:hover { background: #a8c8e0; color: white; }
+    .row-delete-btn {
+      background: #f5d5d5; border: 1px solid #c26b6b; color: #8b2c2c;
+    }
+    .row-delete-btn:hover { background: #e8a5a5; color: white; }
+    .table-container {
+      flex: 1; overflow-y: auto; border-radius: 6px;
+      padding-right: 2px; margin-bottom: 4px; min-height: 60px;
+    }
+    .no-results {
+      text-align: center; padding: 14px 8px;
+      color: #3a6382; font-size: 0.8rem; font-weight: 500;
+      background: #f4faff; border: 1px dashed #b4d1e6;
+      border-radius: 6px;
+    }
+    .no-results .small {
+      display: block; font-size: 0.68rem;
+      color: #6a8ba5; margin-top: 6px;
+    }
+
+    .total-qty-display {
+      background: linear-gradient(180deg, #e8f4ff 0%, #c7ddf0 100%);
+      border: 1px solid #7ea5c9; border-radius: 40px;
+      padding: 7px 14px;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 8px; margin-bottom: 10px;
+      box-shadow: inset 0 1px 6px white, 0 2px 6px rgba(0, 0, 0, 0.12);
+      flex-wrap: wrap;
+    }
+    .total-qty-display .tq-label {
+      font-size: 0.74rem; font-weight: 600; color: #1d4a6b;
+      text-shadow: 0 1px 0 white;
+      display: flex; align-items: center; gap: 5px;
+    }
+    .total-qty-display .tq-value {
+      font-size: 1.3rem; font-weight: 800; color: #0f3146;
+      font-family: 'Segoe UI', Consolas, monospace;
+      text-shadow: 0 1px 0 white;
+      letter-spacing: -0.02em; line-height: 1;
+    }
+    .total-qty-display .tq-unit { font-size: 0.76rem; font-weight: 600; color: #2a5777; margin-left: 3px; }
+    .total-qty-display .tq-bags {
+      background: #1d4a6b; color: white;
+      padding: 3px 10px; border-radius: 40px;
+      font-size: 0.74rem; font-weight: 700;
+      box-shadow: inset 0 1px 3px #bbdaff, 0 1px 4px #00000040;
+      font-family: 'Segoe UI', Consolas, monospace;
+    }
+
+    .loading-overlay {
+      position: absolute; inset: 0;
+      background: rgba(220, 235, 250, 0.7);
+      backdrop-filter: blur(2px);
+      display: none; align-items: center; justify-content: center;
+      z-index: 100; border-radius: 10px;
+    }
+    .loading-overlay.active { display: flex; }
+    .loading-spinner {
+      width: 30px; height: 30px;
+      border: 3px solid #8eb0ce; border-top-color: #1d4a6b;
+      border-radius: 50%; animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ========== COMPACT AERO BUTTON ========== */
+    .aero-btn {
+      border: 1px solid #6f95b6;
+      background: linear-gradient(180deg, #f5faff 0%, #d5e6f5 45%, #b3cee5 100%);
+      border-radius: 5px; padding: 6px 12px;
+      font-size: 0.76rem; font-weight: 600; color: #0f3146;
+      box-shadow: 0 1px 0 #ffffff inset, 0 0 0 1px #ffffff50 inset, 0 2px 5px rgba(0, 0, 0, 0.15);
+      cursor: pointer; transition: 0.06s linear;
+      display: inline-flex; align-items: center; justify-content: center;
+      gap: 5px; text-shadow: 0 1px 0 white;
+      flex: 0 0 auto; min-width: 0; white-space: nowrap;
+      min-height: 30px;
+    }
+    .aero-btn:hover {
+      background: linear-gradient(180deg, #ffffff 0%, #e0f0ff 45%, #c2dcf5 100%);
+      border-color: #4c7ea5;
+    }
+    .aero-btn:active {
+      background: linear-gradient(180deg, #aac4dd 0%, #c3d9ed 50%, #dcecfc 100%);
+      box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.2);
+      transform: translateY(1px);
+    }
+    .aero-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .aero-btn.primary {
+      background: linear-gradient(180deg, #4a85b3 0%, #2a6088 45%, #15415f 100%);
+      color: white; border-color: #1b4260;
+      text-shadow: 0 1px 1px #0a1f2e;
+      box-shadow: inset 0 1px 0 #a0c8f0, 0 3px 8px #00000040;
+    }
+    .aero-btn.primary:hover {
+      background: linear-gradient(180deg, #5f9ac9 0%, #356e97 45%, #1b4d6f 100%);
+      border-color: #2b5e82;
+    }
+    .aero-btn.danger {
+      background: linear-gradient(180deg, #d98b8b 0%, #b85555 45%, #8b3232 100%);
+      color: white; border-color: #6b2323;
+      text-shadow: 0 1px 1px #3a1010;
+      box-shadow: inset 0 1px 0 #f0b0b0, 0 3px 8px #00000040;
+      flex: 0 0 auto;
+    }
+    .aero-btn.danger:hover {
+      background: linear-gradient(180deg, #e69b9b 0%, #c56565 45%, #9b3e3e 100%);
+    }
+
+    /* ---------- RESET BUTTON ROW ---------- */
+    .calc-actions-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+    .calc-actions-row .aero-btn {
+      flex: 0 0 auto;
+      min-width: 130px;
+    }
+
+    /* ========== TOAST REMOVED (hidden) ========== */
+    .toast { display: none !important; }
+
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0, 20, 40, 0.55);
+      backdrop-filter: blur(4px);
+      display: none; align-items: center; justify-content: center;
+      z-index: 9999;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal {
+      background: rgba(230, 242, 252, 0.95);
+      border-radius: 10px; border: 1px solid #6b8fae;
+      box-shadow: 
+        0 0 0 1px rgba(255, 255, 255, 0.6) inset,
+        0 12px 35px rgba(0, 0, 0, 0.6),
+        0 2px 8px rgba(0, 0, 0, 0.5);
+      width: 380px; max-width: calc(100vw - 40px);
+      overflow: hidden; animation: modalPop 0.2s ease;
+    }
+    @keyframes modalPop {
+      from { transform: scale(0.92); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .modal .title-bar { cursor: default; }
+    .modal .title-bar:active { cursor: default; }
+    .modal-content { padding: 14px 16px 16px 16px; background: rgba(245, 250, 255, 0.7); }
+    .modal-field { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
+    .modal-field label { font-size: 0.74rem; font-weight: 600; color: #1c3e5a; text-shadow: 0 1px 0 white; }
+    .modal-field .input-wrap { padding: 1px 8px; min-height: 32px; }
+    .modal-field .input-wrap input { text-align: left; padding: 6px 0; font-size: 0.85rem; }
+    .modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 6px; }
+
+    .confirm-dialog { width: 380px; }
+    .confirm-body {
+      display: flex; gap: 14px; align-items: flex-start;
+      padding: 14px 16px 10px 16px;
+      background: rgba(245, 250, 255, 0.7);
+    }
+    .confirm-icon {
+      font-size: 2rem; line-height: 1; flex-shrink: 0;
+      filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2));
+    }
+    .confirm-icon.warning { color: #d4a017; }
+    .confirm-icon.danger { color: #c0392b; }
+    .confirm-text { flex: 1; min-width: 0; }
+    .confirm-title {
+      font-size: 0.88rem; font-weight: 700; color: #10344b;
+      margin-bottom: 5px; text-shadow: 0 1px 0 white;
+    }
+    .confirm-message {
+      font-size: 0.8rem; color: #2a5777;
+      line-height: 1.45; font-weight: 500; word-wrap: break-word;
+    }
+    .confirm-message strong { color: #0f3146; font-weight: 700; }
+    .confirm-actions {
+      display: flex; gap: 8px; justify-content: flex-end;
+      padding: 10px 16px 12px 16px;
+      background: rgba(235, 245, 255, 0.6);
+      border-top: 1px solid #aac2db;
+    }
+    .confirm-actions .aero-btn { flex: 0 0 auto; min-width: 85px; }
+
+    .load-result-grid {
+      display: flex; flex-wrap: wrap; gap: 8px;
+      justify-content: center; margin-top: 10px;
+    }
+    .load-result-card {
+      background: #e7f2fc; border: 1px solid #9ab9d6;
+      border-radius: 6px; padding: 6px 6px;
+      flex: 1 1 100px; text-align: center;
+      box-shadow: inset 0 1px 4px #ffffff, 0 2px 4px rgba(0, 0, 0, 0.08);
+    }
+    .load-result-card .big {
+      font-size: 1.4rem; font-weight: 700; color: #0f3146;
+      line-height: 1.1; text-shadow: 0 1px 0 white;
+      font-family: 'Segoe UI', Consolas, monospace;
+    }
+    .load-result-card .label {
+      font-size: 0.56rem; font-weight: 700; text-transform: uppercase;
+      color: #1f5677; background: #c6def5;
+      display: inline-block; padding: 2px 8px; border-radius: 30px;
+      letter-spacing: 0.5px; margin-top: 3px; border: 1px solid #a5c2dd;
+    }
+
+    .table-container::-webkit-scrollbar,
+    .window-content::-webkit-scrollbar { width: 8px; }
+    .table-container::-webkit-scrollbar-track,
+    .window-content::-webkit-scrollbar-track { background: rgba(200, 220, 240, 0.4); border-radius: 10px; }
+    .table-container::-webkit-scrollbar-thumb,
+    .window-content::-webkit-scrollbar-thumb { background: #9bb9d6; border-radius: 10px; border: 1px solid #7a9bb8; }
+
+    .startbar {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      height: var(--taskbar-height);
+      background: linear-gradient(180deg, #4a7ba3 0%, #2a5a80 4%, #1e4d70 8%, #173e5c 90%, #0f2c42 100%);
+      border-top: 1px solid #7fb0d8;
+      box-shadow: 0 -4px 14px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+      display: flex; align-items: center;
+      padding: 0 6px; gap: 6px;
+      z-index: 99999; backdrop-filter: blur(8px);
+    }
+
+    .start-btn {
+      height: 34px; padding: 0 16px 0 10px;
+      background: radial-gradient(circle at 30% 30%, #7fc5f5 0%, #2a76b8 40%, #0e3d68 100%);
+      border: 1px solid #0a2a45;
+      border-radius: 0 30px 30px 0;
+      display: flex; align-items: center; gap: 6px;
+      color: white; font-size: 0.82rem; font-weight: 700;
+      text-shadow: 0 1px 2px black, 0 0 8px #6fc0ff;
+      cursor: pointer;
+      box-shadow: 
+        inset 0 1px 0 rgba(255, 255, 255, 0.5),
+        inset 0 -6px 12px rgba(0, 0, 0, 0.35),
+        0 0 8px rgba(120, 200, 255, 0.4);
+      transition: 0.15s; margin-left: -6px; position: relative;
+    }
+    .start-btn:hover {
+      background: radial-gradient(circle at 30% 30%, #a0d8ff 0%, #3a8fd0 40%, #154d7a 100%);
+      box-shadow: 
+        inset 0 1px 0 rgba(255, 255, 255, 0.6),
+        inset 0 -6px 12px rgba(0, 0, 0, 0.35),
+        0 0 14px rgba(140, 220, 255, 0.7);
+    }
+    .start-btn:active { transform: scale(0.97); }
+    .start-btn .start-orb {
+      width: 22px; height: 22px; border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #ffffff 0%, #a0e0ff 20%, #3aa0e8 55%, #0e3d68 100%);
+      box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.8), 0 0 6px #6fc0ff;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .start-btn .start-orb::before {
+      content: '⊞'; font-size: 0.7rem; color: #0a2a45;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6); font-weight: 700;
+    }
+
+    .taskbar-divider {
+      width: 1px; height: 24px;
+      background: linear-gradient(180deg, transparent 0%, #7fb0d8 50%, transparent 100%);
+      margin: 0 4px; flex-shrink: 0;
+    }
+
+    .taskbar-item {
+      height: 30px; padding: 0 14px;
+      background: linear-gradient(180deg, rgba(120, 165, 205, 0.55) 0%, rgba(70, 115, 160, 0.75) 100%);
+      border: 1px solid #4a7ba3; border-radius: 4px;
+      font-size: 0.72rem; font-weight: 600; color: #e8f4ff;
+      text-shadow: 0 1px 2px black;
+      cursor: pointer; transition: 0.15s;
+      display: flex; align-items: center; gap: 6px;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
+      flex-shrink: 0; max-width: 180px;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .taskbar-item:hover {
+      background: linear-gradient(180deg, rgba(160, 200, 235, 0.75) 0%, rgba(100, 145, 190, 0.9) 100%);
+      border-color: #6fa0c8;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 0 8px rgba(140, 200, 250, 0.5);
+    }
+    .taskbar-item.active {
+      background: linear-gradient(180deg, rgba(100, 155, 205, 0.9) 0%, rgba(55, 100, 150, 0.95) 100%);
+      border-color: #8fc0e8;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), inset 0 -6px 12px rgba(0, 0, 0, 0.3), 0 0 10px rgba(140, 200, 250, 0.7);
+    }
+    .taskbar-item.maximized {
+      background: linear-gradient(180deg, rgba(255, 200, 100, 0.9) 0%, rgba(200, 140, 40, 0.95) 100%);
+      border-color: #ffc864; color: #2a1500;
+      text-shadow: 0 1px 0 #ffe0a0;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 0 10px rgba(255, 200, 100, 0.7);
+    }
+
+    .system-tray {
+      margin-left: auto; display: flex; align-items: center;
+      gap: 10px; height: 100%;
+      padding: 0 12px 0 14px;
+      border-left: 1px solid rgba(127, 176, 216, 0.4);
+      flex-shrink: 0;
+    }
+    .tray-icon {
+      font-size: 0.8rem; color: #b8d4ec;
+      text-shadow: 0 1px 2px black;
+      cursor: pointer; padding: 4px; border-radius: 4px; transition: 0.15s;
+    }
+    .tray-icon:hover { background: rgba(120, 165, 205, 0.4); }
+    .clock {
+      display: flex; flex-direction: column; align-items: flex-end;
+      color: #e8f4ff; text-shadow: 0 1px 2px black;
+      font-size: 0.68rem; line-height: 1.15;
+      font-weight: 500; letter-spacing: 0.2px;
+      min-width: 100px; padding-left: 8px;
+    }
+    .clock .time {
+      font-weight: 700; font-size: 0.72rem;
+      font-family: 'Segoe UI', Consolas, monospace;
+      letter-spacing: 0.3px;
+      white-space: nowrap;
+    }
+    .clock .date { font-size: 0.62rem; color: #b8d4ec; }
+
+    .start-menu {
+      position: fixed; bottom: var(--taskbar-height); left: 0;
+      width: 300px;
+      background: linear-gradient(180deg, rgba(30, 70, 110, 0.97) 0%, rgba(15, 45, 75, 0.98) 100%);
+      border: 1px solid #4a7ba3; border-bottom: none;
+      border-radius: 8px 8px 0 0;
+      box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+      padding: 10px 0;
+      z-index: 99998; display: none;
+      backdrop-filter: blur(10px);
+      max-height: calc(100vh - var(--taskbar-height) - 20px);
+      overflow-y: auto;
+    }
+    .start-menu.open { display: block; animation: slideUp 0.15s ease; }
+    @keyframes slideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .start-menu-header {
+      padding: 8px 16px; color: #b8d4ec;
+      font-size: 0.7rem; font-weight: 600;
+      letter-spacing: 0.4px;
+      border-bottom: 1px solid rgba(127, 176, 216, 0.3);
+      margin-bottom: 6px; margin-top: 6px; text-transform: uppercase;
+    }
+    .start-menu-header:first-child { margin-top: 0; }
+    .start-menu-item {
+      padding: 10px 20px; color: #e8f4ff;
+      font-size: 0.8rem; font-weight: 500;
+      cursor: pointer;
+      display: flex; align-items: center; gap: 10px;
+      transition: 0.1s; text-shadow: 0 1px 2px black;
+    }
+    .start-menu-item:hover {
+      background: linear-gradient(90deg, rgba(100, 165, 220, 0.6) 0%, rgba(60, 110, 160, 0.4) 100%);
+    }
+    .start-menu-item .smi-icon { font-size: 1rem; width: 20px; text-align: center; }
+
+    /* ---------- SMALL WALLPAPER WINDOW (compact) ---------- */
+    .wallpaper-mini-window {
+      position: fixed;
+      width: 380px;
+      max-width: calc(100vw - 40px);
+      z-index: 100000;
+      display: none;
+      flex-direction: column;
+      border-radius: 10px 10px 8px 8px;
+      box-shadow: 
+        0 0 0 1px rgba(255, 255, 255, 0.5) inset,
+        0 0 0 1px #1e3f5a,
+        0 12px 35px rgba(0, 0, 0, 0.6),
+        0 2px 8px rgba(0, 0, 0, 0.5);
+      border-top: 1px solid #a8c8e8;
+      border-left: 1px solid #8bb1d4;
+      border-right: 1px solid #6a93b8;
+      border-bottom: 1px solid #4b769b;
+      background: rgba(220, 235, 250, 0.86);
+      backdrop-filter: blur(14px);
+      overflow: hidden;
+      animation: modalPop 0.2s ease;
+    }
+    .wallpaper-mini-window.active { display: flex; }
+
+    .wallpaper-mini-window .title-bar {
+      border-radius: 10px 10px 0 0;
+      cursor: move;
+    }
+    .wallpaper-mini-content {
+      padding: 12px 14px 14px 14px;
+      background: rgba(245, 250, 255, 0.7);
+      display: flex;
+      flex-direction: column;
+      max-height: 70vh;
+    }
+    /* scrollable wallpaper grid */
+    .wallpaper-scroll-container {
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 4px;
+      margin-bottom: 8px;
+      border-radius: 6px;
+      border: 1px solid #9bb8d4;
+      background: rgba(235, 245, 255, 0.5);
+      padding: 10px;
+      max-height: 220px;
+    }
+    .wallpaper-scroll-container::-webkit-scrollbar {
+      width: 8px;
+    }
+    .wallpaper-scroll-container::-webkit-scrollbar-track {
+      background: rgba(200, 220, 240, 0.4);
+      border-radius: 10px;
+    }
+    .wallpaper-scroll-container::-webkit-scrollbar-thumb {
+      background: #9bb9d6;
+      border-radius: 10px;
+      border: 1px solid #7a9bb8;
+    }
+    .wallpaper-grid-mini {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+    .wp-thumb {
+      aspect-ratio: 16/10; border-radius: 6px;
+      border: 2px solid #7f9db9;
+      background-size: cover; background-position: center;
+      cursor: pointer;
+      box-shadow: inset 0 1px 4px rgba(0,0,0,0.2), 0 2px 4px rgba(0,0,0,0.15);
+      transition: 0.15s; position: relative; overflow: hidden;
+    }
+    .wp-thumb:hover {
+      border-color: #3c7bb0; transform: scale(1.03);
+      box-shadow: inset 0 1px 4px rgba(0,0,0,0.2), 0 4px 12px rgba(60, 130, 200, 0.5);
+    }
+    .wp-thumb.selected {
+      border-color: #1d4a6b;
+      box-shadow: 0 0 0 3px rgba(96, 173, 240, 0.5), 0 2px 6px rgba(0,0,0,0.3);
+    }
+    .wp-thumb.selected::after {
+      content: '✓'; position: absolute;
+      top: 6px; right: 6px;
+      background: #1d4a6b; color: white;
+      width: 22px; height: 22px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.8rem; font-weight: 700;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+    }
+    .wp-upload-area-mini {
+      border: 2px dashed #7f9db9; border-radius: 6px;
+      padding: 8px; text-align: center;
+      color: #3f6e8a; font-size: 0.72rem; font-weight: 500;
+      cursor: pointer; transition: 0.15s;
+      background: rgba(220, 240, 255, 0.4);
+      margin-top: 4px;
+    }
+    .wp-upload-area-mini:hover {
+      border-color: #3c7bb0;
+      background: rgba(200, 230, 255, 0.6);
+      color: #1d4a6b;
+    }
+    .wp-upload-area-mini input[type="file"] { display: none; }
+
+    /* ---------- DELETE IMAGE BUTTON ---------- */
+    .wp-delete-area {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 6px;
+      padding: 5px 12px;
+      background: rgba(255, 230, 230, 0.7);
+      border: 1px solid #c26b6b;
+      border-radius: 40px;
+      font-size: 0.72rem;
+      color: #8b2c2c;
+      font-weight: 600;
+      box-shadow: inset 0 1px 4px #ffffff;
+      transition: 0.15s;
+    }
+    .wp-delete-area.hidden {
+      display: none;
+    }
+    .wp-delete-area .delete-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .wp-delete-btn {
+      background: linear-gradient(180deg, #d98b8b 0%, #b85555 45%, #8b3232 100%);
+      color: white;
+      border: 1px solid #6b2323;
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: 0.66rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-shadow: 0 1px 1px #3a1010;
+      box-shadow: inset 0 1px 0 #f0b0b0, 0 2px 5px #00000040;
+      transition: 0.12s;
+      letter-spacing: 0.3px;
+    }
+    .wp-delete-btn:hover {
+      background: linear-gradient(180deg, #e69b9b 0%, #c56565 45%, #9b3e3e 100%);
+      transform: scale(1.02);
+    }
+    .wp-delete-btn:active {
+      transform: scale(0.97);
+      box-shadow: inset 0 2px 6px rgba(0,0,0,0.3);
+    }
+
+    .sync-badge-mini {
+      font-size: 0.6rem;
+      padding: 1px 6px;
+      border-radius: 20px;
+      background: #b87333;
+      color: white;
+      font-weight: 600;
+      margin-left: 4px;
+    }
+    .sync-badge-mini.saved { background: #1e6b3a; }
+    .sync-badge-mini.error { background: #8b2c2c; }
+
+    /* ---------- RETURN / MINUS SECTION ---------- */
+    .return-fieldset {
+      margin-top: 10px;
+      background: rgba(255, 240, 230, 0.7);
+      border: 1px solid #d4a373;
+      border-radius: 8px;
+      padding: 10px 10px 8px 10px;
+      box-shadow: inset 0 1px 6px rgba(255, 255, 255, 0.9), 0 2px 4px rgba(0, 0, 0, 0.08);
+      position: relative;
+    }
+    .return-fieldset .return-legend {
+      font-weight: 600; font-size: 0.72rem; color: #8b5e3c;
+      padding: 0 10px;
+      background: linear-gradient(180deg, #fff3e6, #f5dcc6);
+      border-radius: 20px; border: 1px solid #d4a373;
+      text-shadow: 0 1px 0 white;
+      margin-left: 8px; display: inline-block;
+      box-shadow: 0 1px 0 white;
+      position: relative; top: -20px; margin-bottom: -18px;
+    }
+    .return-row {
+      display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: flex-end;
+    }
+    .return-preview {
+      background: #fde8d9;
+      border: 1px solid #d4a373;
+      border-radius: 40px;
+      padding: 4px 12px;
+      font-size: 0.74rem;
+      color: #6b3f1e;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+      box-shadow: inset 0 1px 4px #ffffff, 0 1px 4px rgba(0, 0, 0, 0.1);
+    }
+    .return-preview .minus-sign {
+      color: #c0392b; font-weight: 800; font-size: 1rem;
+    }
+    .return-preview .return-value {
+      background: #8b3a2c; color: white;
+      padding: 3px 12px; border-radius: 30px;
+      font-weight: 700;
+      box-shadow: inset 0 1px 3px #f0b0a0, 0 1px 3px #00000030;
+      font-size: 0.72rem;
+      font-family: 'Segoe UI', Consolas, monospace;
+    }
+
+    @media (max-width: 1200px) {
+      .window, .window-price, .window-load {
+        position: relative; top: auto !important;
+        left: auto !important; right: auto !important;
+        margin: 0 auto 20px auto; max-width: 500px; width: 100%;
+      }
+      .window-price { right: auto; height: auto; max-height: none; }
+      body { overflow-y: auto; padding: 20px 12px calc(var(--taskbar-height) + 20px) 12px; }
+      .input-row-four { flex-wrap: wrap; }
+      .input-row-four .input-group { flex: 1 1 45%; width: auto; }
+    }
+    @media (max-width: 480px) {
+      .top-row { flex-direction: column; }
+      .top-row .combo-wrap { flex: 1 1 auto; }
+      .taskbar-item { max-width: 100px; padding: 0 8px; font-size: 0.65rem; }
+      .taskbar-item .tb-label { display: none; }
+      .start-btn .start-label { display: none; }
+      .system-tray { padding: 0 6px; }
+      .wallpaper-grid-mini { grid-template-columns: repeat(2, 1fr); }
+      .wallpaper-mini-window { width: 96vw; }
+      .input-group { max-width: 100%; }
+      .input-row-four .input-group { flex: 1 1 45%; width: auto; }
+    }
+  </style>
+</head>
+<body class="not-connected">
+  <div class="wallpaper-layer" id="wallpaperLayer"></div>
+
+  <!-- ================= BOOT / CONNECTING OVERLAY ================= -->
+  <div class="boot-overlay" id="bootOverlay">
+    <div class="boot-logo">📦</div>
+    <div class="boot-title">Packing Calculator</div>
+    <div class="boot-spinner"></div>
+    <div class="boot-progress"></div>
+    <div class="boot-status" id="bootStatus">Connecting to database…</div>
+  </div>
+
+  <!-- ================= DESKTOP CLOCK GADGET ================= -->
+  <div class="desktop-gadget" id="desktopGadget" title="Drag to move">
+    <div class="gadget-grip"></div>
+
+    <div class="gadget-analog" id="gadgetAnalog">
+      <div class="gadget-hand hour" id="gadgetHourHand"></div>
+      <div class="gadget-hand minute" id="gadgetMinuteHand"></div>
+      <div class="gadget-hand second" id="gadgetSecondHand"></div>
+      <div class="gadget-center-dot"></div>
+    </div>
+
+    <div class="gadget-time" id="gadgetTime">--:--</div>
+    <div class="gadget-date" id="gadgetDate">--/--/----</div>
+    <div class="gadget-day" id="gadgetDay">---</div>
+  </div>
+
+  <!-- ================= LEFT WINDOW (Packing Calculator) ================= -->
+  <div class="window" id="calcWindow">
+    <div class="title-bar" id="calcTitleBar">
+      <div class="title-text">
+        <span>📦</span> Packing Calculator
+        <span class="status-dot" id="calcStatusDot" title="Database status"></span>
+      </div>
+      <div class="caption-buttons">
+        <div class="caption-btn minimize" data-minimize="calcWindow" title="Minimize">—</div>
+        <div class="caption-btn maximize" data-maximize="calcWindow" title="Maximize">□</div>
+        <div class="caption-btn close" data-close="calcWindow" title="Close (remove from taskbar)">✕</div>
+      </div>
+    </div>
+
+    <div class="window-content">
+      <div class="aero-info">
+        <span class="badge" id="syncBadge">Connecting…</span>
+      </div>
+
+      <div class="total-qty-display">
+        <div class="tq-label"><span>📊</span> Total quantity</div>
+        <div style="display:flex; align-items:baseline; gap:6px;">
+          <span class="tq-value" id="totalQtyValue">0</span>
+          <span class="tq-unit">pcs</span>
+        </div>
+        <div class="tq-bags" id="totalBagsValue">0 bags</div>
+      </div>
+
+      <!-- RESET BUTTON ROW -->
+      <div class="calc-actions-row">
+        <button class="aero-btn" id="resetCalcBtn" type="button">
+          <span>🔄</span> Reset Calculator
+        </button>
+      </div>
+
+      <div class="fieldset">
+
+        <!-- ========== ONE LINE: Weight/pc, Pcs/bag, # bags, Extra pcs (tiny) ========== -->
+        <div class="input-row-four">
+          <div class="input-group">
+            <label><span>⚖️</span> Wt/pc</label>
+            <div class="input-wrap">
+              <input type="number" id="weightPerPc" min="0.001" max="9999" step="0.001" placeholder="0" tabindex="1" maxlength="4">
+              <span class="unit">kg</span>
+            </div>
+          </div>
+          <div class="input-group">
+            <label><span>🛍️</span> Pcs/bag</label>
+            <div class="input-wrap">
+              <input type="number" id="pcsPerBag" min="1" max="9999" step="1" placeholder="0" tabindex="2" maxlength="4">
+              <span class="unit">pcs</span>
+            </div>
+          </div>
+          <div class="input-group">
+            <label><span>🧺</span> #Bags</label>
+            <div class="input-wrap">
+              <input type="number" id="numBags" min="0" max="9999" step="1" placeholder="0" tabindex="3" maxlength="4">
+              <span class="unit">bag</span>
+            </div>
+          </div>
+          <div class="input-group">
+            <label><span>🔹</span> Extra</label>
+            <div class="input-wrap">
+              <input type="number" id="extraPcs" min="0" max="9999" step="1" placeholder="0" tabindex="4" maxlength="4">
+              <span class="unit">pcs</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="bag-preview">
+          <span>📐 1 bag = <span id="bagWeightPreview">0.000</span> kg</span>
+          <span class="highlight" id="bagPcsPreview">0 pcs</span>
+        </div>
+      </div>
+
+      <!-- ========== RETURN / MINUS TEXT BOX ========== -->
+      <div class="return-fieldset">
+        <div class="return-legend">↩️ Return / Minus</div>
+        <div class="return-row">
+          <div class="input-group full-width">
+            <label><span>➖</span> Return quantity (pcs to subtract)</label>
+            <div class="input-wrap">
+              <input type="number" id="returnPcs" min="0" max="9999" step="1" placeholder="0" tabindex="4.5" maxlength="4">
+              <span class="unit">pcs</span>
+            </div>
+          </div>
+        </div>
+        <div class="return-preview" id="returnPreview">
+          <span><span class="minus-sign">➖</span> Return <span id="returnDisplayPcs">0</span> pcs</span>
+          <span class="return-value" id="returnDisplayKg">0.000 kg</span>
+        </div>
+      </div>
+
+      <div class="result-panel" id="resultArea">
+        <div class="result-header"><span>📋</span> Packing summary</div>
+        <div id="resultContent">
+          <div class="empty-hint">
+            📝 Enter values above to calculate
+            <span class="small">Press Enter in the last field to save to database &amp; reset</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="loading-overlay" id="calcLoading"><div class="loading-spinner"></div></div>
+  </div>
+
+  <!-- ================= RIGHT WINDOW (Products) ================= -->
+  <div class="window-price" id="priceWindow">
+    <div class="title-bar" id="priceTitleBar">
+      <div class="title-text">
+        <span>💰</span> Products
+        <span class="badge" id="priceCount" style="background:#2b5b7c; color:white; border-radius:40px; padding:1px 10px; font-size:0.66rem; font-weight:600;">0</span>
+        <span class="status-dot" id="priceStatusDot" title="Database status"></span>
+      </div>
+      <div class="caption-buttons">
+        <div class="caption-btn minimize" data-minimize="priceWindow" title="Minimize">—</div>
+        <div class="caption-btn maximize" data-maximize="priceWindow" title="Maximize">□</div>
+        <div class="caption-btn close" data-close="priceWindow" title="Close (remove from taskbar)">✕</div>
+      </div>
+    </div>
+
+    <div class="window-content" style="flex:1; display:flex; flex-direction:column;">
+      <div class="price-top-actions">
+        <button class="aero-btn primary" id="addProductBtn" type="button">
+          <span>📦➕</span> Add Product
+        </button>
+        <button class="aero-btn danger" id="clearAllBtn" type="button">
+          <span>🗑️</span> Clear All
+        </button>
+      </div>
+
+      <div class="top-row">
+        <div class="combo-wrap">
+          <select id="customerFilter" tabindex="5">
+            <option value="">👤 All Customers</option>
+          </select>
+          <span class="combo-arrow">▼</span>
+          <span class="combo-icon">👤</span>
+        </div>
+        <div class="search-wrap">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="searchInput" placeholder="Search product..." tabindex="6">
+          <span class="clear-search" id="clearSearchBtn" title="Clear search">✕</span>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <table class="price-table">
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Customer</th>
+              <th>Pcs/Bag</th>
+              <th>Price</th>
+              <th style="width:60px;"></th>
+            </tr>
+          </thead>
+          <tbody id="priceTableBody">
+            <tr><td colspan="5">
+              <div class="no-results">📦 No products yet<span class="small">Click "Add Product" to create your first entry</span></div>
+            </td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="loading-overlay" id="priceLoading"><div class="loading-spinner"></div></div>
+  </div>
+
+  <!-- ================= BOTTOM-LEFT WINDOW (Load Calculator) ================= -->
+  <div class="window-load" id="loadWindow">
+    <div class="title-bar" id="loadTitleBar">
+      <div class="title-text"><span>🚚</span> Load Calculator</div>
+      <div class="caption-buttons">
+        <div class="caption-btn minimize" data-minimize="loadWindow" title="Minimize">—</div>
+        <div class="caption-btn maximize" data-maximize="loadWindow" title="Maximize">□</div>
+        <div class="caption-btn close" data-close="loadWindow" title="Close (remove from taskbar)">✕</div>
+      </div>
+    </div>
+
+    <div class="window-content">
+      </div>
+
+      <div class="fieldset">
+        <div class="fieldset-legend">📥 Input</div>
+        <div class="input-row">
+          <div class="input-group">
+            <label><span>⚖️</span> Weight per pc</label>
+            <div class="input-wrap">
+              <input type="number" id="loadWeightPerPc" min="0.001" max="9999" step="0.001" placeholder="0.000" tabindex="7" maxlength="4">
+              <span class="unit">kg</span>
+            </div>
+          </div>
+          <div class="input-group">
+            <label><span>🛍️</span> Pcs per bag</label>
+            <div class="input-wrap">
+              <input type="number" id="loadPcsPerBag" min="1" max="9999" step="1" placeholder="0" tabindex="8" maxlength="4">
+              <span class="unit">pcs</span>
+            </div>
+          </div>
+        </div>
+        <div class="input-row" style="margin-top: 8px;">
+          <div class="input-group full-width">
+            <label><span>🏋️</span> Total weight available</label>
+            <div class="input-wrap">
+              <input type="number" id="loadTotalKg" min="0" max="9999" step="0.001" placeholder="0.000" tabindex="9" maxlength="4">
+              <span class="unit">kg</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="result-panel">
+        <div class="result-header"><span>📊</span> Load breakdown</div>
+        <div id="loadResultContent">
+          <div class="empty-hint">
+            📝 Enter weight per pc, pcs per bag &amp; total kg
+            <span class="small">The result updates live as you type</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= ADD PRODUCT MODAL ================= -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal" id="modalBox">
+      <div class="title-bar">
+        <div class="title-text" id="modalTitle">➕ Add Product</div>
+        <div class="caption-buttons">
+          <div class="caption-btn close" id="modalCloseBtn" title="Close">✕</div>
+        </div>
+      </div>
+      <div class="modal-content" id="modalContent"></div>
+    </div>
+  </div>
+
+  <!-- ================= CONFIRM DIALOG ================= -->
+  <div class="modal-overlay" id="confirmOverlay">
+    <div class="modal confirm-dialog" id="confirmBox">
+      <div class="title-bar">
+        <div class="title-text" id="confirmTitleBar">⚠️ Confirm</div>
+        <div class="caption-buttons">
+          <div class="caption-btn close" id="confirmCloseBtn" title="Close">✕</div>
+        </div>
+      </div>
+      <div class="confirm-body">
+        <div class="confirm-icon warning" id="confirmIcon">⚠️</div>
+        <div class="confirm-text">
+          <div class="confirm-title" id="confirmTitle">Confirm</div>
+          <div class="confirm-message" id="confirmMessage">Are you sure?</div>
+        </div>
+      </div>
+      <div class="confirm-actions">
+        <button class="aero-btn" id="confirmCancelBtn" type="button">Cancel</button>
+        <button class="aero-btn danger" id="confirmOkBtn" type="button">Yes, Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= SMALL WALLPAPER WINDOW ================= -->
+  <div class="wallpaper-mini-window" id="wallpaperMiniWindow">
+    <div class="title-bar" id="wallpaperMiniTitleBar">
+      <div class="title-text">
+        🖼️ Wallpaper
+        <span class="sync-badge-mini" id="wallpaperSyncBadgeMini">●</span>
+      </div>
+      <div class="caption-buttons">
+        <div class="caption-btn minimize" id="wallpaperMiniMinimize" title="Minimize">—</div>
+        <div class="caption-btn close" id="wallpaperMiniCloseBtn" title="Close">✕</div>
+      </div>
+    </div>
+    <div class="wallpaper-mini-content">
+      <div style="font-size:0.72rem; color:#3f6e8a; font-weight:600; margin-bottom:6px; display:flex; justify-content:space-between;">
+        <span>Choose wallpaper</span>
+        <span style="font-size:0.62rem; color:#6a8ba5; font-weight:500;" id="wallpaperStatusMini">Loading…</span>
+      </div>
+      <!-- scrollable area -->
+      <div class="wallpaper-scroll-container" id="wallpaperScrollContainer">
+        <div class="wallpaper-grid-mini" id="wallpaperGridMini"></div>
+      </div>
+
+      <!-- DELETE IMAGE BUTTON (only visible for custom uploads) -->
+      <div class="wp-delete-area hidden" id="wpDeleteArea">
+        <span class="delete-label">🗑️ Custom wallpaper</span>
+        <button class="wp-delete-btn" id="wpDeleteBtn" type="button">Delete Image</button>
+      </div>
+
+      <div class="wp-upload-area-mini" id="wpUploadAreaMini">
+        <span>📁</span> Upload custom image
+        <input type="file" id="wpUploadInputMini" accept="image/*">
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= START MENU ================= -->
+  <div class="start-menu" id="startMenu">
+    <div class="start-menu-header">Programs</div>
+    <div class="start-menu-item" data-restore="calcWindow">
+      <span class="smi-icon">📦</span> Packing Calculator
+    </div>
+    <div class="start-menu-item" data-restore="priceWindow">
+      <span class="smi-icon">💰</span> Products
+    </div>
+    <div class="start-menu-item" data-restore="loadWindow">
+      <span class="smi-icon">🚚</span> Load Calculator
+    </div>
+    <div class="start-menu-header">Personalize</div>
+    <div class="start-menu-item" id="startChangeWallpaper">
+      <span class="smi-icon">🖼️</span> Change Wallpaper
+    </div>
+    <div class="start-menu-header">System</div>
+    <div class="start-menu-item" id="startMinimizeAll">
+      <span class="smi-icon">🗕</span> Minimize all windows
+    </div>
+    <div class="start-menu-item" id="startRestoreAll">
+      <span class="smi-icon">🗗</span> Restore all windows
+    </div>
+  </div>
+
+  <!-- ================= START BAR ================= -->
+  <div class="startbar" id="startbar">
+    <div class="start-btn" id="startBtn">
+      <div class="start-orb"></div>
+      <span class="start-label">Start</span>
+    </div>
+
+    <div class="taskbar-divider"></div>
+
+    <div class="taskbar-item" id="taskbarCalc" data-restore="calcWindow" style="display:none;">
+      <span class="tb-icon">📦</span>
+      <span class="tb-label">Packing Calculator</span>
+    </div>
+    <div class="taskbar-item" id="taskbarPrice" data-restore="priceWindow" style="display:none;">
+      <span class="tb-icon">💰</span>
+      <span class="tb-label">Products</span>
+    </div>
+    <div class="taskbar-item" id="taskbarLoad" data-restore="loadWindow" style="display:none;">
+      <span class="tb-icon">🚚</span>
+      <span class="tb-label">Load Calculator</span>
+    </div>
+
+    <div class="system-tray">
+      <span class="tray-icon" id="trayWallpaper" title="Change Wallpaper">🖼️</span>
+      <span class="tray-icon" title="Network">🌐</span>
+      <span class="tray-icon" title="Volume">🔊</span>
+      <div class="clock">
+        <span class="time" id="clockTime">--:--:-- --</span>
+        <span class="date" id="clockDate">--/--/----</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">✅ Done</div>
+
+  <!-- ===================== SUPABASE SDK ===================== -->
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+    const SUPABASE_URL = 'https://rrtpnknbrrcwzmlqeyha.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_S8YKuWueI4Bs3IKXaYSNzg_pH5wCyYC';
+    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+    window.supabase = supabase;
+    window.dispatchEvent(new Event('supabase-ready'));
+  </script>
+
+  <script>
+    // ==================== BOOT OVERLAY CONTROL ====================
+    const bootOverlay = document.getElementById('bootOverlay');
+    const bootStatus = document.getElementById('bootStatus');
+
+    function setBootStatus(text, type = '') {
+      if (!bootStatus) return;
+      bootStatus.textContent = text;
+      bootStatus.className = 'boot-status' + (type ? ' ' + type : '');
+    }
+
+    window.addEventListener('error', (e) => {
+      if (document.body.classList.contains('not-connected')) {
+        setBootStatus('⚠️ Error loading — retrying…', 'error');
+      }
+    });
+
+    function revealDesktop() {
+      document.body.classList.remove('not-connected');
+      if (bootOverlay) {
+        setBootStatus('✅ Connected — loading workspace…', 'ok');
+        bootOverlay.classList.add('hidden');
+        setTimeout(() => { bootOverlay.style.display = 'none'; }, 600);
+      }
+    }
+
+    const bootTimeout = setTimeout(() => {
+      if (document.body.classList.contains('not-connected')) {
+        setBootStatus('⚠️ Database slow — loading anyway…', 'error');
+        revealDesktop();
+      }
+    }, 15000);
+
+    window.addEventListener('supabase-ready', async () => {
+      const supabase = window.supabase;
+      const TASKBAR_HEIGHT = 40;
+
+      // ==================== WALLPAPER SYSTEM ====================
+      const DEFAULT_WALLPAPER = 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1920&q=80';
+      const WALLPAPER_SETTING_KEY = 'wallpaper';
+
+      const WALLPAPERS = [
+        { id: 'tropical', name: 'Tropical Beach', url: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1920&q=80' },
+        { id: 'mountains', name: 'Mountains', url: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&q=80' },
+        { id: 'forest', name: 'Forest', url: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1920&q=80' },
+        { id: 'ocean', name: 'Ocean Waves', url: 'https://images.unsplash.com/photo-1439066615861-d1af74d74000?w=1920&q=80' },
+        { id: 'sunset', name: 'Sunset', url: 'https://images.unsplash.com/photo-1495616811223-4d98c6e9c869?w=1920&q=80' },
+        { id: 'abstract', name: 'Abstract Blue', url: 'https://images.unsplash.com/photo-1557682250-33bd709cbe85?w=1920&q=80' },
+        { id: 'night', name: 'Night Sky', url: 'https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?w=1920&q=80' },
+        { id: 'city', name: 'City Lights', url: 'https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=1920&q=80' },
+        { id: 'flowers', name: 'Flowers', url: 'https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=1920&q=80' },
+        { id: 'gradient1', name: 'Aero Blue', url: 'linear-gradient(135deg, #1b3d5c 0%, #3d6c92 50%, #0f2b40 100%)' },
+        { id: 'gradient2', name: 'Aero Sunset', url: 'linear-gradient(135deg, #2a1a3a 0%, #8b3e5c 50%, #c75c4a 100%)' },
+        { id: 'gradient3', name: 'Aero Green', url: 'linear-gradient(135deg, #0f3a2c 0%, #2d6e4e 50%, #0a2a1c 100%)' }
+      ];
+
+      const wallpaperLayer = document.getElementById('wallpaperLayer');
+      const wallpaperMiniWindow = document.getElementById('wallpaperMiniWindow');
+      const wallpaperMiniTitleBar = document.getElementById('wallpaperMiniTitleBar');
+      const wallpaperMiniCloseBtn = document.getElementById('wallpaperMiniCloseBtn');
+      const wallpaperMiniMinimize = document.getElementById('wallpaperMiniMinimize');
+      const wallpaperGridMini = document.getElementById('wallpaperGridMini');
+      const wpUploadAreaMini = document.getElementById('wpUploadAreaMini');
+      const wpUploadInputMini = document.getElementById('wpUploadInputMini');
+      const wallpaperStatusMini = document.getElementById('wallpaperStatusMini');
+      const wallpaperSyncBadgeMini = document.getElementById('wallpaperSyncBadgeMini');
+      const wallpaperScrollContainer = document.getElementById('wallpaperScrollContainer');
+      const wpDeleteArea = document.getElementById('wpDeleteArea');
+      const wpDeleteBtn = document.getElementById('wpDeleteBtn');
+
+      let currentWallpaper = DEFAULT_WALLPAPER;
+      let isCustomWallpaper = false;
+
+      function applyWallpaper(url) {
+        currentWallpaper = url;
+        if (url.startsWith('linear-gradient') || url.startsWith('radial-gradient')) {
+          wallpaperLayer.style.backgroundImage = url;
+          document.body.style.backgroundImage = url;
+        } else {
+          wallpaperLayer.style.backgroundImage = `url('${url}')`;
+          document.body.style.backgroundImage = `url('${url}')`;
+        }
+        isCustomWallpaper = url.startsWith('data:image/');
+        updateDeleteButtonVisibility();
+      }
+
+      function updateDeleteButtonVisibility() {
+        if (isCustomWallpaper) {
+          wpDeleteArea.classList.remove('hidden');
+        } else {
+          wpDeleteArea.classList.add('hidden');
+        }
+      }
+
+      async function loadWallpaper() {
+        let cached = null;
+        try { cached = localStorage.getItem('wallpaper'); } catch (e) {}
+        if (cached) applyWallpaper(cached);
+
+        try {
+          const { data, error } = await supabase
+            .from('app_settings')
+            .select('setting_value')
+            .eq('setting_key', WALLPAPER_SETTING_KEY)
+            .maybeSingle();
+
+          if (error) throw error;
+
+          if (data && data.setting_value) {
+            applyWallpaper(data.setting_value);
+            try { localStorage.setItem('wallpaper', data.setting_value); } catch (e) {}
+            wallpaperStatusMini.textContent = '✅ Loaded from DB';
+          } else {
+            wallpaperStatusMini.textContent = 'ℹ️ Using default';
+          }
+        } catch (err) {
+          console.warn('Could not load wallpaper from DB:', err.message);
+          wallpaperStatusMini.textContent = '⚠️ DB offline · using local';
+        }
+      }
+
+      async function saveWallpaperToDB(url) {
+        wallpaperSyncBadgeMini.className = 'sync-badge-mini';
+        wallpaperSyncBadgeMini.textContent = '●';
+        try {
+          const { error } = await supabase
+            .from('app_settings')
+            .upsert(
+              { setting_key: WALLPAPER_SETTING_KEY, setting_value: url, updated_at: new Date().toISOString() },
+              { onConflict: 'setting_key' }
+            );
+
+          if (error) throw error;
+
+          wallpaperSyncBadgeMini.className = 'sync-badge-mini saved';
+          wallpaperSyncBadgeMini.textContent = '✓';
+          wallpaperStatusMini.textContent = '✅ Saved to DB';
+          return true;
+        } catch (err) {
+          console.warn('Could not save wallpaper to DB:', err.message);
+          wallpaperSyncBadgeMini.className = 'sync-badge-mini error';
+          wallpaperSyncBadgeMini.textContent = '✕';
+          wallpaperStatusMini.textContent = '⚠️ Saved locally (DB offline)';
+          return false;
+        }
+      }
+
+      async function setWallpaper(url, { skipDb = false } = {}) {
+        applyWallpaper(url);
+        try { localStorage.setItem('wallpaper', url); } catch (e) {}
+        if (!skipDb) await saveWallpaperToDB(url);
+        renderWallpaperGridMini();
+      }
+
+      async function deleteCustomWallpaper() {
+        if (!isCustomWallpaper) return;
+
+        const confirmed = await showConfirm({
+          title: '🗑️ Delete Custom Wallpaper',
+          message: `Are you sure you want to delete this custom wallpaper?<br><br>The default wallpaper will be restored.`,
+          confirmLabel: 'Yes, Delete',
+          type: 'danger',
+          icon: '🗑️'
+        });
+        if (!confirmed) return;
+
+        applyWallpaper(DEFAULT_WALLPAPER);
+        try {
+          localStorage.setItem('wallpaper', DEFAULT_WALLPAPER);
+        } catch (e) {}
+
+        try {
+          const { error } = await supabase
+            .from('app_settings')
+            .delete()
+            .eq('setting_key', WALLPAPER_SETTING_KEY);
+
+          if (error) throw error;
+
+          wallpaperSyncBadgeMini.className = 'sync-badge-mini saved';
+          wallpaperSyncBadgeMini.textContent = '✓';
+          wallpaperStatusMini.textContent = '🗑️ Deleted from DB';
+        } catch (err) {
+          console.warn('Could not delete wallpaper from DB:', err.message);
+          wallpaperSyncBadgeMini.className = 'sync-badge-mini error';
+          wallpaperSyncBadgeMini.textContent = '✕';
+          wallpaperStatusMini.textContent = '⚠️ Removed locally (DB offline)';
+        }
+
+        renderWallpaperGridMini();
+        updateDeleteButtonVisibility();
+      }
+
+      wpDeleteBtn.addEventListener('click', deleteCustomWallpaper);
+
+      function renderWallpaperGridMini() {
+        let html = '';
+        WALLPAPERS.forEach(wp => {
+          const isSelected = currentWallpaper === wp.url;
+          const bgStyle = wp.url.startsWith('linear-gradient') || wp.url.startsWith('radial-gradient')
+            ? `background-image: ${wp.url};`
+            : `background-image: url('${wp.url}');`;
+          html += `<div class="wp-thumb ${isSelected ? 'selected' : ''}" 
+                        data-wallpaper-url="${encodeURIComponent(wp.url)}" 
+                        title="${wp.name}"
+                        style="${bgStyle}"></div>`;
+        });
+        wallpaperGridMini.innerHTML = html;
+        updateDeleteButtonVisibility();
+      }
+
+      wallpaperGridMini.addEventListener('click', async (e) => {
+        const thumb = e.target.closest('.wp-thumb');
+        if (!thumb) return;
+        const url = decodeURIComponent(thumb.dataset.wallpaperUrl);
+        await setWallpaper(url);
+      });
+
+      wpUploadAreaMini.addEventListener('click', () => wpUploadInputMini.click());
+      wpUploadInputMini.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        if (file.size > 2 * 1024 * 1024) {
+          console.warn('Large image (>2MB) may fail to save');
+        }
+        const reader = new FileReader();
+        reader.onload = async (evt) => {
+          await setWallpaper(evt.target.result);
+          closeWallpaperMini();
+        };
+        reader.readAsDataURL(file);
+        wpUploadInputMini.value = '';
+      });
+
+      function openWallpaperMini() {
+        renderWallpaperGridMini();
+        wallpaperMiniWindow.classList.add('active');
+        const left = Math.max(10, (window.innerWidth - 400) / 2);
+        const top = Math.max(10, (window.innerHeight - 360) / 2);
+        wallpaperMiniWindow.style.left = left + 'px';
+        wallpaperMiniWindow.style.top = top + 'px';
+        bringToFront(wallpaperMiniWindow);
+      }
+
+      function closeWallpaperMini() {
+        wallpaperMiniWindow.classList.remove('active');
+      }
+
+      wallpaperMiniCloseBtn.addEventListener('click', closeWallpaperMini);
+      wallpaperMiniMinimize.addEventListener('click', () => {
+        closeWallpaperMini();
+      });
+
+      makeDraggable(wallpaperMiniWindow, wallpaperMiniTitleBar);
+
+      document.getElementById('startChangeWallpaper').addEventListener('click', () => {
+        startMenu.classList.remove('open');
+        openWallpaperMini();
+      });
+      document.getElementById('trayWallpaper').addEventListener('click', openWallpaperMini);
+
+      document.body.addEventListener('contextmenu', (e) => {
+        if (e.target.closest('.window, .window-price, .window-load, .startbar, .start-menu, .modal-overlay, .desktop-gadget, .wallpaper-mini-window')) return;
+        e.preventDefault();
+        openWallpaperMini();
+      });
+
+      // ==================== DRAGGABLE + AERO SNAP ====================
+      let snapPreview = null;
+
+      function createSnapPreview() {
+        if (!snapPreview) {
+          snapPreview = document.createElement('div');
+          snapPreview.style.cssText = `
+            position: fixed;
+            z-index: 999999;
+            pointer-events: none;
+            background: rgba(100, 180, 255, 0.35);
+            border: 2px solid rgba(120, 200, 255, 0.9);
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(100, 180, 255, 0.5), inset 0 0 30px rgba(150, 220, 255, 0.3);
+            backdrop-filter: blur(4px);
+            transition: all 0.12s ease;
+            display: none;
+          `;
+          document.body.appendChild(snapPreview);
+        }
+        return snapPreview;
+      }
+
+      function showSnapPreview(side) {
+        const preview = createSnapPreview();
+        const halfW = Math.floor(window.innerWidth / 2);
+        const taskbarH = TASKBAR_HEIGHT;
+        const totalH = window.innerHeight - taskbarH;
+
+        preview.style.display = 'block';
+        preview.style.top = '0px';
+        preview.style.height = totalH + 'px';
+
+        if (side === 'left') {
+          preview.style.left = '0px';
+          preview.style.width = halfW + 'px';
+        } else if (side === 'right') {
+          preview.style.left = halfW + 'px';
+          preview.style.width = (window.innerWidth - halfW) + 'px';
+        }
+      }
+
+      function hideSnapPreview() {
+        if (snapPreview) {
+          snapPreview.style.display = 'none';
+        }
+      }
+
+      function snapWindowToSide(winEl, side) {
+        const halfW = Math.floor(window.innerWidth / 2);
+        const totalH = window.innerHeight - TASKBAR_HEIGHT;
+
+        const stateKey = winEl.id;
+        if (windowState[stateKey] && !windowState[stateKey].origRect) {
+          const rect = winEl.getBoundingClientRect();
+          windowState[stateKey].origRect = {
+            top: rect.top + 'px', left: rect.left + 'px',
+            right: 'auto', width: rect.width + 'px', height: rect.height + 'px'
+          };
+        }
+
+        if (winEl.classList.contains('maximized')) {
+          winEl.classList.remove('maximized');
+          windowState[stateKey].maximized = false;
+          const maxBtn = winEl.querySelector('.caption-btn.maximize');
+          if (maxBtn) { maxBtn.textContent = '□'; maxBtn.title = 'Maximize'; }
+        }
+
+        winEl.classList.add('snap-' + side);
+        winEl.style.top = '0px';
+        winEl.style.left = (side === 'left' ? '0' : halfW) + 'px';
+        winEl.style.width = halfW + 'px';
+        winEl.style.height = totalH + 'px';
+        winEl.style.right = 'auto';
+        winEl.style.maxWidth = 'none';
+        winEl.style.maxHeight = 'none';
+
+        bringToFront(winEl);
+      }
+
+      function unsnapWindow(winEl) {
+        winEl.classList.remove('snap-left', 'snap-right');
+      }
+
+      function makeDraggable(windowEl, handleEl) {
+        let isDragging = false, startX = 0, startY = 0, startLeft = 0, startTop = 0;
+        let wasSnapped = false;
+        windowEl.style.position = 'fixed';
+
+        handleEl.addEventListener('mousedown', (e) => {
+          if (e.target.closest('.caption-btn')) return;
+          if (windowEl.classList.contains('minimized')) return;
+          if (windowEl.classList.contains('maximized')) return;
+          e.preventDefault();
+          isDragging = true;
+          wasSnapped = windowEl.classList.contains('snap-left') || windowEl.classList.contains('snap-right');
+
+          const rect = windowEl.getBoundingClientRect();
+          startLeft = rect.left; startTop = rect.top;
+          windowEl.style.left = startLeft + 'px';
+          windowEl.style.top = startTop + 'px';
+          windowEl.style.right = 'auto';
+          windowEl.style.margin = '0';
+          startX = e.clientX; startY = e.clientY;
+          bringToFront(windowEl);
+          document.body.style.cursor = 'grabbing';
+          document.addEventListener('mousemove', onMouseMove);
+          document.addEventListener('mouseup', onMouseUp);
+        });
+
+        function onMouseMove(e) {
+          if (!isDragging) return;
+          const dx = e.clientX - startX, dy = e.clientY - startY;
+          let nl = startLeft + dx, nt = startTop + dy;
+
+          if (wasSnapped && (Math.abs(dx) > 20 || Math.abs(dy) > 20)) {
+            unsnapWindow(windowEl);
+            wasSnapped = false;
+            const rect = windowEl.getBoundingClientRect();
+            startLeft = rect.left; startTop = rect.top;
+            startX = e.clientX; startY = e.clientY;
+            nl = startLeft; nt = startTop;
+          }
+
+          const snapEdge = 15;
+          const screenW = window.innerWidth;
+
+          if (e.clientX <= snapEdge && !windowEl.classList.contains('maximized')) {
+            showSnapPreview('left');
+          } else if (e.clientX >= screenW - snapEdge && !windowEl.classList.contains('maximized')) {
+            showSnapPreview('right');
+          } else {
+            hideSnapPreview();
+          }
+
+          if (nt < 5) nt = 5;
+          const maxTop = window.innerHeight - TASKBAR_HEIGHT - windowEl.offsetHeight;
+          if (nt > maxTop) nt = maxTop;
+          const maxLeft = window.innerWidth - windowEl.offsetWidth - 5;
+          if (nl < 5) nl = 5;
+          if (nl > maxLeft) nl = maxLeft;
+          windowEl.style.left = nl + 'px';
+          windowEl.style.top = nt + 'px';
+        }
+
+        function onMouseUp(e) {
+          isDragging = false;
+          document.body.style.cursor = '';
+          document.removeEventListener('mousemove', onMouseMove);
+          document.removeEventListener('mouseup', onMouseUp);
+
+          const snapEdge = 15;
+          const screenW = window.innerWidth;
+
+          if (e.clientX <= snapEdge && !windowEl.classList.contains('maximized')) {
+            snapWindowToSide(windowEl, 'left');
+          } else if (e.clientX >= screenW - snapEdge && !windowEl.classList.contains('maximized')) {
+            snapWindowToSide(windowEl, 'right');
+          }
+
+          hideSnapPreview();
+        }
+
+        handleEl.addEventListener('touchstart', (e) => {
+          if (e.target.closest('.caption-btn')) return;
+          if (windowEl.classList.contains('minimized')) return;
+          if (windowEl.classList.contains('maximized')) return;
+          const touch = e.touches[0];
+          e.preventDefault();
+          isDragging = true;
+          wasSnapped = windowEl.classList.contains('snap-left') || windowEl.classList.contains('snap-right');
+
+          const rect = windowEl.getBoundingClientRect();
+          startLeft = rect.left; startTop = rect.top;
+          windowEl.style.left = startLeft + 'px';
+          windowEl.style.top = startTop + 'px';
+          windowEl.style.right = 'auto';
+          startX = touch.clientX; startY = touch.clientY;
+          bringToFront(windowEl);
+          document.addEventListener('touchmove', onTouchMove, { passive: false });
+          document.addEventListener('touchend', onTouchEnd);
+        });
+
+        function onTouchMove(e) {
+          if (!isDragging) return;
+          const touch = e.touches[0];
+          const dx = touch.clientX - startX, dy = touch.clientY - startY;
+          let nl = startLeft + dx, nt = startTop + dy;
+
+          if (wasSnapped && (Math.abs(dx) > 20 || Math.abs(dy) > 20)) {
+            unsnapWindow(windowEl);
+            wasSnapped = false;
+            const rect = windowEl.getBoundingClientRect();
+            startLeft = rect.left; startTop = rect.top;
+            startX = touch.clientX; startY = touch.clientY;
+            nl = startLeft; nt = startTop;
+          }
+
+          const snapEdge = 15;
+          const screenW = window.innerWidth;
+          if (touch.clientX <= snapEdge && !windowEl.classList.contains('maximized')) {
+            showSnapPreview('left');
+          } else if (touch.clientX >= screenW - snapEdge && !windowEl.classList.contains('maximized')) {
+            showSnapPreview('right');
+          } else {
+            hideSnapPreview();
+          }
+
+          if (nt < 5) nt = 5;
+          const maxTop = window.innerHeight - TASKBAR_HEIGHT - windowEl.offsetHeight;
+          if (nt > maxTop) nt = maxTop;
+          const maxLeft = window.innerWidth - windowEl.offsetWidth - 5;
+          if (nl < 5) nl = 5;
+          if (nl > maxLeft) nl = maxLeft;
+          windowEl.style.left = nl + 'px';
+          windowEl.style.top = nt + 'px';
+        }
+
+        function onTouchEnd(e) {
+          isDragging = false;
+          document.removeEventListener('touchmove', onTouchMove);
+          document.removeEventListener('touchend', onTouchEnd);
+          hideSnapPreview();
+
+          const touch = e.changedTouches[0];
+          if (!touch) return;
+          const snapEdge = 15;
+          const screenW = window.innerWidth;
+
+          if (touch.clientX <= snapEdge && !windowEl.classList.contains('maximized')) {
+            snapWindowToSide(windowEl, 'left');
+          } else if (touch.clientX >= screenW - snapEdge && !windowEl.classList.contains('maximized')) {
+            snapWindowToSide(windowEl, 'right');
+          }
+        }
+      }
+
+      let highestZ = 10;
+      function bringToFront(el) { highestZ++; el.style.zIndex = highestZ; }
+
+      // ==================== DESKTOP GADGET CLOCK ====================
+      const desktopGadget = document.getElementById('desktopGadget');
+      const gadgetAnalog = document.getElementById('gadgetAnalog');
+      const gadgetHourHand = document.getElementById('gadgetHourHand');
+      const gadgetMinuteHand = document.getElementById('gadgetMinuteHand');
+      const gadgetSecondHand = document.getElementById('gadgetSecondHand');
+      const gadgetTime = document.getElementById('gadgetTime');
+      const gadgetDate = document.getElementById('gadgetDate');
+      const gadgetDay = document.getElementById('gadgetDay');
+
+      (function generateTicks() {
+        for (let i = 0; i < 12; i++) {
+          const tick = document.createElement('div');
+          tick.className = 'gadget-tick' + (i % 3 === 0 ? ' major' : '');
+          tick.style.transform = `translate(-50%, -50%) rotate(${i * 30}deg) translateY(-54px)`;
+          gadgetAnalog.appendChild(tick);
+        }
+      })();
+
+      function updateGadgetClock() {
+        const now = new Date();
+        let h = now.getHours();
+        const ampm = h >= 12 ? 'PM' : 'AM';
+        h = h % 12; h = h ? h : 12;
+        const m = now.getMinutes();
+        const s = now.getSeconds();
+
+        const pad = (n) => String(n).padStart(2, '0');
+        gadgetTime.innerHTML = `${pad(h)}:${pad(m)}<span class="seconds">:${pad(s)}</span><span class="ampm">${ampm}</span>`;
+        gadgetDate.textContent = `${pad(now.getDate())}/${pad(now.getMonth() + 1)}/${now.getFullYear()}`;
+        const dayNames = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
+        gadgetDay.textContent = dayNames[now.getDay()];
+
+        const secDeg = s * 6;
+        const minDeg = m * 6 + s * 0.1;
+        const hourDeg = (h % 12) * 30 + m * 0.5;
+
+        gadgetSecondHand.style.transform = `rotate(${secDeg}deg)`;
+        gadgetMinuteHand.style.transform = `rotate(${minDeg}deg)`;
+        gadgetHourHand.style.transform = `rotate(${hourDeg}deg)`;
+      }
+      updateGadgetClock();
+      setInterval(updateGadgetClock, 1000);
+
+      (function makeGadgetDraggable() {
+        let isDragging = false, startX = 0, startY = 0, startLeft = 0, startTop = 0;
+
+        function startDrag(clientX, clientY) {
+          isDragging = true;
+          const rect = desktopGadget.getBoundingClientRect();
+          startLeft = rect.left; startTop = rect.top;
+          desktopGadget.style.left = startLeft + 'px';
+          desktopGadget.style.top = startTop + 'px';
+          desktopGadget.style.right = 'auto';
+          startX = clientX; startY = clientY;
+          desktopGadget.classList.add('dragging');
+        }
+
+        function moveDrag(clientX, clientY) {
+          if (!isDragging) return;
+          const dx = clientX - startX, dy = clientY - startY;
+          let nl = startLeft + dx, nt = startTop + dy;
+          const w = desktopGadget.offsetWidth, h = desktopGadget.offsetHeight;
+          if (nl < 5) nl = 5;
+          if (nl > window.innerWidth - w - 5) nl = window.innerWidth - w - 5;
+          if (nt < 5) nt = 5;
+          if (nt > window.innerHeight - TASKBAR_HEIGHT - h - 5) nt = window.innerHeight - TASKBAR_HEIGHT - h - 5;
+          desktopGadget.style.left = nl + 'px';
+          desktopGadget.style.top = nt + 'px';
+        }
+
+        function endDrag() {
+          isDragging = false;
+          desktopGadget.classList.remove('dragging');
+        }
+
+        desktopGadget.addEventListener('mousedown', (e) => {
+          if (e.button !== 0) return;
+          e.preventDefault();
+          startDrag(e.clientX, e.clientY);
+          document.addEventListener('mousemove', onMouseMove);
+          document.addEventListener('mouseup', onMouseUp);
+        });
+
+        function onMouseMove(e) { moveDrag(e.clientX, e.clientY); }
+        function onMouseUp() {
+          endDrag();
+          document.removeEventListener('mousemove', onMouseMove);
+          document.removeEventListener('mouseup', onMouseUp);
+        }
+
+        desktopGadget.addEventListener('touchstart', (e) => {
+          const touch = e.touches[0];
+          startDrag(touch.clientX, touch.clientY);
+          document.addEventListener('touchmove', onTouchMove, { passive: false });
+          document.addEventListener('touchend', onTouchEnd);
+        }, { passive: false });
+
+        function onTouchMove(e) {
+          if (!isDragging) return;
+          e.preventDefault();
+          const touch = e.touches[0];
+          moveDrag(touch.clientX, touch.clientY);
+        }
+        function onTouchEnd() {
+          endDrag();
+          document.removeEventListener('touchmove', onTouchMove);
+          document.removeEventListener('touchend', onTouchEnd);
+        }
+      })();
+
+      // ==================== ELEMENTS ====================
+      const weightPerPcInput = document.getElementById('weightPerPc');
+      const pcsPerBagInput = document.getElementById('pcsPerBag');
+      const numBagsInput = document.getElementById('numBags');
+      const extraPcsInput = document.getElementById('extraPcs');
+      const returnPcsInput = document.getElementById('returnPcs');
+      const returnDisplayPcs = document.getElementById('returnDisplayPcs');
+      const returnDisplayKg = document.getElementById('returnDisplayKg');
+      const bagWeightPreview = document.getElementById('bagWeightPreview');
+      const bagPcsPreview = document.getElementById('bagPcsPreview');
+      const resultContent = document.getElementById('resultContent');
+
+      const totalQtyValue = document.getElementById('totalQtyValue');
+      const totalBagsValue = document.getElementById('totalBagsValue');
+
+      const customerFilter = document.getElementById('customerFilter');
+      const priceTableBody = document.getElementById('priceTableBody');
+      const priceCount = document.getElementById('priceCount');
+      const searchInput = document.getElementById('searchInput');
+      const clearSearchBtn = document.getElementById('clearSearchBtn');
+      const addProductBtn = document.getElementById('addProductBtn');
+      const clearAllBtn = document.getElementById('clearAllBtn');
+      const resetCalcBtn = document.getElementById('resetCalcBtn');
+
+      const calcWindow = document.getElementById('calcWindow');
+      const priceWindow = document.getElementById('priceWindow');
+      const loadWindow = document.getElementById('loadWindow');
+      const calcTitleBar = document.getElementById('calcTitleBar');
+      const priceTitleBar = document.getElementById('priceTitleBar');
+      const loadTitleBar = document.getElementById('loadTitleBar');
+
+      const loadWeightPerPc = document.getElementById('loadWeightPerPc');
+      const loadPcsPerBag = document.getElementById('loadPcsPerBag');
+      const loadTotalKg = document.getElementById('loadTotalKg');
+      const loadResultContent = document.getElementById('loadResultContent');
+
+      const modalOverlay = document.getElementById('modalOverlay');
+      const modalTitle = document.getElementById('modalTitle');
+      const modalContent = document.getElementById('modalContent');
+      const modalCloseBtn = document.getElementById('modalCloseBtn');
+
+      const confirmOverlay = document.getElementById('confirmOverlay');
+      const confirmBox = document.getElementById('confirmBox');
+      const confirmTitleBar = document.getElementById('confirmTitleBar');
+      const confirmTitle = document.getElementById('confirmTitle');
+      const confirmMessage = document.getElementById('confirmMessage');
+      const confirmIcon = document.getElementById('confirmIcon');
+      const confirmOkBtn = document.getElementById('confirmOkBtn');
+      const confirmCancelBtn = document.getElementById('confirmCancelBtn');
+      const confirmCloseBtn = document.getElementById('confirmCloseBtn');
+
+      const calcStatusDot = document.getElementById('calcStatusDot');
+      const priceStatusDot = document.getElementById('priceStatusDot');
+      const syncBadge = document.getElementById('syncBadge');
+      const calcLoading = document.getElementById('calcLoading');
+      const priceLoading = document.getElementById('priceLoading');
+
+      const startBtn = document.getElementById('startBtn');
+      const startMenu = document.getElementById('startMenu');
+
+      makeDraggable(calcWindow, calcTitleBar);
+      makeDraggable(priceWindow, priceTitleBar);
+      makeDraggable(loadWindow, loadTitleBar);
+      makeDraggable(confirmBox, confirmBox.querySelector('.title-bar'));
+
+      calcWindow.addEventListener('mousedown', () => bringToFront(calcWindow));
+      priceWindow.addEventListener('mousedown', () => bringToFront(priceWindow));
+      loadWindow.addEventListener('mousedown', () => bringToFront(loadWindow));
+
+      const fieldOrder = [weightPerPcInput, pcsPerBagInput, numBagsInput, extraPcsInput, returnPcsInput];
+
+      // ==================== STATE ====================
+      let products = [];
+      let filteredProducts = [];
+      let selectedProductId = null;
+      let selectedProductName = '';
+      let selectedCustomerName = '';
+      let isOnline = false;
+
+      const windowState = {
+        calcWindow: { minimized: false, maximized: false, origRect: null },
+        priceWindow: { minimized: false, maximized: false, origRect: null },
+        loadWindow: { minimized: false, maximized: false, origRect: null }
+      };
+
+      // ==================== HELPERS ====================
+      const formatKg = (value) => {
+        if (value === 0) return '0.000';
+        let str = value.toFixed(3);
+        str = str.replace(/\.?0+$/, '');
+        if (str === '' || str === '-') str = '0';
+        return str;
+      };
+
+      const formatPrice = (value) => '₹' + Number(value).toFixed(2);
+
+      // ========== NOTIFICATIONS REMOVED — showToast is a no-op ==========
+      function showToast(message, type = '') {
+        return;
+      }
+
+      function setOnlineStatus(online) {
+        isOnline = online;
+        const cls = online ? 'online' : 'offline';
+        calcStatusDot.className = 'status-dot ' + cls;
+        priceStatusDot.className = 'status-dot ' + cls;
+        syncBadge.textContent = online ? '🟢 Connected' : '🔴 Offline';
+        syncBadge.style.background = online ? '#1e6b3a' : '#8b2c2c';
+      }
+
+      function setSyncing() {
+        calcStatusDot.className = 'status-dot syncing';
+        priceStatusDot.className = 'status-dot syncing';
+        syncBadge.textContent = '🟡 Syncing…';
+      }
+
+      function showLoading(which) {
+        if (which === 'calc') calcLoading.classList.add('active');
+        if (which === 'price') priceLoading.classList.add('active');
+      }
+
+      function hideLoading(which) {
+        if (which === 'calc') calcLoading.classList.remove('active');
+        if (which === 'price') priceLoading.classList.remove('active');
+      }
+
+      function escapeHtml(s) {
+        return String(s).replace(/[&<>"']/g, c => ({
+          '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+        }[c]));
+      }
+
+      // ==================== CLOCK ====================
+      function updateClock() {
+        const now = new Date();
+        let h = now.getHours();
+        const ampm = h >= 12 ? 'PM' : 'AM';
+        h = h % 12;
+        h = h ? h : 12;
+        const m = String(now.getMinutes()).padStart(2, '0');
+        const s = String(now.getSeconds()).padStart(2, '0');
+        const d = String(now.getDate()).padStart(2, '0');
+        const mo = String(now.getMonth() + 1).padStart(2, '0');
+        const y = now.getFullYear();
+        document.getElementById('clockTime').textContent = `${String(h).padStart(2, '0')}:${m}:${s} ${ampm}`;
+        document.getElementById('clockDate').textContent = `${d}/${mo}/${y}`;
+      }
+      updateClock();
+      setInterval(updateClock, 1000);
+
+      // ==================== START MENU ====================
+      startBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        startMenu.classList.toggle('open');
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!startMenu.contains(e.target) && !startBtn.contains(e.target)) {
+          startMenu.classList.remove('open');
+        }
+      });
+
+      document.querySelectorAll('.start-menu-item[data-restore]').forEach(item => {
+        item.addEventListener('click', () => {
+          const winId = item.dataset.restore;
+          startMenu.classList.remove('open');
+          restoreWindowFromTaskbar(winId);
+        });
+      });
+
+      document.getElementById('startMinimizeAll').addEventListener('click', () => {
+        startMenu.classList.remove('open');
+        ['calcWindow', 'priceWindow', 'loadWindow'].forEach(id => {
+          const winEl = document.getElementById(id);
+          if (winEl && !windowState[id].minimized) {
+            if (windowState[id].maximized) restoreFromMaximize(id);
+            winEl.classList.add('minimized');
+            windowState[id].minimized = true;
+          }
+        });
+        updateTaskbar();
+      });
+
+      document.getElementById('startRestoreAll').addEventListener('click', () => {
+        startMenu.classList.remove('open');
+        ['calcWindow', 'priceWindow', 'loadWindow'].forEach(id => {
+          const winEl = document.getElementById(id);
+          if (winEl && windowState[id].minimized) {
+            winEl.classList.remove('minimized');
+            windowState[id].minimized = false;
+          }
+        });
+        updateTaskbar();
+      });
+
+      // ==================== MINIMIZE / MAXIMIZE / CLOSE ====================
+      function updateTaskbar() {
+        const tbCalc = document.getElementById('taskbarCalc');
+        const tbPrice = document.getElementById('taskbarPrice');
+        const tbLoad = document.getElementById('taskbarLoad');
+        [['calcWindow', tbCalc], ['priceWindow', tbPrice], ['loadWindow', tbLoad]].forEach(([id, tb]) => {
+          const state = windowState[id];
+          if (tb.style.display !== 'none') {
+            tb.classList.toggle('active', state.minimized);
+            tb.classList.toggle('maximized', state.maximized);
+          }
+        });
+      }
+
+      function showTaskbarItem(winId) {
+        const taskbarItem = document.querySelector(`.taskbar-item[data-restore="${winId}"]`);
+        if (taskbarItem) {
+          taskbarItem.style.display = 'flex';
+        }
+      }
+
+      function hideTaskbarItem(winId) {
+        const taskbarItem = document.querySelector(`.taskbar-item[data-restore="${winId}"]`);
+        if (taskbarItem) {
+          taskbarItem.style.display = 'none';
+        }
+      }
+
+      function restoreWindowFromTaskbar(winId) {
+        const winEl = document.getElementById(winId);
+        if (!winEl) return;
+        const state = windowState[winId];
+        showTaskbarItem(winId);
+        if (state.minimized) {
+          winEl.classList.remove('minimized');
+          state.minimized = false;
+          bringToFront(winEl);
+        } else {
+          bringToFront(winEl);
+        }
+        updateTaskbar();
+      }
+
+      document.querySelectorAll('.caption-btn.minimize').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const winId = btn.dataset.minimize;
+          if (!winId) return;
+          const winEl = document.getElementById(winId);
+          if (!winEl) return;
+          if (windowState[winId].maximized) restoreFromMaximize(winId);
+          winEl.classList.add('minimized');
+          windowState[winId].minimized = true;
+          showTaskbarItem(winId);
+          updateTaskbar();
+        });
+      });
+
+      document.querySelectorAll('.caption-btn.maximize').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const winId = btn.dataset.maximize;
+          if (!winId) return;
+          const winEl = document.getElementById(winId);
+          if (!winEl) return;
+          const state = windowState[winId];
+          if (state.maximized) restoreFromMaximize(winId);
+          else maximizeWindow(winId, winEl);
+          updateTaskbar();
+        });
+      });
+
+      document.querySelectorAll('.caption-btn.close[data-close]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const winId = btn.dataset.close;
+          if (!winId) return;
+          const winEl = document.getElementById(winId);
+          if (!winEl) return;
+          if (windowState[winId].maximized) restoreFromMaximize(winId);
+          winEl.classList.add('minimized');
+          windowState[winId].minimized = true;
+          hideTaskbarItem(winId);
+          updateTaskbar();
+        });
+      });
+
+      function maximizeWindow(winId, winEl) {
+        const state = windowState[winId];
+        if (!state.origRect) {
+          const rect = winEl.getBoundingClientRect();
+          state.origRect = {
+            top: rect.top + 'px', left: rect.left + 'px',
+            right: 'auto', width: rect.width + 'px', height: rect.height + 'px'
+          };
+        }
+        winEl.classList.remove('snap-left', 'snap-right');
+        winEl.classList.remove('minimized');
+        state.minimized = false;
+        winEl.classList.add('maximized');
+        state.maximized = true;
+        const maxBtn = winEl.querySelector('.caption-btn.maximize');
+        if (maxBtn) { maxBtn.textContent = '❐'; maxBtn.title = 'Restore'; }
+        showTaskbarItem(winId);
+        bringToFront(winEl);
+      }
+
+      function restoreFromMaximize(winId) {
+        const winEl = document.getElementById(winId);
+        const state = windowState[winId];
+        winEl.classList.remove('maximized');
+        state.maximized = false;
+        winEl.classList.remove('snap-left', 'snap-right');
+        if (state.origRect) {
+          winEl.style.top = state.origRect.top;
+          winEl.style.left = state.origRect.left;
+          winEl.style.right = state.origRect.right;
+          winEl.style.width = state.origRect.width;
+          winEl.style.height = state.origRect.height;
+          winEl.style.maxWidth = '';
+          winEl.style.maxHeight = '';
+        }
+        const maxBtn = winEl.querySelector('.caption-btn.maximize');
+        if (maxBtn) { maxBtn.textContent = '□'; maxBtn.title = 'Maximize'; }
+        bringToFront(winEl);
+      }
+
+      document.querySelectorAll('.taskbar-item').forEach(item => {
+        item.addEventListener('click', () => {
+          const winId = item.dataset.restore;
+          if (!winId) return;
+          restoreWindowFromTaskbar(winId);
+        });
+      });
+
+      // ==================== CUSTOM CONFIRM ====================
+      function showConfirm({ title, message, confirmLabel = 'Yes, Delete', type = 'danger', icon = '⚠️' }) {
+        return new Promise((resolve) => {
+          confirmTitleBar.textContent = title || '⚠️ Confirm';
+          confirmTitle.textContent = title || 'Confirm';
+          confirmMessage.innerHTML = message || 'Are you sure?';
+          confirmIcon.textContent = icon;
+          confirmIcon.className = 'confirm-icon ' + (type === 'danger' ? 'danger' : 'warning');
+          confirmOkBtn.textContent = confirmLabel;
+          confirmOkBtn.className = 'aero-btn ' + (type === 'danger' ? 'danger' : 'primary');
+          confirmOverlay.classList.add('active');
+          bringToFront(confirmBox);
+          setTimeout(() => confirmOkBtn.focus(), 60);
+
+          const cleanup = () => {
+            confirmOkBtn.removeEventListener('click', onOk);
+            confirmCancelBtn.removeEventListener('click', onCancel);
+            confirmCloseBtn.removeEventListener('click', onCancel);
+            confirmOverlay.removeEventListener('click', onOverlayClick);
+            document.removeEventListener('keydown', onKey);
+            confirmOverlay.classList.remove('active');
+          };
+
+          const onOk = () => { cleanup(); resolve(true); };
+          const onCancel = () => { cleanup(); resolve(false); };
+          const onOverlayClick = (e) => { if (e.target === confirmOverlay) onCancel(); };
+          const onKey = (e) => {
+            if (e.key === 'Escape') onCancel();
+            if (e.key === 'Enter' && document.activeElement === confirmOkBtn) onOk();
+          };
+
+          confirmOkBtn.addEventListener('click', onOk);
+          confirmCancelBtn.addEventListener('click', onCancel);
+          confirmCloseBtn.addEventListener('click', onCancel);
+          confirmOverlay.addEventListener('click', onOverlayClick);
+          document.addEventListener('keydown', onKey);
+        });
+      }
+
+      // ==================== DATABASE ====================
+      async function loadProducts() {
+        showLoading('price');
+        setSyncing();
+        try {
+          const { data, error } = await supabase
+            .from('products')
+            .select('*')
+            .order('created_at', { ascending: false });
+          if (error) throw error;
+          products = (data || []).map(p => ({
+            id: p.id, name: p.name, customer: p.customer,
+            pcsPerBag: p.pcs_per_bag, price: Number(p.price)
+          }));
+          filteredProducts = [...products];
+          setOnlineStatus(true);
+          renderCustomerFilter();
+          applyFilters();
+        } catch (err) {
+          console.error('Load products error:', err);
+          setOnlineStatus(false);
+          priceTableBody.innerHTML = `
+            <tr><td colspan="5">
+              <div class="no-results">⚠️ Database error<span class="small">${err.message || 'Check that the "products" table exists'}</span></div>
+            </td></tr>`;
+        } finally {
+          hideLoading('price');
+        }
+      }
+
+      async function saveProduct(product) {
+        setSyncing();
+        try {
+          const { data, error } = await supabase
+            .from('products')
+            .insert([{ name: product.name, customer: product.customer, pcs_per_bag: product.pcsPerBag, price: product.price }])
+            .select().single();
+          if (error) throw error;
+          setOnlineStatus(true);
+          return { id: data.id, name: data.name, customer: data.customer, pcsPerBag: data.pcs_per_bag, price: Number(data.price) };
+        } catch (err) {
+          console.error('Save product error:', err);
+          setOnlineStatus(false);
+          throw err;
+        }
+      }
+
+      // ==================== FIXED updateProduct (no .single() coercion) ====================
+      async function updateProduct(id, updates) {
+        setSyncing();
+        try {
+          const { error: updateError } = await supabase
+            .from('products')
+            .update({
+              name: updates.name,
+              customer: updates.customer,
+              pcs_per_bag: updates.pcsPerBag,
+              price: updates.price
+            })
+            .eq('id', id);
+
+          if (updateError) throw updateError;
+
+          const { data, error: fetchError } = await supabase
+            .from('products')
+            .select('*')
+            .eq('id', id)
+            .maybeSingle();
+
+          if (fetchError) throw fetchError;
+
+          setOnlineStatus(true);
+
+          if (!data) {
+            return {
+              id,
+              name: updates.name,
+              customer: updates.customer,
+              pcsPerBag: updates.pcsPerBag,
+              price: updates.price
+            };
+          }
+
+          return {
+            id: data.id,
+            name: data.name,
+            customer: data.customer,
+            pcsPerBag: data.pcs_per_bag,
+            price: Number(data.price)
+          };
+        } catch (err) {
+          console.error('Update product error:', err);
+          setOnlineStatus(false);
+          throw err;
+        }
+      }
+
+      async function deleteProduct(id) {
+        setSyncing();
+        try {
+          const { error } = await supabase.from('products').delete().eq('id', id);
+          if (error) throw error;
+          setOnlineStatus(true);
+          return true;
+        } catch (err) {
+          console.error('Delete product error:', err);
+          setOnlineStatus(false);
+          throw err;
+        }
+      }
+
+      async function clearAllProducts() {
+        setSyncing();
+        try {
+          const { error } = await supabase.from('products').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+          if (error) throw error;
+          setOnlineStatus(true);
+          return true;
+        } catch (err) {
+          console.error('Clear all error:', err);
+          setOnlineStatus(false);
+          throw err;
+        }
+      }
+
+      async function savePackingRecord(record) {
+        setSyncing();
+        try {
+          const { data, error } = await supabase
+            .from('packing_records')
+            .insert([{
+              customer: record.customer, product_name: record.productName,
+              weight_per_pc: record.weightPerPc, pcs_per_bag: record.pcsPerBag,
+              num_bags: record.numBags, extra_pcs: record.extraPcs,
+              total_kg: record.totalKg, total_pcs: record.totalPcs
+            }])
+            .select().single();
+          if (error) throw error;
+          setOnlineStatus(true);
+          return data;
+        } catch (err) {
+          console.error('Save packing record error:', err);
+          setOnlineStatus(false);
+          throw err;
+        }
+      }
+
+      // ==================== RENDER ====================
+      function renderCustomerFilter() {
+        const uniqueCustomers = [...new Set(products.map(p => p.customer))].sort();
+        const currentValue = customerFilter.value;
+        let html = '<option value="">👤 All Customers</option>';
+        uniqueCustomers.forEach(c => { html += `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`; });
+        customerFilter.innerHTML = html;
+        if (currentValue && uniqueCustomers.includes(currentValue)) customerFilter.value = currentValue;
+      }
+
+      function renderPriceTable() {
+        if (filteredProducts.length === 0) {
+          if (products.length === 0) {
+            priceTableBody.innerHTML = `<tr><td colspan="5"><div class="no-results">📦 No products yet<span class="small">Click "Add Product" to create your first entry</span></div></td></tr>`;
+          } else {
+            priceTableBody.innerHTML = `<tr><td colspan="5"><div class="no-results">🔍 No products match your filter<span class="small">Try a different customer or product name</span></div></td></tr>`;
+          }
+          priceCount.textContent = '0';
+          return;
+        }
+        let html = '';
+        filteredProducts.forEach(p => {
+          const selected = (p.id === selectedProductId) ? ' selected-row' : '';
+          html += `<tr class="${selected}" data-id="${p.id}" data-name="${escapeHtml(p.name)}" data-customer="${escapeHtml(p.customer)}" data-pcs="${p.pcsPerBag}" data-price="${p.price}">
+            <td class="name-cell">${escapeHtml(p.name)}</td>
+            <td class="customer-cell">👤 ${escapeHtml(p.customer)}</td>
+            <td class="pcs-cell">${p.pcsPerBag}</td>
+            <td class="price-cell">${formatPrice(p.price)}</td>
+            <td class="action-cell">
+              <button class="row-edit-btn" data-edit-id="${p.id}" title="Edit">✎</button>
+              <button class="row-delete-btn" data-delete-id="${p.id}" title="Delete">✕</button>
+            </td>
+          </tr>`;
+        });
+        priceTableBody.innerHTML = html;
+        priceCount.textContent = filteredProducts.length;
+      }
+
+      function applyFilters() {
+        const customerQuery = customerFilter.value;
+        const searchQuery = searchInput.value.trim().toLowerCase();
+        filteredProducts = products.filter(p => {
+          const customerMatch = !customerQuery || p.customer === customerQuery;
+          let searchMatch = true;
+          if (searchQuery) {
+            if (customerQuery) searchMatch = p.name.toLowerCase().includes(searchQuery);
+            else searchMatch = p.name.toLowerCase().includes(searchQuery) || p.customer.toLowerCase().includes(searchQuery);
+          }
+          return customerMatch && searchMatch;
+        });
+        renderPriceTable();
+      }
+
+      function applyProduct(product) {
+        selectedProductId = product.id;
+        selectedProductName = product.name;
+        selectedCustomerName = product.customer;
+        pcsPerBagInput.value = product.pcsPerBag;
+        weightPerPcInput.focus();
+        weightPerPcInput.select();
+        updateBagPreview();
+        calculateTotal();
+        renderPriceTable();
+      }
+
+      // ==================== TOTAL QTY ====================
+      function updateTotalQtyDisplay() {
+        const pcsPerBag = parseFloat(pcsPerBagInput.value) || 0;
+        const numBags = parseInt(numBagsInput.value) || 0;
+        const extraPcs = parseInt(extraPcsInput.value) || 0;
+        const totalPcs = numBags * pcsPerBag + extraPcs;
+        totalQtyValue.textContent = totalPcs.toLocaleString();
+        totalBagsValue.textContent = numBags + ' bag' + (numBags !== 1 ? 's' : '');
+      }
+
+      // ==================== PREVIEW / CALC ====================
+      function updateBagPreview() {
+        const w = parseFloat(weightPerPcInput.value) || 0;
+        const p = parseFloat(pcsPerBagInput.value) || 0;
+        bagWeightPreview.textContent = (w * p).toFixed(3);
+        bagPcsPreview.textContent = p + ' pcs';
+      }
+
+      function updateReturnPreview() {
+        const w = parseFloat(weightPerPcInput.value) || 0;
+        const returnPcs = parseInt(returnPcsInput.value) || 0;
+        returnDisplayPcs.textContent = returnPcs;
+        returnDisplayKg.textContent = (returnPcs * w).toFixed(3) + ' kg';
+      }
+
+      function showEmptyHint() {
+        resultContent.innerHTML = `<div class="empty-hint">📝 Enter values above to calculate<span class="small">Press Enter in the last field to save to database &amp; reset</span></div>`;
+      }
+
+      function calculateTotal() {
+        const weightPerPc = parseFloat(weightPerPcInput.value);
+        const pcsPerBag = parseFloat(pcsPerBagInput.value);
+        const numBags = parseFloat(numBagsInput.value);
+        const extraPcs = parseFloat(extraPcsInput.value);
+        const returnPcs = parseFloat(returnPcsInput.value) || 0;
+
+        const anyEmpty = weightPerPcInput.value === '' || pcsPerBagInput.value === '' || numBagsInput.value === '' || extraPcsInput.value === '';
+        if (anyEmpty) { showEmptyHint(); return null; }
+
+        if (isNaN(weightPerPc) || weightPerPc <= 0) {
+          resultContent.innerHTML = `<div class="error-msg">⚠️ Weight per piece must be greater than 0.</div>`;
+          return null;
+        }
+        if (isNaN(pcsPerBag) || pcsPerBag <= 0 || !Number.isInteger(pcsPerBag)) {
+          resultContent.innerHTML = `<div class="error-msg">⚠️ Pieces per bag must be a positive whole number.</div>`;
+          return null;
+        }
+        if (isNaN(numBags) || numBags < 0 || !Number.isInteger(numBags)) {
+          resultContent.innerHTML = `<div class="error-msg">⚠️ Number of bags must be a non-negative whole number.</div>`;
+          return null;
+        }
+        if (isNaN(extraPcs) || extraPcs < 0 || !Number.isInteger(extraPcs)) {
+          resultContent.innerHTML = `<div class="error-msg">⚠️ Extra loose pieces must be a non-negative whole number.</div>`;
+          return null;
+        }
+
+        const totalFromBagsKg = numBags * (weightPerPc * pcsPerBag);
+        const totalFromLooseKg = extraPcs * weightPerPc;
+        const totalKgBeforeReturn = totalFromBagsKg + totalFromLooseKg;
+        const totalPcsBeforeReturn = numBags * pcsPerBag + extraPcs;
+
+        const returnKg = returnPcs * weightPerPc;
+        const totalKg = totalKgBeforeReturn - returnKg;
+        const totalPcs = totalPcsBeforeReturn - returnPcs;
+
+        const productName = selectedProductName || '—';
+        const customerName = selectedCustomerName || '—';
+
+        let html = `
+          <div class="result-grid">
+            <div class="result-card"><div class="big">${numBags}</div><div class="label">bags</div><div class="sub">${pcsPerBag} pcs each</div></div>
+            <div class="result-card"><div class="big">${extraPcs}</div><div class="label">loose pcs</div><div class="sub">${weightPerPc} kg/pc</div></div>
+            <div class="result-card" style="background:#fde8d9; border-color:#d4a373;">
+              <div class="big" style="color:#c0392b;">-${returnPcs}</div><div class="label">return pcs</div><div class="sub">${returnKg.toFixed(3)} kg</div>
+            </div>
+            <div class="result-card" style="background:#d9e9fa; border-color:#7ea5c9;">
+              <div class="big">${formatKg(totalKg)}</div><div class="label">total kg</div><div class="sub">${totalPcs} pcs total</div>
+            </div>
+          </div>
+          <div class="summary-bar">
+            <span>👤 ${escapeHtml(customerName)}</span>
+            <span>📦 ${escapeHtml(productName)}</span>
+            <span>${numBags} bag${numBags !== 1 ? 's' : ''} × ${pcsPerBag} pcs</span>
+            <span>➕ ${extraPcs} loose</span>
+            <span style="color:#c0392b;">➖ ${returnPcs} return</span>
+            <span class="value">${formatKg(totalKg)} kg</span>
+          </div>`;
+
+        html += `<div style="font-size:0.66rem; color:#1e567a; margin-top: 6px; text-align: center; background: #deedfd; padding: 4px 10px; border-radius: 40px; border: 1px solid #aac6e2; font-weight:500;">
+            🧮 ${numBags} bag(s) = ${formatKg(totalFromBagsKg)} kg &nbsp;|&nbsp; ${extraPcs} pc(s) = ${formatKg(totalFromLooseKg)} kg &nbsp;|&nbsp; ➖ ${returnPcs} pc(s) = ${returnKg.toFixed(3)} kg
+          </div>`;
+
+        resultContent.innerHTML = html;
+        updateTotalQtyDisplay();
+        updateReturnPreview();
+        return { weightPerPc, pcsPerBag, numBags, extraPcs, returnPcs, totalKg, totalPcs, productName, customerName };
+      }
+
+      function fullRecalc() { updateBagPreview(); updateReturnPreview(); return calculateTotal(); }
+
+      let debounceTimer;
+      function autoRecalc() {
+        if (debounceTimer) clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => fullRecalc(), 120);
+      }
+
+      [weightPerPcInput, pcsPerBagInput, numBagsInput, extraPcsInput, returnPcsInput].forEach(inp => {
+        inp.addEventListener('input', autoRecalc);
+      });
+
+      // ==================== RESET CALCULATOR ====================
+      function resetPackingCalculator() {
+        weightPerPcInput.value = '';
+        pcsPerBagInput.value = '';
+        numBagsInput.value = '';
+        extraPcsInput.value = '';
+        returnPcsInput.value = '';
+
+        bagWeightPreview.textContent = '0.000';
+        bagPcsPreview.textContent = '0 pcs';
+        returnDisplayPcs.textContent = '0';
+        returnDisplayKg.textContent = '0.000 kg';
+        totalQtyValue.textContent = '0';
+        totalBagsValue.textContent = '0 bags';
+
+        selectedProductId = null;
+        selectedProductName = '';
+        selectedCustomerName = '';
+        renderPriceTable();
+
+        showEmptyHint();
+        weightPerPcInput.focus();
+      }
+
+      resetCalcBtn.addEventListener('click', resetPackingCalculator);
+
+      // ==================== LOAD CALCULATOR ====================
+      function calculateLoad() {
+        const w = parseFloat(loadWeightPerPc.value);
+        const p = parseFloat(loadPcsPerBag.value);
+        const totalKg = parseFloat(loadTotalKg.value);
+
+        const anyEmpty = loadWeightPerPc.value === '' || loadPcsPerBag.value === '' || loadTotalKg.value === '';
+        if (anyEmpty) {
+          loadResultContent.innerHTML = `<div class="empty-hint">📝 Enter weight per pc, pcs per bag &amp; total kg<span class="small">The result updates live as you type</span></div>`;
+          return;
+        }
+        if (isNaN(w) || w <= 0) { loadResultContent.innerHTML = `<div class="error-msg">⚠️ Weight per piece must be greater than 0.</div>`; return; }
+        if (isNaN(p) || p <= 0 || !Number.isInteger(p)) { loadResultContent.innerHTML = `<div class="error-msg">⚠️ Pcs per bag must be a positive whole number.</div>`; return; }
+        if (isNaN(totalKg) || totalKg < 0) { loadResultContent.innerHTML = `<div class="error-msg">⚠️ Total weight must be a non-negative number.</div>`; return; }
+
+        const weightPerBagKg = w * p;
+        const fullBags = Math.floor(totalKg / weightPerBagKg);
+        const remainingKg = totalKg - (fullBags * weightPerBagKg);
+        const loosePcs = Math.floor(remainingKg / w);
+        const leftoverKg = remainingKg - (loosePcs * w);
+        const totalPcs = fullBags * p + loosePcs;
+
+        let html = `
+          <div class="load-result-grid">
+            <div class="load-result-card"><div class="big">${fullBags}</div><div class="label">Full bags</div><div class="sub" style="font-size:0.62rem; color:#2a5777; margin-top:3px; font-weight:500;">${formatKg(weightPerBagKg)} kg each</div></div>
+            <div class="load-result-card"><div class="big">${loosePcs}</div><div class="label">Loose pcs</div><div class="sub" style="font-size:0.62rem; color:#2a5777; margin-top:3px; font-weight:500;">${w} kg each</div></div>
+            <div class="load-result-card" style="background:#d9e9fa; border-color:#7ea5c9;"><div class="big">${totalPcs}</div><div class="label">Total pcs</div><div class="sub" style="font-size:0.62rem; color:#2a5777; margin-top:3px; font-weight:500;">from ${formatKg(totalKg)} kg</div></div>
+          </div>
+          <div style="font-size:0.66rem; color:#1e567a; margin-top: 8px; text-align: center; background: #deedfd; padding: 6px 10px; border-radius: 40px; border: 1px solid #aac6e2; font-weight:500; line-height: 1.5;">
+            🧮 ${fullBags} bag(s) × ${formatKg(weightPerBagKg)} kg = ${formatKg(fullBags * weightPerBagKg)} kg<br>
+            ➕ ${loosePcs} pc(s) × ${w} kg = ${formatKg(loosePcs * w)} kg<br>
+            ${leftoverKg > 0.0001 ? `⚠️ Leftover: ${formatKg(leftoverKg)} kg (too small for 1 pc)` : `✅ Exact fit · 0 kg leftover`}
+          </div>`;
+        loadResultContent.innerHTML = html;
+      }
+
+      let loadDebounce;
+      [loadWeightPerPc, loadPcsPerBag, loadTotalKg].forEach(inp => {
+        inp.addEventListener('input', () => {
+          if (loadDebounce) clearTimeout(loadDebounce);
+          loadDebounce = setTimeout(calculateLoad, 120);
+        });
+      });
+
+      // ==================== CLIPBOARD ====================
+      function copyToClipboard(text) {
+        if (navigator.clipboard && navigator.clipboard.writeText) return navigator.clipboard.writeText(text);
+        return new Promise((resolve, reject) => {
+          const ta = document.createElement('textarea');
+          ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+          document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); resolve(); } catch (e) { reject(e); }
+          finally { document.body.removeChild(ta); }
+        });
+      }
+
+      function resetAllFields() {
+        weightPerPcInput.value = '';
+        pcsPerBagInput.value = '';
+        numBagsInput.value = '';
+        extraPcsInput.value = '';
+        returnPcsInput.value = '';
+        bagWeightPreview.textContent = '0.000';
+        bagPcsPreview.textContent = '0 pcs';
+        returnDisplayPcs.textContent = '0';
+        returnDisplayKg.textContent = '0.000 kg';
+        totalQtyValue.textContent = '0';
+        totalBagsValue.textContent = '0 bags';
+        showEmptyHint();
+      }
+
+      // ==================== ENTER NAV ====================
+      async function handleEnterKey(e, currentIndex) {
+        if (e.key !== 'Enter') return;
+        e.preventDefault();
+        if (currentIndex === fieldOrder.length - 1) {
+          const result = fullRecalc();
+          if (result === null) { return; }
+          const kgText = formatKg(result.totalKg);
+          showLoading('calc');
+          let saved = false;
+          try {
+            await savePackingRecord({
+              customer: result.customerName, productName: result.productName,
+              weightPerPc: result.weightPerPc, pcsPerBag: result.pcsPerBag,
+              numBags: result.numBags, extraPcs: result.extraPcs,
+              totalKg: result.totalKg, totalPcs: result.totalPcs
+            });
+            saved = true;
+          } catch (err) {
+            console.error('Save failed:', err);
+          } finally {
+            hideLoading('calc');
+          }
+          copyToClipboard(kgText).catch(() => {});
+          resetAllFields();
+          resultContent.innerHTML = `<div class="empty-hint">✅ Saved <strong>${kgText} kg</strong> — ready for next entry<span class="small">Fill the fields above to calculate again</span></div>`;
+          weightPerPcInput.focus();
+        } else {
+          const nextField = fieldOrder[currentIndex + 1];
+          if (nextField) { nextField.focus(); if (nextField.select) nextField.select(); }
+        }
+      }
+
+      fieldOrder.forEach((input, index) => {
+        input.addEventListener('keydown', (e) => handleEnterKey(e, index));
+      });
+
+      // ==================== MODAL ====================
+      function openModal(title, contentHTML, onSave) {
+        modalTitle.innerHTML = title;
+        modalContent.innerHTML = contentHTML;
+        modalOverlay.classList.add('active');
+        const saveBtn = modalContent.querySelector('#modalSaveBtn');
+        const cancelBtn = modalContent.querySelector('#modalCancelBtn');
+        const closeModal = () => { modalOverlay.classList.remove('active'); modalContent.innerHTML = ''; };
+        if (saveBtn) saveBtn.addEventListener('click', async () => { const ok = await onSave(modalContent); if (ok === true) closeModal(); });
+        if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
+        const firstInput = modalContent.querySelector('input');
+        if (firstInput) setTimeout(() => firstInput.focus(), 50);
+      }
+
+      modalContent.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && e.target.tagName === 'INPUT') {
+          const saveBtn = modalContent.querySelector('#modalSaveBtn');
+          if (saveBtn) { e.preventDefault(); saveBtn.click(); }
+        }
+      });
+
+      modalCloseBtn.addEventListener('click', () => modalOverlay.classList.remove('active'));
+      modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) modalOverlay.classList.remove('active'); });
+
+      // ==================== ADD PRODUCT ====================
+      addProductBtn.addEventListener('click', () => {
+        const uniqueCustomers = [...new Set(products.map(p => p.customer))].sort();
+        let datalistOptions = '';
+        uniqueCustomers.forEach(c => { datalistOptions += `<option value="${escapeHtml(c)}">`; });
+        const html = `
+          <div class="modal-field"><label>📦 Product Name</label><div class="input-wrap"><input type="text" id="modalProductName" placeholder="Enter product name"></div></div>
+          <div class="modal-field"><label>👤 Customer Name</label><div class="input-wrap"><input type="text" id="modalCustomerName" list="customerList" placeholder="Enter customer name"></div><datalist id="customerList">${datalistOptions}</datalist></div>
+          <div class="modal-field"><label>🛍️ Pieces per Bag</label><div class="input-wrap"><input type="number" id="modalProductPcs" min="1" step="1" placeholder="e.g. 40"></div></div>
+          <div class="modal-field"><label>💰 Price (₹)</label><div class="input-wrap"><input type="number" id="modalProductPrice" min="0" step="0.01" placeholder="e.g. 25.00"></div></div>
+          <div class="modal-actions">
+            <button class="aero-btn" id="modalCancelBtn" type="button">Cancel</button>
+            <button class="aero-btn primary" id="modalSaveBtn" type="button">➕ Save to Database</button>
+          </div>`;
+        openModal('📦 Add Product', html, async (content) => {
+          const name = content.querySelector('#modalProductName').value.trim();
+          const customer = content.querySelector('#modalCustomerName').value.trim();
+          const pcs = content.querySelector('#modalProductPcs').value;
+          const price = content.querySelector('#modalProductPrice').value;
+          if (name === '') { return false; }
+          if (customer === '') { return false; }
+          if (!pcs || isNaN(pcs) || parseInt(pcs) <= 0) { return false; }
+          if (!price || isNaN(price) || parseFloat(price) < 0) { return false; }
+          if (products.some(p => p.name.toLowerCase() === name.toLowerCase() && p.customer.toLowerCase() === customer.toLowerCase())) { return false; }
+          const saveBtn = content.querySelector('#modalSaveBtn');
+          saveBtn.disabled = true; saveBtn.textContent = '⏳ Saving…';
+          try {
+            const saved = await saveProduct({ name, customer, pcsPerBag: parseInt(pcs), price: parseFloat(price) });
+            products.unshift(saved);
+            filteredProducts = [...products];
+            renderCustomerFilter();
+            applyFilters();
+            return true;
+          } catch (err) {
+            saveBtn.disabled = false; saveBtn.textContent = '➕ Save to Database';
+            return false;
+          }
+        });
+      });
+
+      // ==================== EDIT PRODUCT ====================
+      async function openEditModal(product) {
+        const uniqueCustomers = [...new Set(products.map(p => p.customer))].sort();
+        let datalistOptions = '';
+        uniqueCustomers.forEach(c => { datalistOptions += `<option value="${escapeHtml(c)}">`; });
+        const html = `
+          <div class="modal-field"><label>📦 Product Name</label><div class="input-wrap"><input type="text" id="modalEditName" value="${escapeHtml(product.name)}" placeholder="Enter product name"></div></div>
+          <div class="modal-field"><label>👤 Customer Name</label><div class="input-wrap"><input type="text" id="modalEditCustomer" list="editCustomerList" value="${escapeHtml(product.customer)}" placeholder="Enter customer name"></div><datalist id="editCustomerList">${datalistOptions}</datalist></div>
+          <div class="modal-field"><label>🛍️ Pieces per Bag</label><div class="input-wrap"><input type="number" id="modalEditPcs" min="1" step="1" value="${product.pcsPerBag}" placeholder="e.g. 40"></div></div>
+          <div class="modal-field"><label>💰 Price (₹)</label><div class="input-wrap"><input type="number" id="modalEditPrice" min="0" step="0.01" value="${product.price}" placeholder="e.g. 25.00"></div></div>
+          <div class="modal-actions">
+            <button class="aero-btn" id="modalCancelBtn" type="button">Cancel</button>
+            <button class="aero-btn primary" id="modalSaveBtn" type="button">💾 Update Product</button>
+          </div>`;
+        openModal('✎ Edit Product', html, async (content) => {
+          const name = content.querySelector('#modalEditName').value.trim();
+          const customer = content.querySelector('#modalEditCustomer').value.trim();
+          const pcs = content.querySelector('#modalEditPcs').value;
+          const price = content.querySelector('#modalEditPrice').value;
+          if (name === '') { return false; }
+          if (customer === '') { return false; }
+          if (!pcs || isNaN(pcs) || parseInt(pcs) <= 0) { return false; }
+          if (!price || isNaN(price) || parseFloat(price) < 0) { return false; }
+          if (products.some(p => p.id !== product.id && p.name.toLowerCase() === name.toLowerCase() && p.customer.toLowerCase() === customer.toLowerCase())) {
+            return false;
+          }
+          const saveBtn = content.querySelector('#modalSaveBtn');
+          saveBtn.disabled = true; saveBtn.textContent = '⏳ Updating…';
+          try {
+            const updated = await updateProduct(product.id, {
+              name, customer,
+              pcsPerBag: parseInt(pcs),
+              price: parseFloat(price)
+            });
+            const idx = products.findIndex(p => p.id === product.id);
+            if (idx !== -1) products[idx] = updated;
+            filteredProducts = [...products];
+            if (selectedProductId === product.id) {
+              selectedProductName = updated.name;
+              selectedCustomerName = updated.customer;
+            }
+            renderCustomerFilter();
+            applyFilters();
+            if (selectedProductId === product.id) {
+              pcsPerBagInput.value = updated.pcsPerBag;
+              fullRecalc();
+            }
+            return true;
+          } catch (err) {
+            saveBtn.disabled = false; saveBtn.textContent = '💾 Update Product';
+            return false;
+          }
+        });
+      }
+
+      // ==================== TABLE CLICKS ====================
+      priceTableBody.addEventListener('click', async (e) => {
+        const editBtn = e.target.closest('.row-edit-btn');
+        if (editBtn) {
+          e.stopPropagation();
+          const id = editBtn.dataset.editId;
+          if (!id) return;
+          const product = products.find(p => p.id === id);
+          if (!product) return;
+          await openEditModal(product);
+          return;
+        }
+
+        const delBtn = e.target.closest('.row-delete-btn');
+        if (delBtn) {
+          e.stopPropagation();
+          const id = delBtn.dataset.deleteId;
+          if (!id) return;
+          const product = products.find(p => p.id === id);
+          if (!product) return;
+          const confirmed = await showConfirm({
+            title: '🗑️ Delete Product',
+            message: `Are you sure you want to delete <strong>"${escapeHtml(product.name)}"</strong> for <strong>${escapeHtml(product.customer)}</strong>?<br><br>This action cannot be undone.`,
+            confirmLabel: 'Yes, Delete', type: 'danger', icon: '🗑️'
+          });
+          if (!confirmed) return;
+          showLoading('price');
+          try {
+            await deleteProduct(id);
+            products = products.filter(p => p.id !== id);
+            if (selectedProductId === id) { selectedProductId = null; selectedProductName = ''; selectedCustomerName = ''; }
+            filteredProducts = [...products];
+            renderCustomerFilter();
+            applyFilters();
+          } catch (err) { /* silent */ }
+          finally { hideLoading('price'); }
+          return;
+        }
+
+        const row = e.target.closest('tr');
+        if (!row || !row.dataset.id) return;
+        const product = products.find(p => p.id === row.dataset.id);
+        if (product) { applyProduct(product); }
+      });
+
+      // ==================== CLEAR ALL ====================
+      clearAllBtn.addEventListener('click', async () => {
+        if (products.length === 0) { return; }
+        const confirmed = await showConfirm({
+          title: '⚠️ Clear All Products',
+          message: `Are you sure you want to delete <strong>ALL ${products.length} product${products.length !== 1 ? 's' : ''}</strong> from the database?<br><br>This action <strong>cannot</strong> be undone.`,
+          confirmLabel: 'Yes, Delete All', type: 'danger', icon: '⚠️'
+        });
+        if (!confirmed) return;
+        showLoading('price');
+        try {
+          await clearAllProducts();
+          products = []; filteredProducts = [];
+          selectedProductId = null; selectedProductName = ''; selectedCustomerName = '';
+          renderCustomerFilter(); applyFilters();
+        } catch (err) { /* silent */ }
+        finally { hideLoading('price'); }
+      });
+
+      // ==================== FILTER EVENTS ====================
+      customerFilter.addEventListener('change', () => {
+        applyFilters();
+      });
+      searchInput.addEventListener('input', applyFilters);
+      clearSearchBtn.addEventListener('click', () => { searchInput.value = ''; applyFilters(); searchInput.focus(); });
+      searchInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') e.preventDefault(); });
+
+      // ==================== WINDOW RESIZE ====================
+      window.addEventListener('resize', () => {
+        ['calcWindow', 'priceWindow', 'loadWindow'].forEach(id => {
+          const win = document.getElementById(id);
+          if (!win) return;
+          if (win.classList.contains('minimized') || win.classList.contains('maximized')) return;
+
+          if (win.classList.contains('snap-left') || win.classList.contains('snap-right')) {
+            const halfW = Math.floor(window.innerWidth / 2);
+            const totalH = window.innerHeight - TASKBAR_HEIGHT;
+            if (win.classList.contains('snap-left')) {
+              win.style.left = '0px';
+              win.style.width = halfW + 'px';
+            } else {
+              win.style.left = halfW + 'px';
+              win.style.width = (window.innerWidth - halfW) + 'px';
+            }
+            win.style.height = totalH + 'px';
+            return;
+          }
+
+          const rect = win.getBoundingClientRect();
+          if (rect.right > window.innerWidth) win.style.left = Math.max(5, window.innerWidth - win.offsetWidth - 5) + 'px';
+          if (rect.left < 5) win.style.left = '5px';
+          const maxTop = window.innerHeight - TASKBAR_HEIGHT - win.offsetHeight;
+          if (rect.top > maxTop) win.style.top = Math.max(5, maxTop) + 'px';
+          if (rect.top < 5) win.style.top = '5px';
+          if (windowState[id].origRect) {
+            const newRect = win.getBoundingClientRect();
+            windowState[id].origRect = { top: newRect.top + 'px', left: newRect.left + 'px', right: 'auto', width: newRect.width + 'px', height: newRect.height + 'px' };
+          }
+        });
+        if (desktopGadget) {
+          const rect = desktopGadget.getBoundingClientRect();
+          if (rect.right > window.innerWidth) desktopGadget.style.left = Math.max(5, window.innerWidth - rect.width - 5) + 'px';
+          if (rect.bottom > window.innerHeight - TASKBAR_HEIGHT) desktopGadget.style.top = Math.max(5, window.innerHeight - TASKBAR_HEIGHT - rect.height - 5) + 'px';
+        }
+        if (wallpaperMiniWindow && wallpaperMiniWindow.classList.contains('active')) {
+          const rect = wallpaperMiniWindow.getBoundingClientRect();
+          if (rect.right > window.innerWidth) wallpaperMiniWindow.style.left = Math.max(5, window.innerWidth - rect.width - 5) + 'px';
+          if (rect.bottom > window.innerHeight - TASKBAR_HEIGHT) wallpaperMiniWindow.style.top = Math.max(5, window.innerHeight - TASKBAR_HEIGHT - rect.height - 5) + 'px';
+        }
+      });
+
+      // ==================== INIT ====================
+      await loadWallpaper();
+      resetAllFields();
+      calculateLoad();
+      await loadProducts();
+
+      ['calcWindow', 'priceWindow', 'loadWindow'].forEach(id => {
+        const winEl = document.getElementById(id);
+        if (winEl) {
+          winEl.classList.add('minimized');
+          windowState[id].minimized = true;
+        }
+        hideTaskbarItem(id);
+      });
+      updateTaskbar();
+
+      setTimeout(() => {
+        restoreWindowFromTaskbar('calcWindow');
+      }, 400);
+
+      clearTimeout(bootTimeout);
+      revealDesktop();
+    });
+  </script>
+</body>
+</html>
     }
     body {
       min-height: 100vh;
