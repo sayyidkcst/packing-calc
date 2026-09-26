@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KCST Windows</title>
+  <title>KCST Windows · Packing + Return</title>
   <style>
     /* ---------- WINDOWS 7 AERO GLOBAL ---------- */
     * {
@@ -378,9 +378,10 @@
       z-index: 10;
     }
 
-    .window { top: 20px; left: 20px; width: 580px; max-width: calc(100vw - 40px); }
-    .window-price { top: 20px; right: 320px; width: 580px; max-width: calc(100vw - 340px); z-index: 11; }
-    .window-load { top: 460px; left: 20px; width: 580px; max-width: calc(100vw - 40px); z-index: 12; }
+    .window { top: 20px; left: 20px; width: 500px; max-width: calc(100vw - 40px); }
+    /* ========== PRODUCT WINDOW: LITTLE BIGGER ========== */
+    .window-price { top: 20px; right: 240px; width: 540px; max-width: calc(100vw - 260px); z-index: 11; }
+    .window-load { top: 400px; left: 20px; width: 500px; max-width: calc(100vw - 40px); z-index: 12; }
 
     .window.minimized, .window-price.minimized, .window-load.minimized { display: none; }
 
@@ -402,7 +403,7 @@
 
     .title-bar {
       display: flex; justify-content: space-between; align-items: center;
-      padding: 6px 10px 6px 14px;
+      padding: 6px 12px 6px 16px;
       background: linear-gradient(180deg, rgba(215, 235, 255, 0.9) 0%, rgba(170, 205, 235, 0.8) 50%, rgba(140, 180, 220, 0.7) 100%);
       border-bottom: 1px solid #6b8fae;
       box-shadow: 0 1px 0 rgba(255, 255, 255, 0.6) inset, 0 -1px 0 rgba(0, 0, 0, 0.1) inset;
@@ -411,7 +412,7 @@
     }
     .title-bar:active { cursor: grabbing; }
     .title-text {
-      font-size: 0.85rem; font-weight: 600; color: #0b1e2c;
+      font-size: 0.9rem; font-weight: 600; color: #0b1e2c;
       text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
       display: flex; align-items: center; gap: 6px; pointer-events: none;
     }
@@ -445,7 +446,7 @@
     @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
     .window-content {
-      padding: 14px 16px 16px 16px;
+      padding: 12px 14px 14px 14px;
       background: rgba(245, 250, 255, 0.6);
       backdrop-filter: blur(4px);
       overflow-y: auto; flex: 1;
@@ -454,14 +455,14 @@
     .aero-info {
       background: rgba(220, 235, 250, 0.7);
       border: 1px solid #9bb8d4; border-radius: 6px;
-      padding: 7px 12px; margin-bottom: 14px;
+      padding: 5px 12px; margin-bottom: 12px;
       box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.05), 0 1px 0 white;
-      font-size: 0.75rem; color: #142f44;
-      display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-weight: 500;
+      font-size: 0.76rem; color: #142f44;
+      display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font-weight: 500;
     }
     .aero-info .badge {
       background: #2b5b7c; color: white; border-radius: 40px;
-      padding: 2px 10px; font-size: 0.7rem; font-weight: 600;
+      padding: 2px 12px; font-size: 0.7rem; font-weight: 600;
       letter-spacing: 0.3px;
       box-shadow: inset 0 1px 2px #ffffff60, 0 1px 2px #00000030;
     }
@@ -469,47 +470,90 @@
     .fieldset {
       background: rgba(235, 245, 255, 0.6);
       border: 1px solid #8eb0ce; border-radius: 8px;
-      padding: 16px 14px 12px 14px; margin-bottom: 14px;
+      padding: 12px 10px 8px 10px; margin-bottom: 10px;
       box-shadow: inset 0 1px 6px rgba(255, 255, 255, 0.9), 0 2px 4px rgba(0, 0, 0, 0.08);
       position: relative;
     }
     .fieldset-legend {
-      font-weight: 600; font-size: 0.75rem; color: #1f4462;
+      font-weight: 600; font-size: 0.72rem; color: #1f4462;
       padding: 0 10px;
       background: linear-gradient(180deg, #f0f8ff, #d6e7f5);
       border-radius: 20px; border: 1px solid #9db9d6;
       text-shadow: 0 1px 0 white;
       margin-left: 8px; display: inline-block;
       box-shadow: 0 1px 0 white;
-      position: relative; top: -24px; margin-bottom: -22px;
+      position: relative; top: -20px; margin-bottom: -18px;
     }
 
-    .input-row { display: flex; flex-wrap: wrap; gap: 12px 18px; align-items: flex-end; }
-    .input-group { flex: 1 1 0; min-width: 100px; display: flex; flex-direction: column; gap: 3px; }
-    .input-group.full-width { flex: 1 1 100%; min-width: 100%; }
+    /* ========== TINY ONE-LINE INPUT ROW (4 fields, max 4 digits) ========== */
+    .input-row-four {
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 5px;
+      align-items: flex-end;
+    }
+    .input-row-four .input-group {
+      flex: 0 0 auto;
+      width: 88px;
+      min-width: 0;
+      max-width: none;
+    }
+    .input-row-four .input-group label {
+      font-size: 0.6rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-left: 2px;
+      gap: 2px;
+    }
+    .input-row-four .input-wrap {
+      padding: 1px 3px 1px 5px;
+      min-height: 24px;
+    }
+    .input-row-four .input-wrap input {
+      font-size: 0.75rem;
+      padding: 2px 0;
+      text-align: center;
+      letter-spacing: 0.5px;
+    }
+    .input-row-four .input-wrap .unit {
+      font-size: 0.5rem;
+      padding: 1px 4px;
+      margin-left: 2px;
+    }
+
+    /* ========== NARROWER INPUT ROW ========== */
+    .input-row { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: flex-end; }
+    .input-group { flex: 0 1 auto; min-width: 80px; max-width: 150px; display: flex; flex-direction: column; gap: 3px; }
+    .input-group.full-width { flex: 0 1 auto; min-width: 140px; max-width: 240px; }
     .input-group label {
-      font-size: 0.72rem; font-weight: 600; color: #1c3e5a;
+      font-size: 0.7rem; font-weight: 600; color: #1c3e5a;
       text-shadow: 0 1px 0 white;
       display: flex; align-items: center; gap: 4px;
       margin-left: 4px; letter-spacing: 0.2px;
+      white-space: nowrap;
     }
 
+    /* ========== COMPACT INPUT WRAP ========== */
     .input-wrap {
       display: flex; align-items: center; background: white;
       border: 1px solid #7f9db9; border-radius: 5px;
-      box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.1), 0 1px 0 white;
-      padding: 1px 4px 1px 8px; transition: 0.1s; width: 100%;
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 0 white;
+      padding: 1px 5px 1px 8px;
+      transition: 0.1s; width: 100%;
+      min-height: 28px;
     }
     .input-wrap:focus-within {
       border-color: #3c7bb0;
-      box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.1), 0 0 0 2px rgba(96, 173, 240, 0.4);
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 0 2px rgba(96, 173, 240, 0.4);
     }
     .input-wrap input {
       border: none; outline: none; background: transparent;
-      font-size: 0.9rem; font-weight: 600; padding: 5px 0;
+      font-size: 0.85rem; font-weight: 600; padding: 4px 0;
       width: 100%; color: #102c3f;
       font-family: 'Segoe UI', Consolas, monospace;
       text-align: right; min-width: 0;
+      line-height: 1.1;
     }
     .input-wrap input[type="number"] { -moz-appearance: textfield; }
     .input-wrap input::-webkit-outer-spin-button, .input-wrap input::-webkit-inner-spin-button {
@@ -517,23 +561,25 @@
     }
     .input-wrap .unit {
       background: #c1d9ec; color: #10344b;
-      font-size: 0.62rem; font-weight: 700;
-      padding: 3px 8px; border-radius: 40px;
+      font-size: 0.6rem; font-weight: 700;
+      padding: 2px 6px; border-radius: 40px;
       letter-spacing: 0.2px; border: 1px solid #8dafcc;
       box-shadow: inset 0 1px 2px #ffffff90;
       white-space: nowrap; margin-left: 4px; flex-shrink: 0;
     }
 
+    /* ========== COMPACT COMBO / SEARCH ========== */
     .combo-wrap {
       display: flex; align-items: center; background: white;
       border: 1px solid #7f9db9; border-radius: 5px;
-      box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.1), 0 1px 0 white;
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 0 white;
       padding: 0; transition: 0.1s; width: 100%;
       position: relative; overflow: hidden;
+      min-height: 30px;
     }
     .combo-wrap:focus-within {
       border-color: #3c7bb0;
-      box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.1), 0 0 0 2px rgba(96, 173, 240, 0.4);
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 0 2px rgba(96, 173, 240, 0.4);
     }
     .combo-wrap select {
       flex: 1; border: none; outline: none; background: transparent;
@@ -548,163 +594,167 @@
       border-left: 1px solid #8eb0ce;
       padding: 0 6px; display: flex; align-items: center; justify-content: center;
       font-size: 0.6rem; color: #10344b; pointer-events: none;
-      flex-shrink: 0; height: 100%; min-height: 26px; font-weight: 700;
+      flex-shrink: 0; height: 100%; min-height: 28px; font-weight: 700;
     }
     .combo-wrap .combo-icon {
       background: #c1d9ec; color: #10344b;
-      font-size: 0.58rem; font-weight: 700;
+      font-size: 0.62rem; font-weight: 700;
       padding: 4px 6px; border-left: 1px solid #8dafcc;
-      flex-shrink: 0; min-height: 26px;
+      flex-shrink: 0; min-height: 28px;
       display: flex; align-items: center;
     }
 
     .top-row { display: flex; gap: 8px; margin-bottom: 10px; align-items: stretch; }
-    .top-row .combo-wrap { flex: 0 0 180px; min-width: 0; }
+    .top-row .combo-wrap { flex: 0 0 160px; min-width: 0; }
     .top-row .search-wrap { flex: 1 1 auto; min-width: 0; margin-bottom: 0; }
 
     .bag-preview {
       background: #d9ebfc; border: 1px solid #86aac9;
-      border-radius: 40px; padding: 5px 12px 5px 16px;
-      font-size: 0.72rem; color: #0b2b41; font-weight: 500;
+      border-radius: 40px; padding: 4px 10px 4px 12px;
+      font-size: 0.7rem; color: #0b2b41; font-weight: 500;
       display: flex; align-items: center; justify-content: space-between;
-      flex-wrap: wrap; gap: 6px; margin-top: 10px;
+      flex-wrap: wrap; gap: 6px; margin-top: 8px;
       box-shadow: inset 0 1px 4px #ffffff, 0 1px 4px rgba(0, 0, 0, 0.1);
     }
     .bag-preview .highlight {
       background: #1d4c6e; color: white;
-      padding: 3px 14px; border-radius: 30px;
+      padding: 3px 10px; border-radius: 30px;
       font-weight: 600;
       box-shadow: inset 0 1px 3px #b0d4f0, 0 1px 3px #00000030;
-      font-size: 0.68rem;
+      font-size: 0.66rem;
     }
 
     .result-panel {
       background: rgba(248, 253, 255, 0.8);
       border: 1px solid #83a7c7; border-radius: 8px;
-      padding: 12px 14px 14px 14px;
+      padding: 8px 10px 10px 10px;
       box-shadow: inset 0 1px 8px white, 0 2px 6px rgba(0, 0, 0, 0.1);
       backdrop-filter: blur(2px);
     }
     .result-header {
-      font-size: 0.82rem; font-weight: 700; color: #1a3e5a;
+      font-size: 0.8rem; font-weight: 700; color: #1a3e5a;
       text-shadow: 0 1px 0 white;
       border-bottom: 1px solid #aac2db;
-      padding-bottom: 6px; margin-bottom: 10px;
+      padding-bottom: 5px; margin-bottom: 8px;
       display: flex; align-items: center; gap: 6px;
       letter-spacing: 0.3px;
     }
     .result-grid {
-      display: flex; flex-wrap: wrap; gap: 10px;
-      justify-content: center; margin-bottom: 10px;
+      display: flex; flex-wrap: wrap; gap: 8px;
+      justify-content: center; margin-bottom: 8px;
     }
     .result-card {
       background: #e7f2fc; border: 1px solid #9ab9d6;
-      border-radius: 6px; padding: 8px 8px;
-      flex: 1 1 100px; text-align: center;
+      border-radius: 6px; padding: 6px 6px;
+      flex: 1 1 80px; text-align: center;
       box-shadow: inset 0 1px 4px #ffffff, 0 2px 4px rgba(0, 0, 0, 0.08);
     }
     .result-card .big {
-      font-size: 1.7rem; font-weight: 700; color: #0f3146;
+      font-size: 1.4rem; font-weight: 700; color: #0f3146;
       line-height: 1.1; text-shadow: 0 1px 0 white;
       font-family: 'Segoe UI', Consolas, monospace;
     }
     .result-card .label {
-      font-size: 0.6rem; font-weight: 700; text-transform: uppercase;
+      font-size: 0.58rem; font-weight: 700; text-transform: uppercase;
       color: #1f5677; background: #c6def5;
-      display: inline-block; padding: 2px 10px; border-radius: 30px;
+      display: inline-block; padding: 2px 8px; border-radius: 30px;
       letter-spacing: 0.5px; margin-top: 3px; border: 1px solid #a5c2dd;
     }
-    .result-card .sub { font-size: 0.65rem; color: #2a5777; margin-top: 3px; font-weight: 500; }
+    .result-card .sub { font-size: 0.62rem; color: #2a5777; margin-top: 3px; font-weight: 500; }
     .summary-bar {
       background: #dcecfc; border: 1px solid #98b9da;
-      border-radius: 40px; padding: 6px 14px;
-      font-size: 0.78rem; color: #10344b;
+      border-radius: 40px; padding: 4px 10px;
+      font-size: 0.72rem; color: #10344b;
       display: flex; align-items: center; justify-content: center;
-      flex-wrap: wrap; gap: 8px 14px; margin-top: 4px;
+      flex-wrap: wrap; gap: 6px 10px; margin-top: 4px;
       box-shadow: inset 0 1px 6px white, 0 1px 4px rgba(0, 0, 0, 0.1);
       font-weight: 500;
     }
     .summary-bar .value {
-      font-weight: 700; font-size: 1.1rem;
+      font-weight: 700; font-size: 0.96rem;
       background: #1d4a6b; color: white;
-      padding: 2px 16px; border-radius: 40px;
+      padding: 2px 12px; border-radius: 40px;
       box-shadow: inset 0 1px 3px #bbdaff, 0 1px 4px #00000040;
       font-family: 'Segoe UI', Consolas, monospace;
       letter-spacing: 0.5px;
     }
     .error-msg {
       background: #ffdede; border: 1px solid #c26b6b;
-      border-radius: 40px; padding: 8px 16px;
+      border-radius: 40px; padding: 6px 12px;
       color: #8b2c2c; font-weight: 600;
       text-shadow: 0 1px 0 #ffe7e7;
       box-shadow: inset 0 1px 5px white;
       display: inline-block; width: 100%;
-      text-align: center; font-size: 0.8rem;
+      text-align: center; font-size: 0.76rem;
     }
     .empty-hint {
-      text-align: center; padding: 18px 8px;
-      color: #3a6382; font-size: 0.85rem; font-weight: 500;
+      text-align: center; padding: 12px 8px;
+      color: #3a6382; font-size: 0.8rem; font-weight: 500;
     }
     .empty-hint .small {
-      font-size: 0.7rem; color: #5a7f9a;
-      margin-top: 6px; display: block;
+      font-size: 0.68rem; color: #5a7f9a;
+      margin-top: 5px; display: block;
     }
 
     .footer-note {
-      font-size: 0.62rem; color: #316385; text-align: center;
-      margin-top: 10px; text-shadow: 0 1px 0 #d9ecff;
+      font-size: 0.6rem; color: #316385; text-align: center;
+      margin-top: 8px; text-shadow: 0 1px 0 #d9ecff;
       border-top: 1px solid #a7c2db;
-      padding-top: 8px; letter-spacing: 0.2px;
+      padding-top: 6px; letter-spacing: 0.2px;
     }
 
     .price-top-actions { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+
+    /* ========== COMPACT SEARCH WRAP ========== */
     .search-wrap {
       display: flex; align-items: center; background: white;
       border: 1px solid #7f9db9; border-radius: 5px;
-      box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.1), 0 1px 0 white;
-      padding: 2px 6px 2px 10px; transition: 0.1s; flex-shrink: 0;
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 0 white;
+      padding: 1px 6px 1px 10px; transition: 0.1s; flex-shrink: 0;
+      min-height: 30px;
     }
     .search-wrap:focus-within {
       border-color: #3c7bb0;
-      box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.1), 0 0 0 2px rgba(96, 173, 240, 0.4);
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 0 2px rgba(96, 173, 240, 0.4);
     }
     .search-wrap .search-icon { font-size: 0.8rem; margin-right: 4px; color: #4a7ba3; }
     .search-wrap input {
       border: none; outline: none; background: transparent;
-      font-size: 0.8rem; font-weight: 500; padding: 6px 0;
+      font-size: 0.8rem; font-weight: 500; padding: 5px 0;
       width: 100%; color: #102c3f;
       font-family: 'Segoe UI', sans-serif; min-width: 0;
     }
     .search-wrap .clear-search {
       background: #c1d9ec; color: #10344b;
       border: 1px solid #8dafcc; border-radius: 50%;
-      width: 16px; height: 16px;
+      width: 18px; height: 18px;
       display: flex; align-items: center; justify-content: center;
-      font-size: 0.62rem; font-weight: 700;
+      font-size: 0.65rem; font-weight: 700;
       cursor: pointer; flex-shrink: 0;
       margin-left: 4px; line-height: 1;
     }
     .search-wrap .clear-search:hover { background: #a8c8e0; }
 
+    /* ========== PRODUCT TABLE: BIGGER TEXT ========== */
     .price-table {
       width: 100%; border-collapse: separate; border-spacing: 0;
-      font-size: 0.78rem; background: white;
+      font-size: 0.82rem; background: white;
       border: 1px solid #9ab9d6; border-radius: 6px;
       overflow: hidden;
       box-shadow: inset 0 1px 4px #ffffff, 0 2px 4px rgba(0, 0, 0, 0.08);
     }
     .price-table thead th {
       background: linear-gradient(180deg, #e3eff9 0%, #c3d9ed 100%);
-      color: #10344b; font-weight: 700; font-size: 0.7rem;
+      color: #10344b; font-weight: 700; font-size: 0.74rem;
       text-transform: uppercase; letter-spacing: 0.4px;
-      padding: 9px 8px; text-align: left;
+      padding: 9px 10px; text-align: left;
       border-bottom: 1px solid #8eb0ce;
       text-shadow: 0 1px 0 white;
       position: sticky; top: 0; z-index: 2;
     }
     .price-table thead th:last-child { text-align: right; }
     .price-table tbody td {
-      padding: 8px 8px; border-bottom: 1px solid #d5e3ef;
+      padding: 9px 10px; border-bottom: 1px solid #d5e3ef;
       color: #1a3e5a; font-weight: 500; vertical-align: middle;
     }
     .price-table tbody tr:last-child td { border-bottom: none; }
@@ -720,23 +770,23 @@
     }
     .price-table tbody td.name-cell { font-weight: 600; color: #10344b; }
     .price-table tbody td.customer-cell {
-      font-weight: 500; color: #5a3a7e; font-size: 0.72rem;
+      font-weight: 500; color: #5a3a7e; font-size: 0.78rem;
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-      max-width: 100px;
+      max-width: 110px;
     }
     .price-table tbody td.pcs-cell {
       color: #2a5777; font-weight: 600;
       font-family: 'Segoe UI', Consolas, monospace;
       text-align: center;
     }
-    .price-table tbody td.action-cell { text-align: center; width: 60px; padding: 4px; }
+    .price-table tbody td.action-cell { text-align: center; width: 64px; padding: 6px; }
     .row-edit-btn, .row-delete-btn {
       border-radius: 4px;
-      width: 22px; height: 22px;
+      width: 24px; height: 24px;
       display: inline-flex; align-items: center; justify-content: center;
-      font-size: 0.75rem; font-weight: 700;
+      font-size: 0.8rem; font-weight: 700;
       cursor: pointer; transition: 0.1s; line-height: 1; padding: 0;
-      margin: 0 1px;
+      margin: 0 2px;
     }
     .row-edit-btn {
       background: #d5e8f5; border: 1px solid #5b8bb5; color: #1d4a6b;
@@ -748,44 +798,44 @@
     .row-delete-btn:hover { background: #e8a5a5; color: white; }
     .table-container {
       flex: 1; overflow-y: auto; border-radius: 6px;
-      padding-right: 2px; margin-bottom: 10px; min-height: 120px;
+      padding-right: 2px; margin-bottom: 8px; min-height: 120px;
     }
     .no-results {
-      text-align: center; padding: 20px 8px;
-      color: #3a6382; font-size: 0.8rem; font-weight: 500;
+      text-align: center; padding: 18px 8px;
+      color: #3a6382; font-size: 0.82rem; font-weight: 500;
       background: #f4faff; border: 1px dashed #b4d1e6;
       border-radius: 6px;
     }
     .no-results .small {
-      display: block; font-size: 0.68rem;
+      display: block; font-size: 0.7rem;
       color: #6a8ba5; margin-top: 6px;
     }
 
     .total-qty-display {
       background: linear-gradient(180deg, #e8f4ff 0%, #c7ddf0 100%);
       border: 1px solid #7ea5c9; border-radius: 40px;
-      padding: 10px 18px;
+      padding: 7px 14px;
       display: flex; align-items: center; justify-content: space-between;
-      gap: 12px; margin-bottom: 14px;
+      gap: 8px; margin-bottom: 10px;
       box-shadow: inset 0 1px 6px white, 0 2px 6px rgba(0, 0, 0, 0.12);
       flex-wrap: wrap;
     }
     .total-qty-display .tq-label {
-      font-size: 0.78rem; font-weight: 600; color: #1d4a6b;
+      font-size: 0.74rem; font-weight: 600; color: #1d4a6b;
       text-shadow: 0 1px 0 white;
-      display: flex; align-items: center; gap: 6px;
+      display: flex; align-items: center; gap: 5px;
     }
     .total-qty-display .tq-value {
-      font-size: 1.6rem; font-weight: 800; color: #0f3146;
+      font-size: 1.3rem; font-weight: 800; color: #0f3146;
       font-family: 'Segoe UI', Consolas, monospace;
       text-shadow: 0 1px 0 white;
       letter-spacing: -0.02em; line-height: 1;
     }
-    .total-qty-display .tq-unit { font-size: 0.8rem; font-weight: 600; color: #2a5777; margin-left: 4px; }
+    .total-qty-display .tq-unit { font-size: 0.76rem; font-weight: 600; color: #2a5777; margin-left: 3px; }
     .total-qty-display .tq-bags {
       background: #1d4a6b; color: white;
-      padding: 4px 14px; border-radius: 40px;
-      font-size: 0.78rem; font-weight: 700;
+      padding: 3px 10px; border-radius: 40px;
+      font-size: 0.74rem; font-weight: 700;
       box-shadow: inset 0 1px 3px #bbdaff, 0 1px 4px #00000040;
       font-family: 'Segoe UI', Consolas, monospace;
     }
@@ -799,22 +849,24 @@
     }
     .loading-overlay.active { display: flex; }
     .loading-spinner {
-      width: 32px; height: 32px;
+      width: 30px; height: 30px;
       border: 3px solid #8eb0ce; border-top-color: #1d4a6b;
       border-radius: 50%; animation: spin 0.8s linear infinite;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
+    /* ========== COMPACT AERO BUTTON ========== */
     .aero-btn {
       border: 1px solid #6f95b6;
       background: linear-gradient(180deg, #f5faff 0%, #d5e6f5 45%, #b3cee5 100%);
-      border-radius: 6px; padding: 8px 14px;
-      font-size: 0.72rem; font-weight: 600; color: #0f3146;
+      border-radius: 5px; padding: 6px 12px;
+      font-size: 0.76rem; font-weight: 600; color: #0f3146;
       box-shadow: 0 1px 0 #ffffff inset, 0 0 0 1px #ffffff50 inset, 0 2px 5px rgba(0, 0, 0, 0.15);
       cursor: pointer; transition: 0.06s linear;
       display: inline-flex; align-items: center; justify-content: center;
       gap: 5px; text-shadow: 0 1px 0 white;
-      flex: 1 1 auto; min-width: 0; white-space: nowrap;
+      flex: 0 0 auto; min-width: 0; white-space: nowrap;
+      min-height: 30px;
     }
     .aero-btn:hover {
       background: linear-gradient(180deg, #ffffff 0%, #e0f0ff 45%, #c2dcf5 100%);
@@ -847,12 +899,24 @@
       background: linear-gradient(180deg, #e69b9b 0%, #c56565 45%, #9b3e3e 100%);
     }
 
+    /* ---------- RESET BUTTON ROW ---------- */
+    .calc-actions-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+    .calc-actions-row .aero-btn {
+      flex: 0 0 auto;
+      min-width: 130px;
+    }
+
     .toast {
       position: fixed; bottom: calc(var(--taskbar-height) + 12px);
       left: 50%; transform: translateX(-50%) translateY(80px);
       background: #1d4a6b; color: white;
-      padding: 10px 24px; border-radius: 40px;
-      font-size: 0.85rem; font-weight: 600;
+      padding: 10px 22px; border-radius: 40px;
+      font-size: 0.82rem; font-weight: 600;
       box-shadow: 0 8px 20px rgba(0,0,0,0.4), inset 0 1px 0 #a0c8f0;
       border: 1px solid #0d2f44;
       opacity: 0; transition: 0.3s ease;
@@ -879,7 +943,7 @@
         0 0 0 1px rgba(255, 255, 255, 0.6) inset,
         0 12px 35px rgba(0, 0, 0, 0.6),
         0 2px 8px rgba(0, 0, 0, 0.5);
-      width: 400px; max-width: calc(100vw - 40px);
+      width: 380px; max-width: calc(100vw - 40px);
       overflow: hidden; animation: modalPop 0.2s ease;
     }
     @keyframes modalPop {
@@ -888,63 +952,63 @@
     }
     .modal .title-bar { cursor: default; }
     .modal .title-bar:active { cursor: default; }
-    .modal-content { padding: 16px 18px 18px 18px; background: rgba(245, 250, 255, 0.7); }
-    .modal-field { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; }
-    .modal-field label { font-size: 0.75rem; font-weight: 600; color: #1c3e5a; text-shadow: 0 1px 0 white; }
-    .modal-field .input-wrap { padding: 2px 8px; }
-    .modal-field .input-wrap input { text-align: left; padding: 7px 0; }
+    .modal-content { padding: 14px 16px 16px 16px; background: rgba(245, 250, 255, 0.7); }
+    .modal-field { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
+    .modal-field label { font-size: 0.74rem; font-weight: 600; color: #1c3e5a; text-shadow: 0 1px 0 white; }
+    .modal-field .input-wrap { padding: 1px 8px; min-height: 32px; }
+    .modal-field .input-wrap input { text-align: left; padding: 6px 0; font-size: 0.85rem; }
     .modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 6px; }
 
-    .confirm-dialog { width: 400px; }
+    .confirm-dialog { width: 380px; }
     .confirm-body {
-      display: flex; gap: 16px; align-items: flex-start;
-      padding: 20px 20px 14px 20px;
+      display: flex; gap: 14px; align-items: flex-start;
+      padding: 14px 16px 10px 16px;
       background: rgba(245, 250, 255, 0.7);
     }
     .confirm-icon {
-      font-size: 2.6rem; line-height: 1; flex-shrink: 0;
+      font-size: 2rem; line-height: 1; flex-shrink: 0;
       filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2));
     }
     .confirm-icon.warning { color: #d4a017; }
     .confirm-icon.danger { color: #c0392b; }
     .confirm-text { flex: 1; min-width: 0; }
     .confirm-title {
-      font-size: 0.95rem; font-weight: 700; color: #10344b;
-      margin-bottom: 6px; text-shadow: 0 1px 0 white;
+      font-size: 0.88rem; font-weight: 700; color: #10344b;
+      margin-bottom: 5px; text-shadow: 0 1px 0 white;
     }
     .confirm-message {
-      font-size: 0.82rem; color: #2a5777;
+      font-size: 0.8rem; color: #2a5777;
       line-height: 1.45; font-weight: 500; word-wrap: break-word;
     }
     .confirm-message strong { color: #0f3146; font-weight: 700; }
     .confirm-actions {
       display: flex; gap: 8px; justify-content: flex-end;
-      padding: 12px 20px 16px 20px;
+      padding: 10px 16px 12px 16px;
       background: rgba(235, 245, 255, 0.6);
       border-top: 1px solid #aac2db;
     }
-    .confirm-actions .aero-btn { flex: 0 0 auto; min-width: 90px; }
+    .confirm-actions .aero-btn { flex: 0 0 auto; min-width: 85px; }
 
     .load-result-grid {
-      display: flex; flex-wrap: wrap; gap: 10px;
-      justify-content: center; margin-top: 12px;
+      display: flex; flex-wrap: wrap; gap: 8px;
+      justify-content: center; margin-top: 10px;
     }
     .load-result-card {
       background: #e7f2fc; border: 1px solid #9ab9d6;
-      border-radius: 6px; padding: 10px 8px;
-      flex: 1 1 120px; text-align: center;
+      border-radius: 6px; padding: 6px 6px;
+      flex: 1 1 100px; text-align: center;
       box-shadow: inset 0 1px 4px #ffffff, 0 2px 4px rgba(0, 0, 0, 0.08);
     }
     .load-result-card .big {
-      font-size: 1.8rem; font-weight: 700; color: #0f3146;
+      font-size: 1.4rem; font-weight: 700; color: #0f3146;
       line-height: 1.1; text-shadow: 0 1px 0 white;
       font-family: 'Segoe UI', Consolas, monospace;
     }
     .load-result-card .label {
-      font-size: 0.62rem; font-weight: 700; text-transform: uppercase;
+      font-size: 0.56rem; font-weight: 700; text-transform: uppercase;
       color: #1f5677; background: #c6def5;
-      display: inline-block; padding: 2px 10px; border-radius: 30px;
-      letter-spacing: 0.5px; margin-top: 4px; border: 1px solid #a5c2dd;
+      display: inline-block; padding: 2px 8px; border-radius: 30px;
+      letter-spacing: 0.5px; margin-top: 3px; border: 1px solid #a5c2dd;
     }
 
     .table-container::-webkit-scrollbar,
@@ -1100,10 +1164,70 @@
     }
     .start-menu-item .smi-icon { font-size: 1rem; width: 20px; text-align: center; }
 
-    .wallpaper-picker { width: 560px; max-width: calc(100vw - 40px); }
-    .wallpaper-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr);
-      gap: 12px; padding: 4px 0 8px 0;
+    /* ---------- SMALL WALLPAPER WINDOW (compact) ---------- */
+    .wallpaper-mini-window {
+      position: fixed;
+      width: 380px;
+      max-width: calc(100vw - 40px);
+      z-index: 100000;
+      display: none;
+      flex-direction: column;
+      border-radius: 10px 10px 8px 8px;
+      box-shadow: 
+        0 0 0 1px rgba(255, 255, 255, 0.5) inset,
+        0 0 0 1px #1e3f5a,
+        0 12px 35px rgba(0, 0, 0, 0.6),
+        0 2px 8px rgba(0, 0, 0, 0.5);
+      border-top: 1px solid #a8c8e8;
+      border-left: 1px solid #8bb1d4;
+      border-right: 1px solid #6a93b8;
+      border-bottom: 1px solid #4b769b;
+      background: rgba(220, 235, 250, 0.86);
+      backdrop-filter: blur(14px);
+      overflow: hidden;
+      animation: modalPop 0.2s ease;
+    }
+    .wallpaper-mini-window.active { display: flex; }
+
+    .wallpaper-mini-window .title-bar {
+      border-radius: 10px 10px 0 0;
+      cursor: move;
+    }
+    .wallpaper-mini-content {
+      padding: 12px 14px 14px 14px;
+      background: rgba(245, 250, 255, 0.7);
+      display: flex;
+      flex-direction: column;
+      max-height: 70vh;
+    }
+    /* scrollable wallpaper grid */
+    .wallpaper-scroll-container {
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 4px;
+      margin-bottom: 8px;
+      border-radius: 6px;
+      border: 1px solid #9bb8d4;
+      background: rgba(235, 245, 255, 0.5);
+      padding: 10px;
+      max-height: 220px;
+    }
+    .wallpaper-scroll-container::-webkit-scrollbar {
+      width: 8px;
+    }
+    .wallpaper-scroll-container::-webkit-scrollbar-track {
+      background: rgba(200, 220, 240, 0.4);
+      border-radius: 10px;
+    }
+    .wallpaper-scroll-container::-webkit-scrollbar-thumb {
+      background: #9bb9d6;
+      border-radius: 10px;
+      border: 1px solid #7a9bb8;
+    }
+    .wallpaper-grid-mini {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
     }
     .wp-thumb {
       aspect-ratio: 16/10; border-radius: 6px;
@@ -1130,20 +1254,67 @@
       font-size: 0.8rem; font-weight: 700;
       box-shadow: 0 1px 3px rgba(0,0,0,0.4);
     }
-    .wp-upload-area {
+    .wp-upload-area-mini {
       border: 2px dashed #7f9db9; border-radius: 6px;
-      padding: 14px; text-align: center;
-      color: #3f6e8a; font-size: 0.75rem; font-weight: 500;
+      padding: 8px; text-align: center;
+      color: #3f6e8a; font-size: 0.72rem; font-weight: 500;
       cursor: pointer; transition: 0.15s;
       background: rgba(220, 240, 255, 0.4);
-      margin-top: 10px;
+      margin-top: 4px;
     }
-    .wp-upload-area:hover {
+    .wp-upload-area-mini:hover {
       border-color: #3c7bb0;
       background: rgba(200, 230, 255, 0.6);
       color: #1d4a6b;
     }
-    .wp-upload-area input[type="file"] { display: none; }
+    .wp-upload-area-mini input[type="file"] { display: none; }
+
+    /* ---------- DELETE IMAGE BUTTON ---------- */
+    .wp-delete-area {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 6px;
+      padding: 5px 12px;
+      background: rgba(255, 230, 230, 0.7);
+      border: 1px solid #c26b6b;
+      border-radius: 40px;
+      font-size: 0.72rem;
+      color: #8b2c2c;
+      font-weight: 600;
+      box-shadow: inset 0 1px 4px #ffffff;
+      transition: 0.15s;
+    }
+    .wp-delete-area.hidden {
+      display: none;
+    }
+    .wp-delete-area .delete-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .wp-delete-btn {
+      background: linear-gradient(180deg, #d98b8b 0%, #b85555 45%, #8b3232 100%);
+      color: white;
+      border: 1px solid #6b2323;
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: 0.66rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-shadow: 0 1px 1px #3a1010;
+      box-shadow: inset 0 1px 0 #f0b0b0, 0 2px 5px #00000040;
+      transition: 0.12s;
+      letter-spacing: 0.3px;
+    }
+    .wp-delete-btn:hover {
+      background: linear-gradient(180deg, #e69b9b 0%, #c56565 45%, #9b3e3e 100%);
+      transform: scale(1.02);
+    }
+    .wp-delete-btn:active {
+      transform: scale(0.97);
+      box-shadow: inset 0 2px 6px rgba(0,0,0,0.3);
+    }
 
     .sync-badge-mini {
       font-size: 0.6rem;
@@ -1157,14 +1328,67 @@
     .sync-badge-mini.saved { background: #1e6b3a; }
     .sync-badge-mini.error { background: #8b2c2c; }
 
+    /* ---------- RETURN / MINUS SECTION ---------- */
+    .return-fieldset {
+      margin-top: 10px;
+      background: rgba(255, 240, 230, 0.7);
+      border: 1px solid #d4a373;
+      border-radius: 8px;
+      padding: 10px 10px 8px 10px;
+      box-shadow: inset 0 1px 6px rgba(255, 255, 255, 0.9), 0 2px 4px rgba(0, 0, 0, 0.08);
+      position: relative;
+    }
+    .return-fieldset .return-legend {
+      font-weight: 600; font-size: 0.72rem; color: #8b5e3c;
+      padding: 0 10px;
+      background: linear-gradient(180deg, #fff3e6, #f5dcc6);
+      border-radius: 20px; border: 1px solid #d4a373;
+      text-shadow: 0 1px 0 white;
+      margin-left: 8px; display: inline-block;
+      box-shadow: 0 1px 0 white;
+      position: relative; top: -20px; margin-bottom: -18px;
+    }
+    .return-row {
+      display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: flex-end;
+    }
+    .return-preview {
+      background: #fde8d9;
+      border: 1px solid #d4a373;
+      border-radius: 40px;
+      padding: 4px 12px;
+      font-size: 0.74rem;
+      color: #6b3f1e;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+      box-shadow: inset 0 1px 4px #ffffff, 0 1px 4px rgba(0, 0, 0, 0.1);
+    }
+    .return-preview .minus-sign {
+      color: #c0392b; font-weight: 800; font-size: 1rem;
+    }
+    .return-preview .return-value {
+      background: #8b3a2c; color: white;
+      padding: 3px 12px; border-radius: 30px;
+      font-weight: 700;
+      box-shadow: inset 0 1px 3px #f0b0a0, 0 1px 3px #00000030;
+      font-size: 0.72rem;
+      font-family: 'Segoe UI', Consolas, monospace;
+    }
+
     @media (max-width: 1200px) {
       .window, .window-price, .window-load {
         position: relative; top: auto !important;
         left: auto !important; right: auto !important;
-        margin: 0 auto 20px auto; max-width: 580px; width: 100%;
+        margin: 0 auto 20px auto; max-width: 540px; width: 100%;
       }
       .window-price { right: auto; }
       body { overflow-y: auto; padding: 20px 12px calc(var(--taskbar-height) + 20px) 12px; }
+      .input-row-four { flex-wrap: wrap; }
+      .input-row-four .input-group { flex: 1 1 45%; width: auto; }
     }
     @media (max-width: 480px) {
       .top-row { flex-direction: column; }
@@ -1173,7 +1397,10 @@
       .taskbar-item .tb-label { display: none; }
       .start-btn .start-label { display: none; }
       .system-tray { padding: 0 6px; }
-      .wallpaper-grid { grid-template-columns: repeat(2, 1fr); }
+      .wallpaper-grid-mini { grid-template-columns: repeat(2, 1fr); }
+      .wallpaper-mini-window { width: 96vw; }
+      .input-group { max-width: 100%; }
+      .input-row-four .input-group { flex: 1 1 45%; width: auto; }
     }
   </style>
 </head>
@@ -1226,53 +1453,75 @@
 
       <div class="total-qty-display">
         <div class="tq-label"><span>📊</span> Total quantity</div>
-        <div style="display:flex; align-items:baseline; gap:8px;">
+        <div style="display:flex; align-items:baseline; gap:6px;">
           <span class="tq-value" id="totalQtyValue">0</span>
           <span class="tq-unit">pcs</span>
         </div>
         <div class="tq-bags" id="totalBagsValue">0 bags</div>
       </div>
+
+      <!-- RESET BUTTON ROW -->
+      <div class="calc-actions-row">
+        <button class="aero-btn" id="resetCalcBtn" type="button">
+          <span>🔄</span> Reset Calculator
+        </button>
+      </div>
+
       <div class="fieldset">
 
-        <div class="input-row">
+        <!-- ========== ONE LINE: Weight/pc, Pcs/bag, # bags, Extra pcs (tiny) ========== -->
+        <div class="input-row-four">
           <div class="input-group">
-            <label><span>⚖️</span> Weight per pc</label>
+            <label><span>⚖️</span> Wt/pc</label>
             <div class="input-wrap">
-              <input type="number" id="weightPerPc" min="0.001" step="0.001" placeholder="0.000" tabindex="1">
+              <input type="number" id="weightPerPc" min="0.001" max="9999" step="0.001" placeholder="0" tabindex="1" maxlength="4">
               <span class="unit">kg</span>
             </div>
           </div>
           <div class="input-group">
-            <label><span>🛍️</span> Pcs per bag</label>
+            <label><span>🛍️</span> Pcs/bag</label>
             <div class="input-wrap">
-              <input type="number" id="pcsPerBag" min="1" step="1" placeholder="0" tabindex="2">
+              <input type="number" id="pcsPerBag" min="1" max="9999" step="1" placeholder="0" tabindex="2" maxlength="4">
+              <span class="unit">pcs</span>
+            </div>
+          </div>
+          <div class="input-group">
+            <label><span>🧺</span> #Bags</label>
+            <div class="input-wrap">
+              <input type="number" id="numBags" min="0" max="9999" step="1" placeholder="0" tabindex="3" maxlength="4">
+              <span class="unit">bag</span>
+            </div>
+          </div>
+          <div class="input-group">
+            <label><span>🔹</span> Extra</label>
+            <div class="input-wrap">
+              <input type="number" id="extraPcs" min="0" max="9999" step="1" placeholder="0" tabindex="4" maxlength="4">
               <span class="unit">pcs</span>
             </div>
           </div>
         </div>
+
         <div class="bag-preview">
           <span>📐 1 bag = <span id="bagWeightPreview">0.000</span> kg</span>
           <span class="highlight" id="bagPcsPreview">0 pcs</span>
         </div>
       </div>
 
-      <div class="fieldset">
-
-        <div class="input-row">
-          <div class="input-group">
-            <label><span>🧺</span> Number of bags</label>
+      <!-- ========== RETURN / MINUS TEXT BOX ========== -->
+      <div class="return-fieldset">
+        <div class="return-legend">↩️ Return / Minus</div>
+        <div class="return-row">
+          <div class="input-group full-width">
+            <label><span>➖</span> Return quantity (pcs to subtract)</label>
             <div class="input-wrap">
-              <input type="number" id="numBags" min="0" step="1" placeholder="0" tabindex="3">
-              <span class="unit">bag</span>
-            </div>
-          </div>
-          <div class="input-group">
-            <label><span>🔹</span> Extra loose pcs</label>
-            <div class="input-wrap">
-              <input type="number" id="extraPcs" min="0" step="1" placeholder="0" tabindex="4">
+              <input type="number" id="returnPcs" min="0" max="9999" step="1" placeholder="0" tabindex="4.5" maxlength="4">
               <span class="unit">pcs</span>
             </div>
           </div>
+        </div>
+        <div class="return-preview" id="returnPreview">
+          <span><span class="minus-sign">➖</span> Return <span id="returnDisplayPcs">0</span> pcs</span>
+          <span class="return-value" id="returnDisplayKg">0.000 kg</span>
         </div>
       </div>
 
@@ -1296,7 +1545,7 @@
     <div class="title-bar" id="priceTitleBar">
       <div class="title-text">
         <span>💰</span> Products
-        <span class="badge" id="priceCount" style="background:#2b5b7c; color:white; border-radius:40px; padding:1px 10px; font-size:0.65rem; font-weight:600;">0</span>
+        <span class="badge" id="priceCount" style="background:#2b5b7c; color:white; border-radius:40px; padding:1px 10px; font-size:0.66rem; font-weight:600;">0</span>
         <span class="status-dot" id="priceStatusDot" title="Database status"></span>
       </div>
       <div class="caption-buttons">
@@ -1339,7 +1588,7 @@
               <th>Customer</th>
               <th>Pcs/Bag</th>
               <th>Price</th>
-              <th style="width:60px;"></th>
+              <th style="width:64px;"></th>
             </tr>
           </thead>
           <tbody id="priceTableBody">
@@ -1374,23 +1623,23 @@
           <div class="input-group">
             <label><span>⚖️</span> Weight per pc</label>
             <div class="input-wrap">
-              <input type="number" id="loadWeightPerPc" min="0.001" step="0.001" placeholder="0.000" tabindex="7">
+              <input type="number" id="loadWeightPerPc" min="0.001" max="9999" step="0.001" placeholder="0.000" tabindex="7" maxlength="4">
               <span class="unit">kg</span>
             </div>
           </div>
           <div class="input-group">
             <label><span>🛍️</span> Pcs per bag</label>
             <div class="input-wrap">
-              <input type="number" id="loadPcsPerBag" min="1" step="1" placeholder="0" tabindex="8">
+              <input type="number" id="loadPcsPerBag" min="1" max="9999" step="1" placeholder="0" tabindex="8" maxlength="4">
               <span class="unit">pcs</span>
             </div>
           </div>
         </div>
-        <div class="input-row" style="margin-top: 12px;">
+        <div class="input-row" style="margin-top: 8px;">
           <div class="input-group full-width">
             <label><span>🏋️</span> Total weight available</label>
             <div class="input-wrap">
-              <input type="number" id="loadTotalKg" min="0" step="0.001" placeholder="0.000" tabindex="9">
+              <input type="number" id="loadTotalKg" min="0" max="9999" step="0.001" placeholder="0.000" tabindex="9" maxlength="4">
               <span class="unit">kg</span>
             </div>
           </div>
@@ -1445,32 +1694,37 @@
     </div>
   </div>
 
-  <!-- ================= WALLPAPER PICKER MODAL ================= -->
-  <div class="modal-overlay" id="wallpaperOverlay">
-    <div class="modal wallpaper-picker" id="wallpaperBox">
-      <div class="title-bar">
-        <div class="title-text">
-          🖼️ Change Wallpaper
-          <span class="sync-badge-mini" id="wallpaperSyncBadge">●</span>
-        </div>
-        <div class="caption-buttons">
-          <div class="caption-btn close" id="wallpaperCloseBtn" title="Close">✕</div>
-        </div>
+  <!-- ================= SMALL WALLPAPER WINDOW ================= -->
+  <div class="wallpaper-mini-window" id="wallpaperMiniWindow">
+    <div class="title-bar" id="wallpaperMiniTitleBar">
+      <div class="title-text">
+        🖼️ Wallpaper
+        <span class="sync-badge-mini" id="wallpaperSyncBadgeMini">●</span>
       </div>
-      <div class="modal-content">
-        <div style="font-size:0.75rem; color:#3f6e8a; font-weight:600; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
-          <span>Choose a wallpaper</span>
-          <span style="font-size:0.65rem; color:#6a8ba5; font-weight:500;" id="wallpaperStatus">Loading…</span>
-        </div>
-        <div class="wallpaper-grid" id="wallpaperGrid"></div>
+      <div class="caption-buttons">
+        <div class="caption-btn minimize" id="wallpaperMiniMinimize" title="Minimize">—</div>
+        <div class="caption-btn close" id="wallpaperMiniCloseBtn" title="Close">✕</div>
+      </div>
+    </div>
+    <div class="wallpaper-mini-content">
+      <div style="font-size:0.72rem; color:#3f6e8a; font-weight:600; margin-bottom:6px; display:flex; justify-content:space-between;">
+        <span>Choose wallpaper</span>
+        <span style="font-size:0.62rem; color:#6a8ba5; font-weight:500;" id="wallpaperStatusMini">Loading…</span>
+      </div>
+      <!-- scrollable area -->
+      <div class="wallpaper-scroll-container" id="wallpaperScrollContainer">
+        <div class="wallpaper-grid-mini" id="wallpaperGridMini"></div>
+      </div>
 
-        <div class="wp-upload-area" id="wpUploadArea">
-          <span>📁</span> Upload your own image
-          <input type="file" id="wpUploadInput" accept="image/*">
-        </div>
-        <div style="font-size:0.65rem; color:#6a8ba5; margin-top:8px; text-align:center;">
-          Saved to database · Loaded on any device
-        </div>
+      <!-- DELETE IMAGE BUTTON (only visible for custom uploads) -->
+      <div class="wp-delete-area hidden" id="wpDeleteArea">
+        <span class="delete-label">🗑️ Custom wallpaper</span>
+        <button class="wp-delete-btn" id="wpDeleteBtn" type="button">Delete Image</button>
+      </div>
+
+      <div class="wp-upload-area-mini" id="wpUploadAreaMini">
+        <span>📁</span> Upload custom image
+        <input type="file" id="wpUploadInputMini" accept="image/*">
       </div>
     </div>
   </div>
@@ -1602,16 +1856,21 @@
       ];
 
       const wallpaperLayer = document.getElementById('wallpaperLayer');
-      const wallpaperOverlay = document.getElementById('wallpaperOverlay');
-      const wallpaperBox = document.getElementById('wallpaperBox');
-      const wallpaperGrid = document.getElementById('wallpaperGrid');
-      const wallpaperCloseBtn = document.getElementById('wallpaperCloseBtn');
-      const wpUploadArea = document.getElementById('wpUploadArea');
-      const wpUploadInput = document.getElementById('wpUploadInput');
-      const wallpaperStatus = document.getElementById('wallpaperStatus');
-      const wallpaperSyncBadge = document.getElementById('wallpaperSyncBadge');
+      const wallpaperMiniWindow = document.getElementById('wallpaperMiniWindow');
+      const wallpaperMiniTitleBar = document.getElementById('wallpaperMiniTitleBar');
+      const wallpaperMiniCloseBtn = document.getElementById('wallpaperMiniCloseBtn');
+      const wallpaperMiniMinimize = document.getElementById('wallpaperMiniMinimize');
+      const wallpaperGridMini = document.getElementById('wallpaperGridMini');
+      const wpUploadAreaMini = document.getElementById('wpUploadAreaMini');
+      const wpUploadInputMini = document.getElementById('wpUploadInputMini');
+      const wallpaperStatusMini = document.getElementById('wallpaperStatusMini');
+      const wallpaperSyncBadgeMini = document.getElementById('wallpaperSyncBadgeMini');
+      const wallpaperScrollContainer = document.getElementById('wallpaperScrollContainer');
+      const wpDeleteArea = document.getElementById('wpDeleteArea');
+      const wpDeleteBtn = document.getElementById('wpDeleteBtn');
 
       let currentWallpaper = DEFAULT_WALLPAPER;
+      let isCustomWallpaper = false;
 
       function applyWallpaper(url) {
         currentWallpaper = url;
@@ -1621,6 +1880,16 @@
         } else {
           wallpaperLayer.style.backgroundImage = `url('${url}')`;
           document.body.style.backgroundImage = `url('${url}')`;
+        }
+        isCustomWallpaper = url.startsWith('data:image/');
+        updateDeleteButtonVisibility();
+      }
+
+      function updateDeleteButtonVisibility() {
+        if (isCustomWallpaper) {
+          wpDeleteArea.classList.remove('hidden');
+        } else {
+          wpDeleteArea.classList.add('hidden');
         }
       }
 
@@ -1641,19 +1910,19 @@
           if (data && data.setting_value) {
             applyWallpaper(data.setting_value);
             try { localStorage.setItem('wallpaper', data.setting_value); } catch (e) {}
-            wallpaperStatus.textContent = '✅ Loaded from database';
+            wallpaperStatusMini.textContent = '✅ Loaded from DB';
           } else {
-            wallpaperStatus.textContent = 'ℹ️ Using default';
+            wallpaperStatusMini.textContent = 'ℹ️ Using default';
           }
         } catch (err) {
           console.warn('Could not load wallpaper from DB:', err.message);
-          wallpaperStatus.textContent = '⚠️ DB offline · using local';
+          wallpaperStatusMini.textContent = '⚠️ DB offline · using local';
         }
       }
 
       async function saveWallpaperToDB(url) {
-        wallpaperSyncBadge.className = 'sync-badge-mini';
-        wallpaperSyncBadge.textContent = '●';
+        wallpaperSyncBadgeMini.className = 'sync-badge-mini';
+        wallpaperSyncBadgeMini.textContent = '●';
         try {
           const { error } = await supabase
             .from('app_settings')
@@ -1664,15 +1933,15 @@
 
           if (error) throw error;
 
-          wallpaperSyncBadge.className = 'sync-badge-mini saved';
-          wallpaperSyncBadge.textContent = '✓';
-          wallpaperStatus.textContent = '✅ Saved to database';
+          wallpaperSyncBadgeMini.className = 'sync-badge-mini saved';
+          wallpaperSyncBadgeMini.textContent = '✓';
+          wallpaperStatusMini.textContent = '✅ Saved to DB';
           return true;
         } catch (err) {
           console.warn('Could not save wallpaper to DB:', err.message);
-          wallpaperSyncBadge.className = 'sync-badge-mini error';
-          wallpaperSyncBadge.textContent = '✕';
-          wallpaperStatus.textContent = '⚠️ Saved locally (DB offline)';
+          wallpaperSyncBadgeMini.className = 'sync-badge-mini error';
+          wallpaperSyncBadgeMini.textContent = '✕';
+          wallpaperStatusMini.textContent = '⚠️ Saved locally (DB offline)';
           return false;
         }
       }
@@ -1681,10 +1950,53 @@
         applyWallpaper(url);
         try { localStorage.setItem('wallpaper', url); } catch (e) {}
         if (!skipDb) await saveWallpaperToDB(url);
-        renderWallpaperGrid();
+        renderWallpaperGridMini();
       }
 
-      function renderWallpaperGrid() {
+      async function deleteCustomWallpaper() {
+        if (!isCustomWallpaper) return;
+
+        const confirmed = await showConfirm({
+          title: '🗑️ Delete Custom Wallpaper',
+          message: `Are you sure you want to delete this custom wallpaper?<br><br>The default wallpaper will be restored.`,
+          confirmLabel: 'Yes, Delete',
+          type: 'danger',
+          icon: '🗑️'
+        });
+        if (!confirmed) return;
+
+        applyWallpaper(DEFAULT_WALLPAPER);
+        try {
+          localStorage.setItem('wallpaper', DEFAULT_WALLPAPER);
+        } catch (e) {}
+
+        try {
+          const { error } = await supabase
+            .from('app_settings')
+            .delete()
+            .eq('setting_key', WALLPAPER_SETTING_KEY);
+
+          if (error) throw error;
+
+          wallpaperSyncBadgeMini.className = 'sync-badge-mini saved';
+          wallpaperSyncBadgeMini.textContent = '✓';
+          wallpaperStatusMini.textContent = '🗑️ Deleted from DB';
+          showToast('🗑️ Custom wallpaper deleted', 'success');
+        } catch (err) {
+          console.warn('Could not delete wallpaper from DB:', err.message);
+          wallpaperSyncBadgeMini.className = 'sync-badge-mini error';
+          wallpaperSyncBadgeMini.textContent = '✕';
+          wallpaperStatusMini.textContent = '⚠️ Removed locally (DB offline)';
+          showToast('🗑️ Custom wallpaper removed locally', 'warning');
+        }
+
+        renderWallpaperGridMini();
+        updateDeleteButtonVisibility();
+      }
+
+      wpDeleteBtn.addEventListener('click', deleteCustomWallpaper);
+
+      function renderWallpaperGridMini() {
         let html = '';
         WALLPAPERS.forEach(wp => {
           const isSelected = currentWallpaper === wp.url;
@@ -1696,10 +2008,11 @@
                         title="${wp.name}"
                         style="${bgStyle}"></div>`;
         });
-        wallpaperGrid.innerHTML = html;
+        wallpaperGridMini.innerHTML = html;
+        updateDeleteButtonVisibility();
       }
 
-      wallpaperGrid.addEventListener('click', async (e) => {
+      wallpaperGridMini.addEventListener('click', async (e) => {
         const thumb = e.target.closest('.wp-thumb');
         if (!thumb) return;
         const url = decodeURIComponent(thumb.dataset.wallpaperUrl);
@@ -1707,8 +2020,8 @@
         showToast('🖼️ Wallpaper saved to database', 'success');
       });
 
-      wpUploadArea.addEventListener('click', () => wpUploadInput.click());
-      wpUploadInput.addEventListener('change', (e) => {
+      wpUploadAreaMini.addEventListener('click', () => wpUploadInputMini.click());
+      wpUploadInputMini.addEventListener('change', (e) => {
         const file = e.target.files[0];
         if (!file) return;
         if (file.size > 2 * 1024 * 1024) {
@@ -1718,30 +2031,43 @@
         reader.onload = async (evt) => {
           await setWallpaper(evt.target.result);
           showToast('🖼️ Custom wallpaper saved', 'success');
-          closeWallpaperModal();
+          closeWallpaperMini();
         };
         reader.readAsDataURL(file);
-        wpUploadInput.value = '';
+        wpUploadInputMini.value = '';
       });
 
-      function openWallpaperModal() {
-        renderWallpaperGrid();
-        wallpaperOverlay.classList.add('active');
-        bringToFront(wallpaperBox);
-      }
-      function closeWallpaperModal() {
-        wallpaperOverlay.classList.remove('active');
+      function openWallpaperMini() {
+        renderWallpaperGridMini();
+        wallpaperMiniWindow.classList.add('active');
+        const left = Math.max(10, (window.innerWidth - 400) / 2);
+        const top = Math.max(10, (window.innerHeight - 360) / 2);
+        wallpaperMiniWindow.style.left = left + 'px';
+        wallpaperMiniWindow.style.top = top + 'px';
+        bringToFront(wallpaperMiniWindow);
       }
 
-      wallpaperCloseBtn.addEventListener('click', closeWallpaperModal);
-      wallpaperOverlay.addEventListener('click', (e) => {
-        if (e.target === wallpaperOverlay) closeWallpaperModal();
+      function closeWallpaperMini() {
+        wallpaperMiniWindow.classList.remove('active');
+      }
+
+      wallpaperMiniCloseBtn.addEventListener('click', closeWallpaperMini);
+      wallpaperMiniMinimize.addEventListener('click', () => {
+        closeWallpaperMini();
       });
+
+      makeDraggable(wallpaperMiniWindow, wallpaperMiniTitleBar);
+
+      document.getElementById('startChangeWallpaper').addEventListener('click', () => {
+        startMenu.classList.remove('open');
+        openWallpaperMini();
+      });
+      document.getElementById('trayWallpaper').addEventListener('click', openWallpaperMini);
 
       document.body.addEventListener('contextmenu', (e) => {
-        if (e.target.closest('.window, .window-price, .window-load, .startbar, .start-menu, .modal-overlay, .desktop-gadget')) return;
+        if (e.target.closest('.window, .window-price, .window-load, .startbar, .start-menu, .modal-overlay, .desktop-gadget, .wallpaper-mini-window')) return;
         e.preventDefault();
-        openWallpaperModal();
+        openWallpaperMini();
       });
 
       // ==================== DRAGGABLE + AERO SNAP ====================
@@ -1831,7 +2157,7 @@
       function makeDraggable(windowEl, handleEl) {
         let isDragging = false, startX = 0, startY = 0, startLeft = 0, startTop = 0;
         let wasSnapped = false;
-        windowEl.style.position = 'absolute';
+        windowEl.style.position = 'fixed';
 
         handleEl.addEventListener('mousedown', (e) => {
           if (e.target.closest('.caption-btn')) return;
@@ -2104,6 +2430,9 @@
       const pcsPerBagInput = document.getElementById('pcsPerBag');
       const numBagsInput = document.getElementById('numBags');
       const extraPcsInput = document.getElementById('extraPcs');
+      const returnPcsInput = document.getElementById('returnPcs');
+      const returnDisplayPcs = document.getElementById('returnDisplayPcs');
+      const returnDisplayKg = document.getElementById('returnDisplayKg');
       const bagWeightPreview = document.getElementById('bagWeightPreview');
       const bagPcsPreview = document.getElementById('bagPcsPreview');
       const resultContent = document.getElementById('resultContent');
@@ -2119,6 +2448,7 @@
       const clearSearchBtn = document.getElementById('clearSearchBtn');
       const addProductBtn = document.getElementById('addProductBtn');
       const clearAllBtn = document.getElementById('clearAllBtn');
+      const resetCalcBtn = document.getElementById('resetCalcBtn');
 
       const calcWindow = document.getElementById('calcWindow');
       const priceWindow = document.getElementById('priceWindow');
@@ -2155,7 +2485,6 @@
 
       const startBtn = document.getElementById('startBtn');
       const startMenu = document.getElementById('startMenu');
-      const trayWallpaper = document.getElementById('trayWallpaper');
 
       makeDraggable(calcWindow, calcTitleBar);
       makeDraggable(priceWindow, priceTitleBar);
@@ -2166,7 +2495,7 @@
       priceWindow.addEventListener('mousedown', () => bringToFront(priceWindow));
       loadWindow.addEventListener('mousedown', () => bringToFront(loadWindow));
 
-      const fieldOrder = [weightPerPcInput, pcsPerBagInput, numBagsInput, extraPcsInput];
+      const fieldOrder = [weightPerPcInput, pcsPerBagInput, numBagsInput, extraPcsInput, returnPcsInput];
 
       // ==================== STATE ====================
       let products = [];
@@ -2268,13 +2597,6 @@
         });
       });
 
-      document.getElementById('startChangeWallpaper').addEventListener('click', () => {
-        startMenu.classList.remove('open');
-        openWallpaperModal();
-      });
-
-      trayWallpaper.addEventListener('click', openWallpaperModal);
-
       document.getElementById('startMinimizeAll').addEventListener('click', () => {
         startMenu.classList.remove('open');
         ['calcWindow', 'priceWindow', 'loadWindow'].forEach(id => {
@@ -2309,7 +2631,6 @@
         const tbLoad = document.getElementById('taskbarLoad');
         [['calcWindow', tbCalc], ['priceWindow', tbPrice], ['loadWindow', tbLoad]].forEach(([id, tb]) => {
           const state = windowState[id];
-          // Only update visual state if the taskbar item is visible
           if (tb.style.display !== 'none') {
             tb.classList.toggle('active', state.minimized);
             tb.classList.toggle('maximized', state.maximized);
@@ -2335,7 +2656,6 @@
         const winEl = document.getElementById(winId);
         if (!winEl) return;
         const state = windowState[winId];
-        // Ensure the taskbar item is visible when the window is shown
         showTaskbarItem(winId);
         if (state.minimized) {
           winEl.classList.remove('minimized');
@@ -2347,7 +2667,6 @@
         updateTaskbar();
       }
 
-      // Minimize button: hide window, keep taskbar item
       document.querySelectorAll('.caption-btn.minimize').forEach(btn => {
         btn.addEventListener('click', (e) => {
           e.stopPropagation();
@@ -2358,14 +2677,12 @@
           if (windowState[winId].maximized) restoreFromMaximize(winId);
           winEl.classList.add('minimized');
           windowState[winId].minimized = true;
-          // Taskbar item remains visible
           showTaskbarItem(winId);
           updateTaskbar();
           showToast('🗕 Window minimized');
         });
       });
 
-      // Maximize button
       document.querySelectorAll('.caption-btn.maximize').forEach(btn => {
         btn.addEventListener('click', (e) => {
           e.stopPropagation();
@@ -2380,7 +2697,6 @@
         });
       });
 
-      // Close button: hide window AND remove taskbar item
       document.querySelectorAll('.caption-btn.close[data-close]').forEach(btn => {
         btn.addEventListener('click', (e) => {
           e.stopPropagation();
@@ -2389,10 +2705,8 @@
           const winEl = document.getElementById(winId);
           if (!winEl) return;
           if (windowState[winId].maximized) restoreFromMaximize(winId);
-          // Close = fully remove from screen AND from taskbar
           winEl.classList.add('minimized');
           windowState[winId].minimized = true;
-          // Hide taskbar item
           hideTaskbarItem(winId);
           updateTaskbar();
           showToast('✕ Window closed & removed from taskbar');
@@ -2415,7 +2729,6 @@
         state.maximized = true;
         const maxBtn = winEl.querySelector('.caption-btn.maximize');
         if (maxBtn) { maxBtn.textContent = '❐'; maxBtn.title = 'Restore'; }
-        // Show taskbar item when maximizing
         showTaskbarItem(winId);
         bringToFront(winEl);
       }
@@ -2535,10 +2848,11 @@
         }
       }
 
+      // ==================== FIXED updateProduct (no .single() coercion) ====================
       async function updateProduct(id, updates) {
         setSyncing();
         try {
-          const { data, error } = await supabase
+          const { error: updateError } = await supabase
             .from('products')
             .update({
               name: updates.name,
@@ -2546,11 +2860,37 @@
               pcs_per_bag: updates.pcsPerBag,
               price: updates.price
             })
+            .eq('id', id);
+
+          if (updateError) throw updateError;
+
+          const { data, error: fetchError } = await supabase
+            .from('products')
+            .select('*')
             .eq('id', id)
-            .select().single();
-          if (error) throw error;
+            .maybeSingle();
+
+          if (fetchError) throw fetchError;
+
           setOnlineStatus(true);
-          return { id: data.id, name: data.name, customer: data.customer, pcsPerBag: data.pcs_per_bag, price: Number(data.price) };
+
+          if (!data) {
+            return {
+              id,
+              name: updates.name,
+              customer: updates.customer,
+              pcsPerBag: updates.pcsPerBag,
+              price: updates.price
+            };
+          }
+
+          return {
+            id: data.id,
+            name: data.name,
+            customer: data.customer,
+            pcsPerBag: data.pcs_per_bag,
+            price: Number(data.price)
+          };
         } catch (err) {
           console.error('Update product error:', err);
           setOnlineStatus(false);
@@ -2691,6 +3031,13 @@
         bagPcsPreview.textContent = p + ' pcs';
       }
 
+      function updateReturnPreview() {
+        const w = parseFloat(weightPerPcInput.value) || 0;
+        const returnPcs = parseInt(returnPcsInput.value) || 0;
+        returnDisplayPcs.textContent = returnPcs;
+        returnDisplayKg.textContent = (returnPcs * w).toFixed(3) + ' kg';
+      }
+
       function showEmptyHint() {
         resultContent.innerHTML = `<div class="empty-hint">📝 Enter values above to calculate<span class="small">Press Enter in the last field to save to database &amp; reset</span></div>`;
       }
@@ -2700,6 +3047,7 @@
         const pcsPerBag = parseFloat(pcsPerBagInput.value);
         const numBags = parseFloat(numBagsInput.value);
         const extraPcs = parseFloat(extraPcsInput.value);
+        const returnPcs = parseFloat(returnPcsInput.value) || 0;
 
         const anyEmpty = weightPerPcInput.value === '' || pcsPerBagInput.value === '' || numBagsInput.value === '' || extraPcsInput.value === '';
         if (anyEmpty) { showEmptyHint(); return null; }
@@ -2723,8 +3071,13 @@
 
         const totalFromBagsKg = numBags * (weightPerPc * pcsPerBag);
         const totalFromLooseKg = extraPcs * weightPerPc;
-        const totalKg = totalFromBagsKg + totalFromLooseKg;
-        const totalPcs = numBags * pcsPerBag + extraPcs;
+        const totalKgBeforeReturn = totalFromBagsKg + totalFromLooseKg;
+        const totalPcsBeforeReturn = numBags * pcsPerBag + extraPcs;
+
+        const returnKg = returnPcs * weightPerPc;
+        const totalKg = totalKgBeforeReturn - returnKg;
+        const totalPcs = totalPcsBeforeReturn - returnPcs;
+
         const productName = selectedProductName || '—';
         const customerName = selectedCustomerName || '—';
 
@@ -2732,6 +3085,9 @@
           <div class="result-grid">
             <div class="result-card"><div class="big">${numBags}</div><div class="label">bags</div><div class="sub">${pcsPerBag} pcs each</div></div>
             <div class="result-card"><div class="big">${extraPcs}</div><div class="label">loose pcs</div><div class="sub">${weightPerPc} kg/pc</div></div>
+            <div class="result-card" style="background:#fde8d9; border-color:#d4a373;">
+              <div class="big" style="color:#c0392b;">-${returnPcs}</div><div class="label">return pcs</div><div class="sub">${returnKg.toFixed(3)} kg</div>
+            </div>
             <div class="result-card" style="background:#d9e9fa; border-color:#7ea5c9;">
               <div class="big">${formatKg(totalKg)}</div><div class="label">total kg</div><div class="sub">${totalPcs} pcs total</div>
             </div>
@@ -2741,19 +3097,21 @@
             <span>📦 ${escapeHtml(productName)}</span>
             <span>${numBags} bag${numBags !== 1 ? 's' : ''} × ${pcsPerBag} pcs</span>
             <span>➕ ${extraPcs} loose</span>
+            <span style="color:#c0392b;">➖ ${returnPcs} return</span>
             <span class="value">${formatKg(totalKg)} kg</span>
           </div>`;
 
-        html += `<div style="font-size:0.68rem; color:#1e567a; margin-top: 8px; text-align: center; background: #deedfd; padding: 5px 10px; border-radius: 40px; border: 1px solid #aac6e2; font-weight:500;">
-            🧮 ${numBags} bag(s) = ${formatKg(totalFromBagsKg)} kg &nbsp;|&nbsp; ${extraPcs} pc(s) = ${formatKg(totalFromLooseKg)} kg
+        html += `<div style="font-size:0.66rem; color:#1e567a; margin-top: 6px; text-align: center; background: #deedfd; padding: 4px 10px; border-radius: 40px; border: 1px solid #aac6e2; font-weight:500;">
+            🧮 ${numBags} bag(s) = ${formatKg(totalFromBagsKg)} kg &nbsp;|&nbsp; ${extraPcs} pc(s) = ${formatKg(totalFromLooseKg)} kg &nbsp;|&nbsp; ➖ ${returnPcs} pc(s) = ${returnKg.toFixed(3)} kg
           </div>`;
 
         resultContent.innerHTML = html;
         updateTotalQtyDisplay();
-        return { weightPerPc, pcsPerBag, numBags, extraPcs, totalKg, totalPcs, productName, customerName };
+        updateReturnPreview();
+        return { weightPerPc, pcsPerBag, numBags, extraPcs, returnPcs, totalKg, totalPcs, productName, customerName };
       }
 
-      function fullRecalc() { updateBagPreview(); return calculateTotal(); }
+      function fullRecalc() { updateBagPreview(); updateReturnPreview(); return calculateTotal(); }
 
       let debounceTimer;
       function autoRecalc() {
@@ -2761,9 +3119,37 @@
         debounceTimer = setTimeout(() => fullRecalc(), 120);
       }
 
-      [weightPerPcInput, pcsPerBagInput, numBagsInput, extraPcsInput].forEach(inp => {
+      [weightPerPcInput, pcsPerBagInput, numBagsInput, extraPcsInput, returnPcsInput].forEach(inp => {
         inp.addEventListener('input', autoRecalc);
       });
+
+      // ==================== RESET CALCULATOR ====================
+      function resetPackingCalculator() {
+        weightPerPcInput.value = '';
+        pcsPerBagInput.value = '';
+        numBagsInput.value = '';
+        extraPcsInput.value = '';
+        returnPcsInput.value = '';
+
+        bagWeightPreview.textContent = '0.000';
+        bagPcsPreview.textContent = '0 pcs';
+        returnDisplayPcs.textContent = '0';
+        returnDisplayKg.textContent = '0.000 kg';
+        totalQtyValue.textContent = '0';
+        totalBagsValue.textContent = '0 bags';
+
+        selectedProductId = null;
+        selectedProductName = '';
+        selectedCustomerName = '';
+        renderPriceTable();
+
+        showEmptyHint();
+        weightPerPcInput.focus();
+
+        showToast('🔄 Calculator reset', 'success');
+      }
+
+      resetCalcBtn.addEventListener('click', resetPackingCalculator);
 
       // ==================== LOAD CALCULATOR ====================
       function calculateLoad() {
@@ -2789,11 +3175,11 @@
 
         let html = `
           <div class="load-result-grid">
-            <div class="load-result-card"><div class="big">${fullBags}</div><div class="label">Full bags</div><div class="sub" style="font-size:0.68rem; color:#2a5777; margin-top:4px; font-weight:500;">${formatKg(weightPerBagKg)} kg each</div></div>
-            <div class="load-result-card"><div class="big">${loosePcs}</div><div class="label">Loose pcs</div><div class="sub" style="font-size:0.68rem; color:#2a5777; margin-top:4px; font-weight:500;">${w} kg each</div></div>
-            <div class="load-result-card" style="background:#d9e9fa; border-color:#7ea5c9;"><div class="big">${totalPcs}</div><div class="label">Total pcs</div><div class="sub" style="font-size:0.68rem; color:#2a5777; margin-top:4px; font-weight:500;">from ${formatKg(totalKg)} kg</div></div>
+            <div class="load-result-card"><div class="big">${fullBags}</div><div class="label">Full bags</div><div class="sub" style="font-size:0.62rem; color:#2a5777; margin-top:3px; font-weight:500;">${formatKg(weightPerBagKg)} kg each</div></div>
+            <div class="load-result-card"><div class="big">${loosePcs}</div><div class="label">Loose pcs</div><div class="sub" style="font-size:0.62rem; color:#2a5777; margin-top:3px; font-weight:500;">${w} kg each</div></div>
+            <div class="load-result-card" style="background:#d9e9fa; border-color:#7ea5c9;"><div class="big">${totalPcs}</div><div class="label">Total pcs</div><div class="sub" style="font-size:0.62rem; color:#2a5777; margin-top:3px; font-weight:500;">from ${formatKg(totalKg)} kg</div></div>
           </div>
-          <div style="font-size:0.72rem; color:#1e567a; margin-top: 12px; text-align: center; background: #deedfd; padding: 8px 14px; border-radius: 40px; border: 1px solid #aac6e2; font-weight:500; line-height: 1.5;">
+          <div style="font-size:0.66rem; color:#1e567a; margin-top: 8px; text-align: center; background: #deedfd; padding: 6px 10px; border-radius: 40px; border: 1px solid #aac6e2; font-weight:500; line-height: 1.5;">
             🧮 ${fullBags} bag(s) × ${formatKg(weightPerBagKg)} kg = ${formatKg(fullBags * weightPerBagKg)} kg<br>
             ➕ ${loosePcs} pc(s) × ${w} kg = ${formatKg(loosePcs * w)} kg<br>
             ${leftoverKg > 0.0001 ? `⚠️ Leftover: ${formatKg(leftoverKg)} kg (too small for 1 pc)` : `✅ Exact fit · 0 kg leftover`}
@@ -2826,8 +3212,11 @@
         pcsPerBagInput.value = '';
         numBagsInput.value = '';
         extraPcsInput.value = '';
+        returnPcsInput.value = '';
         bagWeightPreview.textContent = '0.000';
         bagPcsPreview.textContent = '0 pcs';
+        returnDisplayPcs.textContent = '0';
+        returnDisplayKg.textContent = '0.000 kg';
         totalQtyValue.textContent = '0';
         totalBagsValue.textContent = '0 bags';
         showEmptyHint();
@@ -3112,6 +3501,11 @@
           if (rect.right > window.innerWidth) desktopGadget.style.left = Math.max(5, window.innerWidth - rect.width - 5) + 'px';
           if (rect.bottom > window.innerHeight - TASKBAR_HEIGHT) desktopGadget.style.top = Math.max(5, window.innerHeight - TASKBAR_HEIGHT - rect.height - 5) + 'px';
         }
+        if (wallpaperMiniWindow && wallpaperMiniWindow.classList.contains('active')) {
+          const rect = wallpaperMiniWindow.getBoundingClientRect();
+          if (rect.right > window.innerWidth) wallpaperMiniWindow.style.left = Math.max(5, window.innerWidth - rect.width - 5) + 'px';
+          if (rect.bottom > window.innerHeight - TASKBAR_HEIGHT) wallpaperMiniWindow.style.top = Math.max(5, window.innerHeight - TASKBAR_HEIGHT - rect.height - 5) + 'px';
+        }
       });
 
       // ==================== INIT ====================
@@ -3120,17 +3514,19 @@
       calculateLoad();
       await loadProducts();
 
-      // At startup: hide windows from screen but KEEP taskbar items HIDDEN (as if closed)
       ['calcWindow', 'priceWindow', 'loadWindow'].forEach(id => {
         const winEl = document.getElementById(id);
         if (winEl) {
           winEl.classList.add('minimized');
           windowState[id].minimized = true;
         }
-        // At startup, taskbar items start hidden (as if windows are "closed")
         hideTaskbarItem(id);
       });
       updateTaskbar();
+
+      setTimeout(() => {
+        restoreWindowFromTaskbar('calcWindow');
+      }, 400);
 
       clearTimeout(bootTimeout);
       revealDesktop();
