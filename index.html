@@ -379,8 +379,8 @@
     }
 
     .window { top: 20px; left: 20px; width: 500px; max-width: calc(100vw - 40px); }
-    /* ========== PRODUCT WINDOW: LITTLE BIGGER ========== */
-    .window-price { top: 20px; right: 240px; width: 540px; max-width: calc(100vw - 260px); z-index: 11; }
+    /* ========== PRODUCT WINDOW: REDUCED WIDTH ========== */
+    .window-price { top: 20px; right: 360px; width: 440px; max-width: calc(100vw - 380px); z-index: 11; }
     .window-load { top: 400px; left: 20px; width: 500px; max-width: calc(100vw - 40px); z-index: 12; }
 
     .window.minimized, .window-price.minimized, .window-load.minimized { display: none; }
@@ -605,7 +605,7 @@
     }
 
     .top-row { display: flex; gap: 8px; margin-bottom: 10px; align-items: stretch; }
-    .top-row .combo-wrap { flex: 0 0 160px; min-width: 0; }
+    .top-row .combo-wrap { flex: 0 0 150px; min-width: 0; }
     .top-row .search-wrap { flex: 1 1 auto; min-width: 0; margin-bottom: 0; }
 
     .bag-preview {
@@ -735,26 +735,26 @@
     }
     .search-wrap .clear-search:hover { background: #a8c8e0; }
 
-    /* ========== PRODUCT TABLE: BIGGER TEXT ========== */
+    /* ========== PRODUCT TABLE: READABLE TEXT ========== */
     .price-table {
       width: 100%; border-collapse: separate; border-spacing: 0;
-      font-size: 0.82rem; background: white;
+      font-size: 0.8rem; background: white;
       border: 1px solid #9ab9d6; border-radius: 6px;
       overflow: hidden;
       box-shadow: inset 0 1px 4px #ffffff, 0 2px 4px rgba(0, 0, 0, 0.08);
     }
     .price-table thead th {
       background: linear-gradient(180deg, #e3eff9 0%, #c3d9ed 100%);
-      color: #10344b; font-weight: 700; font-size: 0.74rem;
+      color: #10344b; font-weight: 700; font-size: 0.72rem;
       text-transform: uppercase; letter-spacing: 0.4px;
-      padding: 9px 10px; text-align: left;
+      padding: 8px 8px; text-align: left;
       border-bottom: 1px solid #8eb0ce;
       text-shadow: 0 1px 0 white;
       position: sticky; top: 0; z-index: 2;
     }
     .price-table thead th:last-child { text-align: right; }
     .price-table tbody td {
-      padding: 9px 10px; border-bottom: 1px solid #d5e3ef;
+      padding: 8px 8px; border-bottom: 1px solid #d5e3ef;
       color: #1a3e5a; font-weight: 500; vertical-align: middle;
     }
     .price-table tbody tr:last-child td { border-bottom: none; }
@@ -770,23 +770,23 @@
     }
     .price-table tbody td.name-cell { font-weight: 600; color: #10344b; }
     .price-table tbody td.customer-cell {
-      font-weight: 500; color: #5a3a7e; font-size: 0.78rem;
+      font-weight: 500; color: #5a3a7e; font-size: 0.76rem;
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-      max-width: 110px;
+      max-width: 90px;
     }
     .price-table tbody td.pcs-cell {
       color: #2a5777; font-weight: 600;
       font-family: 'Segoe UI', Consolas, monospace;
       text-align: center;
     }
-    .price-table tbody td.action-cell { text-align: center; width: 64px; padding: 6px; }
+    .price-table tbody td.action-cell { text-align: center; width: 60px; padding: 5px; }
     .row-edit-btn, .row-delete-btn {
       border-radius: 4px;
-      width: 24px; height: 24px;
+      width: 22px; height: 22px;
       display: inline-flex; align-items: center; justify-content: center;
-      font-size: 0.8rem; font-weight: 700;
+      font-size: 0.75rem; font-weight: 700;
       cursor: pointer; transition: 0.1s; line-height: 1; padding: 0;
-      margin: 0 2px;
+      margin: 0 1px;
     }
     .row-edit-btn {
       background: #d5e8f5; border: 1px solid #5b8bb5; color: #1d4a6b;
@@ -802,12 +802,12 @@
     }
     .no-results {
       text-align: center; padding: 18px 8px;
-      color: #3a6382; font-size: 0.82rem; font-weight: 500;
+      color: #3a6382; font-size: 0.8rem; font-weight: 500;
       background: #f4faff; border: 1px dashed #b4d1e6;
       border-radius: 6px;
     }
     .no-results .small {
-      display: block; font-size: 0.7rem;
+      display: block; font-size: 0.68rem;
       color: #6a8ba5; margin-top: 6px;
     }
 
@@ -911,22 +911,8 @@
       min-width: 130px;
     }
 
-    .toast {
-      position: fixed; bottom: calc(var(--taskbar-height) + 12px);
-      left: 50%; transform: translateX(-50%) translateY(80px);
-      background: #1d4a6b; color: white;
-      padding: 10px 22px; border-radius: 40px;
-      font-size: 0.82rem; font-weight: 600;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.4), inset 0 1px 0 #a0c8f0;
-      border: 1px solid #0d2f44;
-      opacity: 0; transition: 0.3s ease;
-      z-index: 99999; pointer-events: none;
-      max-width: calc(100vw - 40px); text-align: center;
-    }
-    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
-    .toast.success { background: #1e6b3a; }
-    .toast.error { background: #8b2c2c; }
-    .toast.warning { background: #b87333; }
+    /* ========== TOAST REMOVED (hidden) ========== */
+    .toast { display: none !important; }
 
     .modal-overlay {
       position: fixed; inset: 0;
@@ -1383,7 +1369,7 @@
       .window, .window-price, .window-load {
         position: relative; top: auto !important;
         left: auto !important; right: auto !important;
-        margin: 0 auto 20px auto; max-width: 540px; width: 100%;
+        margin: 0 auto 20px auto; max-width: 500px; width: 100%;
       }
       .window-price { right: auto; }
       body { overflow-y: auto; padding: 20px 12px calc(var(--taskbar-height) + 20px) 12px; }
@@ -1588,7 +1574,7 @@
               <th>Customer</th>
               <th>Pcs/Bag</th>
               <th>Price</th>
-              <th style="width:64px;"></th>
+              <th style="width:60px;"></th>
             </tr>
           </thead>
           <tbody id="priceTableBody">
@@ -1981,13 +1967,11 @@
           wallpaperSyncBadgeMini.className = 'sync-badge-mini saved';
           wallpaperSyncBadgeMini.textContent = '✓';
           wallpaperStatusMini.textContent = '🗑️ Deleted from DB';
-          showToast('🗑️ Custom wallpaper deleted', 'success');
         } catch (err) {
           console.warn('Could not delete wallpaper from DB:', err.message);
           wallpaperSyncBadgeMini.className = 'sync-badge-mini error';
           wallpaperSyncBadgeMini.textContent = '✕';
           wallpaperStatusMini.textContent = '⚠️ Removed locally (DB offline)';
-          showToast('🗑️ Custom wallpaper removed locally', 'warning');
         }
 
         renderWallpaperGridMini();
@@ -2017,7 +2001,6 @@
         if (!thumb) return;
         const url = decodeURIComponent(thumb.dataset.wallpaperUrl);
         await setWallpaper(url);
-        showToast('🖼️ Wallpaper saved to database', 'success');
       });
 
       wpUploadAreaMini.addEventListener('click', () => wpUploadInputMini.click());
@@ -2025,12 +2008,11 @@
         const file = e.target.files[0];
         if (!file) return;
         if (file.size > 2 * 1024 * 1024) {
-          showToast('⚠️ Large image (>2MB) may fail to save', 'warning');
+          console.warn('Large image (>2MB) may fail to save');
         }
         const reader = new FileReader();
         reader.onload = async (evt) => {
           await setWallpaper(evt.target.result);
-          showToast('🖼️ Custom wallpaper saved', 'success');
           closeWallpaperMini();
         };
         reader.readAsDataURL(file);
@@ -2226,10 +2208,8 @@
 
           if (e.clientX <= snapEdge && !windowEl.classList.contains('maximized')) {
             snapWindowToSide(windowEl, 'left');
-            showToast('📐 Snapped left');
           } else if (e.clientX >= screenW - snapEdge && !windowEl.classList.contains('maximized')) {
             snapWindowToSide(windowEl, 'right');
-            showToast('📐 Snapped right');
           }
 
           hideSnapPreview();
@@ -2303,10 +2283,8 @@
 
           if (touch.clientX <= snapEdge && !windowEl.classList.contains('maximized')) {
             snapWindowToSide(windowEl, 'left');
-            showToast('📐 Snapped left');
           } else if (touch.clientX >= screenW - snapEdge && !windowEl.classList.contains('maximized')) {
             snapWindowToSide(windowEl, 'right');
-            showToast('📐 Snapped right');
           }
         }
       }
@@ -2436,7 +2414,6 @@
       const bagWeightPreview = document.getElementById('bagWeightPreview');
       const bagPcsPreview = document.getElementById('bagPcsPreview');
       const resultContent = document.getElementById('resultContent');
-      const toast = document.getElementById('toast');
 
       const totalQtyValue = document.getElementById('totalQtyValue');
       const totalBagsValue = document.getElementById('totalBagsValue');
@@ -2522,10 +2499,10 @@
 
       const formatPrice = (value) => '₹' + Number(value).toFixed(2);
 
+      // ========== NOTIFICATIONS REMOVED — showToast is a no-op ==========
       function showToast(message, type = '') {
-        toast.textContent = message;
-        toast.className = 'toast show' + (type ? ' ' + type : '');
-        setTimeout(() => toast.classList.remove('show'), 2200);
+        // Notifications disabled
+        return;
       }
 
       function setOnlineStatus(online) {
@@ -2608,7 +2585,6 @@
           }
         });
         updateTaskbar();
-        showToast('🗕 All windows minimized');
       });
 
       document.getElementById('startRestoreAll').addEventListener('click', () => {
@@ -2621,7 +2597,6 @@
           }
         });
         updateTaskbar();
-        showToast('🗗 All windows restored');
       });
 
       // ==================== MINIMIZE / MAXIMIZE / CLOSE ====================
@@ -2679,7 +2654,6 @@
           windowState[winId].minimized = true;
           showTaskbarItem(winId);
           updateTaskbar();
-          showToast('🗕 Window minimized');
         });
       });
 
@@ -2709,7 +2683,6 @@
           windowState[winId].minimized = true;
           hideTaskbarItem(winId);
           updateTaskbar();
-          showToast('✕ Window closed & removed from taskbar');
         });
       });
 
@@ -2821,7 +2794,6 @@
         } catch (err) {
           console.error('Load products error:', err);
           setOnlineStatus(false);
-          showToast('⚠️ Could not load products from database', 'error');
           priceTableBody.innerHTML = `
             <tr><td colspan="5">
               <div class="no-results">⚠️ Database error<span class="small">${err.message || 'Check that the "products" table exists'}</span></div>
@@ -3145,8 +3117,6 @@
 
         showEmptyHint();
         weightPerPcInput.focus();
-
-        showToast('🔄 Calculator reset', 'success');
       }
 
       resetCalcBtn.addEventListener('click', resetPackingCalculator);
@@ -3228,7 +3198,7 @@
         e.preventDefault();
         if (currentIndex === fieldOrder.length - 1) {
           const result = fullRecalc();
-          if (result === null) { showToast('⚠️ Please fill all fields correctly', 'warning'); return; }
+          if (result === null) { return; }
           const kgText = formatKg(result.totalKg);
           showLoading('calc');
           let saved = false;
@@ -3242,16 +3212,10 @@
             saved = true;
           } catch (err) {
             console.error('Save failed:', err);
-            showToast('⚠️ Saved locally (DB offline)', 'warning');
           } finally {
             hideLoading('calc');
           }
-          copyToClipboard(kgText)
-            .then(() => {
-              if (saved) showToast(`✅ ${kgText} kg saved & copied`, 'success');
-              else showToast(`📋 ${kgText} kg copied (not saved)`, 'warning');
-            })
-            .catch(() => showToast(`📋 Total: ${kgText} kg`, ''));
+          copyToClipboard(kgText).catch(() => {});
           resetAllFields();
           resultContent.innerHTML = `<div class="empty-hint">✅ Saved <strong>${kgText} kg</strong> — ready for next entry<span class="small">Fill the fields above to calculate again</span></div>`;
           weightPerPcInput.focus();
@@ -3308,11 +3272,11 @@
           const customer = content.querySelector('#modalCustomerName').value.trim();
           const pcs = content.querySelector('#modalProductPcs').value;
           const price = content.querySelector('#modalProductPrice').value;
-          if (name === '') { showToast('⚠️ Please enter a product name', 'warning'); return false; }
-          if (customer === '') { showToast('⚠️ Please enter a customer name', 'warning'); return false; }
-          if (!pcs || isNaN(pcs) || parseInt(pcs) <= 0) { showToast('⚠️ Enter a valid positive number for pcs per bag', 'warning'); return false; }
-          if (!price || isNaN(price) || parseFloat(price) < 0) { showToast('⚠️ Enter a valid price', 'warning'); return false; }
-          if (products.some(p => p.name.toLowerCase() === name.toLowerCase() && p.customer.toLowerCase() === customer.toLowerCase())) { showToast(`⚠️ "${name}" already exists for ${customer}`, 'warning'); return false; }
+          if (name === '') { return false; }
+          if (customer === '') { return false; }
+          if (!pcs || isNaN(pcs) || parseInt(pcs) <= 0) { return false; }
+          if (!price || isNaN(price) || parseFloat(price) < 0) { return false; }
+          if (products.some(p => p.name.toLowerCase() === name.toLowerCase() && p.customer.toLowerCase() === customer.toLowerCase())) { return false; }
           const saveBtn = content.querySelector('#modalSaveBtn');
           saveBtn.disabled = true; saveBtn.textContent = '⏳ Saving…';
           try {
@@ -3321,10 +3285,8 @@
             filteredProducts = [...products];
             renderCustomerFilter();
             applyFilters();
-            showToast(`✅ "${name}" saved to database`, 'success');
             return true;
           } catch (err) {
-            showToast(`❌ Save failed: ${err.message || 'Check DB'}`, 'error');
             saveBtn.disabled = false; saveBtn.textContent = '➕ Save to Database';
             return false;
           }
@@ -3350,12 +3312,12 @@
           const customer = content.querySelector('#modalEditCustomer').value.trim();
           const pcs = content.querySelector('#modalEditPcs').value;
           const price = content.querySelector('#modalEditPrice').value;
-          if (name === '') { showToast('⚠️ Please enter a product name', 'warning'); return false; }
-          if (customer === '') { showToast('⚠️ Please enter a customer name', 'warning'); return false; }
-          if (!pcs || isNaN(pcs) || parseInt(pcs) <= 0) { showToast('⚠️ Enter a valid positive number for pcs per bag', 'warning'); return false; }
-          if (!price || isNaN(price) || parseFloat(price) < 0) { showToast('⚠️ Enter a valid price', 'warning'); return false; }
+          if (name === '') { return false; }
+          if (customer === '') { return false; }
+          if (!pcs || isNaN(pcs) || parseInt(pcs) <= 0) { return false; }
+          if (!price || isNaN(price) || parseFloat(price) < 0) { return false; }
           if (products.some(p => p.id !== product.id && p.name.toLowerCase() === name.toLowerCase() && p.customer.toLowerCase() === customer.toLowerCase())) {
-            showToast(`⚠️ "${name}" already exists for ${customer}`, 'warning'); return false;
+            return false;
           }
           const saveBtn = content.querySelector('#modalSaveBtn');
           saveBtn.disabled = true; saveBtn.textContent = '⏳ Updating…';
@@ -3378,10 +3340,8 @@
               pcsPerBagInput.value = updated.pcsPerBag;
               fullRecalc();
             }
-            showToast(`✅ "${name}" updated successfully`, 'success');
             return true;
           } catch (err) {
-            showToast(`❌ Update failed: ${err.message || 'Check DB'}`, 'error');
             saveBtn.disabled = false; saveBtn.textContent = '💾 Update Product';
             return false;
           }
@@ -3422,8 +3382,7 @@
             filteredProducts = [...products];
             renderCustomerFilter();
             applyFilters();
-            showToast(`🗑️ Deleted "${product.name}"`, 'success');
-          } catch (err) { showToast(`❌ Delete failed: ${err.message}`, 'error'); }
+          } catch (err) { /* silent */ }
           finally { hideLoading('price'); }
           return;
         }
@@ -3431,12 +3390,12 @@
         const row = e.target.closest('tr');
         if (!row || !row.dataset.id) return;
         const product = products.find(p => p.id === row.dataset.id);
-        if (product) { applyProduct(product); showToast(`📦 ${product.name} · 👤 ${product.customer}`); }
+        if (product) { applyProduct(product); }
       });
 
       // ==================== CLEAR ALL ====================
       clearAllBtn.addEventListener('click', async () => {
-        if (products.length === 0) { showToast('📭 No products to clear', 'warning'); return; }
+        if (products.length === 0) { return; }
         const confirmed = await showConfirm({
           title: '⚠️ Clear All Products',
           message: `Are you sure you want to delete <strong>ALL ${products.length} product${products.length !== 1 ? 's' : ''}</strong> from the database?<br><br>This action <strong>cannot</strong> be undone.`,
@@ -3449,15 +3408,12 @@
           products = []; filteredProducts = [];
           selectedProductId = null; selectedProductName = ''; selectedCustomerName = '';
           renderCustomerFilter(); applyFilters();
-          showToast('🗑️ All products cleared', 'success');
-        } catch (err) { showToast(`❌ Clear failed: ${err.message}`, 'error'); }
+        } catch (err) { /* silent */ }
         finally { hideLoading('price'); }
       });
 
       // ==================== FILTER EVENTS ====================
       customerFilter.addEventListener('change', () => {
-        const c = customerFilter.value;
-        if (c) showToast(`👤 Filtering by: ${c}`); else showToast('👤 Showing all customers');
         applyFilters();
       });
       searchInput.addEventListener('input', applyFilters);
