@@ -341,11 +341,104 @@
     }
     .desktop-gadget:hover .gadget-grip { opacity: 1; }
 
+    /* ---------- CALENDAR GADGET ---------- */
+    .desktop-calendar {
+      position: fixed;
+      top: 320px;
+      right: 30px;
+      z-index: 5;
+      width: 240px;
+      background: radial-gradient(circle at 50% 30%, rgba(255, 255, 255, 0.28) 0%, rgba(220, 235, 250, 0.18) 40%, rgba(140, 180, 220, 0.14) 100%);
+      border-radius: 14px;
+      border-top: 1px solid rgba(255, 255, 255, 0.55);
+      border-left: 1px solid rgba(255, 255, 255, 0.35);
+      border-right: 1px solid rgba(120, 160, 200, 0.4);
+      border-bottom: 1px solid rgba(80, 120, 160, 0.5);
+      box-shadow: 
+        0 0 0 1px rgba(255, 255, 255, 0.25) inset,
+        0 0 0 1px rgba(30, 63, 90, 0.5),
+        0 12px 35px rgba(0, 0, 0, 0.55),
+        0 2px 10px rgba(0, 0, 0, 0.4),
+        inset 0 1px 20px rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(16px);
+      padding: 14px 12px 12px 12px;
+      cursor: grab;
+      transition: box-shadow 0.2s ease, transform 0.2s ease;
+      overflow: hidden;
+    }
+    .desktop-calendar::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 10%; right: 10%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.9), transparent);
+      pointer-events: none;
+    }
+    .desktop-calendar:active { cursor: grabbing; }
+    .desktop-calendar.dragging {
+      box-shadow: 
+        0 0 0 1px rgba(255, 255, 255, 0.35) inset,
+        0 0 0 1px rgba(30, 63, 90, 0.6),
+        0 18px 45px rgba(0, 0, 0, 0.7),
+        0 4px 14px rgba(0, 0, 0, 0.5);
+      transform: scale(1.02);
+    }
+
+    .cal-header {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #ffffff;
+      text-align: center;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6), 0 0 12px rgba(140, 200, 255, 0.5);
+      letter-spacing: 0.06em;
+      margin-bottom: 8px;
+      position: relative;
+      z-index: 1;
+    }
+    .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 3px;
+      position: relative;
+      z-index: 1;
+    }
+    .cal-cell {
+      text-align: center;
+      font-size: 0.68rem;
+      font-weight: 500;
+      color: rgba(220, 240, 255, 0.85);
+      padding: 4px 0;
+      border-radius: 4px;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+      transition: background 0.15s;
+    }
+    .cal-cell.header {
+      font-size: 0.6rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: rgba(180, 210, 240, 0.7);
+      letter-spacing: 0.05em;
+    }
+    .cal-cell.today {
+      background: rgba(100, 180, 255, 0.5);
+      color: #ffffff;
+      font-weight: 700;
+      box-shadow: 0 0 8px rgba(100, 180, 255, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+      border-radius: 6px;
+    }
+    .cal-cell.empty {
+      color: transparent;
+    }
+    .cal-cell:hover:not(.header):not(.empty) {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
     @media (max-width: 1200px) {
       .desktop-gadget { width: 200px; top: 20px; right: 20px; padding: 14px 12px 12px 12px; }
       .gadget-time { font-size: 2.6rem; }
       .gadget-analog { width: 96px; height: 96px; }
       .gadget-tick { transform-origin: center 44px; }
+      .desktop-calendar { width: 200px; top: 280px; right: 20px; }
     }
     @media (max-width: 600px) {
       .desktop-gadget { width: 170px; padding: 12px 10px 10px 10px; }
@@ -353,6 +446,8 @@
       .gadget-analog { width: 80px; height: 80px; }
       .gadget-tick { transform-origin: center 36px; }
       .gadget-date { font-size: 0.72rem; }
+      .desktop-calendar { width: 170px; top: 240px; }
+      .cal-cell { font-size: 0.6rem; padding: 3px 0; }
     }
 
     /* ---------- WINDOW BASE ---------- */
@@ -379,16 +474,7 @@
     }
 
     .window { top: 20px; left: 20px; width: 500px; max-width: calc(100vw - 40px); }
-    /* ========== PRODUCT WINDOW: REDUCED WIDTH & HEIGHT ========== */
-    .window-price { 
-      top: 20px; 
-      right: 360px; 
-      width: 440px; 
-      max-width: calc(100vw - 380px);
-      max-height: 340px;
-      height: 340px;
-      z-index: 11; 
-    }
+    .window-price { top: 20px; right: 240px; width: 540px; max-width: calc(100vw - 260px); z-index: 11; }
     .window-load { top: 400px; left: 20px; width: 500px; max-width: calc(100vw - 40px); z-index: 12; }
 
     .window.minimized, .window-price.minimized, .window-load.minimized { display: none; }
@@ -493,41 +579,44 @@
       position: relative; top: -20px; margin-bottom: -18px;
     }
 
-    /* ========== TINY ONE-LINE INPUT ROW (4 fields, max 4 digits) ========== */
-    .input-row-four {
+    /* ========== TINY ONE-LINE INPUT ROW (5 fields, max 4 digits) ========== */
+    .input-row-five {
       display: flex;
       flex-wrap: nowrap;
-      gap: 5px;
+      gap: 4px;
       align-items: flex-end;
     }
-    .input-row-four .input-group {
+    .input-row-five .input-group {
       flex: 0 0 auto;
-      width: 88px;
+      width: 80px;
       min-width: 0;
       max-width: none;
     }
-    .input-row-four .input-group label {
-      font-size: 0.6rem;
+    .input-row-five .input-group.return-group {
+      width: 90px;
+    }
+    .input-row-five .input-group label {
+      font-size: 0.56rem;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
       margin-left: 2px;
       gap: 2px;
     }
-    .input-row-four .input-wrap {
-      padding: 1px 3px 1px 5px;
+    .input-row-five .input-wrap {
+      padding: 1px 3px 1px 4px;
       min-height: 24px;
     }
-    .input-row-four .input-wrap input {
-      font-size: 0.75rem;
+    .input-row-five .input-wrap input {
+      font-size: 0.72rem;
       padding: 2px 0;
       text-align: center;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.3px;
     }
-    .input-row-four .input-wrap .unit {
-      font-size: 0.5rem;
-      padding: 1px 4px;
-      margin-left: 2px;
+    .input-row-five .input-wrap .unit {
+      font-size: 0.46rem;
+      padding: 1px 3px;
+      margin-left: 1px;
     }
 
     /* ========== NARROWER INPUT ROW ========== */
@@ -613,7 +702,7 @@
     }
 
     .top-row { display: flex; gap: 8px; margin-bottom: 10px; align-items: stretch; }
-    .top-row .combo-wrap { flex: 0 0 150px; min-width: 0; }
+    .top-row .combo-wrap { flex: 0 0 160px; min-width: 0; }
     .top-row .search-wrap { flex: 1 1 auto; min-width: 0; margin-bottom: 0; }
 
     .bag-preview {
@@ -711,7 +800,7 @@
       padding-top: 6px; letter-spacing: 0.2px;
     }
 
-    .price-top-actions { display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
+    .price-top-actions { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
 
     /* ========== COMPACT SEARCH WRAP ========== */
     .search-wrap {
@@ -743,26 +832,26 @@
     }
     .search-wrap .clear-search:hover { background: #a8c8e0; }
 
-    /* ========== PRODUCT TABLE: READABLE TEXT ========== */
+    /* ========== PRODUCT TABLE: BIGGER TEXT ========== */
     .price-table {
       width: 100%; border-collapse: separate; border-spacing: 0;
-      font-size: 0.8rem; background: white;
+      font-size: 0.82rem; background: white;
       border: 1px solid #9ab9d6; border-radius: 6px;
       overflow: hidden;
       box-shadow: inset 0 1px 4px #ffffff, 0 2px 4px rgba(0, 0, 0, 0.08);
     }
     .price-table thead th {
       background: linear-gradient(180deg, #e3eff9 0%, #c3d9ed 100%);
-      color: #10344b; font-weight: 700; font-size: 0.72rem;
+      color: #10344b; font-weight: 700; font-size: 0.74rem;
       text-transform: uppercase; letter-spacing: 0.4px;
-      padding: 6px 8px; text-align: left;
+      padding: 9px 10px; text-align: left;
       border-bottom: 1px solid #8eb0ce;
       text-shadow: 0 1px 0 white;
       position: sticky; top: 0; z-index: 2;
     }
     .price-table thead th:last-child { text-align: right; }
     .price-table tbody td {
-      padding: 6px 8px; border-bottom: 1px solid #d5e3ef;
+      padding: 9px 10px; border-bottom: 1px solid #d5e3ef;
       color: #1a3e5a; font-weight: 500; vertical-align: middle;
     }
     .price-table tbody tr:last-child td { border-bottom: none; }
@@ -778,23 +867,23 @@
     }
     .price-table tbody td.name-cell { font-weight: 600; color: #10344b; }
     .price-table tbody td.customer-cell {
-      font-weight: 500; color: #5a3a7e; font-size: 0.76rem;
+      font-weight: 500; color: #5a3a7e; font-size: 0.78rem;
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-      max-width: 90px;
+      max-width: 110px;
     }
     .price-table tbody td.pcs-cell {
       color: #2a5777; font-weight: 600;
       font-family: 'Segoe UI', Consolas, monospace;
       text-align: center;
     }
-    .price-table tbody td.action-cell { text-align: center; width: 60px; padding: 4px; }
+    .price-table tbody td.action-cell { text-align: center; width: 64px; padding: 6px; }
     .row-edit-btn, .row-delete-btn {
       border-radius: 4px;
-      width: 22px; height: 22px;
+      width: 24px; height: 24px;
       display: inline-flex; align-items: center; justify-content: center;
-      font-size: 0.75rem; font-weight: 700;
+      font-size: 0.8rem; font-weight: 700;
       cursor: pointer; transition: 0.1s; line-height: 1; padding: 0;
-      margin: 0 1px;
+      margin: 0 2px;
     }
     .row-edit-btn {
       background: #d5e8f5; border: 1px solid #5b8bb5; color: #1d4a6b;
@@ -806,16 +895,16 @@
     .row-delete-btn:hover { background: #e8a5a5; color: white; }
     .table-container {
       flex: 1; overflow-y: auto; border-radius: 6px;
-      padding-right: 2px; margin-bottom: 4px; min-height: 60px;
+      padding-right: 2px; margin-bottom: 8px; min-height: 120px;
     }
     .no-results {
-      text-align: center; padding: 14px 8px;
-      color: #3a6382; font-size: 0.8rem; font-weight: 500;
+      text-align: center; padding: 18px 8px;
+      color: #3a6382; font-size: 0.82rem; font-weight: 500;
       background: #f4faff; border: 1px dashed #b4d1e6;
       border-radius: 6px;
     }
     .no-results .small {
-      display: block; font-size: 0.68rem;
+      display: block; font-size: 0.7rem;
       color: #6a8ba5; margin-top: 6px;
     }
 
@@ -919,8 +1008,22 @@
       min-width: 130px;
     }
 
-    /* ========== TOAST REMOVED (hidden) ========== */
-    .toast { display: none !important; }
+    .toast {
+      position: fixed; bottom: calc(var(--taskbar-height) + 12px);
+      left: 50%; transform: translateX(-50%) translateY(80px);
+      background: #1d4a6b; color: white;
+      padding: 10px 22px; border-radius: 40px;
+      font-size: 0.82rem; font-weight: 600;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.4), inset 0 1px 0 #a0c8f0;
+      border: 1px solid #0d2f44;
+      opacity: 0; transition: 0.3s ease;
+      z-index: 99999; pointer-events: none;
+      max-width: calc(100vw - 40px); text-align: center;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+    .toast.success { background: #1e6b3a; }
+    .toast.error { background: #8b2c2c; }
+    .toast.warning { background: #b87333; }
 
     .modal-overlay {
       position: fixed; inset: 0;
@@ -1138,6 +1241,54 @@
       from { transform: translateY(20px); opacity: 0; }
       to { transform: translateY(0); opacity: 1; }
     }
+
+    /* User profile header */
+    .start-user-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 18px;
+      margin: 0 8px 8px 8px;
+      background: linear-gradient(135deg, rgba(80, 150, 210, 0.4) 0%, rgba(40, 90, 140, 0.5) 100%);
+      border-radius: 10px;
+      border: 1px solid rgba(150, 200, 240, 0.3);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+    .start-user-avatar {
+      width: 42px; height: 42px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #ffffff 0%, #a0e0ff 25%, #3aa0e8 60%, #0e3d68 100%);
+      box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.6), 0 0 10px rgba(120, 200, 255, 0.5);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; font-weight: 700; color: #0a2a45;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+      flex-shrink: 0;
+      border: 2px solid rgba(180, 220, 255, 0.6);
+    }
+    .start-user-info {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+    }
+    .start-user-name {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #ffffff;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6), 0 0 12px rgba(140, 200, 255, 0.4);
+      letter-spacing: 0.03em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .start-user-role {
+      font-size: 0.62rem;
+      font-weight: 500;
+      color: #b8d4ec;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+      letter-spacing: 0.04em;
+      margin-top: 2px;
+    }
+
     .start-menu-header {
       padding: 8px 16px; color: #b8d4ec;
       font-size: 0.7rem; font-weight: 600;
@@ -1194,7 +1345,6 @@
       flex-direction: column;
       max-height: 70vh;
     }
-    /* scrollable wallpaper grid */
     .wallpaper-scroll-container {
       flex: 1;
       overflow-y: auto;
@@ -1263,7 +1413,6 @@
     }
     .wp-upload-area-mini input[type="file"] { display: none; }
 
-    /* ---------- DELETE IMAGE BUTTON ---------- */
     .wp-delete-area {
       display: flex;
       align-items: center;
@@ -1322,67 +1471,16 @@
     .sync-badge-mini.saved { background: #1e6b3a; }
     .sync-badge-mini.error { background: #8b2c2c; }
 
-    /* ---------- RETURN / MINUS SECTION ---------- */
-    .return-fieldset {
-      margin-top: 10px;
-      background: rgba(255, 240, 230, 0.7);
-      border: 1px solid #d4a373;
-      border-radius: 8px;
-      padding: 10px 10px 8px 10px;
-      box-shadow: inset 0 1px 6px rgba(255, 255, 255, 0.9), 0 2px 4px rgba(0, 0, 0, 0.08);
-      position: relative;
-    }
-    .return-fieldset .return-legend {
-      font-weight: 600; font-size: 0.72rem; color: #8b5e3c;
-      padding: 0 10px;
-      background: linear-gradient(180deg, #fff3e6, #f5dcc6);
-      border-radius: 20px; border: 1px solid #d4a373;
-      text-shadow: 0 1px 0 white;
-      margin-left: 8px; display: inline-block;
-      box-shadow: 0 1px 0 white;
-      position: relative; top: -20px; margin-bottom: -18px;
-    }
-    .return-row {
-      display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: flex-end;
-    }
-    .return-preview {
-      background: #fde8d9;
-      border: 1px solid #d4a373;
-      border-radius: 40px;
-      padding: 4px 12px;
-      font-size: 0.74rem;
-      color: #6b3f1e;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 8px;
-      box-shadow: inset 0 1px 4px #ffffff, 0 1px 4px rgba(0, 0, 0, 0.1);
-    }
-    .return-preview .minus-sign {
-      color: #c0392b; font-weight: 800; font-size: 1rem;
-    }
-    .return-preview .return-value {
-      background: #8b3a2c; color: white;
-      padding: 3px 12px; border-radius: 30px;
-      font-weight: 700;
-      box-shadow: inset 0 1px 3px #f0b0a0, 0 1px 3px #00000030;
-      font-size: 0.72rem;
-      font-family: 'Segoe UI', Consolas, monospace;
-    }
-
     @media (max-width: 1200px) {
       .window, .window-price, .window-load {
         position: relative; top: auto !important;
         left: auto !important; right: auto !important;
-        margin: 0 auto 20px auto; max-width: 500px; width: 100%;
+        margin: 0 auto 20px auto; max-width: 540px; width: 100%;
       }
-      .window-price { right: auto; height: auto; max-height: none; }
+      .window-price { right: auto; }
       body { overflow-y: auto; padding: 20px 12px calc(var(--taskbar-height) + 20px) 12px; }
-      .input-row-four { flex-wrap: wrap; }
-      .input-row-four .input-group { flex: 1 1 45%; width: auto; }
+      .input-row-five { flex-wrap: wrap; }
+      .input-row-five .input-group { flex: 1 1 18%; width: auto; }
     }
     @media (max-width: 480px) {
       .top-row { flex-direction: column; }
@@ -1394,7 +1492,7 @@
       .wallpaper-grid-mini { grid-template-columns: repeat(2, 1fr); }
       .wallpaper-mini-window { width: 96vw; }
       .input-group { max-width: 100%; }
-      .input-row-four .input-group { flex: 1 1 45%; width: auto; }
+      .input-row-five .input-group { flex: 1 1 30%; width: auto; }
     }
   </style>
 </head>
@@ -1404,7 +1502,7 @@
   <!-- ================= BOOT / CONNECTING OVERLAY ================= -->
   <div class="boot-overlay" id="bootOverlay">
     <div class="boot-logo">📦</div>
-    <div class="boot-title">Packing Calculator</div>
+    <div class="boot-title">KCST Windows</div>
     <div class="boot-spinner"></div>
     <div class="boot-progress"></div>
     <div class="boot-status" id="bootStatus">Connecting to database…</div>
@@ -1424,6 +1522,12 @@
     <div class="gadget-time" id="gadgetTime">--:--</div>
     <div class="gadget-date" id="gadgetDate">--/--/----</div>
     <div class="gadget-day" id="gadgetDay">---</div>
+  </div>
+
+  <!-- ================= DESKTOP CALENDAR GADGET ================= -->
+  <div class="desktop-calendar" id="desktopCalendar" title="Drag to move">
+    <div class="cal-header" id="calHeader">---</div>
+    <div class="cal-grid" id="calGrid"></div>
   </div>
 
   <!-- ================= LEFT WINDOW (Packing Calculator) ================= -->
@@ -1463,8 +1567,8 @@
 
       <div class="fieldset">
 
-        <!-- ========== ONE LINE: Weight/pc, Pcs/bag, # bags, Extra pcs (tiny) ========== -->
-        <div class="input-row-four">
+        <!-- ========== ONE LINE: Weight/pc, Pcs/bag, #bags, Extra, Return ========== -->
+        <div class="input-row-five">
           <div class="input-group">
             <label><span>⚖️</span> Wt/pc</label>
             <div class="input-wrap">
@@ -1493,29 +1597,18 @@
               <span class="unit">pcs</span>
             </div>
           </div>
+          <div class="input-group return-group">
+            <label><span>➖</span> Return</label>
+            <div class="input-wrap">
+              <input type="number" id="returnPcs" min="0" max="9999" step="1" placeholder="0" tabindex="5" maxlength="4">
+              <span class="unit">pcs</span>
+            </div>
+          </div>
         </div>
 
         <div class="bag-preview">
           <span>📐 1 bag = <span id="bagWeightPreview">0.000</span> kg</span>
           <span class="highlight" id="bagPcsPreview">0 pcs</span>
-        </div>
-      </div>
-
-      <!-- ========== RETURN / MINUS TEXT BOX ========== -->
-      <div class="return-fieldset">
-        <div class="return-legend">↩️ Return / Minus</div>
-        <div class="return-row">
-          <div class="input-group full-width">
-            <label><span>➖</span> Return quantity (pcs to subtract)</label>
-            <div class="input-wrap">
-              <input type="number" id="returnPcs" min="0" max="9999" step="1" placeholder="0" tabindex="4.5" maxlength="4">
-              <span class="unit">pcs</span>
-            </div>
-          </div>
-        </div>
-        <div class="return-preview" id="returnPreview">
-          <span><span class="minus-sign">➖</span> Return <span id="returnDisplayPcs">0</span> pcs</span>
-          <span class="return-value" id="returnDisplayKg">0.000 kg</span>
         </div>
       </div>
 
@@ -1554,6 +1647,9 @@
         <button class="aero-btn primary" id="addProductBtn" type="button">
           <span>📦➕</span> Add Product
         </button>
+        <button class="aero-btn" id="printProductsBtn" type="button">
+          <span>🖨️</span> Print
+        </button>
         <button class="aero-btn danger" id="clearAllBtn" type="button">
           <span>🗑️</span> Clear All
         </button>
@@ -1582,7 +1678,7 @@
               <th>Customer</th>
               <th>Pcs/Bag</th>
               <th>Price</th>
-              <th style="width:60px;"></th>
+              <th style="width:64px;"></th>
             </tr>
           </thead>
           <tbody id="priceTableBody">
@@ -1705,12 +1801,10 @@
         <span>Choose wallpaper</span>
         <span style="font-size:0.62rem; color:#6a8ba5; font-weight:500;" id="wallpaperStatusMini">Loading…</span>
       </div>
-      <!-- scrollable area -->
       <div class="wallpaper-scroll-container" id="wallpaperScrollContainer">
         <div class="wallpaper-grid-mini" id="wallpaperGridMini"></div>
       </div>
 
-      <!-- DELETE IMAGE BUTTON (only visible for custom uploads) -->
       <div class="wp-delete-area hidden" id="wpDeleteArea">
         <span class="delete-label">🗑️ Custom wallpaper</span>
         <button class="wp-delete-btn" id="wpDeleteBtn" type="button">Delete Image</button>
@@ -1725,6 +1819,13 @@
 
   <!-- ================= START MENU ================= -->
   <div class="start-menu" id="startMenu">
+    <div class="start-user-header">
+      <div class="start-user-avatar" id="userAvatar">S</div>
+      <div class="start-user-info">
+        <div class="start-user-name" id="userName">SAYYID SHEREEF KC</div>
+        <div class="start-user-role" id="userRole">Administrator</div>
+      </div>
+    </div>
     <div class="start-menu-header">Programs</div>
     <div class="start-menu-item" data-restore="calcWindow">
       <span class="smi-icon">📦</span> Packing Calculator
@@ -1742,9 +1843,6 @@
     <div class="start-menu-header">System</div>
     <div class="start-menu-item" id="startMinimizeAll">
       <span class="smi-icon">🗕</span> Minimize all windows
-    </div>
-    <div class="start-menu-item" id="startRestoreAll">
-      <span class="smi-icon">🗗</span> Restore all windows
     </div>
   </div>
 
@@ -1975,11 +2073,13 @@
           wallpaperSyncBadgeMini.className = 'sync-badge-mini saved';
           wallpaperSyncBadgeMini.textContent = '✓';
           wallpaperStatusMini.textContent = '🗑️ Deleted from DB';
+          showToast('🗑️ Custom wallpaper deleted', 'success');
         } catch (err) {
           console.warn('Could not delete wallpaper from DB:', err.message);
           wallpaperSyncBadgeMini.className = 'sync-badge-mini error';
           wallpaperSyncBadgeMini.textContent = '✕';
           wallpaperStatusMini.textContent = '⚠️ Removed locally (DB offline)';
+          showToast('🗑️ Custom wallpaper removed locally', 'warning');
         }
 
         renderWallpaperGridMini();
@@ -2009,6 +2109,7 @@
         if (!thumb) return;
         const url = decodeURIComponent(thumb.dataset.wallpaperUrl);
         await setWallpaper(url);
+        showToast('🖼️ Wallpaper saved to database', 'success');
       });
 
       wpUploadAreaMini.addEventListener('click', () => wpUploadInputMini.click());
@@ -2016,11 +2117,12 @@
         const file = e.target.files[0];
         if (!file) return;
         if (file.size > 2 * 1024 * 1024) {
-          console.warn('Large image (>2MB) may fail to save');
+          showToast('⚠️ Large image (>2MB) may fail to save', 'warning');
         }
         const reader = new FileReader();
         reader.onload = async (evt) => {
           await setWallpaper(evt.target.result);
+          showToast('🖼️ Custom wallpaper saved', 'success');
           closeWallpaperMini();
         };
         reader.readAsDataURL(file);
@@ -2055,7 +2157,7 @@
       document.getElementById('trayWallpaper').addEventListener('click', openWallpaperMini);
 
       document.body.addEventListener('contextmenu', (e) => {
-        if (e.target.closest('.window, .window-price, .window-load, .startbar, .start-menu, .modal-overlay, .desktop-gadget, .wallpaper-mini-window')) return;
+        if (e.target.closest('.window, .window-price, .window-load, .startbar, .start-menu, .modal-overlay, .desktop-gadget, .desktop-calendar, .wallpaper-mini-window')) return;
         e.preventDefault();
         openWallpaperMini();
       });
@@ -2216,8 +2318,10 @@
 
           if (e.clientX <= snapEdge && !windowEl.classList.contains('maximized')) {
             snapWindowToSide(windowEl, 'left');
+            showToast('📐 Snapped left');
           } else if (e.clientX >= screenW - snapEdge && !windowEl.classList.contains('maximized')) {
             snapWindowToSide(windowEl, 'right');
+            showToast('📐 Snapped right');
           }
 
           hideSnapPreview();
@@ -2291,8 +2395,10 @@
 
           if (touch.clientX <= snapEdge && !windowEl.classList.contains('maximized')) {
             snapWindowToSide(windowEl, 'left');
+            showToast('📐 Snapped left');
           } else if (touch.clientX >= screenW - snapEdge && !windowEl.classList.contains('maximized')) {
             snapWindowToSide(windowEl, 'right');
+            showToast('📐 Snapped right');
           }
         }
       }
@@ -2411,17 +2517,121 @@
         }
       })();
 
+      // ==================== DESKTOP CALENDAR GADGET ====================
+      const desktopCalendar = document.getElementById('desktopCalendar');
+      const calHeader = document.getElementById('calHeader');
+      const calGrid = document.getElementById('calGrid');
+
+      function renderCalendar() {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = now.getMonth();
+        const today = now.getDate();
+
+        const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                           'July', 'August', 'September', 'October', 'November', 'December'];
+        calHeader.textContent = `${monthNames[month]} ${year}`;
+
+        const firstDay = new Date(year, month, 1).getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+        const dayHeaders = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+        let html = '';
+        dayHeaders.forEach(d => {
+          html += `<div class="cal-cell header">${d}</div>`;
+        });
+
+        for (let i = 0; i < firstDay; i++) {
+          html += `<div class="cal-cell empty"></div>`;
+        }
+
+        for (let d = 1; d <= daysInMonth; d++) {
+          const isToday = (d === today) ? ' today' : '';
+          html += `<div class="cal-cell${isToday}">${d}</div>`;
+        }
+
+        calGrid.innerHTML = html;
+      }
+      renderCalendar();
+      setInterval(renderCalendar, 60000);
+
+      (function makeCalendarDraggable() {
+        let isDragging = false, startX = 0, startY = 0, startLeft = 0, startTop = 0;
+
+        function startDrag(clientX, clientY) {
+          isDragging = true;
+          const rect = desktopCalendar.getBoundingClientRect();
+          startLeft = rect.left; startTop = rect.top;
+          desktopCalendar.style.left = startLeft + 'px';
+          desktopCalendar.style.top = startTop + 'px';
+          desktopCalendar.style.right = 'auto';
+          startX = clientX; startY = clientY;
+          desktopCalendar.classList.add('dragging');
+        }
+
+        function moveDrag(clientX, clientY) {
+          if (!isDragging) return;
+          const dx = clientX - startX, dy = clientY - startY;
+          let nl = startLeft + dx, nt = startTop + dy;
+          const w = desktopCalendar.offsetWidth, h = desktopCalendar.offsetHeight;
+          if (nl < 5) nl = 5;
+          if (nl > window.innerWidth - w - 5) nl = window.innerWidth - w - 5;
+          if (nt < 5) nt = 5;
+          if (nt > window.innerHeight - TASKBAR_HEIGHT - h - 5) nt = window.innerHeight - TASKBAR_HEIGHT - h - 5;
+          desktopCalendar.style.left = nl + 'px';
+          desktopCalendar.style.top = nt + 'px';
+        }
+
+        function endDrag() {
+          isDragging = false;
+          desktopCalendar.classList.remove('dragging');
+        }
+
+        desktopCalendar.addEventListener('mousedown', (e) => {
+          if (e.button !== 0) return;
+          e.preventDefault();
+          startDrag(e.clientX, e.clientY);
+          document.addEventListener('mousemove', onMouseMove);
+          document.addEventListener('mouseup', onMouseUp);
+        });
+
+        function onMouseMove(e) { moveDrag(e.clientX, e.clientY); }
+        function onMouseUp() {
+          endDrag();
+          document.removeEventListener('mousemove', onMouseMove);
+          document.removeEventListener('mouseup', onMouseUp);
+        }
+
+        desktopCalendar.addEventListener('touchstart', (e) => {
+          const touch = e.touches[0];
+          startDrag(touch.clientX, touch.clientY);
+          document.addEventListener('touchmove', onTouchMove, { passive: false });
+          document.addEventListener('touchend', onTouchEnd);
+        }, { passive: false });
+
+        function onTouchMove(e) {
+          if (!isDragging) return;
+          e.preventDefault();
+          const touch = e.touches[0];
+          moveDrag(touch.clientX, touch.clientY);
+        }
+        function onTouchEnd() {
+          endDrag();
+          document.removeEventListener('touchmove', onTouchMove);
+          document.removeEventListener('touchend', onTouchEnd);
+        }
+      })();
+
       // ==================== ELEMENTS ====================
       const weightPerPcInput = document.getElementById('weightPerPc');
       const pcsPerBagInput = document.getElementById('pcsPerBag');
       const numBagsInput = document.getElementById('numBags');
       const extraPcsInput = document.getElementById('extraPcs');
       const returnPcsInput = document.getElementById('returnPcs');
-      const returnDisplayPcs = document.getElementById('returnDisplayPcs');
-      const returnDisplayKg = document.getElementById('returnDisplayKg');
       const bagWeightPreview = document.getElementById('bagWeightPreview');
       const bagPcsPreview = document.getElementById('bagPcsPreview');
       const resultContent = document.getElementById('resultContent');
+      const toast = document.getElementById('toast');
 
       const totalQtyValue = document.getElementById('totalQtyValue');
       const totalBagsValue = document.getElementById('totalBagsValue');
@@ -2432,6 +2642,7 @@
       const searchInput = document.getElementById('searchInput');
       const clearSearchBtn = document.getElementById('clearSearchBtn');
       const addProductBtn = document.getElementById('addProductBtn');
+      const printProductsBtn = document.getElementById('printProductsBtn');
       const clearAllBtn = document.getElementById('clearAllBtn');
       const resetCalcBtn = document.getElementById('resetCalcBtn');
 
@@ -2507,9 +2718,10 @@
 
       const formatPrice = (value) => '₹' + Number(value).toFixed(2);
 
-      // ========== NOTIFICATIONS REMOVED — showToast is a no-op ==========
       function showToast(message, type = '') {
-        return;
+        toast.textContent = message;
+        toast.className = 'toast show' + (type ? ' ' + type : '');
+        setTimeout(() => toast.classList.remove('show'), 2200);
       }
 
       function setOnlineStatus(online) {
@@ -2592,18 +2804,7 @@
           }
         });
         updateTaskbar();
-      });
-
-      document.getElementById('startRestoreAll').addEventListener('click', () => {
-        startMenu.classList.remove('open');
-        ['calcWindow', 'priceWindow', 'loadWindow'].forEach(id => {
-          const winEl = document.getElementById(id);
-          if (winEl && windowState[id].minimized) {
-            winEl.classList.remove('minimized');
-            windowState[id].minimized = false;
-          }
-        });
-        updateTaskbar();
+        showToast('🗕 All windows minimized');
       });
 
       // ==================== MINIMIZE / MAXIMIZE / CLOSE ====================
@@ -2661,6 +2862,7 @@
           windowState[winId].minimized = true;
           showTaskbarItem(winId);
           updateTaskbar();
+          showToast('🗕 Window minimized');
         });
       });
 
@@ -2690,6 +2892,7 @@
           windowState[winId].minimized = true;
           hideTaskbarItem(winId);
           updateTaskbar();
+          showToast('✕ Window closed & removed from taskbar');
         });
       });
 
@@ -2801,6 +3004,7 @@
         } catch (err) {
           console.error('Load products error:', err);
           setOnlineStatus(false);
+          showToast('⚠️ Could not load products from database', 'error');
           priceTableBody.innerHTML = `
             <tr><td colspan="5">
               <div class="no-results">⚠️ Database error<span class="small">${err.message || 'Check that the "products" table exists'}</span></div>
@@ -2827,7 +3031,6 @@
         }
       }
 
-      // ==================== FIXED updateProduct (no .single() coercion) ====================
       async function updateProduct(id, updates) {
         setSyncing();
         try {
@@ -2997,7 +3200,8 @@
         const pcsPerBag = parseFloat(pcsPerBagInput.value) || 0;
         const numBags = parseInt(numBagsInput.value) || 0;
         const extraPcs = parseInt(extraPcsInput.value) || 0;
-        const totalPcs = numBags * pcsPerBag + extraPcs;
+        const returnPcs = parseInt(returnPcsInput.value) || 0;
+        const totalPcs = numBags * pcsPerBag + extraPcs - returnPcs;
         totalQtyValue.textContent = totalPcs.toLocaleString();
         totalBagsValue.textContent = numBags + ' bag' + (numBags !== 1 ? 's' : '');
       }
@@ -3008,13 +3212,6 @@
         const p = parseFloat(pcsPerBagInput.value) || 0;
         bagWeightPreview.textContent = (w * p).toFixed(3);
         bagPcsPreview.textContent = p + ' pcs';
-      }
-
-      function updateReturnPreview() {
-        const w = parseFloat(weightPerPcInput.value) || 0;
-        const returnPcs = parseInt(returnPcsInput.value) || 0;
-        returnDisplayPcs.textContent = returnPcs;
-        returnDisplayKg.textContent = (returnPcs * w).toFixed(3) + ' kg';
       }
 
       function showEmptyHint() {
@@ -3045,6 +3242,10 @@
         }
         if (isNaN(extraPcs) || extraPcs < 0 || !Number.isInteger(extraPcs)) {
           resultContent.innerHTML = `<div class="error-msg">⚠️ Extra loose pieces must be a non-negative whole number.</div>`;
+          return null;
+        }
+        if (isNaN(returnPcs) || returnPcs < 0 || !Number.isInteger(returnPcs)) {
+          resultContent.innerHTML = `<div class="error-msg">⚠️ Return pieces must be a non-negative whole number.</div>`;
           return null;
         }
 
@@ -3086,11 +3287,10 @@
 
         resultContent.innerHTML = html;
         updateTotalQtyDisplay();
-        updateReturnPreview();
         return { weightPerPc, pcsPerBag, numBags, extraPcs, returnPcs, totalKg, totalPcs, productName, customerName };
       }
 
-      function fullRecalc() { updateBagPreview(); updateReturnPreview(); return calculateTotal(); }
+      function fullRecalc() { updateBagPreview(); return calculateTotal(); }
 
       let debounceTimer;
       function autoRecalc() {
@@ -3112,8 +3312,6 @@
 
         bagWeightPreview.textContent = '0.000';
         bagPcsPreview.textContent = '0 pcs';
-        returnDisplayPcs.textContent = '0';
-        returnDisplayKg.textContent = '0.000 kg';
         totalQtyValue.textContent = '0';
         totalBagsValue.textContent = '0 bags';
 
@@ -3124,6 +3322,8 @@
 
         showEmptyHint();
         weightPerPcInput.focus();
+
+        showToast('🔄 Calculator reset', 'success');
       }
 
       resetCalcBtn.addEventListener('click', resetPackingCalculator);
@@ -3192,8 +3392,6 @@
         returnPcsInput.value = '';
         bagWeightPreview.textContent = '0.000';
         bagPcsPreview.textContent = '0 pcs';
-        returnDisplayPcs.textContent = '0';
-        returnDisplayKg.textContent = '0.000 kg';
         totalQtyValue.textContent = '0';
         totalBagsValue.textContent = '0 bags';
         showEmptyHint();
@@ -3205,7 +3403,7 @@
         e.preventDefault();
         if (currentIndex === fieldOrder.length - 1) {
           const result = fullRecalc();
-          if (result === null) { return; }
+          if (result === null) { showToast('⚠️ Please fill all fields correctly', 'warning'); return; }
           const kgText = formatKg(result.totalKg);
           showLoading('calc');
           let saved = false;
@@ -3219,10 +3417,16 @@
             saved = true;
           } catch (err) {
             console.error('Save failed:', err);
+            showToast('⚠️ Saved locally (DB offline)', 'warning');
           } finally {
             hideLoading('calc');
           }
-          copyToClipboard(kgText).catch(() => {});
+          copyToClipboard(kgText)
+            .then(() => {
+              if (saved) showToast(`✅ ${kgText} kg saved & copied`, 'success');
+              else showToast(`📋 ${kgText} kg copied (not saved)`, 'warning');
+            })
+            .catch(() => showToast(`📋 Total: ${kgText} kg`, ''));
           resetAllFields();
           resultContent.innerHTML = `<div class="empty-hint">✅ Saved <strong>${kgText} kg</strong> — ready for next entry<span class="small">Fill the fields above to calculate again</span></div>`;
           weightPerPcInput.focus();
@@ -3279,11 +3483,11 @@
           const customer = content.querySelector('#modalCustomerName').value.trim();
           const pcs = content.querySelector('#modalProductPcs').value;
           const price = content.querySelector('#modalProductPrice').value;
-          if (name === '') { return false; }
-          if (customer === '') { return false; }
-          if (!pcs || isNaN(pcs) || parseInt(pcs) <= 0) { return false; }
-          if (!price || isNaN(price) || parseFloat(price) < 0) { return false; }
-          if (products.some(p => p.name.toLowerCase() === name.toLowerCase() && p.customer.toLowerCase() === customer.toLowerCase())) { return false; }
+          if (name === '') { showToast('⚠️ Please enter a product name', 'warning'); return false; }
+          if (customer === '') { showToast('⚠️ Please enter a customer name', 'warning'); return false; }
+          if (!pcs || isNaN(pcs) || parseInt(pcs) <= 0) { showToast('⚠️ Enter a valid positive number for pcs per bag', 'warning'); return false; }
+          if (!price || isNaN(price) || parseFloat(price) < 0) { showToast('⚠️ Enter a valid price', 'warning'); return false; }
+          if (products.some(p => p.name.toLowerCase() === name.toLowerCase() && p.customer.toLowerCase() === customer.toLowerCase())) { showToast(`⚠️ "${name}" already exists for ${customer}`, 'warning'); return false; }
           const saveBtn = content.querySelector('#modalSaveBtn');
           saveBtn.disabled = true; saveBtn.textContent = '⏳ Saving…';
           try {
@@ -3292,8 +3496,10 @@
             filteredProducts = [...products];
             renderCustomerFilter();
             applyFilters();
+            showToast(`✅ "${name}" saved to database`, 'success');
             return true;
           } catch (err) {
+            showToast(`❌ Save failed: ${err.message || 'Check DB'}`, 'error');
             saveBtn.disabled = false; saveBtn.textContent = '➕ Save to Database';
             return false;
           }
@@ -3319,12 +3525,12 @@
           const customer = content.querySelector('#modalEditCustomer').value.trim();
           const pcs = content.querySelector('#modalEditPcs').value;
           const price = content.querySelector('#modalEditPrice').value;
-          if (name === '') { return false; }
-          if (customer === '') { return false; }
-          if (!pcs || isNaN(pcs) || parseInt(pcs) <= 0) { return false; }
-          if (!price || isNaN(price) || parseFloat(price) < 0) { return false; }
+          if (name === '') { showToast('⚠️ Please enter a product name', 'warning'); return false; }
+          if (customer === '') { showToast('⚠️ Please enter a customer name', 'warning'); return false; }
+          if (!pcs || isNaN(pcs) || parseInt(pcs) <= 0) { showToast('⚠️ Enter a valid positive number for pcs per bag', 'warning'); return false; }
+          if (!price || isNaN(price) || parseFloat(price) < 0) { showToast('⚠️ Enter a valid price', 'warning'); return false; }
           if (products.some(p => p.id !== product.id && p.name.toLowerCase() === name.toLowerCase() && p.customer.toLowerCase() === customer.toLowerCase())) {
-            return false;
+            showToast(`⚠️ "${name}" already exists for ${customer}`, 'warning'); return false;
           }
           const saveBtn = content.querySelector('#modalSaveBtn');
           saveBtn.disabled = true; saveBtn.textContent = '⏳ Updating…';
@@ -3347,8 +3553,10 @@
               pcsPerBagInput.value = updated.pcsPerBag;
               fullRecalc();
             }
+            showToast(`✅ "${name}" updated successfully`, 'success');
             return true;
           } catch (err) {
+            showToast(`❌ Update failed: ${err.message || 'Check DB'}`, 'error');
             saveBtn.disabled = false; saveBtn.textContent = '💾 Update Product';
             return false;
           }
@@ -3389,7 +3597,8 @@
             filteredProducts = [...products];
             renderCustomerFilter();
             applyFilters();
-          } catch (err) { /* silent */ }
+            showToast(`🗑️ Deleted "${product.name}"`, 'success');
+          } catch (err) { showToast(`❌ Delete failed: ${err.message}`, 'error'); }
           finally { hideLoading('price'); }
           return;
         }
@@ -3397,12 +3606,175 @@
         const row = e.target.closest('tr');
         if (!row || !row.dataset.id) return;
         const product = products.find(p => p.id === row.dataset.id);
-        if (product) { applyProduct(product); }
+        if (product) { applyProduct(product); showToast(`📦 ${product.name} · 👤 ${product.customer}`); }
+      });
+
+      // ==================== PRINT PRODUCTS ====================
+      printProductsBtn.addEventListener('click', () => {
+        if (filteredProducts.length === 0) {
+          showToast('📭 No products to print', 'warning');
+          return;
+        }
+        const now = new Date();
+        const dateStr = now.toLocaleDateString() + ' ' + now.toLocaleTimeString();
+        const customerLabel = customerFilter.value || 'All Customers';
+        const searchLabel = searchInput.value.trim() || '—';
+
+        let rows = '';
+        filteredProducts.forEach((p, i) => {
+          rows += `<tr>
+            <td>${i + 1}</td>
+            <td>${escapeHtml(p.name)}</td>
+            <td>${escapeHtml(p.customer)}</td>
+            <td style="text-align:center;">${p.pcsPerBag}</td>
+            <td style="text-align:right;">₹${Number(p.price).toFixed(2)}</td>
+          </tr>`;
+        });
+
+        const printWindow = window.open('', '_blank', 'width=900,height=700');
+        printWindow.document.write(`
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <title>Products List - KCST Windows</title>
+            <style>
+              * { margin: 0; padding: 0; box-sizing: border-box; }
+              body {
+                font-family: 'Segoe UI', Arial, sans-serif;
+                padding: 30px;
+                color: #1a3e5a;
+              }
+              .header {
+                text-align: center;
+                margin-bottom: 20px;
+                padding-bottom: 15px;
+                border-bottom: 2px solid #2a6088;
+              }
+              .header h1 {
+                font-size: 1.5rem;
+                color: #15415f;
+                margin-bottom: 4px;
+              }
+              .header .sub {
+                font-size: 0.8rem;
+                color: #5a7f9a;
+              }
+              .meta {
+                display: flex;
+                justify-content: space-between;
+                font-size: 0.75rem;
+                color: #3a6382;
+                margin-bottom: 15px;
+                flex-wrap: wrap;
+                gap: 8px;
+              }
+              .meta span { background: #eef5fc; padding: 4px 10px; border-radius: 20px; border: 1px solid #b8d4ec; }
+              table {
+                width: 100%;
+                border-collapse: collapse;
+                font-size: 0.82rem;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+              }
+              thead th {
+                background: linear-gradient(180deg, #e3eff9 0%, #c3d9ed 100%);
+                color: #10344b;
+                font-weight: 700;
+                font-size: 0.72rem;
+                text-transform: uppercase;
+                letter-spacing: 0.4px;
+                padding: 10px 12px;
+                text-align: left;
+                border: 1px solid #8eb0ce;
+              }
+              tbody td {
+                padding: 9px 12px;
+                border: 1px solid #d5e3ef;
+                color: #1a3e5a;
+              }
+              tbody tr:nth-child(even) { background: #f4faff; }
+              tbody tr:hover { background: #e1effc; }
+              .footer {
+                margin-top: 20px;
+                text-align: center;
+                font-size: 0.7rem;
+                color: #6a8ba5;
+                border-top: 1px solid #b8d4ec;
+                padding-top: 12px;
+              }
+              .total-row {
+                font-weight: 700;
+                background: #dcecfc !important;
+                border-top: 2px solid #7ea5c9 !important;
+              }
+              @media print {
+                body { padding: 15px; }
+                .no-print { display: none; }
+              }
+              .print-btn {
+                position: fixed;
+                top: 16px;
+                right: 16px;
+                padding: 10px 22px;
+                background: linear-gradient(180deg, #4a85b3 0%, #2a6088 45%, #15415f 100%);
+                color: white;
+                border: 1px solid #1b4260;
+                border-radius: 6px;
+                font-size: 0.85rem;
+                font-weight: 600;
+                cursor: pointer;
+                box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+                font-family: 'Segoe UI', Arial, sans-serif;
+              }
+              .print-btn:hover { background: linear-gradient(180deg, #5f9ac9 0%, #356e97 45%, #1b4d6f 100%); }
+              @media print { .print-btn { display: none; } }
+            </style>
+          </head>
+          <body>
+            <button class="print-btn no-print" onclick="window.print()">🖨️ Print</button>
+            <div class="header">
+              <h1>📦 KCST Windows — Products List</h1>
+              <div class="sub">Packing &amp; Load Management System</div>
+            </div>
+            <div class="meta">
+              <span>👤 Customer: ${escapeHtml(customerLabel)}</span>
+              <span>🔍 Search: ${escapeHtml(searchLabel)}</span>
+              <span>📅 ${dateStr}</span>
+              <span>📊 Total: ${filteredProducts.length} product(s)</span>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th style="width:50px;">#</th>
+                  <th>Product Name</th>
+                  <th>Customer</th>
+                  <th style="text-align:center; width:90px;">Pcs/Bag</th>
+                  <th style="text-align:right; width:110px;">Price</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${rows}
+                <tr class="total-row">
+                  <td colspan="3" style="text-align:right;">Total Products:</td>
+                  <td colspan="2" style="text-align:center;">${filteredProducts.length}</td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="footer">
+              Generated by KCST Windows · ${dateStr}
+            </div>
+            <script>
+              window.onload = function() { setTimeout(function() { window.print(); }, 400); };
+            <\/script>
+          </body>
+          </html>
+        `);
+        printWindow.document.close();
+        showToast('🖨️ Opening print preview…', 'success');
       });
 
       // ==================== CLEAR ALL ====================
       clearAllBtn.addEventListener('click', async () => {
-        if (products.length === 0) { return; }
+        if (products.length === 0) { showToast('📭 No products to clear', 'warning'); return; }
         const confirmed = await showConfirm({
           title: '⚠️ Clear All Products',
           message: `Are you sure you want to delete <strong>ALL ${products.length} product${products.length !== 1 ? 's' : ''}</strong> from the database?<br><br>This action <strong>cannot</strong> be undone.`,
@@ -3415,12 +3787,15 @@
           products = []; filteredProducts = [];
           selectedProductId = null; selectedProductName = ''; selectedCustomerName = '';
           renderCustomerFilter(); applyFilters();
-        } catch (err) { /* silent */ }
+          showToast('🗑️ All products cleared', 'success');
+        } catch (err) { showToast(`❌ Clear failed: ${err.message}`, 'error'); }
         finally { hideLoading('price'); }
       });
 
       // ==================== FILTER EVENTS ====================
       customerFilter.addEventListener('change', () => {
+        const c = customerFilter.value;
+        if (c) showToast(`👤 Filtering by: ${c}`); else showToast('👤 Showing all customers');
         applyFilters();
       });
       searchInput.addEventListener('input', applyFilters);
@@ -3463,6 +3838,11 @@
           const rect = desktopGadget.getBoundingClientRect();
           if (rect.right > window.innerWidth) desktopGadget.style.left = Math.max(5, window.innerWidth - rect.width - 5) + 'px';
           if (rect.bottom > window.innerHeight - TASKBAR_HEIGHT) desktopGadget.style.top = Math.max(5, window.innerHeight - TASKBAR_HEIGHT - rect.height - 5) + 'px';
+        }
+        if (desktopCalendar) {
+          const rect = desktopCalendar.getBoundingClientRect();
+          if (rect.right > window.innerWidth) desktopCalendar.style.left = Math.max(5, window.innerWidth - rect.width - 5) + 'px';
+          if (rect.bottom > window.innerHeight - TASKBAR_HEIGHT) desktopCalendar.style.top = Math.max(5, window.innerHeight - TASKBAR_HEIGHT - rect.height - 5) + 'px';
         }
         if (wallpaperMiniWindow && wallpaperMiniWindow.classList.contains('active')) {
           const rect = wallpaperMiniWindow.getBoundingClientRect();
