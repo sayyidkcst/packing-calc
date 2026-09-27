@@ -2600,8 +2600,6 @@
     </div>
   </div>
 
-  <div class="toast" id="toast">✅ Done</div>
-
   <!-- ================= DESKTOP RIGHT-CLICK CONTEXT MENU ================= -->
   <div class="desktop-context-menu" id="desktopContextMenu">
     <div class="ctx-menu-item" id="ctxReload">
@@ -2804,13 +2802,11 @@
           wallpaperSyncBadgeMini.className = 'sync-badge-mini saved';
           wallpaperSyncBadgeMini.textContent = '✓';
           wallpaperStatusMini.textContent = '🗑️ Deleted from DB';
-          showToast('🗑️ Custom wallpaper deleted', 'success');
         } catch (err) {
           console.warn('Could not delete wallpaper from DB:', err.message);
           wallpaperSyncBadgeMini.className = 'sync-badge-mini error';
           wallpaperSyncBadgeMini.textContent = '✕';
           wallpaperStatusMini.textContent = '⚠️ Removed locally (DB offline)';
-          showToast('🗑️ Custom wallpaper removed locally', 'warning');
         }
 
         renderWallpaperGridMini();
@@ -2840,7 +2836,6 @@
         if (!thumb) return;
         const url = decodeURIComponent(thumb.dataset.wallpaperUrl);
         await setWallpaper(url);
-        showToast('🖼️ Wallpaper saved to database', 'success');
       });
 
       wpUploadAreaMini.addEventListener('click', () => wpUploadInputMini.click());
@@ -2848,12 +2843,11 @@
         const file = e.target.files[0];
         if (!file) return;
         if (file.size > 2 * 1024 * 1024) {
-          showToast('⚠️ Large image (>2MB) may fail to save', 'warning');
+          // silently ignore size warning
         }
         const reader = new FileReader();
         reader.onload = async (evt) => {
           await setWallpaper(evt.target.result);
-          showToast('🖼️ Custom wallpaper saved', 'success');
           closeWallpaperMini();
         };
         reader.readAsDataURL(file);
@@ -2894,7 +2888,6 @@
 
       function showDesktopContextMenu(x, y) {
         desktopContextMenu.classList.add('open');
-        // Make sure menu fits on screen
         const menuRect = desktopContextMenu.getBoundingClientRect();
         const maxX = window.innerWidth - menuRect.width - 8;
         const maxY = window.innerHeight - menuRect.height - 8;
@@ -2910,7 +2903,6 @@
 
       ctxReload.addEventListener('click', () => {
         hideDesktopContextMenu();
-        showToast('🔄 Reloading…', '');
         setTimeout(() => window.location.reload(), 300);
       });
 
@@ -2920,20 +2912,17 @@
       });
 
       document.body.addEventListener('contextmenu', (e) => {
-        // If user right-clicks inside an app window or UI element, don't show desktop menu
         if (e.target.closest('.window, .window-price, .window-load, .window-cash, .window-notepad, .startbar, .start-menu, .modal-overlay, .desktop-gadget, .desktop-calendar, .wallpaper-mini-window, .desktop-context-menu')) return;
         e.preventDefault();
         showDesktopContextMenu(e.clientX, e.clientY);
       });
 
-      // Hide context menu when clicking elsewhere
       document.addEventListener('mousedown', (e) => {
         if (!e.target.closest('.desktop-context-menu')) {
           hideDesktopContextMenu();
         }
       });
 
-      // Hide context menu on Escape key or scroll
       document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') hideDesktopContextMenu();
       });
@@ -3095,10 +3084,8 @@
 
           if (e.clientX <= snapEdge && !windowEl.classList.contains('maximized')) {
             snapWindowToSide(windowEl, 'left');
-            showToast('📐 Snapped left');
           } else if (e.clientX >= screenW - snapEdge && !windowEl.classList.contains('maximized')) {
             snapWindowToSide(windowEl, 'right');
-            showToast('📐 Snapped right');
           }
 
           hideSnapPreview();
@@ -3172,10 +3159,8 @@
 
           if (touch.clientX <= snapEdge && !windowEl.classList.contains('maximized')) {
             snapWindowToSide(windowEl, 'left');
-            showToast('📐 Snapped left');
           } else if (touch.clientX >= screenW - snapEdge && !windowEl.classList.contains('maximized')) {
             snapWindowToSide(windowEl, 'right');
-            showToast('📐 Snapped right');
           }
         }
       }
@@ -3219,7 +3204,6 @@
         const startX = clientX;
         const startY = clientY;
 
-        // Remove snap
         winEl.classList.remove('snap-left', 'snap-right');
 
         winEl.classList.add('resizing');
@@ -3257,7 +3241,6 @@
             newTop = startTop + (startHeight - newHeight);
           }
 
-          // Clamp to viewport
           if (newLeft < 0) { newWidth += newLeft; newLeft = 0; }
           if (newTop < 0) { newHeight += newTop; newTop = 0; }
           if (newLeft + newWidth > window.innerWidth) newWidth = window.innerWidth - newLeft;
@@ -3279,7 +3262,6 @@
           document.removeEventListener('touchmove', onMove);
           document.removeEventListener('touchend', onUp);
 
-          // Save origRect for maximize restore
           const id = winEl.id;
           if (windowState[id]) {
             const r = winEl.getBoundingClientRect();
@@ -3543,7 +3525,6 @@
       const bagWeightPreview = document.getElementById('bagWeightPreview');
       const bagPcsPreview = document.getElementById('bagPcsPreview');
       const resultContent = document.getElementById('resultContent');
-      const toast = document.getElementById('toast');
 
       const totalQtyValue = document.getElementById('totalQtyValue');
       const totalBagsValue = document.getElementById('totalBagsValue');
@@ -3690,12 +3671,6 @@
       const formatPrice = (value) => '₹' + Number(value).toFixed(2);
       const formatCurrency = (value) => '₹' + Number(value).toFixed(2);
 
-      function showToast(message, type = '') {
-        toast.textContent = message;
-        toast.className = 'toast show' + (type ? ' ' + type : '');
-        setTimeout(() => toast.classList.remove('show'), 2200);
-      }
-
       function setOnlineStatus(online) {
         isOnline = online;
         const cls = online ? 'online' : 'offline';
@@ -3778,7 +3753,6 @@
           }
         });
         updateTaskbar();
-        showToast('🗕 All windows minimized');
       });
 
       // ==================== MINIMIZE / MAXIMIZE / CLOSE ====================
@@ -3821,13 +3795,11 @@
         const winEl = document.getElementById(winId);
         if (!winEl) return;
         const state = windowState[winId];
-        const wasMinimized = state.minimized;
         showTaskbarItem(winId);
         if (state.minimized) {
           winEl.classList.remove('minimized');
           state.minimized = false;
         }
-        // If first time opening (no explicit position set), center it
         if (!winEl.style.left && !winEl.style.top) {
           centerWindow(winEl);
         }
@@ -3847,7 +3819,6 @@
           windowState[winId].minimized = true;
           showTaskbarItem(winId);
           updateTaskbar();
-          showToast('🗕 Window minimized');
         });
       });
 
@@ -3877,7 +3848,6 @@
           windowState[winId].minimized = true;
           hideTaskbarItem(winId);
           updateTaskbar();
-          showToast('✕ Window closed & removed from taskbar');
         });
       });
 
@@ -3989,7 +3959,6 @@
         } catch (err) {
           console.error('Load products error:', err);
           setOnlineStatus(false);
-          showToast('⚠️ Could not load products from database', 'error');
           priceTableBody.innerHTML = `
             <tr><td colspan="5">
               <div class="no-results">⚠️ Database error<span class="small">${err.message || 'Check that the "products" table exists'}</span></div>
@@ -4028,7 +3997,6 @@
         };
         if (staff.photo) basePayload.photo = staff.photo;
 
-        // Try a few variants to be robust to different schemas
         const attempts = [
           () => supabase.from('staff').insert([basePayload]).select().single(),
           () => supabase.from('staff').insert([{
@@ -4546,8 +4514,6 @@
 
         showEmptyHint();
         weightPerPcInput.focus();
-
-        showToast('🔄 Calculator reset', 'success');
       }
 
       resetCalcBtn.addEventListener('click', resetPackingCalculator);
@@ -4597,7 +4563,6 @@
       });
 
       // ==================== CASH COLLECTION ====================
-      // Indian currency denominations (without 2000)
       const DENOMINATIONS = [
         { value: 500, label: '₹500', type: 'note' },
         { value: 200, label: '₹200', type: 'note' },
@@ -4625,7 +4590,6 @@
         });
         currencyTableBody.innerHTML = html;
 
-        // Attach input listeners
         currencyTableBody.querySelectorAll('.denom-count-input').forEach(inp => {
           inp.addEventListener('input', () => {
             const val = parseInt(inp.value) || 0;
@@ -4679,7 +4643,6 @@
           cashResultValue.textContent = '−' + formatCurrency(Math.abs(netResult));
         }
 
-        // Update result card style
         cashResult.classList.remove('positive', 'negative');
         if (Math.abs(netResult) < 0.005) {
           cashResultSub.textContent = '✅ Balanced — perfectly matched';
@@ -4691,9 +4654,7 @@
           cashResultSub.textContent = '⚠️ Short by ' + formatCurrency(Math.abs(netResult));
         }
 
-        // Build breakdown chips
         let bdHtml = '';
-
         if (breakdown.length > 0) {
           bdHtml += `<span class="bd-item" style="background:rgba(255,255,255,0.25);">📋 ${breakdown.length} denomination${breakdown.length > 1 ? 's' : ''}</span>`;
         }
@@ -4756,14 +4717,14 @@
           const section = content.querySelector('#modalStaffSection').value.trim();
           const photoInput = content.querySelector('#modalStaffPhoto');
 
-          if (name === '') { showToast('⚠️ Please enter staff name', 'warning'); return false; }
-          if (section === '') { showToast('⚠️ Please enter section', 'warning'); return false; }
+          if (name === '') { return false; }
+          if (section === '') { return false; }
 
           let photoData = isEdit ? (existingStaff.photo || null) : null;
           if (photoInput.files && photoInput.files[0]) {
             const file = photoInput.files[0];
             if (file.size > 2 * 1024 * 1024) {
-              showToast('⚠️ Large image (>2MB) may be slow to save', 'warning');
+              // ignore warning
             }
             photoData = await new Promise((resolve) => {
               const reader = new FileReader();
@@ -4784,7 +4745,6 @@
               renderStaffCombo();
               staffCombo.value = updated.id;
               updateStaffInfo();
-              showToast(`✅ Staff "${name}" updated`, 'success');
             } else {
               const saved = await saveStaff({ name, section, photo: photoData });
               staffList.push(saved);
@@ -4792,18 +4752,15 @@
               renderStaffCombo();
               staffCombo.value = saved.id;
               updateStaffInfo();
-              showToast(`✅ Staff "${name}" added`, 'success');
             }
             return true;
           } catch (err) {
-            showToast(`❌ ${isEdit ? 'Update' : 'Save'} failed: ${err.message || 'Check DB'}`, 'error');
             saveBtn.disabled = false;
             saveBtn.textContent = isEdit ? '💾 Update Staff' : '💾 Save Staff';
             return false;
           }
         });
 
-        // Live preview
         setTimeout(() => {
           const fileInp = document.getElementById('modalStaffPhoto');
           const prev = document.getElementById('modalPhotoPreview');
@@ -4822,16 +4779,16 @@
       addStaffBtn.addEventListener('click', () => openStaffFormModal(null));
       editStaffBtn.addEventListener('click', () => {
         const staffId = staffCombo.value;
-        if (!staffId) { showToast('⚠️ Select a staff member first', 'warning'); return; }
+        if (!staffId) return;
         const staff = staffList.find(s => s.id === staffId);
-        if (!staff) { showToast('⚠️ Staff not found', 'error'); return; }
+        if (!staff) return;
         openStaffFormModal(staff);
       });
       deleteStaffBtn.addEventListener('click', async () => {
         const staffId = staffCombo.value;
-        if (!staffId) { showToast('⚠️ Select a staff member first', 'warning'); return; }
+        if (!staffId) return;
         const staff = staffList.find(s => s.id === staffId);
-        if (!staff) { showToast('⚠️ Staff not found', 'error'); return; }
+        if (!staff) return;
 
         const confirmed = await showConfirm({
           title: '🗑️ Delete Staff',
@@ -4848,9 +4805,8 @@
           renderStaffCombo();
           staffCombo.value = '';
           updateStaffInfo();
-          showToast(`🗑️ Staff "${staff.name}" deleted`, 'success');
         } catch (err) {
-          showToast(`❌ Delete failed: ${err.message}`, 'error');
+          // ignore
         }
       });
 
@@ -4859,35 +4815,29 @@
         cashExpense.value = '';
         currencyTableBody.querySelectorAll('.denom-count-input').forEach(inp => { inp.value = ''; });
         calculateCash();
-        showToast('🔄 Cash collection reset', 'success');
       });
 
       cashClearCountsBtn.addEventListener('click', () => {
         currencyTableBody.querySelectorAll('.denom-count-input').forEach(inp => { inp.value = ''; });
         calculateCash();
-        showToast('🧹 Currency counts cleared', 'success');
       });
 
       cashSaveBtn.addEventListener('click', async () => {
         const result = calculateCash();
         if (result.amount === 0 && result.currencyTotal === 0 && result.expense === 0) {
-          showToast('⚠️ Nothing to save — enter some values first', 'warning');
           return;
         }
 
         const staffId = staffCombo.value;
         if (!staffId) {
-          showToast('⚠️ Please select a staff member', 'warning');
           staffCombo.focus();
           return;
         }
         const staff = staffList.find(s => s.id === staffId);
         if (!staff) {
-          showToast('⚠️ Selected staff not found', 'error');
           return;
         }
 
-        showToast('💾 Saving cash record…', '');
         try {
           await saveCashRecord({
             amount: result.amount,
@@ -4899,9 +4849,8 @@
             section: staff.section,
             photoData: staff.photo
           });
-          showToast('✅ Cash record saved to database', 'success');
         } catch (err) {
-          showToast('⚠️ Saved locally (DB offline)', 'warning');
+          // ignore
         }
       });
 
@@ -4940,7 +4889,7 @@
         e.preventDefault();
         if (currentIndex === fieldOrder.length - 1) {
           const result = fullRecalc();
-          if (result === null) { showToast('⚠️ Please fill all fields correctly', 'warning'); return; }
+          if (result === null) { return; }
           const kgText = formatKg(result.totalKg);
           showLoading('calc');
           let saved = false;
@@ -4954,16 +4903,12 @@
             saved = true;
           } catch (err) {
             console.error('Save failed:', err);
-            showToast('⚠️ Saved locally (DB offline)', 'warning');
           } finally {
             hideLoading('calc');
           }
           copyToClipboard(kgText)
-            .then(() => {
-              if (saved) showToast(`✅ ${kgText} kg saved & copied`, 'success');
-              else showToast(`📋 ${kgText} kg copied (not saved)`, 'warning');
-            })
-            .catch(() => showToast(`📋 Total: ${kgText} kg`, ''));
+            .then(() => {})
+            .catch(() => {});
           resetAllFields();
           resultContent.innerHTML = `<div class="empty-hint">✅ Saved <strong>${kgText} kg</strong> — ready for next entry<span class="small">Fill the fields above to calculate again</span></div>`;
           weightPerPcInput.focus();
@@ -5020,11 +4965,11 @@
           const customer = content.querySelector('#modalCustomerName').value.trim();
           const pcs = content.querySelector('#modalProductPcs').value;
           const price = content.querySelector('#modalProductPrice').value;
-          if (name === '') { showToast('⚠️ Please enter a product name', 'warning'); return false; }
-          if (customer === '') { showToast('⚠️ Please enter a customer name', 'warning'); return false; }
-          if (!pcs || isNaN(pcs) || parseInt(pcs) <= 0) { showToast('⚠️ Enter a valid positive number for pcs per bag', 'warning'); return false; }
-          if (!price || isNaN(price) || parseFloat(price) < 0) { showToast('⚠️ Enter a valid price', 'warning'); return false; }
-          if (products.some(p => p.name.toLowerCase() === name.toLowerCase() && p.customer.toLowerCase() === customer.toLowerCase())) { showToast(`⚠️ "${name}" already exists for ${customer}`, 'warning'); return false; }
+          if (name === '') { return false; }
+          if (customer === '') { return false; }
+          if (!pcs || isNaN(pcs) || parseInt(pcs) <= 0) { return false; }
+          if (!price || isNaN(price) || parseFloat(price) < 0) { return false; }
+          if (products.some(p => p.name.toLowerCase() === name.toLowerCase() && p.customer.toLowerCase() === customer.toLowerCase())) { return false; }
           const saveBtn = content.querySelector('#modalSaveBtn');
           saveBtn.disabled = true; saveBtn.textContent = '⏳ Saving…';
           try {
@@ -5033,10 +4978,8 @@
             filteredProducts = [...products];
             renderCustomerFilter();
             applyFilters();
-            showToast(`✅ "${name}" saved to database`, 'success');
             return true;
           } catch (err) {
-            showToast(`❌ Save failed: ${err.message || 'Check DB'}`, 'error');
             saveBtn.disabled = false; saveBtn.textContent = '➕ Save to Database';
             return false;
           }
@@ -5062,12 +5005,12 @@
           const customer = content.querySelector('#modalEditCustomer').value.trim();
           const pcs = content.querySelector('#modalEditPcs').value;
           const price = content.querySelector('#modalEditPrice').value;
-          if (name === '') { showToast('⚠️ Please enter a product name', 'warning'); return false; }
-          if (customer === '') { showToast('⚠️ Please enter a customer name', 'warning'); return false; }
-          if (!pcs || isNaN(pcs) || parseInt(pcs) <= 0) { showToast('⚠️ Enter a valid positive number for pcs per bag', 'warning'); return false; }
-          if (!price || isNaN(price) || parseFloat(price) < 0) { showToast('⚠️ Enter a valid price', 'warning'); return false; }
+          if (name === '') { return false; }
+          if (customer === '') { return false; }
+          if (!pcs || isNaN(pcs) || parseInt(pcs) <= 0) { return false; }
+          if (!price || isNaN(price) || parseFloat(price) < 0) { return false; }
           if (products.some(p => p.id !== product.id && p.name.toLowerCase() === name.toLowerCase() && p.customer.toLowerCase() === customer.toLowerCase())) {
-            showToast(`⚠️ "${name}" already exists for ${customer}`, 'warning'); return false;
+            return false;
           }
           const saveBtn = content.querySelector('#modalSaveBtn');
           saveBtn.disabled = true; saveBtn.textContent = '⏳ Updating…';
@@ -5090,10 +5033,8 @@
               pcsPerBagInput.value = updated.pcsPerBag;
               fullRecalc();
             }
-            showToast(`✅ "${name}" updated successfully`, 'success');
             return true;
           } catch (err) {
-            showToast(`❌ Update failed: ${err.message || 'Check DB'}`, 'error');
             saveBtn.disabled = false; saveBtn.textContent = '💾 Update Product';
             return false;
           }
@@ -5134,8 +5075,7 @@
             filteredProducts = [...products];
             renderCustomerFilter();
             applyFilters();
-            showToast(`🗑️ Deleted "${product.name}"`, 'success');
-          } catch (err) { showToast(`❌ Delete failed: ${err.message}`, 'error'); }
+          } catch (err) { }
           finally { hideLoading('price'); }
           return;
         }
@@ -5143,13 +5083,12 @@
         const row = e.target.closest('tr');
         if (!row || !row.dataset.id) return;
         const product = products.find(p => p.id === row.dataset.id);
-        if (product) { applyProduct(product); showToast(`📦 ${product.name} · 👤 ${product.customer}`); }
+        if (product) { applyProduct(product); }
       });
 
       // ==================== PRINT PRODUCTS ====================
       printProductsBtn.addEventListener('click', () => {
         if (filteredProducts.length === 0) {
-          showToast('📭 No products to print', 'warning');
           return;
         }
         const now = new Date();
@@ -5306,12 +5245,11 @@
           </html>
         `);
         printWindow.document.close();
-        showToast('🖨️ Opening print preview…', 'success');
       });
 
       // ==================== CLEAR ALL ====================
       clearAllBtn.addEventListener('click', async () => {
-        if (products.length === 0) { showToast('📭 No products to clear', 'warning'); return; }
+        if (products.length === 0) { return; }
         const confirmed = await showConfirm({
           title: '⚠️ Clear All Products',
           message: `Are you sure you want to delete <strong>ALL ${products.length} product${products.length !== 1 ? 's' : ''}</strong> from the database?<br><br>This action <strong>cannot</strong> be undone.`,
@@ -5324,15 +5262,12 @@
           products = []; filteredProducts = [];
           selectedProductId = null; selectedProductName = ''; selectedCustomerName = '';
           renderCustomerFilter(); applyFilters();
-          showToast('🗑️ All products cleared', 'success');
-        } catch (err) { showToast(`❌ Clear failed: ${err.message}`, 'error'); }
+        } catch (err) { }
         finally { hideLoading('price'); }
       });
 
       // ==================== FILTER EVENTS ====================
       customerFilter.addEventListener('change', () => {
-        const c = customerFilter.value;
-        if (c) showToast(`👤 Filtering by: ${c}`); else showToast('👤 Showing all customers');
         applyFilters();
       });
       searchInput.addEventListener('input', applyFilters);
@@ -5454,7 +5389,6 @@
         renderNotesList();
         updateNotepadStatus('📂 Loaded: ' + currentNoteTitle);
         try { localStorage.setItem(NOTEPAD_DRAFT_KEY, notepadTextarea.value); } catch (e) {}
-        showToast(`📂 Opened "${currentNoteTitle}"`, 'success');
       }
 
       function startNewNote() {
@@ -5468,16 +5402,13 @@
         notepadTextarea.focus();
         updateNotepadStatus('📄 New note ready');
         try { localStorage.removeItem(NOTEPAD_DRAFT_KEY); } catch (e) {}
-        showToast('📄 New note created', 'success');
       }
 
       async function saveCurrentNote() {
         const content = notepadTextarea.value;
         if (!content.trim()) {
-          showToast('⚠️ Cannot save an empty note', 'warning');
           return;
         }
-        // Auto-generate title from first non-empty line
         const firstLine = content.split('\n').find(l => l.trim()) || 'Untitled';
         const title = firstLine.trim().slice(0, 60);
         updateNotepadStatus('💾 Saving…', false, true);
@@ -5492,7 +5423,6 @@
           currentNoteId = saved.id;
           currentNoteTitle = saved.title;
           notepadIsDirty = false;
-          // Update notes list
           const idx = notesList.findIndex(n => n.id === saved.id);
           if (idx !== -1) notesList[idx] = saved;
           else notesList.unshift(saved);
@@ -5500,17 +5430,14 @@
           renderNotesList();
           updateNotepadTitleDisplay();
           updateNotepadStatus('✅ Saved to database');
-          showToast(`💾 "${title}" saved`, 'success');
           try { localStorage.setItem(NOTEPAD_DRAFT_KEY, content); } catch (e) {}
         } catch (err) {
           console.error('Save note failed:', err);
-          // Fallback: save locally
           try {
             localStorage.setItem(NOTEPAD_DRAFT_KEY, content);
             localStorage.setItem('notepad_offline_' + Date.now(), JSON.stringify({ title, content }));
           } catch (e) {}
           updateNotepadStatus('⚠️ Saved locally (DB offline)', true);
-          showToast('⚠️ Saved locally (DB offline)', 'warning');
         } finally {
           notepadSaveBtn.disabled = false;
           notepadSaveBtn.textContent = '💾 Save';
@@ -5519,7 +5446,6 @@
 
       async function deleteCurrentNote() {
         if (!currentNoteId) {
-          showToast('⚠️ No saved note to delete', 'warning');
           return;
         }
         const confirmed = await showConfirm({
@@ -5542,13 +5468,11 @@
           renderNotesList();
           updateNotepadStatus('🗑️ Note deleted');
           try { localStorage.removeItem(NOTEPAD_DRAFT_KEY); } catch (e) {}
-          showToast('🗑️ Note deleted', 'success');
         } catch (err) {
-          showToast(`❌ Delete failed: ${err.message}`, 'error');
+          // ignore
         }
       }
 
-      // Notes list click handler
       notesListBody.addEventListener('click', async (e) => {
         const delBtn = e.target.closest('.note-del-btn');
         if (delBtn) {
@@ -5576,9 +5500,8 @@
               updateNotepadTitleDisplay();
             }
             renderNotesList();
-            showToast('🗑️ Note deleted', 'success');
           } catch (err) {
-            showToast(`❌ Delete failed: ${err.message}`, 'error');
+            // ignore
           }
           return;
         }
@@ -5588,7 +5511,6 @@
         if (id) loadNoteIntoEditor(id);
       });
 
-      // Notepad toolbar buttons
       notepadNewBtn.addEventListener('click', () => {
         if (notepadIsDirty && notepadTextarea.value.trim()) {
           showConfirm({
@@ -5622,12 +5544,10 @@
         notepadIsDirty = true;
         updateNotepadCharCount();
         try { localStorage.removeItem(NOTEPAD_DRAFT_KEY); } catch (e) {}
-        showToast('🧹 Note cleared', 'success');
       });
 
       notepadDeleteBtn.addEventListener('click', deleteCurrentNote);
 
-      // Textarea input — mark dirty + auto-save draft locally + char count
       notepadTextarea.addEventListener('input', () => {
         notepadIsDirty = true;
         updateNotepadCharCount();
@@ -5639,7 +5559,6 @@
         }, 1200);
       });
 
-      // Ctrl+S / Ctrl+N / Ctrl+L keyboard shortcuts
       notepadTextarea.addEventListener('keydown', (e) => {
         if (e.ctrlKey && e.key.toLowerCase() === 's') {
           e.preventDefault();
@@ -5663,7 +5582,6 @@
         }
       });
 
-      // Load draft on startup
       function loadNotepadDraft() {
         try {
           const draft = localStorage.getItem(NOTEPAD_DRAFT_KEY);
