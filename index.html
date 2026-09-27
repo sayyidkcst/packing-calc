@@ -2554,7 +2554,7 @@
       <span class="smi-icon">🖼️</span> Change Wallpaper
     </div>
     <div class="start-menu-header">System</div>
-    <div class="start-menu-item" id="startMinimizeAll">
+    <div class="start-menu-item" id="startMinimizeAll" style="display:none;">
       <span class="smi-icon">🗕</span> Minimize all windows
     </div>
   </div>
@@ -3775,6 +3775,18 @@
             tb.classList.toggle('maximized', state.maximized);
           }
         });
+        updateMinimizeAllMenuItemVisibility();
+      }
+
+      function updateMinimizeAllMenuItemVisibility() {
+        const minimizeAllItem = document.getElementById('startMinimizeAll');
+        if (!minimizeAllItem) return;
+        const anyWindowVisible = ['calcWindow', 'priceWindow', 'loadWindow', 'cashWindow', 'notepadWindow'].some(id => {
+          const winEl = document.getElementById(id);
+          if (!winEl) return false;
+          return !winEl.classList.contains('minimized');
+        });
+        minimizeAllItem.style.display = anyWindowVisible ? 'flex' : 'none';
       }
 
       function showTaskbarItem(winId) {
