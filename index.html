@@ -397,7 +397,47 @@
       margin-bottom: 8px;
       position: relative;
       z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 4px;
     }
+    .cal-nav-btn {
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      border-radius: 4px;
+      color: #ffffff;
+      width: 22px;
+      height: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 0.75rem;
+      font-weight: 700;
+      line-height: 1;
+      padding: 0;
+      transition: background 0.15s, border-color 0.15s;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+      flex-shrink: 0;
+      pointer-events: auto;
+    }
+    .cal-nav-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      border-color: rgba(255, 255, 255, 0.6);
+    }
+    .cal-nav-btn:active {
+      background: rgba(255, 255, 255, 0.45);
+      transform: scale(0.94);
+    }
+    .cal-month-label {
+      flex: 1;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
     .cal-grid {
       display: grid;
       grid-template-columns: repeat(7, 1fr);
@@ -451,6 +491,7 @@
       .gadget-date { font-size: 0.72rem; }
       .desktop-calendar { width: 170px; top: 240px; }
       .cal-cell { font-size: 0.6rem; padding: 3px 0; }
+      .cal-nav-btn { width: 18px; height: 18px; font-size: 0.65rem; }
     }
 
     /* ---------- WINDOW BASE ---------- */
@@ -2061,7 +2102,11 @@
 
   <!-- ================= DESKTOP CALENDAR GADGET ================= -->
   <div class="desktop-calendar" id="desktopCalendar" title="Drag to move">
-    <div class="cal-header" id="calHeader">---</div>
+    <div class="cal-header" id="calHeader">
+      <button class="cal-nav-btn" id="calPrevMonth" title="Previous month">◀</button>
+      <span class="cal-month-label" id="calMonthLabel">---</span>
+      <button class="cal-nav-btn" id="calNextMonth" title="Next month">▶</button>
+    </div>
     <div class="cal-grid" id="calGrid"></div>
   </div>
 
@@ -3413,18 +3458,22 @@
 
       // ==================== DESKTOP CALENDAR GADGET ====================
       const desktopCalendar = document.getElementById('desktopCalendar');
-      const calHeader = document.getElementById('calHeader');
+      const calMonthLabel = document.getElementById('calMonthLabel');
       const calGrid = document.getElementById('calGrid');
+      const calPrevMonth = document.getElementById('calPrevMonth');
+      const calNextMonth = document.getElementById('calNextMonth');
+
+      let calendarViewDate = new Date();
 
       function renderCalendar() {
-        const now = new Date();
-        const year = now.getFullYear();
-        const month = now.getMonth();
-        const today = now.getDate();
+        const year = calendarViewDate.getFullYear();
+        const month = calendarViewDate.getMonth();
+        const today = new Date();
+        const isCurrentMonth = (today.getFullYear() === year && today.getMonth() === month);
 
         const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
                            'July', 'August', 'September', 'October', 'November', 'December'];
-        calHeader.textContent = `${monthNames[month]} ${year}`;
+        calMonthLabel.textContent = `${monthNames[month]} ${year}`;
 
         const firstDay = new Date(year, month, 1).getDay();
         const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -3440,14 +3489,26 @@
         }
 
         for (let d = 1; d <= daysInMonth; d++) {
-          const isToday = (d === today) ? ' today' : '';
+          const isToday = (isCurrentMonth && d === today.getDate()) ? ' today' : '';
           html += `<div class="cal-cell${isToday}">${d}</div>`;
         }
 
         calGrid.innerHTML = html;
       }
+
+      calPrevMonth.addEventListener('click', (e) => {
+        e.stopPropagation();
+        calendarViewDate.setMonth(calendarViewDate.getMonth() - 1);
+        renderCalendar();
+      });
+
+      calNextMonth.addEventListener('click', (e) => {
+        e.stopPropagation();
+        calendarViewDate.setMonth(calendarViewDate.getMonth() + 1);
+        renderCalendar();
+      });
+
       renderCalendar();
-      setInterval(renderCalendar, 60000);
 
       (function makeCalendarDraggable() {
         let isDragging = false, startX = 0, startY = 0, startLeft = 0, startTop = 0;
@@ -3483,6 +3544,7 @@
 
         desktopCalendar.addEventListener('mousedown', (e) => {
           if (e.button !== 0) return;
+          if (e.target.closest('.cal-nav-btn')) return;
           e.preventDefault();
           startDrag(e.clientX, e.clientY);
           document.addEventListener('mousemove', onMouseMove);
@@ -3497,6 +3559,7 @@
         }
 
         desktopCalendar.addEventListener('touchstart', (e) => {
+          if (e.target.closest('.cal-nav-btn')) return;
           const touch = e.touches[0];
           startDrag(touch.clientX, touch.clientY);
           document.addEventListener('touchmove', onTouchMove, { passive: false });
@@ -4895,11 +4958,32 @@
         showEmptyHint();
       }
 
-      // ==================== ENTER NAV ====================
+      // ==================== ENTER NAV — SKIP IF EMPTY ====================
       async function handleEnterKey(e, currentIndex) {
         if (e.key !== 'Enter') return;
         e.preventDefault();
+
+        const currentInput = fieldOrder[currentIndex];
+        const currentValue = currentInput.value.trim();
+
+        // If the current field is empty, do not move focus.
+        // Exception: the last field (Return) can be empty (defaults to 0) — but
+        // only proceed to save if all previous fields are filled.
+        if (currentValue === '' && currentIndex !== fieldOrder.length - 1) {
+          return;
+        }
+
         if (currentIndex === fieldOrder.length - 1) {
+          // Last field: ensure all required fields (first 4) are filled
+          const requiredFields = fieldOrder.slice(0, 4);
+          const anyRequiredEmpty = requiredFields.some(f => f.value.trim() === '');
+          if (anyRequiredEmpty) {
+            // Focus the first empty required field
+            const firstEmpty = requiredFields.find(f => f.value.trim() === '');
+            if (firstEmpty) { firstEmpty.focus(); firstEmpty.select(); }
+            return;
+          }
+
           const result = fullRecalc();
           if (result === null) { return; }
           const kgText = formatKg(result.totalKg);
