@@ -1111,6 +1111,21 @@
     .modal-field .input-wrap input { text-align: left; padding: 6px 0; font-size: 0.85rem; }
     .modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 6px; }
 
+    .modal-error {
+      background: #ffdede;
+      border: 1px solid #c26b6b;
+      border-radius: 6px;
+      padding: 8px 12px;
+      color: #8b2c2c;
+      font-weight: 600;
+      font-size: 0.72rem;
+      margin-bottom: 10px;
+      display: none;
+      word-break: break-word;
+      line-height: 1.4;
+    }
+    .modal-error.show { display: block; }
+
     .confirm-dialog { width: 380px; }
     .confirm-body {
       display: flex; gap: 14px; align-items: flex-start;
@@ -1713,7 +1728,7 @@
       min-width: 100px;
     }
 
-    /* Staff Row */
+    /* Employee Row */
     .staff-row {
       display: flex;
       align-items: center;
@@ -2114,7 +2129,7 @@
   <div class="window" id="calcWindow">
     <div class="title-bar" id="calcTitleBar">
       <div class="title-text">
-        <span>📦</span> KCST Windows
+        <span>📦</span> Packing Calculator
         <span class="status-dot" id="calcStatusDot" title="Database status"></span>
       </div>
       <div class="caption-buttons">
@@ -2341,30 +2356,30 @@
 
     <div class="window-content">
 
-      <!-- STAFF ROW: photo + combo + buttons -->
+      <!-- EMPLOYEE ROW: photo + combo + buttons -->
       <div class="staff-row">
         <!-- Photo (small, left of combo) -->
-        <div class="staff-photo-small" id="staffPhotoSmall" title="Staff photo">
+        <div class="staff-photo-small" id="staffPhotoSmall" title="Employee photo">
           <span>👤</span>
         </div>
 
         <!-- Medium-sized combo -->
         <div class="combo-wrap staff-combo-medium">
           <select id="staffCombo" tabindex="10">
-            <option value="">👤 Select Staff</option>
+            <option value="">👤 Select Employee</option>
           </select>
           <span class="combo-arrow">▼</span>
         </div>
 
         <!-- Action buttons -->
         <div class="staff-action-buttons">
-          <button class="aero-btn primary" id="addStaffBtn" type="button" tabindex="11" title="Add new staff">
+          <button class="aero-btn primary" id="addStaffBtn" type="button" tabindex="11" title="Add new employee">
             <span>➕</span>
           </button>
-          <button class="aero-btn" id="editStaffBtn" type="button" tabindex="12" title="Edit selected staff" disabled>
+          <button class="aero-btn" id="editStaffBtn" type="button" tabindex="12" title="Edit selected employee">
             <span>✎</span>
           </button>
-          <button class="aero-btn danger" id="deleteStaffBtn" type="button" tabindex="13" title="Delete selected staff" disabled>
+          <button class="aero-btn danger" id="deleteStaffBtn" type="button" tabindex="13" title="Delete selected employee">
             <span>🗑️</span>
           </button>
         </div>
@@ -3631,7 +3646,7 @@
       const cashClearCountsBtn = document.getElementById('cashClearCountsBtn');
       const cashSaveBtn = document.getElementById('cashSaveBtn');
 
-      // Staff elements
+      // Employee elements
       const staffCombo = document.getElementById('staffCombo');
       const addStaffBtn = document.getElementById('addStaffBtn');
       const editStaffBtn = document.getElementById('editStaffBtn');
@@ -3704,7 +3719,7 @@
       let selectedProductName = '';
       let selectedCustomerName = '';
       let isOnline = false;
-      let staffList = [];
+      let employeesList = [];
 
       const windowState = {
         calcWindow: { minimized: false, maximized: false, origRect: null },
@@ -3715,9 +3730,9 @@
       };
 
       // ==================== NOTEPAD STATE ====================
-      let currentNoteId = null;          // null = unsaved new note
+      let currentNoteId = null;
       let currentNoteTitle = 'Untitled';
-      let notesList = [];                // saved notes from DB
+      let notesList = [];
       let notepadSaveTimer = null;
       let notepadIsDirty = false;
       const NOTEPAD_DRAFT_KEY = 'notepad_current_draft';
@@ -4043,84 +4058,95 @@
         }
       }
 
-      async function loadStaff() {
+      // ==================== EMPLOYEES (renamed from staff) ====================
+      async function loadEmployees() {
         try {
           const { data, error } = await supabase
-            .from('staff')
+            .from('employees')
             .select('*')
             .order('name', { ascending: true });
           if (error) throw error;
-          staffList = (data || []).map(s => ({
-            id: s.id || s.staff_id,
+          employeesList = (data || []).map(s => ({
+            id: s.id,
             name: s.name || '',
             section: s.section || '',
             photo: s.photo || null
           })).filter(s => s.name);
           renderStaffCombo();
+          console.log('✅ Loaded', employeesList.length, 'employees');
         } catch (err) {
-          console.warn('Could not load staff from DB:', err.message);
-          staffList = [];
+          console.warn('Could not load employees from DB:', err.message);
+          employeesList = [];
           renderStaffCombo();
         }
       }
 
-      async function saveStaff(staff) {
+      async function saveEmployee(employee) {
         setSyncing();
         const basePayload = {
-          name: staff.name,
-          section: staff.section
+          name: employee.name,
+          section: employee.section
         };
-        if (staff.photo) basePayload.photo = staff.photo;
+        if (employee.photo) basePayload.photo = employee.photo;
 
+        // Try multiple strategies in case of schema differences
         const attempts = [
-          () => supabase.from('staff').insert([basePayload]).select().single(),
-          () => supabase.from('staff').insert([{
-            ...basePayload,
-            staff_id: 'STAFF-' + Date.now() + '-' + Math.floor(Math.random()*10000)
-          }]).select().single(),
-          () => supabase.from('staff').insert([{
-            ...basePayload,
-            staff_id: crypto.randomUUID()
-          }]).select().single(),
-          () => supabase.from('staff').insert([{
-            name: staff.name,
-            section: staff.section
-          }]).select().single()
+          { label: 'with photo', payload: basePayload },
+          { label: 'without photo', payload: { name: employee.name, section: employee.section } },
+          { label: 'name only', payload: { name: employee.name } },
+          { label: 'name + section only', payload: { name: employee.name, section: employee.section } }
         ];
 
         let lastError = null;
-        for (let i = 0; i < attempts.length; i++) {
+        for (const attempt of attempts) {
           try {
-            const { data, error } = await attempts[i]();
-            if (error) { lastError = error; continue; }
-            if (!data) { lastError = new Error('No data returned'); continue; }
+            console.log('Attempting employee insert:', attempt.label, attempt.payload);
+            const { data, error } = await supabase
+              .from('employees')
+              .insert([attempt.payload])
+              .select()
+              .single();
+            if (error) {
+              console.warn('Insert attempt failed:', attempt.label, error.message);
+              lastError = error;
+              continue;
+            }
+            if (!data) {
+              console.warn('Insert attempt returned no data:', attempt.label);
+              lastError = new Error('No data returned from insert');
+              continue;
+            }
+            console.log('✅ Employee saved successfully:', data);
             setOnlineStatus(true);
             return {
-              id: data.id || data.staff_id,
+              id: data.id,
               name: data.name,
               section: data.section || '',
               photo: data.photo || null
             };
           } catch (err) {
+            console.warn('Insert attempt threw:', attempt.label, err.message);
             lastError = err;
           }
         }
+
         setOnlineStatus(false);
-        console.error('All saveStaff attempts failed:', lastError);
-        throw lastError || new Error('Could not save staff');
+        console.error('❌ All saveEmployee attempts failed:', lastError);
+        throw lastError || new Error('Could not save employee — please check the database table exists');
       }
 
-      async function updateStaff(id, updates) {
+      async function updateEmployee(id, updates) {
         setSyncing();
         try {
           const payload = { name: updates.name, section: updates.section };
           if (updates.photo !== undefined) payload.photo = updates.photo;
 
           const { data, error } = await supabase
-            .from('staff')
+            .from('employees')
             .update(payload)
             .eq('id', id)
-            .select().single();
+            .select()
+            .single();
 
           if (error) throw error;
           setOnlineStatus(true);
@@ -4131,21 +4157,21 @@
             photo: data.photo || null
           };
         } catch (err) {
-          console.error('Update staff error:', err);
+          console.error('Update employee error:', err);
           setOnlineStatus(false);
           throw err;
         }
       }
 
-      async function deleteStaff(id) {
+      async function deleteEmployee(id) {
         setSyncing();
         try {
-          const { error } = await supabase.from('staff').delete().eq('id', id);
+          const { error } = await supabase.from('employees').delete().eq('id', id);
           if (error) throw error;
           setOnlineStatus(true);
           return true;
         } catch (err) {
-          console.error('Delete staff error:', err);
+          console.error('Delete employee error:', err);
           setOnlineStatus(false);
           throw err;
         }
@@ -4278,7 +4304,7 @@
               currency_total: record.currencyTotal,
               net_result: record.netResult,
               denominations: record.denominations,
-              staff_name: record.staffName,
+              staff_name: record.employeeName,
               section: record.section,
               photo_data: record.photoData
             }])
@@ -4370,8 +4396,8 @@
 
       function renderStaffCombo() {
         const currentValue = staffCombo.value;
-        let html = '<option value="">👤 Select Staff</option>';
-        staffList.forEach(s => {
+        let html = '<option value="">👤 Select Employee</option>';
+        employeesList.forEach(s => {
           html += `<option value="${s.id}">${escapeHtml(s.name)} — ${escapeHtml(s.section)}</option>`;
         });
         staffCombo.innerHTML = html;
@@ -4380,29 +4406,27 @@
       }
 
       function updateStaffInfo() {
-        const staffId = staffCombo.value;
-        if (!staffId) {
+        const empId = staffCombo.value;
+        editStaffBtn.disabled = false;
+        deleteStaffBtn.disabled = false;
+
+        if (!empId) {
           staffPhotoSmall.innerHTML = '<span>👤</span>';
           staffCombo.title = '';
-          editStaffBtn.disabled = true;
-          deleteStaffBtn.disabled = true;
           return;
         }
-        const staff = staffList.find(s => s.id === staffId);
-        if (!staff) {
+        const emp = employeesList.find(s => s.id === empId);
+        if (!emp) {
           staffPhotoSmall.innerHTML = '<span>👤</span>';
-          editStaffBtn.disabled = true;
-          deleteStaffBtn.disabled = true;
+          staffCombo.title = '';
           return;
         }
-        if (staff.photo) {
-          staffPhotoSmall.innerHTML = `<img src="${staff.photo}" alt="${escapeHtml(staff.name)}">`;
+        if (emp.photo) {
+          staffPhotoSmall.innerHTML = `<img src="${emp.photo}" alt="${escapeHtml(emp.name)}">`;
         } else {
           staffPhotoSmall.innerHTML = '<span>👤</span>';
         }
-        staffCombo.title = `${staff.name} — ${staff.section}`;
-        editStaffBtn.disabled = false;
-        deleteStaffBtn.disabled = false;
+        staffCombo.title = `${emp.name} — ${emp.section}`;
       }
 
       staffCombo.addEventListener('change', updateStaffInfo);
@@ -4754,90 +4778,114 @@
         });
       });
 
-      // ========== STAFF FORM MODAL (Add/Edit) ==========
-      function openStaffFormModal(existingStaff = null) {
-        const isEdit = !!existingStaff;
-        const title = isEdit ? '✎ Edit Staff' : '👤 Add New Staff';
+      // ========== EMPLOYEE FORM MODAL (Add/Edit) ==========
+      function openEmployeeFormModal(existingEmployee = null) {
+        const isEdit = !!existingEmployee;
+        const title = isEdit ? '✎ Edit Employee' : '👤 Add New Employee';
         const html = `
+          <div class="modal-error" id="modalError"></div>
           <div class="modal-field">
-            <label>👤 Staff Name</label>
+            <label>👤 Employee Name</label>
             <div class="input-wrap">
-              <input type="text" id="modalStaffName" placeholder="Enter staff name" value="${isEdit ? escapeHtml(existingStaff.name) : ''}">
+              <input type="text" id="modalEmployeeName" placeholder="Enter employee name" value="${isEdit ? escapeHtml(existingEmployee.name) : ''}">
             </div>
           </div>
           <div class="modal-field">
             <label>🏷️ Section</label>
             <div class="input-wrap">
-              <input type="text" id="modalStaffSection" placeholder="e.g. Packing" value="${isEdit ? escapeHtml(existingStaff.section) : ''}">
+              <input type="text" id="modalEmployeeSection" placeholder="e.g. Packing" value="${isEdit ? escapeHtml(existingEmployee.section) : ''}">
             </div>
           </div>
           <div class="modal-field">
             <label>📷 Photo (optional)</label>
             <div style="display:flex; gap:10px; align-items:center;">
               <div class="photo-preview" id="modalPhotoPreview">
-                ${isEdit && existingStaff.photo ? `<img src="${existingStaff.photo}">` : '📷'}
+                ${isEdit && existingEmployee.photo ? `<img src="${existingEmployee.photo}">` : '📷'}
               </div>
               <div style="flex:1;">
-                <input type="file" id="modalStaffPhoto" accept="image/*" style="font-size:0.78rem;">
+                <input type="file" id="modalEmployeePhoto" accept="image/*" style="font-size:0.78rem;">
                 <div style="font-size:0.62rem; color:#6a8ba5; margin-top:3px;">Max 2MB · optional</div>
               </div>
             </div>
           </div>
           <div class="modal-actions">
             <button class="aero-btn" id="modalCancelBtn" type="button">Cancel</button>
-            <button class="aero-btn primary" id="modalSaveBtn" type="button">${isEdit ? '💾 Update Staff' : '💾 Save Staff'}</button>
+            <button class="aero-btn primary" id="modalSaveBtn" type="button">${isEdit ? '💾 Update Employee' : '💾 Save Employee'}</button>
           </div>`;
         openModal(title, html, async (content) => {
-          const name = content.querySelector('#modalStaffName').value.trim();
-          const section = content.querySelector('#modalStaffSection').value.trim();
-          const photoInput = content.querySelector('#modalStaffPhoto');
+          const errorEl = content.querySelector('#modalError');
+          const nameEl = content.querySelector('#modalEmployeeName');
+          const sectionEl = content.querySelector('#modalEmployeeSection');
+          const photoInput = content.querySelector('#modalEmployeePhoto');
+          const saveBtn = content.querySelector('#modalSaveBtn');
 
-          if (name === '') { return false; }
-          if (section === '') { return false; }
+          errorEl.classList.remove('show');
+          errorEl.textContent = '';
 
-          let photoData = isEdit ? (existingStaff.photo || null) : null;
+          const name = nameEl.value.trim();
+          const section = sectionEl.value.trim();
+
+          if (name === '') {
+            errorEl.textContent = '⚠️ Employee name is required.';
+            errorEl.classList.add('show');
+            nameEl.focus();
+            return false;
+          }
+          if (section === '') {
+            errorEl.textContent = '⚠️ Section is required.';
+            errorEl.classList.add('show');
+            sectionEl.focus();
+            return false;
+          }
+
+          let photoData = isEdit ? (existingEmployee.photo || null) : null;
           if (photoInput.files && photoInput.files[0]) {
             const file = photoInput.files[0];
             if (file.size > 2 * 1024 * 1024) {
-              // ignore warning
+              errorEl.textContent = '⚠️ Photo is too large (max 2MB). Continuing without photo.';
+              errorEl.classList.add('show');
+            } else {
+              photoData = await new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onload = (e) => resolve(e.target.result);
+                reader.readAsDataURL(file);
+              });
             }
-            photoData = await new Promise((resolve) => {
-              const reader = new FileReader();
-              reader.onload = (e) => resolve(e.target.result);
-              reader.readAsDataURL(file);
-            });
           }
 
-          const saveBtn = content.querySelector('#modalSaveBtn');
           saveBtn.disabled = true;
           saveBtn.textContent = isEdit ? '⏳ Updating…' : '⏳ Saving…';
 
           try {
             if (isEdit) {
-              const updated = await updateStaff(existingStaff.id, { name, section, photo: photoData });
-              const idx = staffList.findIndex(s => s.id === existingStaff.id);
-              if (idx !== -1) staffList[idx] = updated;
+              const updated = await updateEmployee(existingEmployee.id, { name, section, photo: photoData });
+              const idx = employeesList.findIndex(s => s.id === existingEmployee.id);
+              if (idx !== -1) employeesList[idx] = updated;
               renderStaffCombo();
               staffCombo.value = updated.id;
               updateStaffInfo();
             } else {
-              const saved = await saveStaff({ name, section, photo: photoData });
-              staffList.push(saved);
-              staffList.sort((a, b) => a.name.localeCompare(b.name));
+              const saved = await saveEmployee({ name, section, photo: photoData });
+              employeesList.push(saved);
+              employeesList.sort((a, b) => a.name.localeCompare(b.name));
               renderStaffCombo();
               staffCombo.value = saved.id;
               updateStaffInfo();
+              console.log('✅ Employee added to list. Total:', employeesList.length);
             }
             return true;
           } catch (err) {
+            console.error('Save employee failed:', err);
+            errorEl.textContent = '❌ Failed to save: ' + (err.message || 'Unknown error. Check that the "employees" table exists in Supabase.');
+            errorEl.classList.add('show');
             saveBtn.disabled = false;
-            saveBtn.textContent = isEdit ? '💾 Update Staff' : '💾 Save Staff';
+            saveBtn.textContent = isEdit ? '💾 Update Employee' : '💾 Save Employee';
             return false;
           }
         });
 
         setTimeout(() => {
-          const fileInp = document.getElementById('modalStaffPhoto');
+          const fileInp = document.getElementById('modalEmployeePhoto');
           const prev = document.getElementById('modalPhotoPreview');
           if (fileInp && prev) {
             fileInp.addEventListener('change', (e) => {
@@ -4851,23 +4899,35 @@
         }, 50);
       }
 
-      addStaffBtn.addEventListener('click', () => openStaffFormModal(null));
+      addStaffBtn.addEventListener('click', () => openEmployeeFormModal(null));
       editStaffBtn.addEventListener('click', () => {
-        const staffId = staffCombo.value;
-        if (!staffId) return;
-        const staff = staffList.find(s => s.id === staffId);
-        if (!staff) return;
-        openStaffFormModal(staff);
+        const empId = staffCombo.value;
+        if (!empId) {
+          alert('Please select an employee first.');
+          return;
+        }
+        const emp = employeesList.find(s => s.id === empId);
+        if (!emp) {
+          alert('Employee not found. Please refresh.');
+          return;
+        }
+        openEmployeeFormModal(emp);
       });
       deleteStaffBtn.addEventListener('click', async () => {
-        const staffId = staffCombo.value;
-        if (!staffId) return;
-        const staff = staffList.find(s => s.id === staffId);
-        if (!staff) return;
+        const empId = staffCombo.value;
+        if (!empId) {
+          alert('Please select an employee first.');
+          return;
+        }
+        const emp = employeesList.find(s => s.id === empId);
+        if (!emp) {
+          alert('Employee not found. Please refresh.');
+          return;
+        }
 
         const confirmed = await showConfirm({
-          title: '🗑️ Delete Staff',
-          message: `Are you sure you want to delete <strong>"${escapeHtml(staff.name)}"</strong> (${escapeHtml(staff.section)})?<br><br>This cannot be undone.`,
+          title: '🗑️ Delete Employee',
+          message: `Are you sure you want to delete <strong>"${escapeHtml(emp.name)}"</strong> (${escapeHtml(emp.section)})?<br><br>This cannot be undone.`,
           confirmLabel: 'Yes, Delete',
           type: 'danger',
           icon: '🗑️'
@@ -4875,13 +4935,13 @@
         if (!confirmed) return;
 
         try {
-          await deleteStaff(staff.id);
-          staffList = staffList.filter(s => s.id !== staff.id);
+          await deleteEmployee(emp.id);
+          employeesList = employeesList.filter(s => s.id !== emp.id);
           renderStaffCombo();
           staffCombo.value = '';
           updateStaffInfo();
         } catch (err) {
-          // ignore
+          alert('Failed to delete employee: ' + (err.message || 'Unknown error'));
         }
       });
 
@@ -4903,13 +4963,13 @@
           return;
         }
 
-        const staffId = staffCombo.value;
-        if (!staffId) {
+        const empId = staffCombo.value;
+        if (!empId) {
           staffCombo.focus();
           return;
         }
-        const staff = staffList.find(s => s.id === staffId);
-        if (!staff) {
+        const emp = employeesList.find(s => s.id === empId);
+        if (!emp) {
           return;
         }
 
@@ -4920,9 +4980,9 @@
             currencyTotal: result.currencyTotal,
             netResult: result.netResult,
             denominations: result.breakdown,
-            staffName: staff.name,
-            section: staff.section,
-            photoData: staff.photo
+            employeeName: emp.name,
+            section: emp.section,
+            photoData: emp.photo
           });
         } catch (err) {
           // ignore
@@ -4966,19 +5026,14 @@
         const currentInput = fieldOrder[currentIndex];
         const currentValue = currentInput.value.trim();
 
-        // If the current field is empty, do not move focus.
-        // Exception: the last field (Return) can be empty (defaults to 0) — but
-        // only proceed to save if all previous fields are filled.
         if (currentValue === '' && currentIndex !== fieldOrder.length - 1) {
           return;
         }
 
         if (currentIndex === fieldOrder.length - 1) {
-          // Last field: ensure all required fields (first 4) are filled
           const requiredFields = fieldOrder.slice(0, 4);
           const anyRequiredEmpty = requiredFields.some(f => f.value.trim() === '');
           if (anyRequiredEmpty) {
-            // Focus the first empty required field
             const firstEmpty = requiredFields.find(f => f.value.trim() === '');
             if (firstEmpty) { firstEmpty.focus(); firstEmpty.select(); }
             return;
@@ -5692,7 +5747,7 @@
 
       // ==================== INIT ====================
       await loadWallpaper();
-      await loadStaff();
+      await loadEmployees();
       await loadNotes();
       loadNotepadDraft();
       resetAllFields();
