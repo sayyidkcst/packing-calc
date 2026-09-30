@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KCST Windows</title>
+  <title>KCST Windows · big image right</title>
   <style>
     /* ---------- WINDOWS 7 AERO GLOBAL ---------- */
     * {
@@ -1783,9 +1783,88 @@
       font-size: 0.9rem;
     }
 
+    /* ========== BIG EMPLOYEE PHOTO (right side, larger) ========== */
+    .employee-big-photo-wrapper {
+      display: flex;
+      justify-content: flex-end;
+      margin: 6px 0 10px 0;
+      padding: 0;
+    }
+    .employee-big-photo {
+      width: 140px;
+      height: 140px;
+      border-radius: 16px;
+      border: 4px solid #7f9db9;
+      background: radial-gradient(circle at 35% 30%, #ffffff 0%, #d0e6fa 60%, #a0c8e8 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3.6rem;
+      overflow: hidden;
+      box-shadow: 
+        0 8px 24px rgba(0, 0, 0, 0.3),
+        inset 0 3px 12px rgba(255, 255, 255, 0.8),
+        0 0 0 2px rgba(255, 255, 255, 0.5);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      flex-shrink: 0;
+    }
+    .employee-big-photo:hover {
+      transform: scale(1.03);
+      box-shadow: 
+        0 10px 30px rgba(0, 0, 0, 0.4),
+        inset 0 3px 12px rgba(255, 255, 255, 0.8),
+        0 0 0 2px rgba(255, 255, 255, 0.6),
+        0 0 28px rgba(100, 180, 255, 0.5);
+    }
+    .employee-big-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* === RESULT + BIG IMAGE same line, image on RIGHT === */
+    .compact-result-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-top: 6px;
+      margin-bottom: 4px;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+    .compact-result-row .cash-result {
+      flex: 1 1 0;
+      min-width: 220px;
+      margin-top: 0;
+      padding: 16px 18px;
+    }
+    .compact-result-row .cash-result .result-value {
+      font-size: 2.2rem;
+    }
+    .compact-result-row .cash-result .result-sub {
+      font-size: 0.72rem;
+    }
+    .compact-result-row .employee-big-photo-wrapper {
+      flex: 0 0 auto;
+      margin: 0;
+      justify-content: flex-end;
+    }
+    .compact-result-row .employee-big-photo {
+      width: 140px;
+      height: 140px;
+      font-size: 3.6rem;
+      border-width: 4px;
+    }
+    .compact-result-row .cash-breakdown {
+      margin-top: 6px;
+    }
+
     @media (max-width: 480px) {
       .staff-row { flex-wrap: wrap; }
       .combo-wrap.staff-combo-medium { flex: 1 1 100%; max-width: none; }
+      .compact-result-row .cash-result { min-width: 160px; }
+      .compact-result-row .employee-big-photo { width: 100px; height: 100px; font-size: 2.6rem; }
     }
 
     /* Photo preview inside modal */
@@ -2385,11 +2464,18 @@
         </div>
       </div>
 
-      <!-- RESULT SECTION -->
-      <div class="cash-result" id="cashResult">
-        <div class="result-value" id="cashResultValue">₹0.00</div>
-        <div class="result-sub" id="cashResultSub">Enter values to calculate</div>
-        <div class="cash-breakdown" id="cashBreakdown"></div>
+      <!-- ====== RESULT + BIG IMAGE (image on RIGHT, larger) ====== -->
+      <div class="compact-result-row">
+        <div class="cash-result" id="cashResult" style="flex:1 1 0; min-width:220px; margin-top:0;">
+          <div class="result-value" id="cashResultValue">₹0.00</div>
+          <div class="result-sub" id="cashResultSub">Enter values to calculate</div>
+          <div class="cash-breakdown" id="cashBreakdown"></div>
+        </div>
+        <div class="employee-big-photo-wrapper">
+          <div class="employee-big-photo" id="employeeBigPhoto" title="Employee photo">
+            <span>👤</span>
+          </div>
+        </div>
       </div>
 
       <!-- CURRENCY DENOMINATIONS SECTION -->
@@ -3652,6 +3738,7 @@
       const editStaffBtn = document.getElementById('editStaffBtn');
       const deleteStaffBtn = document.getElementById('deleteStaffBtn');
       const staffPhotoSmall = document.getElementById('staffPhotoSmall');
+      const employeeBigPhoto = document.getElementById('employeeBigPhoto');
 
       // Notepad elements
       const notepadTextarea = document.getElementById('notepadTextarea');
@@ -4413,18 +4500,25 @@
         if (!empId) {
           staffPhotoSmall.innerHTML = '<span>👤</span>';
           staffCombo.title = '';
+          // Update big photo to default
+          employeeBigPhoto.innerHTML = '<span>👤</span>';
           return;
         }
         const emp = employeesList.find(s => s.id === empId);
         if (!emp) {
           staffPhotoSmall.innerHTML = '<span>👤</span>';
           staffCombo.title = '';
+          employeeBigPhoto.innerHTML = '<span>👤</span>';
           return;
         }
         if (emp.photo) {
           staffPhotoSmall.innerHTML = `<img src="${emp.photo}" alt="${escapeHtml(emp.name)}">`;
+          // Update big photo with the same image
+          employeeBigPhoto.innerHTML = `<img src="${emp.photo}" alt="${escapeHtml(emp.name)}">`;
         } else {
           staffPhotoSmall.innerHTML = '<span>👤</span>';
+          // No photo available, show placeholder icon
+          employeeBigPhoto.innerHTML = '<span>👤</span>';
         }
         staffCombo.title = `${emp.name} — ${emp.section}`;
       }
