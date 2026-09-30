@@ -625,10 +625,10 @@
       position: relative; top: -20px; margin-bottom: -18px;
     }
 
-    /* ========== TINY ONE-LINE INPUT ROW (5 fields, max 4 digits) ========== */
+    /* ========== TWO-ROW INPUT (first row 5 fields, second row return bags) ========== */
     .input-row-five {
       display: flex;
-      flex-wrap: nowrap;
+      flex-wrap: wrap;
       gap: 4px;
       align-items: flex-end;
     }
@@ -663,6 +663,69 @@
       font-size: 0.46rem;
       padding: 1px 3px;
       margin-left: 1px;
+    }
+
+    /* Second row container for return bags + bag preview + reset button */
+    .input-row-second {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin-top: 6px;
+    }
+    .input-row-second .input-group {
+      flex: 0 0 auto;
+      width: 90px;
+      min-width: 0;
+      max-width: none;
+    }
+    .input-row-second .input-group label {
+      font-size: 0.56rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-left: 2px;
+      gap: 2px;
+    }
+    .input-row-second .input-wrap {
+      padding: 1px 3px 1px 4px;
+      min-height: 24px;
+    }
+    .input-row-second .input-wrap input {
+      font-size: 0.72rem;
+      padding: 2px 0;
+      text-align: center;
+      letter-spacing: 0.3px;
+    }
+    .input-row-second .input-wrap .unit {
+      font-size: 0.46rem;
+      padding: 1px 3px;
+      margin-left: 1px;
+    }
+
+    /* Compact bag preview on the same line as Return bags */
+    .compact-bag-preview {
+      flex: 0 1 auto;
+      width: auto;
+      min-width: 0;
+      margin-top: 0;
+      padding: 3px 8px 3px 10px;
+      font-size: 0.62rem;
+      gap: 4px;
+    }
+    .compact-bag-preview .highlight {
+      font-size: 0.58rem;
+      padding: 2px 7px;
+    }
+
+    /* Reset button in the second row - compact */
+    .inline-reset-btn {
+      flex: 0 0 auto;
+      padding: 4px 10px;
+      font-size: 0.66rem;
+      min-height: 24px;
+      min-width: 0;
+      height: 24px;
     }
 
     /* ========== NARROWER INPUT ROW ========== */
@@ -1051,7 +1114,7 @@
       background: linear-gradient(180deg, #6fc96f 0%, #4a9e4a 45%, #357a35 100%);
     }
 
-    /* ---------- RESET BUTTON ROW ---------- */
+    /* ---------- RESET BUTTON ROW (kept for other uses, but no longer used in calc) ---------- */
     .calc-actions-row {
       display: flex;
       gap: 8px;
@@ -1467,6 +1530,37 @@
       font-size: 0.8rem; font-weight: 700;
       box-shadow: 0 1px 3px rgba(0,0,0,0.4);
     }
+
+    /* Uploaded wallpaper thumb (with delete badge) */
+    .wp-thumb.uploaded {
+      position: relative;
+    }
+    .wp-thumb.uploaded .wp-thumb-delete {
+      position: absolute;
+      bottom: 4px;
+      left: 4px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: linear-gradient(180deg, #d98b8b 0%, #b85555 45%, #8b3232 100%);
+      color: white;
+      border: 1px solid #6b2323;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.65rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+      z-index: 5;
+      line-height: 1;
+      transition: 0.12s;
+    }
+    .wp-thumb.uploaded .wp-thumb-delete:hover {
+      transform: scale(1.15);
+      background: linear-gradient(180deg, #e69b9b 0%, #c56565 45%, #9b3e3e 100%);
+    }
+
     .wp-upload-area-mini {
       border: 2px dashed #7f9db9; border-radius: 6px;
       padding: 8px; text-align: center;
@@ -1481,6 +1575,20 @@
       color: #1d4a6b;
     }
     .wp-upload-area-mini input[type="file"] { display: none; }
+
+    .wp-upload-progress {
+      font-size: 0.62rem;
+      color: #1d4a6b;
+      font-weight: 600;
+      text-align: center;
+      margin-top: 4px;
+      display: none;
+      padding: 3px 8px;
+      background: rgba(200, 230, 255, 0.5);
+      border-radius: 20px;
+      border: 1px solid #a8c8e0;
+    }
+    .wp-upload-progress.show { display: block; }
 
     .wp-delete-area {
       display: flex;
@@ -2147,6 +2255,9 @@
       body { overflow-y: auto; padding: 20px 12px calc(var(--taskbar-height) + 20px) 12px; }
       .input-row-five { flex-wrap: wrap; }
       .input-row-five .input-group { flex: 1 1 18%; width: auto; }
+      .input-row-second .input-group { flex: 0 0 auto; width: auto; min-width: 80px; }
+      .compact-bag-preview { flex: 0 1 auto; width: auto; }
+      .inline-reset-btn { flex: 0 0 auto; }
     }
     @media (max-width: 480px) {
       .top-row { flex-direction: column; }
@@ -2159,6 +2270,10 @@
       .wallpaper-mini-window { width: 96vw; }
       .input-group { max-width: 100%; }
       .input-row-five .input-group { flex: 1 1 30%; width: auto; }
+      .input-row-second { flex-wrap: wrap; }
+      .input-row-second .input-group { flex: 1 1 45%; width: auto; }
+      .compact-bag-preview { flex: 1 1 auto; width: auto; margin-top: 4px; }
+      .inline-reset-btn { flex: 1 1 100%; width: 100%; margin-top: 4px; }
       .cash-top-row .input-group { flex: 1 1 100%; }
       .notepad-toolbar { gap: 4px; padding: 6px 8px; }
       .notepad-toolbar .aero-btn { padding: 4px 7px; font-size: 0.66rem; }
@@ -2232,16 +2347,9 @@
         <div class="tq-bags" id="totalBagsValue">0 bags</div>
       </div>
 
-      <!-- RESET BUTTON ROW -->
-      <div class="calc-actions-row">
-        <button class="aero-btn" id="resetCalcBtn" type="button">
-          <span>🔄</span> Reset Calculator
-        </button>
-      </div>
-
       <div class="fieldset">
 
-        <!-- ========== ONE LINE: Weight/pc, Pcs/bag, #bags, Extra, Return ========== -->
+        <!-- ========== FIRST ROW: Weight/pc, Pcs/bag, #bags, Extra, Return pcs ========== -->
         <div class="input-row-five">
           <div class="input-group">
             <label><span>⚖️</span> Wt/pc</label>
@@ -2272,7 +2380,7 @@
             </div>
           </div>
           <div class="input-group return-group">
-            <label><span>➖</span> Return</label>
+            <label><span>➖</span> Return pcs</label>
             <div class="input-wrap">
               <input type="number" id="returnPcs" min="0" max="9999" step="1" placeholder="0" tabindex="5" maxlength="4">
               <span class="unit">pcs</span>
@@ -2280,10 +2388,24 @@
           </div>
         </div>
 
-        <div class="bag-preview">
-          <span>📐 1 bag = <span id="bagWeightPreview">0.000</span> kg</span>
-          <span class="highlight" id="bagPcsPreview">0 pcs</span>
+        <!-- ========== SECOND ROW: Return bags + compact bag preview + Reset button ========== -->
+        <div class="input-row-second">
+          <div class="input-group">
+            <label><span>↩️</span> Return bags</label>
+            <div class="input-wrap">
+              <input type="number" id="returnBags" min="0" max="9999" step="1" placeholder="0" tabindex="6" maxlength="4">
+              <span class="unit">bag</span>
+            </div>
+          </div>
+          <div class="bag-preview compact-bag-preview">
+            <span>📐 1 bag = <span id="bagWeightPreview">0.000</span> kg</span>
+            <span class="highlight" id="bagPcsPreview">0 pcs</span>
+          </div>
+          <button class="aero-btn inline-reset-btn" id="resetCalcBtn" type="button" title="Reset all packing fields">
+            <span>🔄</span> Reset
+          </button>
         </div>
+
       </div>
 
       <div class="result-panel" id="resultArea">
@@ -2291,7 +2413,7 @@
         <div id="resultContent">
           <div class="empty-hint">
             📝 Enter values above to calculate
-            <span class="small">Press Enter in the last field to save to database &amp; reset</span>
+            <span class="small">Press Enter in the last field to save to database &amp; reset · Esc to go back</span>
           </div>
         </div>
       </div>
@@ -2664,9 +2786,10 @@
       </div>
 
       <div class="wp-upload-area-mini" id="wpUploadAreaMini">
-        <span>📁</span> Upload custom image
-        <input type="file" id="wpUploadInputMini" accept="image/*">
+        <span>📁</span> Upload custom image(s)
+        <input type="file" id="wpUploadInputMini" accept="image/*" multiple>
       </div>
+      <div class="wp-upload-progress" id="wpUploadProgress"></div>
     </div>
   </div>
 
@@ -2806,8 +2929,10 @@
       // ==================== WALLPAPER SYSTEM ====================
       const DEFAULT_WALLPAPER = 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1920&q=80';
       const WALLPAPER_SETTING_KEY = 'wallpaper';
+      const WALLPAPER_UPLOADS_KEY = 'wallpaper_uploads';
 
-      const WALLPAPERS = [
+      // Built-in wallpapers (always available, not deletable)
+      const BUILTIN_WALLPAPERS = [
         { id: 'tropical', name: 'Tropical Beach', url: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1920&q=80' },
         { id: 'mountains', name: 'Mountains', url: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&q=80' },
         { id: 'forest', name: 'Forest', url: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1920&q=80' },
@@ -2822,6 +2947,10 @@
         { id: 'gradient3', name: 'Aero Green', url: 'linear-gradient(135deg, #0f3a2c 0%, #2d6e4e 50%, #0a2a1c 100%)' }
       ];
 
+      // Uploaded wallpapers (loaded from DB)
+      let uploadedWallpapers = [];
+      let allWallpapers = [...BUILTIN_WALLPAPERS];
+
       const wallpaperLayer = document.getElementById('wallpaperLayer');
       const wallpaperMiniWindow = document.getElementById('wallpaperMiniWindow');
       const wallpaperMiniTitleBar = document.getElementById('wallpaperMiniTitleBar');
@@ -2830,6 +2959,7 @@
       const wallpaperGridMini = document.getElementById('wallpaperGridMini');
       const wpUploadAreaMini = document.getElementById('wpUploadAreaMini');
       const wpUploadInputMini = document.getElementById('wpUploadInputMini');
+      const wpUploadProgress = document.getElementById('wpUploadProgress');
       const wallpaperStatusMini = document.getElementById('wallpaperStatusMini');
       const wallpaperSyncBadgeMini = document.getElementById('wallpaperSyncBadgeMini');
       const wallpaperScrollContainer = document.getElementById('wallpaperScrollContainer');
@@ -2837,7 +2967,6 @@
       const wpDeleteBtn = document.getElementById('wpDeleteBtn');
 
       let currentWallpaper = DEFAULT_WALLPAPER;
-      let isCustomWallpaper = false;
 
       function applyWallpaper(url) {
         currentWallpaper = url;
@@ -2848,15 +2977,86 @@
           wallpaperLayer.style.backgroundImage = `url('${url}')`;
           document.body.style.backgroundImage = `url('${url}')`;
         }
-        isCustomWallpaper = url.startsWith('data:image/');
         updateDeleteButtonVisibility();
       }
 
+      function isUploadedWallpaper(url) {
+        return uploadedWallpapers.some(w => w.url === url);
+      }
+
       function updateDeleteButtonVisibility() {
-        if (isCustomWallpaper) {
+        if (isUploadedWallpaper(currentWallpaper)) {
           wpDeleteArea.classList.remove('hidden');
         } else {
           wpDeleteArea.classList.add('hidden');
+        }
+      }
+
+      // ========== DATABASE: LOAD / SAVE UPLOADED WALLPAPERS ==========
+      async function loadUploadedWallpapers() {
+        try {
+          const cached = localStorage.getItem(WALLPAPER_UPLOADS_KEY);
+          if (cached) {
+            uploadedWallpapers = JSON.parse(cached) || [];
+          }
+        } catch (e) { uploadedWallpapers = []; }
+
+        try {
+          const { data, error } = await supabase
+            .from('app_settings')
+            .select('setting_value')
+            .eq('setting_key', WALLPAPER_UPLOADS_KEY)
+            .maybeSingle();
+
+          if (error) throw error;
+
+          if (data && data.setting_value) {
+            try {
+              const parsed = JSON.parse(data.setting_value);
+              if (Array.isArray(parsed)) {
+                uploadedWallpapers = parsed;
+              }
+            } catch (e) {
+              console.warn('Uploaded wallpapers JSON parse failed:', e.message);
+            }
+          }
+          try { localStorage.setItem(WALLPAPER_UPLOADS_KEY, JSON.stringify(uploadedWallpapers)); } catch (e) {}
+        } catch (err) {
+          console.warn('Could not load uploaded wallpapers from DB:', err.message);
+        }
+
+        rebuildAllWallpapers();
+      }
+
+      function rebuildAllWallpapers() {
+        allWallpapers = [...BUILTIN_WALLPAPERS, ...uploadedWallpapers];
+      }
+
+      async function saveUploadedWallpapersToDB() {
+        wallpaperSyncBadgeMini.className = 'sync-badge-mini';
+        wallpaperSyncBadgeMini.textContent = '●';
+        try {
+          const { error } = await supabase
+            .from('app_settings')
+            .upsert(
+              {
+                setting_key: WALLPAPER_UPLOADS_KEY,
+                setting_value: JSON.stringify(uploadedWallpapers),
+                updated_at: new Date().toISOString()
+              },
+              { onConflict: 'setting_key' }
+            );
+
+          if (error) throw error;
+
+          wallpaperSyncBadgeMini.className = 'sync-badge-mini saved';
+          wallpaperSyncBadgeMini.textContent = '✓';
+          return true;
+        } catch (err) {
+          console.warn('Could not save uploaded wallpapers to DB:', err.message);
+          wallpaperSyncBadgeMini.className = 'sync-badge-mini error';
+          wallpaperSyncBadgeMini.textContent = '✕';
+          return false;
         }
       }
 
@@ -2887,7 +3087,7 @@
         }
       }
 
-      async function saveWallpaperToDB(url) {
+      async function saveCurrentWallpaperToDB(url) {
         wallpaperSyncBadgeMini.className = 'sync-badge-mini';
         wallpaperSyncBadgeMini.textContent = '●';
         try {
@@ -2916,12 +3116,44 @@
       async function setWallpaper(url, { skipDb = false } = {}) {
         applyWallpaper(url);
         try { localStorage.setItem('wallpaper', url); } catch (e) {}
-        if (!skipDb) await saveWallpaperToDB(url);
+        if (!skipDb) await saveCurrentWallpaperToDB(url);
         renderWallpaperGridMini();
       }
 
+      // ========== DELETE UPLOADED WALLPAPER (single thumbnail) ==========
+      async function deleteUploadedWallpaper(id) {
+        const item = uploadedWallpapers.find(w => w.id === id);
+        if (!item) return;
+
+        const confirmed = await showConfirm({
+          title: '🗑️ Delete Uploaded Wallpaper',
+          message: `Delete this uploaded wallpaper?<br><br><em>"${escapeHtml(item.name || 'Custom')}"</em>`,
+          confirmLabel: 'Yes, Delete',
+          type: 'danger',
+          icon: '🗑️'
+        });
+        if (!confirmed) return;
+
+        const wasCurrent = (currentWallpaper === item.url);
+
+        uploadedWallpapers = uploadedWallpapers.filter(w => w.id !== id);
+        rebuildAllWallpapers();
+        try { localStorage.setItem(WALLPAPER_UPLOADS_KEY, JSON.stringify(uploadedWallpapers)); } catch (e) {}
+
+        await saveUploadedWallpapersToDB();
+
+        if (wasCurrent) {
+          await setWallpaper(DEFAULT_WALLPAPER);
+        } else {
+          renderWallpaperGridMini();
+          updateDeleteButtonVisibility();
+        }
+      }
+
+      // ========== DELETE CURRENT CUSTOM WALLPAPER (banner button) ==========
       async function deleteCustomWallpaper() {
-        if (!isCustomWallpaper) return;
+        const item = uploadedWallpapers.find(w => w.url === currentWallpaper);
+        if (!item) return;
 
         const confirmed = await showConfirm({
           title: '🗑️ Delete Custom Wallpaper',
@@ -2932,28 +3164,15 @@
         });
         if (!confirmed) return;
 
+        uploadedWallpapers = uploadedWallpapers.filter(w => w.id !== item.id);
+        rebuildAllWallpapers();
+        try { localStorage.setItem(WALLPAPER_UPLOADS_KEY, JSON.stringify(uploadedWallpapers)); } catch (e) {}
+
+        await saveUploadedWallpapersToDB();
+
         applyWallpaper(DEFAULT_WALLPAPER);
-        try {
-          localStorage.setItem('wallpaper', DEFAULT_WALLPAPER);
-        } catch (e) {}
-
-        try {
-          const { error } = await supabase
-            .from('app_settings')
-            .delete()
-            .eq('setting_key', WALLPAPER_SETTING_KEY);
-
-          if (error) throw error;
-
-          wallpaperSyncBadgeMini.className = 'sync-badge-mini saved';
-          wallpaperSyncBadgeMini.textContent = '✓';
-          wallpaperStatusMini.textContent = '🗑️ Deleted from DB';
-        } catch (err) {
-          console.warn('Could not delete wallpaper from DB:', err.message);
-          wallpaperSyncBadgeMini.className = 'sync-badge-mini error';
-          wallpaperSyncBadgeMini.textContent = '✕';
-          wallpaperStatusMini.textContent = '⚠️ Removed locally (DB offline)';
-        }
+        try { localStorage.setItem('wallpaper', DEFAULT_WALLPAPER); } catch (e) {}
+        await saveCurrentWallpaperToDB(DEFAULT_WALLPAPER);
 
         renderWallpaperGridMini();
         updateDeleteButtonVisibility();
@@ -2961,42 +3180,112 @@
 
       wpDeleteBtn.addEventListener('click', deleteCustomWallpaper);
 
+      // ========== RENDER GRID ==========
       function renderWallpaperGridMini() {
         let html = '';
-        WALLPAPERS.forEach(wp => {
+        allWallpapers.forEach(wp => {
           const isSelected = currentWallpaper === wp.url;
+          const isUploaded = uploadedWallpapers.some(u => u.id === wp.id);
           const bgStyle = wp.url.startsWith('linear-gradient') || wp.url.startsWith('radial-gradient')
             ? `background-image: ${wp.url};`
             : `background-image: url('${wp.url}');`;
-          html += `<div class="wp-thumb ${isSelected ? 'selected' : ''}" 
-                        data-wallpaper-url="${encodeURIComponent(wp.url)}" 
-                        title="${wp.name}"
-                        style="${bgStyle}"></div>`;
+
+          const deleteBadge = isUploaded
+            ? `<span class="wp-thumb-delete" data-wp-delete="${wp.id}" title="Delete this wallpaper">✕</span>`
+            : '';
+
+          html += `<div class="wp-thumb ${isSelected ? 'selected' : ''} ${isUploaded ? 'uploaded' : ''}"
+                        data-wallpaper-url="${encodeURIComponent(wp.url)}"
+                        data-wallpaper-id="${wp.id}"
+                        title="${escapeHtml(wp.name || 'Wallpaper')}"
+                        style="${bgStyle}">${deleteBadge}</div>`;
         });
         wallpaperGridMini.innerHTML = html;
         updateDeleteButtonVisibility();
       }
 
+      // ========== GRID CLICK HANDLERS ==========
       wallpaperGridMini.addEventListener('click', async (e) => {
+        const delBadge = e.target.closest('[data-wp-delete]');
+        if (delBadge) {
+          e.stopPropagation();
+          const id = delBadge.dataset.wpDelete;
+          if (id) await deleteUploadedWallpaper(id);
+          return;
+        }
+
         const thumb = e.target.closest('.wp-thumb');
         if (!thumb) return;
         const url = decodeURIComponent(thumb.dataset.wallpaperUrl);
         await setWallpaper(url);
       });
 
+      // ========== MULTIPLE UPLOAD HANDLER ==========
       wpUploadAreaMini.addEventListener('click', () => wpUploadInputMini.click());
-      wpUploadInputMini.addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-        if (file.size > 2 * 1024 * 1024) {
-          // silently ignore size warning
+
+      wpUploadInputMini.addEventListener('change', async (e) => {
+        const files = Array.from(e.target.files || []);
+        if (files.length === 0) return;
+
+        wpUploadProgress.classList.add('show');
+        wpUploadProgress.textContent = `⏳ Uploading ${files.length} image(s)…`;
+        wpUploadAreaMini.style.pointerEvents = 'none';
+
+        let successCount = 0;
+        let lastSuccessfulUrl = null;
+
+        for (let i = 0; i < files.length; i++) {
+          const file = files[i];
+          if (!file.type.startsWith('image/')) continue;
+
+          if (file.size > 2 * 1024 * 1024) {
+            console.warn('Skipping oversized image:', file.name, file.size);
+            continue;
+          }
+
+          try {
+            const dataUrl = await new Promise((resolve, reject) => {
+              const reader = new FileReader();
+              reader.onload = (ev) => resolve(ev.target.result);
+              reader.onerror = reject;
+              reader.readAsDataURL(file);
+            });
+
+            const baseName = (file.name || '').replace(/\.[^.]+$/, '') || 'Custom';
+            const newUpload = {
+              id: 'upload_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8),
+              name: baseName.slice(0, 40),
+              url: dataUrl
+            };
+
+            uploadedWallpapers.push(newUpload);
+            lastSuccessfulUrl = dataUrl;
+            successCount++;
+
+            wpUploadProgress.textContent = `⏳ Uploaded ${successCount}/${files.length}…`;
+          } catch (err) {
+            console.warn('Failed to read image:', file.name, err.message);
+          }
         }
-        const reader = new FileReader();
-        reader.onload = async (evt) => {
-          await setWallpaper(evt.target.result);
-          closeWallpaperMini();
-        };
-        reader.readAsDataURL(file);
+
+        rebuildAllWallpapers();
+        try { localStorage.setItem(WALLPAPER_UPLOADS_KEY, JSON.stringify(uploadedWallpapers)); } catch (e) {}
+
+        await saveUploadedWallpapersToDB();
+
+        if (lastSuccessfulUrl) {
+          await setWallpaper(lastSuccessfulUrl, { skipDb: true });
+          await saveCurrentWallpaperToDB(lastSuccessfulUrl);
+        } else {
+          renderWallpaperGridMini();
+        }
+
+        wpUploadProgress.textContent = successCount > 0
+          ? `✅ Added ${successCount} image(s)`
+          : '⚠️ No valid images added';
+        setTimeout(() => { wpUploadProgress.classList.remove('show'); }, 2500);
+
+        wpUploadAreaMini.style.pointerEvents = '';
         wpUploadInputMini.value = '';
       });
 
@@ -3686,6 +3975,7 @@
       const numBagsInput = document.getElementById('numBags');
       const extraPcsInput = document.getElementById('extraPcs');
       const returnPcsInput = document.getElementById('returnPcs');
+      const returnBagsInput = document.getElementById('returnBags');
       const bagWeightPreview = document.getElementById('bagWeightPreview');
       const bagPcsPreview = document.getElementById('bagPcsPreview');
       const resultContent = document.getElementById('resultContent');
@@ -3797,7 +4087,7 @@
       cashWindow.addEventListener('mousedown', () => bringToFront(cashWindow));
       notepadWindow.addEventListener('mousedown', () => bringToFront(notepadWindow));
 
-      const fieldOrder = [weightPerPcInput, pcsPerBagInput, numBagsInput, extraPcsInput, returnPcsInput];
+      const fieldOrder = [weightPerPcInput, pcsPerBagInput, numBagsInput, extraPcsInput, returnPcsInput, returnBagsInput];
 
       // ==================== STATE ====================
       let products = [];
@@ -4145,7 +4435,7 @@
         }
       }
 
-      // ==================== EMPLOYEES (renamed from staff) ====================
+      // ==================== EMPLOYEES ====================
       async function loadEmployees() {
         try {
           const { data, error } = await supabase
@@ -4176,7 +4466,6 @@
         };
         if (employee.photo) basePayload.photo = employee.photo;
 
-        // Try multiple strategies in case of schema differences
         const attempts = [
           { label: 'with photo', payload: basePayload },
           { label: 'without photo', payload: { name: employee.name, section: employee.section } },
@@ -4500,7 +4789,6 @@
         if (!empId) {
           staffPhotoSmall.innerHTML = '<span>👤</span>';
           staffCombo.title = '';
-          // Update big photo to default
           employeeBigPhoto.innerHTML = '<span>👤</span>';
           return;
         }
@@ -4513,11 +4801,9 @@
         }
         if (emp.photo) {
           staffPhotoSmall.innerHTML = `<img src="${emp.photo}" alt="${escapeHtml(emp.name)}">`;
-          // Update big photo with the same image
           employeeBigPhoto.innerHTML = `<img src="${emp.photo}" alt="${escapeHtml(emp.name)}">`;
         } else {
           staffPhotoSmall.innerHTML = '<span>👤</span>';
-          // No photo available, show placeholder icon
           employeeBigPhoto.innerHTML = '<span>👤</span>';
         }
         staffCombo.title = `${emp.name} — ${emp.section}`;
@@ -4586,7 +4872,8 @@
         const numBags = parseInt(numBagsInput.value) || 0;
         const extraPcs = parseInt(extraPcsInput.value) || 0;
         const returnPcs = parseInt(returnPcsInput.value) || 0;
-        const totalPcs = numBags * pcsPerBag + extraPcs - returnPcs;
+        const returnBags = parseInt(returnBagsInput.value) || 0;
+        const totalPcs = (numBags - returnBags) * pcsPerBag + extraPcs - returnPcs;
         totalQtyValue.textContent = totalPcs.toLocaleString();
         totalBagsValue.textContent = numBags + ' bag' + (numBags !== 1 ? 's' : '');
       }
@@ -4600,7 +4887,7 @@
       }
 
       function showEmptyHint() {
-        resultContent.innerHTML = `<div class="empty-hint">📝 Enter values above to calculate<span class="small">Press Enter in the last field to save to database &amp; reset</span></div>`;
+        resultContent.innerHTML = `<div class="empty-hint">📝 Enter values above to calculate<span class="small">Press Enter in the last field to save to database &amp; reset · Esc to go back</span></div>`;
       }
 
       function calculateTotal() {
@@ -4609,6 +4896,7 @@
         const numBags = parseFloat(numBagsInput.value);
         const extraPcs = parseFloat(extraPcsInput.value);
         const returnPcs = parseFloat(returnPcsInput.value) || 0;
+        const returnBags = parseFloat(returnBagsInput.value) || 0;
 
         const anyEmpty = weightPerPcInput.value === '' || pcsPerBagInput.value === '' || numBagsInput.value === '' || extraPcsInput.value === '';
         if (anyEmpty) { showEmptyHint(); return null; }
@@ -4633,11 +4921,20 @@
           resultContent.innerHTML = `<div class="error-msg">⚠️ Return pieces must be a non-negative whole number.</div>`;
           return null;
         }
+        if (isNaN(returnBags) || returnBags < 0 || !Number.isInteger(returnBags)) {
+          resultContent.innerHTML = `<div class="error-msg">⚠️ Return bags must be a non-negative whole number.</div>`;
+          return null;
+        }
+        if (returnBags > numBags) {
+          resultContent.innerHTML = `<div class="error-msg">⚠️ Return bags cannot exceed total bags.</div>`;
+          return null;
+        }
 
-        const totalFromBagsKg = numBags * (weightPerPc * pcsPerBag);
+        const netBags = numBags - returnBags;
+        const totalFromBagsKg = netBags * (weightPerPc * pcsPerBag);
         const totalFromLooseKg = extraPcs * weightPerPc;
         const totalKgBeforeReturn = totalFromBagsKg + totalFromLooseKg;
-        const totalPcsBeforeReturn = numBags * pcsPerBag + extraPcs;
+        const totalPcsBeforeReturn = netBags * pcsPerBag + extraPcs;
 
         const returnKg = returnPcs * weightPerPc;
         const totalKg = totalKgBeforeReturn - returnKg;
@@ -4653,6 +4950,9 @@
             <div class="result-card" style="background:#fde8d9; border-color:#d4a373;">
               <div class="big" style="color:#c0392b;">-${returnPcs}</div><div class="label">return pcs</div><div class="sub">${returnKg.toFixed(3)} kg</div>
             </div>
+            <div class="result-card" style="background:#fde8d9; border-color:#d4a373;">
+              <div class="big" style="color:#c0392b;">-${returnBags}</div><div class="label">return bags</div><div class="sub">${(returnBags * weightPerPc * pcsPerBag).toFixed(3)} kg</div>
+            </div>
             <div class="result-card" style="background:#d9e9fa; border-color:#7ea5c9;">
               <div class="big">${formatKg(totalKg)}</div><div class="label">total kg</div><div class="sub">${totalPcs} pcs total</div>
             </div>
@@ -4662,17 +4962,18 @@
             <span>📦 ${escapeHtml(productName)}</span>
             <span>${numBags} bag${numBags !== 1 ? 's' : ''} × ${pcsPerBag} pcs</span>
             <span>➕ ${extraPcs} loose</span>
-            <span style="color:#c0392b;">➖ ${returnPcs} return</span>
+            <span style="color:#c0392b;">➖ ${returnPcs} return pcs</span>
+            <span style="color:#c0392b;">↩️ ${returnBags} return bags</span>
             <span class="value">${formatKg(totalKg)} kg</span>
           </div>`;
 
         html += `<div style="font-size:0.66rem; color:#1e567a; margin-top: 6px; text-align: center; background: #deedfd; padding: 4px 10px; border-radius: 40px; border: 1px solid #aac6e2; font-weight:500;">
-            🧮 ${numBags} bag(s) = ${formatKg(totalFromBagsKg)} kg &nbsp;|&nbsp; ${extraPcs} pc(s) = ${formatKg(totalFromLooseKg)} kg &nbsp;|&nbsp; ➖ ${returnPcs} pc(s) = ${returnKg.toFixed(3)} kg
+            🧮 ${netBags} bag(s) = ${formatKg(totalFromBagsKg)} kg &nbsp;|&nbsp; ${extraPcs} pc(s) = ${formatKg(totalFromLooseKg)} kg &nbsp;|&nbsp; ➖ ${returnPcs} pc(s) = ${returnKg.toFixed(3)} kg &nbsp;|&nbsp; ↩️ ${returnBags} bag(s) = ${(returnBags * weightPerPc * pcsPerBag).toFixed(3)} kg
           </div>`;
 
         resultContent.innerHTML = html;
         updateTotalQtyDisplay();
-        return { weightPerPc, pcsPerBag, numBags, extraPcs, returnPcs, totalKg, totalPcs, productName, customerName };
+        return { weightPerPc, pcsPerBag, numBags, extraPcs, returnPcs, returnBags, netBags, totalKg, totalPcs, productName, customerName };
       }
 
       function fullRecalc() { updateBagPreview(); return calculateTotal(); }
@@ -4683,7 +4984,7 @@
         debounceTimer = setTimeout(() => fullRecalc(), 120);
       }
 
-      [weightPerPcInput, pcsPerBagInput, numBagsInput, extraPcsInput, returnPcsInput].forEach(inp => {
+      [weightPerPcInput, pcsPerBagInput, numBagsInput, extraPcsInput, returnPcsInput, returnBagsInput].forEach(inp => {
         inp.addEventListener('input', autoRecalc);
       });
 
@@ -4694,6 +4995,7 @@
         numBagsInput.value = '';
         extraPcsInput.value = '';
         returnPcsInput.value = '';
+        returnBagsInput.value = '';
 
         bagWeightPreview.textContent = '0.000';
         bagPcsPreview.textContent = '0 pcs';
@@ -5083,7 +5385,6 @@
         }
       });
 
-      // Initialize currency table
       buildCurrencyTable();
       calculateCash();
 
@@ -5105,6 +5406,7 @@
         numBagsInput.value = '';
         extraPcsInput.value = '';
         returnPcsInput.value = '';
+        returnBagsInput.value = '';
         bagWeightPreview.textContent = '0.000';
         bagPcsPreview.textContent = '0 pcs';
         totalQtyValue.textContent = '0';
@@ -5112,7 +5414,7 @@
         showEmptyHint();
       }
 
-      // ==================== ENTER NAV — SKIP IF EMPTY ====================
+      // ==================== ENTER NAV + ESC BACK ====================
       async function handleEnterKey(e, currentIndex) {
         if (e.key !== 'Enter') return;
         e.preventDefault();
@@ -5136,6 +5438,7 @@
           const result = fullRecalc();
           if (result === null) { return; }
           const kgText = formatKg(result.totalKg);
+          const pcsText = result.totalPcs;
           showLoading('calc');
           let saved = false;
           try {
@@ -5155,7 +5458,7 @@
             .then(() => {})
             .catch(() => {});
           resetAllFields();
-          resultContent.innerHTML = `<div class="empty-hint">✅ Saved <strong>${kgText} kg</strong> — ready for next entry<span class="small">Fill the fields above to calculate again</span></div>`;
+          resultContent.innerHTML = `<div class="empty-hint">✅ Saved <strong>${kgText} kg</strong> &nbsp;·&nbsp; <strong>${pcsText} Pcs</strong> — ready for next entry<span class="small">Fill the fields above to calculate again</span></div>`;
           weightPerPcInput.focus();
         } else {
           const nextField = fieldOrder[currentIndex + 1];
@@ -5163,8 +5466,20 @@
         }
       }
 
+      function handleEscKey(e, currentIndex) {
+        if (e.key !== 'Escape') return;
+        e.preventDefault();
+        if (currentIndex > 0) {
+          const prevField = fieldOrder[currentIndex - 1];
+          if (prevField) { prevField.focus(); if (prevField.select) prevField.select(); }
+        }
+      }
+
       fieldOrder.forEach((input, index) => {
-        input.addEventListener('keydown', (e) => handleEnterKey(e, index));
+        input.addEventListener('keydown', (e) => {
+          handleEnterKey(e, index);
+          handleEscKey(e, index);
+        });
       });
 
       // ==================== MODAL ====================
@@ -5840,6 +6155,7 @@
       }
 
       // ==================== INIT ====================
+      await loadUploadedWallpapers();
       await loadWallpaper();
       await loadEmployees();
       await loadNotes();
