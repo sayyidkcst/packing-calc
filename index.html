@@ -35,7 +35,6 @@
       z-index: 0;
       transition: background-image 0.3s ease, filter 0.3s ease;
     }
-
     .wallpaper-layer::after {
       content: '';
       position: absolute;
@@ -44,7 +43,7 @@
       pointer-events: none;
     }
 
-    /* ---------- BOOT / CONNECTING OVERLAY ---------- */
+    /* ---------- BOOT OVERLAY ---------- */
     .boot-overlay {
       position: fixed;
       inset: 0;
@@ -60,13 +59,9 @@
       transition: opacity 0.5s ease;
       pointer-events: auto;
     }
-    .boot-overlay.hidden {
-      opacity: 0;
-      pointer-events: none;
-    }
+    .boot-overlay.hidden { opacity: 0; pointer-events: none; }
     .boot-logo {
-      font-size: 3.2rem;
-      line-height: 1;
+      font-size: 3.2rem; line-height: 1;
       filter: drop-shadow(0 4px 18px rgba(120, 200, 255, 0.7));
       animation: bootPulse 2s ease-in-out infinite;
     }
@@ -75,52 +70,36 @@
       50% { transform: scale(1.08); opacity: 0.85; }
     }
     .boot-title {
-      font-size: 1.05rem;
-      font-weight: 600;
-      color: #e8f4ff;
+      font-size: 1.05rem; font-weight: 600; color: #e8f4ff;
       text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7), 0 0 20px rgba(120, 200, 255, 0.5);
       letter-spacing: 0.06em;
     }
     .boot-status {
-      font-size: 0.78rem;
-      font-weight: 500;
-      color: #b8d4ec;
+      font-size: 0.78rem; font-weight: 500; color: #b8d4ec;
       text-shadow: 0 1px 6px rgba(0, 0, 0, 0.7);
-      letter-spacing: 0.04em;
-      min-height: 1.2em;
+      letter-spacing: 0.04em; min-height: 1.2em;
     }
     .boot-status.error { color: #ff9e9e; }
     .boot-status.ok { color: #a6f0b8; }
-
     .boot-progress {
-      width: 220px;
-      height: 12px;
-      border-radius: 8px;
+      width: 220px; height: 12px; border-radius: 8px;
       background: rgba(255, 255, 255, 0.12);
       border: 1px solid rgba(255, 255, 255, 0.28);
       box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.4), 0 1px 0 rgba(255, 255, 255, 0.12);
-      overflow: hidden;
-      position: relative;
+      overflow: hidden; position: relative;
     }
     .boot-progress::after {
-      content: '';
-      position: absolute;
-      top: 0; bottom: 0;
-      width: 40%;
+      content: ''; position: absolute; top: 0; bottom: 0; width: 40%;
       border-radius: 8px;
       background: linear-gradient(90deg, transparent 0%, #7fc5f5 25%, #ffffff 50%, #7fc5f5 75%, transparent 100%);
       box-shadow: 0 0 14px rgba(140, 220, 255, 0.9);
       animation: bootBar 1.4s linear infinite;
     }
-    @keyframes bootBar {
-      0% { left: -45%; }
-      100% { left: 105%; }
-    }
+    @keyframes bootBar { 0% { left: -45%; } 100% { left: 105%; } }
     .boot-spinner {
       width: 34px; height: 34px;
       border: 3px solid rgba(180, 220, 255, 0.28);
-      border-top-color: #a0d8ff;
-      border-radius: 50%;
+      border-top-color: #a0d8ff; border-radius: 50%;
       animation: bootSpin 0.85s linear infinite;
       filter: drop-shadow(0 0 8px rgba(140, 200, 255, 0.7));
     }
@@ -141,340 +120,195 @@
     }
 
     .desktop-gadget, .desktop-calendar, .startbar { transition: opacity 0.6s ease; }
-    .window, .window-price, .window-load, .window-cash, .window-notepad { transition: opacity 0.2s, transform 0.2s, top 0.15s, left 0.15s, width 0.15s, height 0.15s; }
+    .window, .window-price, .window-load, .window-cash, .window-notepad {
+      transition: opacity 0.2s, transform 0.2s, top 0.15s, left 0.15s, width 0.15s, height 0.15s;
+    }
 
     /* ---------- DESKTOP CLOCK GADGET ---------- */
     .desktop-gadget {
-      position: fixed;
-      top: 30px;
-      right: 30px;
-      z-index: 5;
-      width: 240px;
+      position: fixed; top: 30px; right: 30px; z-index: 5; width: 240px;
       background: radial-gradient(circle at 50% 30%, rgba(255, 255, 255, 0.28) 0%, rgba(220, 235, 250, 0.18) 40%, rgba(140, 180, 220, 0.14) 100%);
       border-radius: 14px;
       border-top: 1px solid rgba(255, 255, 255, 0.55);
       border-left: 1px solid rgba(255, 255, 255, 0.35);
       border-right: 1px solid rgba(120, 160, 200, 0.4);
       border-bottom: 1px solid rgba(80, 120, 160, 0.5);
-      box-shadow: 
-        0 0 0 1px rgba(255, 255, 255, 0.25) inset,
-        0 0 0 1px rgba(30, 63, 90, 0.5),
-        0 12px 35px rgba(0, 0, 0, 0.55),
-        0 2px 10px rgba(0, 0, 0, 0.4),
-        inset 0 1px 20px rgba(255, 255, 255, 0.25);
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.25) inset, 0 0 0 1px rgba(30, 63, 90, 0.5), 0 12px 35px rgba(0, 0, 0, 0.55), 0 2px 10px rgba(0, 0, 0, 0.4), inset 0 1px 20px rgba(255, 255, 255, 0.25);
       backdrop-filter: blur(16px);
-      padding: 18px 16px 16px 16px;
-      text-align: center;
+      padding: 18px 16px 16px 16px; text-align: center;
       cursor: grab;
       transition: box-shadow 0.2s ease, transform 0.2s ease;
       overflow: hidden;
     }
     .desktop-gadget::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 10%; right: 10%;
-      height: 1px;
+      content: ''; position: absolute; top: 0; left: 10%; right: 10%; height: 1px;
       background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.9), transparent);
       pointer-events: none;
     }
     .desktop-gadget::after {
-      content: '';
-      position: absolute;
-      top: 6px; left: 6px; right: 6px;
-      height: 40%;
+      content: ''; position: absolute; top: 6px; left: 6px; right: 6px; height: 40%;
       background: linear-gradient(180deg, rgba(255, 255, 255, 0.18) 0%, transparent 100%);
-      border-radius: 10px 10px 50% 50%;
-      pointer-events: none;
+      border-radius: 10px 10px 50% 50%; pointer-events: none;
     }
     .desktop-gadget:active { cursor: grabbing; }
     .desktop-gadget.dragging {
-      box-shadow: 
-        0 0 0 1px rgba(255, 255, 255, 0.35) inset,
-        0 0 0 1px rgba(30, 63, 90, 0.6),
-        0 18px 45px rgba(0, 0, 0, 0.7),
-        0 4px 14px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.35) inset, 0 0 0 1px rgba(30, 63, 90, 0.6), 0 18px 45px rgba(0, 0, 0, 0.7), 0 4px 14px rgba(0, 0, 0, 0.5);
       transform: scale(1.02);
     }
-
     .gadget-time {
       position: relative;
       font-family: 'Segoe UI Light', 'Segoe UI', 'Consolas', monospace;
-      font-size: 3.2rem;
-      font-weight: 300;
-      color: #ffffff;
-      letter-spacing: 0.02em;
-      line-height: 1;
-      text-shadow: 
-        0 2px 4px rgba(0, 0, 0, 0.5),
-        0 0 20px rgba(140, 200, 255, 0.55),
-        0 0 40px rgba(100, 170, 240, 0.35);
-      margin-bottom: 2px;
-      transition: opacity 0.3s;
-      z-index: 1;
+      font-size: 3.2rem; font-weight: 300; color: #ffffff;
+      letter-spacing: 0.02em; line-height: 1;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5), 0 0 20px rgba(140, 200, 255, 0.55), 0 0 40px rgba(100, 170, 240, 0.35);
+      margin-bottom: 2px; transition: opacity 0.3s; z-index: 1;
     }
     .gadget-time .seconds {
-      font-size: 1.4rem;
-      font-weight: 300;
-      color: rgba(220, 240, 255, 0.85);
+      font-size: 1.4rem; font-weight: 300; color: rgba(220, 240, 255, 0.85);
       text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5), 0 0 12px rgba(140, 200, 255, 0.4);
-      margin-left: 4px;
-      vertical-align: 0.35em;
+      margin-left: 4px; vertical-align: 0.35em;
     }
     .gadget-time .ampm {
-      font-size: 1.1rem;
-      font-weight: 400;
-      color: rgba(220, 240, 255, 0.9);
+      font-size: 1.1rem; font-weight: 400; color: rgba(220, 240, 255, 0.9);
       text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5), 0 0 12px rgba(140, 200, 255, 0.4);
-      margin-left: 6px;
-      vertical-align: 0.55em;
-      letter-spacing: 0.06em;
+      margin-left: 6px; vertical-align: 0.55em; letter-spacing: 0.06em;
     }
     .gadget-date {
-      font-size: 0.85rem;
-      font-weight: 500;
-      color: rgba(235, 245, 255, 0.92);
+      font-size: 0.85rem; font-weight: 500; color: rgba(235, 245, 255, 0.92);
       text-shadow: 0 1px 3px rgba(0, 0, 0, 0.55), 0 0 10px rgba(140, 200, 255, 0.35);
-      letter-spacing: 0.04em;
-      margin-bottom: 12px;
-      z-index: 1;
-      position: relative;
+      letter-spacing: 0.04em; margin-bottom: 12px; z-index: 1; position: relative;
     }
     .gadget-day {
-      font-size: 0.72rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.22em;
+      font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.22em;
       color: rgba(200, 225, 250, 0.75);
       text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
       border-top: 1px solid rgba(255, 255, 255, 0.22);
-      padding-top: 10px;
-      margin-top: 6px;
-      z-index: 1;
-      position: relative;
+      padding-top: 10px; margin-top: 6px; z-index: 1; position: relative;
     }
-
     .gadget-analog {
-      width: 118px;
-      height: 118px;
-      margin: 0 auto 10px auto;
-      border-radius: 50%;
+      width: 118px; height: 118px; margin: 0 auto 10px auto; border-radius: 50%;
       background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.42) 0%, rgba(220, 235, 250, 0.18) 55%, rgba(90, 130, 170, 0.25) 100%);
       border: 2px solid rgba(255, 255, 255, 0.45);
-      box-shadow: 
-        0 4px 14px rgba(0, 0, 0, 0.5),
-        inset 0 2px 8px rgba(255, 255, 255, 0.35),
-        inset 0 -2px 8px rgba(0, 20, 40, 0.35);
-      position: relative;
-      z-index: 1;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5), inset 0 2px 8px rgba(255, 255, 255, 0.35), inset 0 -2px 8px rgba(0, 20, 40, 0.35);
+      position: relative; z-index: 1;
     }
     .gadget-analog::before {
-      content: '';
-      position: absolute;
-      inset: 8px;
-      border-radius: 50%;
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      pointer-events: none;
+      content: ''; position: absolute; inset: 8px; border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.18); pointer-events: none;
     }
     .gadget-hand {
-      position: absolute;
-      bottom: 50%;
-      left: 50%;
-      transform-origin: bottom center;
+      position: absolute; bottom: 50%; left: 50%; transform-origin: bottom center;
       border-radius: 4px;
       transition: transform 0.3s cubic-bezier(0.4, 2.4, 0.55, 0.8);
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
     }
     .gadget-hand.hour {
-      width: 4px;
-      height: 30px;
+      width: 4px; height: 30px;
       background: linear-gradient(180deg, #ffffff, #cfe4f7);
       margin-left: -2px;
       box-shadow: 0 1px 4px rgba(0, 0, 0, 0.6), 0 0 6px rgba(180, 220, 255, 0.6);
     }
     .gadget-hand.minute {
-      width: 3px;
-      height: 42px;
+      width: 3px; height: 42px;
       background: linear-gradient(180deg, #eaf6ff, #b8d8f0);
       margin-left: -1.5px;
       box-shadow: 0 1px 4px rgba(0, 0, 0, 0.6), 0 0 6px rgba(180, 220, 255, 0.6);
     }
     .gadget-hand.second {
-      width: 2px;
-      height: 48px;
+      width: 2px; height: 48px;
       background: linear-gradient(180deg, #ffb37a, #e8734a);
       margin-left: -1px;
       box-shadow: 0 1px 4px rgba(0, 0, 0, 0.6), 0 0 8px rgba(255, 160, 100, 0.8);
       transition: transform 0.1s cubic-bezier(0.4, 2.4, 0.55, 0.8);
     }
     .gadget-center-dot {
-      position: absolute;
-      top: 50%; left: 50%;
-      width: 8px; height: 8px;
-      margin: -4px 0 0 -4px;
-      border-radius: 50%;
+      position: absolute; top: 50%; left: 50%;
+      width: 8px; height: 8px; margin: -4px 0 0 -4px; border-radius: 50%;
       background: radial-gradient(circle at 35% 35%, #ffffff 0%, #b8d8f0 60%, #5a8ab0 100%);
       box-shadow: 0 0 6px rgba(180, 220, 255, 0.9), 0 1px 2px rgba(0, 0, 0, 0.5);
       z-index: 3;
     }
     .gadget-tick {
-      position: absolute;
-      top: 50%; left: 50%;
-      width: 2px; height: 6px;
-      background: rgba(255, 255, 255, 0.55);
-      border-radius: 1px;
-      transform-origin: center 55px;
+      position: absolute; top: 50%; left: 50%;
+      width: 2px; height: 6px; background: rgba(255, 255, 255, 0.55);
+      border-radius: 1px; transform-origin: center 55px;
       box-shadow: 0 0 3px rgba(180, 220, 255, 0.4);
     }
     .gadget-tick.major {
-      width: 3px; height: 9px;
-      background: rgba(255, 255, 255, 0.85);
+      width: 3px; height: 9px; background: rgba(255, 255, 255, 0.85);
       box-shadow: 0 0 5px rgba(180, 220, 255, 0.7);
     }
-
     .gadget-grip {
-      position: absolute;
-      top: 4px; left: 50%;
-      transform: translateX(-50%);
-      width: 40px; height: 3px;
-      border-radius: 3px;
+      position: absolute; top: 4px; left: 50%; transform: translateX(-50%);
+      width: 40px; height: 3px; border-radius: 3px;
       background: rgba(255, 255, 255, 0.18);
-      opacity: 0;
-      transition: opacity 0.2s;
-      pointer-events: none;
+      opacity: 0; transition: opacity 0.2s; pointer-events: none;
     }
     .desktop-gadget:hover .gadget-grip { opacity: 1; }
 
     /* ---------- CALENDAR GADGET ---------- */
     .desktop-calendar {
-      position: fixed;
-      top: 320px;
-      right: 30px;
-      z-index: 5;
-      width: 240px;
+      position: fixed; top: 320px; right: 30px; z-index: 5; width: 240px;
       background: radial-gradient(circle at 50% 30%, rgba(255, 255, 255, 0.28) 0%, rgba(220, 235, 250, 0.18) 40%, rgba(140, 180, 220, 0.14) 100%);
       border-radius: 14px;
       border-top: 1px solid rgba(255, 255, 255, 0.55);
       border-left: 1px solid rgba(255, 255, 255, 0.35);
       border-right: 1px solid rgba(120, 160, 200, 0.4);
       border-bottom: 1px solid rgba(80, 120, 160, 0.5);
-      box-shadow: 
-        0 0 0 1px rgba(255, 255, 255, 0.25) inset,
-        0 0 0 1px rgba(30, 63, 90, 0.5),
-        0 12px 35px rgba(0, 0, 0, 0.55),
-        0 2px 10px rgba(0, 0, 0, 0.4),
-        inset 0 1px 20px rgba(255, 255, 255, 0.25);
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.25) inset, 0 0 0 1px rgba(30, 63, 90, 0.5), 0 12px 35px rgba(0, 0, 0, 0.55), 0 2px 10px rgba(0, 0, 0, 0.4), inset 0 1px 20px rgba(255, 255, 255, 0.25);
       backdrop-filter: blur(16px);
-      padding: 14px 12px 12px 12px;
-      cursor: grab;
+      padding: 14px 12px 12px 12px; cursor: grab;
       transition: box-shadow 0.2s ease, transform 0.2s ease;
       overflow: hidden;
     }
     .desktop-calendar::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 10%; right: 10%;
-      height: 1px;
+      content: ''; position: absolute; top: 0; left: 10%; right: 10%; height: 1px;
       background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.9), transparent);
       pointer-events: none;
     }
     .desktop-calendar:active { cursor: grabbing; }
     .desktop-calendar.dragging {
-      box-shadow: 
-        0 0 0 1px rgba(255, 255, 255, 0.35) inset,
-        0 0 0 1px rgba(30, 63, 90, 0.6),
-        0 18px 45px rgba(0, 0, 0, 0.7),
-        0 4px 14px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.35) inset, 0 0 0 1px rgba(30, 63, 90, 0.6), 0 18px 45px rgba(0, 0, 0, 0.7), 0 4px 14px rgba(0, 0, 0, 0.5);
       transform: scale(1.02);
     }
-
     .cal-header {
-      font-size: 0.82rem;
-      font-weight: 700;
-      color: #ffffff;
-      text-align: center;
+      font-size: 0.82rem; font-weight: 700; color: #ffffff; text-align: center;
       text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6), 0 0 12px rgba(140, 200, 255, 0.5);
-      letter-spacing: 0.06em;
-      margin-bottom: 8px;
-      position: relative;
-      z-index: 1;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 4px;
+      letter-spacing: 0.06em; margin-bottom: 8px; position: relative; z-index: 1;
+      display: flex; align-items: center; justify-content: space-between; padding: 0 4px;
     }
     .cal-nav-btn {
       background: rgba(255, 255, 255, 0.15);
       border: 1px solid rgba(255, 255, 255, 0.35);
-      border-radius: 4px;
-      color: #ffffff;
-      width: 22px;
-      height: 22px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      font-size: 0.75rem;
-      font-weight: 700;
-      line-height: 1;
-      padding: 0;
+      border-radius: 4px; color: #ffffff;
+      width: 22px; height: 22px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 0.75rem; font-weight: 700; line-height: 1; padding: 0;
       transition: background 0.15s, border-color 0.15s;
       text-shadow: 0 1px 2px rgba(0,0,0,0.5);
-      flex-shrink: 0;
-      pointer-events: auto;
+      flex-shrink: 0; pointer-events: auto;
     }
-    .cal-nav-btn:hover {
-      background: rgba(255, 255, 255, 0.3);
-      border-color: rgba(255, 255, 255, 0.6);
-    }
-    .cal-nav-btn:active {
-      background: rgba(255, 255, 255, 0.45);
-      transform: scale(0.94);
-    }
-    .cal-month-label {
-      flex: 1;
-      text-align: center;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .cal-grid {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 3px;
-      position: relative;
-      z-index: 1;
-    }
+    .cal-nav-btn:hover { background: rgba(255, 255, 255, 0.3); border-color: rgba(255, 255, 255, 0.6); }
+    .cal-nav-btn:active { background: rgba(255, 255, 255, 0.45); transform: scale(0.94); }
+    .cal-month-label { flex: 1; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; position: relative; z-index: 1; }
     .cal-cell {
-      text-align: center;
-      font-size: 0.68rem;
-      font-weight: 500;
+      text-align: center; font-size: 0.68rem; font-weight: 500;
       color: rgba(220, 240, 255, 0.85);
-      padding: 4px 0;
-      border-radius: 4px;
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
-      transition: background 0.15s;
+      padding: 4px 0; border-radius: 4px;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4); transition: background 0.15s;
     }
     .cal-cell.header {
-      font-size: 0.6rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      color: rgba(180, 210, 240, 0.7);
-      letter-spacing: 0.05em;
+      font-size: 0.6rem; font-weight: 700; text-transform: uppercase;
+      color: rgba(180, 210, 240, 0.7); letter-spacing: 0.05em;
     }
     .cal-cell.today {
-      background: rgba(100, 180, 255, 0.5);
-      color: #ffffff;
-      font-weight: 700;
+      background: rgba(100, 180, 255, 0.5); color: #ffffff; font-weight: 700;
       box-shadow: 0 0 8px rgba(100, 180, 255, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.4);
       border-radius: 6px;
     }
-    .cal-cell.empty {
-      color: transparent;
-    }
-    .cal-cell:hover:not(.header):not(.empty) {
-      background: rgba(255, 255, 255, 0.15);
-    }
+    .cal-cell.empty { color: transparent; }
+    .cal-cell:hover:not(.header):not(.empty) { background: rgba(255, 255, 255, 0.15); }
 
     @media (max-width: 1200px) {
       .desktop-gadget { width: 200px; top: 20px; right: 20px; padding: 14px 12px 12px 12px; }
@@ -500,18 +334,12 @@
       background: rgba(220, 235, 250, 0.78);
       backdrop-filter: blur(12px);
       border-radius: 10px 10px 8px 8px;
-      box-shadow: 
-        0 0 0 1px rgba(255, 255, 255, 0.5) inset,
-        0 0 0 1px #1e3f5a,
-        0 12px 35px rgba(0, 0, 0, 0.6),
-        0 2px 8px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.5) inset, 0 0 0 1px #1e3f5a, 0 12px 35px rgba(0, 0, 0, 0.6), 0 2px 8px rgba(0, 0, 0, 0.5);
       border-top: 1px solid #a8c8e8;
       border-left: 1px solid #8bb1d4;
       border-right: 1px solid #6a93b8;
       border-bottom: 1px solid #4b769b;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
+      overflow: hidden; display: flex; flex-direction: column;
       max-height: calc(100vh - var(--taskbar-height) - 20px);
       transition: opacity 0.2s, transform 0.2s, top 0.15s, left 0.15s, width 0.15s, height 0.15s;
       z-index: 10;
@@ -619,122 +447,67 @@
       padding: 0 10px;
       background: linear-gradient(180deg, #f0f8ff, #d6e7f5);
       border-radius: 20px; border: 1px solid #9db9d6;
-      text-shadow: 0 1px 0 white;
-      margin-left: 8px; display: inline-block;
+      text-shadow: 0 1px 0 white; margin-left: 8px; display: inline-block;
       box-shadow: 0 1px 0 white;
       position: relative; top: -20px; margin-bottom: -18px;
     }
 
-    /* ========== TWO-ROW INPUT ========== */
     .input-row-five {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 4px;
-      align-items: flex-end;
+      display: flex; flex-wrap: wrap; gap: 4px; align-items: flex-end;
     }
     .input-row-five .input-group {
-      flex: 0 0 auto;
-      width: 80px;
-      min-width: 0;
-      max-width: none;
+      flex: 0 0 auto; width: 80px; min-width: 0; max-width: none;
     }
-    .input-row-five .input-group.return-group {
-      width: 90px;
-    }
+    .input-row-five .input-group.return-group { width: 90px; }
     .input-row-five .input-group label {
-      font-size: 0.56rem;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      margin-left: 2px;
-      gap: 2px;
+      font-size: 0.56rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      margin-left: 2px; gap: 2px;
     }
-    .input-row-five .input-wrap {
-      padding: 1px 3px 1px 4px;
-      min-height: 24px;
-    }
+    .input-row-five .input-wrap { padding: 1px 3px 1px 4px; min-height: 24px; }
     .input-row-five .input-wrap input {
-      font-size: 0.72rem;
-      padding: 2px 0;
-      text-align: center;
-      letter-spacing: 0.3px;
+      font-size: 0.72rem; padding: 2px 0; text-align: center; letter-spacing: 0.3px;
     }
     .input-row-five .input-wrap .unit {
-      font-size: 0.46rem;
-      padding: 1px 3px;
-      margin-left: 1px;
+      font-size: 0.46rem; padding: 1px 3px; margin-left: 1px;
     }
 
     .input-row-second {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      align-items: center;
-      margin-top: 6px;
+      display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 6px;
     }
     .input-row-second .input-group {
-      flex: 0 0 auto;
-      width: 90px;
-      min-width: 0;
-      max-width: none;
+      flex: 0 0 auto; width: 90px; min-width: 0; max-width: none;
     }
     .input-row-second .input-group label {
-      font-size: 0.56rem;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      margin-left: 2px;
-      gap: 2px;
+      font-size: 0.56rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      margin-left: 2px; gap: 2px;
     }
-    .input-row-second .input-wrap {
-      padding: 1px 3px 1px 4px;
-      min-height: 24px;
-    }
+    .input-row-second .input-wrap { padding: 1px 3px 1px 4px; min-height: 24px; }
     .input-row-second .input-wrap input {
-      font-size: 0.72rem;
-      padding: 2px 0;
-      text-align: center;
-      letter-spacing: 0.3px;
+      font-size: 0.72rem; padding: 2px 0; text-align: center; letter-spacing: 0.3px;
     }
     .input-row-second .input-wrap .unit {
-      font-size: 0.46rem;
-      padding: 1px 3px;
-      margin-left: 1px;
+      font-size: 0.46rem; padding: 1px 3px; margin-left: 1px;
     }
 
     .compact-bag-preview {
-      flex: 0 1 auto;
-      width: auto;
-      min-width: 0;
-      margin-top: 0;
-      padding: 3px 8px 3px 10px;
-      font-size: 0.62rem;
-      gap: 4px;
+      flex: 0 1 auto; width: auto; min-width: 0;
+      margin-top: 0; padding: 3px 8px 3px 10px;
+      font-size: 0.62rem; gap: 4px;
     }
     .compact-bag-preview .highlight {
-      font-size: 0.58rem;
-      padding: 2px 7px;
+      font-size: 0.58rem; padding: 2px 7px;
     }
 
     .inline-reset-btn {
-      flex: 0 0 auto;
-      padding: 4px 10px;
-      font-size: 0.66rem;
-      min-height: 24px;
-      min-width: 0;
-      height: 24px;
+      flex: 0 0 auto; padding: 4px 10px; font-size: 0.66rem;
+      min-height: 24px; min-width: 0; height: 24px;
     }
 
-    /* Load calc reset button row */
     .load-reset-row {
-      display: flex;
-      justify-content: flex-end;
-      margin-top: 8px;
+      display: flex; justify-content: flex-end; margin-top: 8px;
     }
     .load-reset-row .aero-btn {
-      padding: 5px 12px;
-      font-size: 0.72rem;
-      min-height: 28px;
+      padding: 5px 12px; font-size: 0.72rem; min-height: 28px;
     }
 
     .input-row { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: flex-end; }
@@ -744,8 +517,7 @@
       font-size: 0.7rem; font-weight: 600; color: #1c3e5a;
       text-shadow: 0 1px 0 white;
       display: flex; align-items: center; gap: 4px;
-      margin-left: 4px; letter-spacing: 0.2px;
-      white-space: nowrap;
+      margin-left: 4px; letter-spacing: 0.2px; white-space: nowrap;
     }
 
     .input-wrap {
@@ -753,8 +525,7 @@
       border: 1px solid #7f9db9; border-radius: 5px;
       box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 0 white;
       padding: 1px 5px 1px 8px;
-      transition: 0.1s; width: 100%;
-      min-height: 28px;
+      transition: 0.1s; width: 100%; min-height: 28px;
     }
     .input-wrap:focus-within {
       border-color: #3c7bb0;
@@ -765,8 +536,7 @@
       font-size: 0.85rem; font-weight: 600; padding: 4px 0;
       width: 100%; color: #102c3f;
       font-family: 'Segoe UI', Consolas, monospace;
-      text-align: right; min-width: 0;
-      line-height: 1.1;
+      text-align: right; min-width: 0; line-height: 1.1;
     }
     .input-wrap input[type="number"] { -moz-appearance: textfield; }
     .input-wrap input::-webkit-outer-spin-button, .input-wrap input::-webkit-inner-spin-button {
@@ -786,8 +556,7 @@
       border: 1px solid #7f9db9; border-radius: 5px;
       box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 0 white;
       padding: 0; transition: 0.1s; width: 100%;
-      position: relative; overflow: hidden;
-      min-height: 30px;
+      position: relative; overflow: hidden; min-height: 30px;
     }
     .combo-wrap:focus-within {
       border-color: #3c7bb0;
@@ -1138,10 +907,7 @@
     .modal {
       background: rgba(230, 242, 252, 0.95);
       border-radius: 10px; border: 1px solid #6b8fae;
-      box-shadow: 
-        0 0 0 1px rgba(255, 255, 255, 0.6) inset,
-        0 12px 35px rgba(0, 0, 0, 0.6),
-        0 2px 8px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.6) inset, 0 12px 35px rgba(0, 0, 0, 0.6), 0 2px 8px rgba(0, 0, 0, 0.5);
       width: 380px; max-width: calc(100vw - 40px);
       overflow: hidden; animation: modalPop 0.2s ease;
     }
@@ -1252,18 +1018,12 @@
       color: white; font-size: 0.82rem; font-weight: 700;
       text-shadow: 0 1px 2px black, 0 0 8px #6fc0ff;
       cursor: pointer;
-      box-shadow: 
-        inset 0 1px 0 rgba(255, 255, 255, 0.5),
-        inset 0 -6px 12px rgba(0, 0, 0, 0.35),
-        0 0 8px rgba(120, 200, 255, 0.4);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), inset 0 -6px 12px rgba(0, 0, 0, 0.35), 0 0 8px rgba(120, 200, 255, 0.4);
       transition: 0.15s; margin-left: -6px; position: relative;
     }
     .start-btn:hover {
       background: radial-gradient(circle at 30% 30%, #a0d8ff 0%, #3a8fd0 40%, #154d7a 100%);
-      box-shadow: 
-        inset 0 1px 0 rgba(255, 255, 255, 0.6),
-        inset 0 -6px 12px rgba(0, 0, 0, 0.35),
-        0 0 14px rgba(140, 220, 255, 0.7);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), inset 0 -6px 12px rgba(0, 0, 0, 0.35), 0 0 14px rgba(140, 220, 255, 0.7);
     }
     .start-btn:active { transform: scale(0.97); }
     .start-btn .start-orb {
@@ -1335,8 +1095,7 @@
     .clock .time {
       font-weight: 700; font-size: 0.72rem;
       font-family: 'Segoe UI', Consolas, monospace;
-      letter-spacing: 0.3px;
-      white-space: nowrap;
+      letter-spacing: 0.3px; white-space: nowrap;
     }
     .clock .date { font-size: 0.62rem; color: #b8d4ec; }
 
@@ -1360,9 +1119,7 @@
     }
 
     .start-user-header {
-      display: flex;
-      align-items: center;
-      gap: 12px;
+      display: flex; align-items: center; gap: 12px;
       padding: 14px 18px;
       margin: 0 8px 8px 8px;
       background: linear-gradient(135deg, rgba(80, 150, 210, 0.4) 0%, rgba(40, 90, 140, 0.5) 100%);
@@ -1381,28 +1138,16 @@
       flex-shrink: 0;
       border: 2px solid rgba(180, 220, 255, 0.6);
     }
-    .start-user-info {
-      flex: 1;
-      min-width: 0;
-      overflow: hidden;
-    }
+    .start-user-info { flex: 1; min-width: 0; overflow: hidden; }
     .start-user-name {
-      font-size: 0.82rem;
-      font-weight: 700;
-      color: #ffffff;
+      font-size: 0.82rem; font-weight: 700; color: #ffffff;
       text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6), 0 0 12px rgba(140, 200, 255, 0.4);
-      letter-spacing: 0.03em;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      letter-spacing: 0.03em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
     .start-user-role {
-      font-size: 0.62rem;
-      font-weight: 500;
-      color: #b8d4ec;
+      font-size: 0.62rem; font-weight: 500; color: #b8d4ec;
       text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-      letter-spacing: 0.04em;
-      margin-top: 2px;
+      letter-spacing: 0.04em; margin-top: 2px;
     }
 
     .start-menu-header {
@@ -1427,67 +1172,37 @@
 
     .wallpaper-mini-window {
       position: fixed;
-      width: 380px;
-      max-width: calc(100vw - 40px);
-      z-index: 100000;
-      display: none;
-      flex-direction: column;
+      width: 380px; max-width: calc(100vw - 40px);
+      z-index: 100000; display: none; flex-direction: column;
       border-radius: 10px 10px 8px 8px;
-      box-shadow: 
-        0 0 0 1px rgba(255, 255, 255, 0.5) inset,
-        0 0 0 1px #1e3f5a,
-        0 12px 35px rgba(0, 0, 0, 0.6),
-        0 2px 8px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.5) inset, 0 0 0 1px #1e3f5a, 0 12px 35px rgba(0, 0, 0, 0.6), 0 2px 8px rgba(0, 0, 0, 0.5);
       border-top: 1px solid #a8c8e8;
       border-left: 1px solid #8bb1d4;
       border-right: 1px solid #6a93b8;
       border-bottom: 1px solid #4b769b;
       background: rgba(220, 235, 250, 0.86);
       backdrop-filter: blur(14px);
-      overflow: hidden;
-      animation: modalPop 0.2s ease;
+      overflow: hidden; animation: modalPop 0.2s ease;
     }
     .wallpaper-mini-window.active { display: flex; }
-
     .wallpaper-mini-window .title-bar {
-      border-radius: 10px 10px 0 0;
-      cursor: move;
+      border-radius: 10px 10px 0 0; cursor: move;
     }
     .wallpaper-mini-content {
       padding: 12px 14px 14px 14px;
       background: rgba(245, 250, 255, 0.7);
-      display: flex;
-      flex-direction: column;
-      max-height: 70vh;
+      display: flex; flex-direction: column; max-height: 70vh;
     }
     .wallpaper-scroll-container {
-      flex: 1;
-      overflow-y: auto;
-      padding-right: 4px;
-      margin-bottom: 8px;
-      border-radius: 6px;
-      border: 1px solid #9bb8d4;
+      flex: 1; overflow-y: auto; padding-right: 4px; margin-bottom: 8px;
+      border-radius: 6px; border: 1px solid #9bb8d4;
       background: rgba(235, 245, 255, 0.5);
-      padding: 10px;
-      max-height: 220px;
+      padding: 10px; max-height: 220px;
     }
-    .wallpaper-scroll-container::-webkit-scrollbar {
-      width: 8px;
-    }
-    .wallpaper-scroll-container::-webkit-scrollbar-track {
-      background: rgba(200, 220, 240, 0.4);
-      border-radius: 10px;
-    }
-    .wallpaper-scroll-container::-webkit-scrollbar-thumb {
-      background: #9bb9d6;
-      border-radius: 10px;
-      border: 1px solid #7a9bb8;
-    }
-    .wallpaper-grid-mini {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-    }
+    .wallpaper-scroll-container::-webkit-scrollbar { width: 8px; }
+    .wallpaper-scroll-container::-webkit-scrollbar-track { background: rgba(200, 220, 240, 0.4); border-radius: 10px; }
+    .wallpaper-scroll-container::-webkit-scrollbar-thumb { background: #9bb9d6; border-radius: 10px; border: 1px solid #7a9bb8; }
+    .wallpaper-grid-mini { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
     .wp-thumb {
       aspect-ratio: 16/10; border-radius: 6px;
       border: 2px solid #7f9db9;
@@ -1505,42 +1220,29 @@
       box-shadow: 0 0 0 3px rgba(96, 173, 240, 0.5), 0 2px 6px rgba(0,0,0,0.3);
     }
     .wp-thumb.selected::after {
-      content: '✓'; position: absolute;
-      top: 6px; right: 6px;
+      content: '✓'; position: absolute; top: 6px; right: 6px;
       background: #1d4a6b; color: white;
       width: 22px; height: 22px; border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
       font-size: 0.8rem; font-weight: 700;
       box-shadow: 0 1px 3px rgba(0,0,0,0.4);
     }
-
     .wp-thumb.uploaded { position: relative; }
     .wp-thumb.uploaded .wp-thumb-delete {
-      position: absolute;
-      bottom: 4px;
-      left: 4px;
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
+      position: absolute; bottom: 4px; left: 4px;
+      width: 20px; height: 20px; border-radius: 50%;
       background: linear-gradient(180deg, #d98b8b 0%, #b85555 45%, #8b3232 100%);
-      color: white;
-      border: 1px solid #6b2323;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.65rem;
-      font-weight: 700;
+      color: white; border: 1px solid #6b2323;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.65rem; font-weight: 700;
       cursor: pointer;
       box-shadow: 0 1px 3px rgba(0,0,0,0.4);
-      z-index: 5;
-      line-height: 1;
-      transition: 0.12s;
+      z-index: 5; line-height: 1; transition: 0.12s;
     }
     .wp-thumb.uploaded .wp-thumb-delete:hover {
       transform: scale(1.15);
       background: linear-gradient(180deg, #e69b9b 0%, #c56565 45%, #9b3e3e 100%);
     }
-
     .wp-upload-area-mini {
       border: 2px dashed #7f9db9; border-radius: 6px;
       padding: 8px; text-align: center;
@@ -1555,13 +1257,9 @@
       color: #1d4a6b;
     }
     .wp-upload-area-mini input[type="file"] { display: none; }
-
     .wp-upload-progress {
-      font-size: 0.62rem;
-      color: #1d4a6b;
-      font-weight: 600;
-      text-align: center;
-      margin-top: 4px;
+      font-size: 0.62rem; color: #1d4a6b; font-weight: 600;
+      text-align: center; margin-top: 4px;
       display: none;
       padding: 3px 8px;
       background: rgba(200, 230, 255, 0.5);
@@ -1569,36 +1267,24 @@
       border: 1px solid #a8c8e0;
     }
     .wp-upload-progress.show { display: block; }
-
     .wp-delete-area {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-top: 6px;
-      padding: 5px 12px;
+      display: flex; align-items: center; justify-content: space-between;
+      margin-top: 6px; padding: 5px 12px;
       background: rgba(255, 230, 230, 0.7);
-      border: 1px solid #c26b6b;
-      border-radius: 40px;
-      font-size: 0.72rem;
-      color: #8b2c2c;
-      font-weight: 600;
+      border: 1px solid #c26b6b; border-radius: 40px;
+      font-size: 0.72rem; color: #8b2c2c; font-weight: 600;
       box-shadow: inset 0 1px 4px #ffffff;
       transition: 0.15s;
     }
     .wp-delete-area.hidden { display: none; }
-    .wp-delete-area .delete-label {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
+    .wp-delete-area .delete-label { display: flex; align-items: center; gap: 6px; }
     .wp-delete-btn {
       background: linear-gradient(180deg, #d98b8b 0%, #b85555 45%, #8b3232 100%);
       color: white;
       border: 1px solid #6b2323;
       border-radius: 20px;
       padding: 4px 12px;
-      font-size: 0.66rem;
-      font-weight: 700;
+      font-size: 0.66rem; font-weight: 700;
       cursor: pointer;
       text-shadow: 0 1px 1px #3a1010;
       box-shadow: inset 0 1px 0 #f0b0b0, 0 2px 5px #00000040;
@@ -1613,7 +1299,6 @@
       transform: scale(0.97);
       box-shadow: inset 0 2px 6px rgba(0,0,0,0.3);
     }
-
     .sync-badge-mini {
       font-size: 0.6rem;
       padding: 1px 6px;
@@ -1643,44 +1328,26 @@
       box-shadow: 0 1px 0 white;
       position: relative; top: -20px; margin-bottom: -18px;
     }
-
     .cash-top-row {
-      display: flex;
-      gap: 8px;
-      align-items: flex-end;
-      flex-wrap: wrap;
-      margin-bottom: 8px;
+      display: flex; gap: 8px; align-items: flex-end;
+      flex-wrap: wrap; margin-bottom: 8px;
     }
-    .cash-top-row .input-group {
-      flex: 1 1 140px;
-      min-width: 120px;
-      max-width: none;
-    }
-    .cash-top-row .input-group label {
-      font-size: 0.68rem;
-    }
+    .cash-top-row .input-group { flex: 1 1 140px; min-width: 120px; max-width: none; }
+    .cash-top-row .input-group label { font-size: 0.68rem; }
 
     .currency-table {
-      width: 100%;
-      border-collapse: separate;
-      border-spacing: 0;
-      font-size: 0.76rem;
-      background: white;
-      border: 1px solid #9ab9d6;
-      border-radius: 6px;
+      width: 100%; border-collapse: separate; border-spacing: 0;
+      font-size: 0.76rem; background: white;
+      border: 1px solid #9ab9d6; border-radius: 6px;
       overflow: hidden;
       box-shadow: inset 0 1px 4px #ffffff, 0 2px 4px rgba(0, 0, 0, 0.08);
       margin-top: 6px;
     }
     .currency-table thead th {
       background: linear-gradient(180deg, #e3eff9 0%, #c3d9ed 100%);
-      color: #10344b;
-      font-weight: 700;
-      font-size: 0.68rem;
-      text-transform: uppercase;
-      letter-spacing: 0.3px;
-      padding: 7px 8px;
-      text-align: left;
+      color: #10344b; font-weight: 700; font-size: 0.68rem;
+      text-transform: uppercase; letter-spacing: 0.3px;
+      padding: 7px 8px; text-align: left;
       border-bottom: 1px solid #8eb0ce;
       text-shadow: 0 1px 0 white;
     }
@@ -1688,44 +1355,28 @@
     .currency-table thead th:nth-child(3) { text-align: center; }
     .currency-table thead th:nth-child(4) { text-align: right; }
     .currency-table tbody td {
-      padding: 5px 8px;
-      border-bottom: 1px solid #d5e3ef;
-      color: #1a3e5a;
-      vertical-align: middle;
+      padding: 5px 8px; border-bottom: 1px solid #d5e3ef;
+      color: #1a3e5a; vertical-align: middle;
     }
     .currency-table tbody tr:last-child td { border-bottom: none; }
     .currency-table tbody tr:nth-child(even) { background: #f4faff; }
     .currency-table tbody td.denom-cell {
-      font-weight: 700;
-      color: #0f3146;
-      font-family: 'Segoe UI', Consolas, monospace;
-      white-space: nowrap;
+      font-weight: 700; color: #0f3146;
+      font-family: 'Segoe UI', Consolas, monospace; white-space: nowrap;
     }
-    .currency-table tbody td.count-cell {
-      text-align: center;
-      width: 100px;
-    }
+    .currency-table tbody td.count-cell { text-align: center; width: 100px; }
     .currency-table tbody td.amount-cell {
-      text-align: right;
-      font-weight: 700;
-      color: #0f3146;
-      font-family: 'Segoe UI', Consolas, monospace;
-      white-space: nowrap;
+      text-align: right; font-weight: 700; color: #0f3146;
+      font-family: 'Segoe UI', Consolas, monospace; white-space: nowrap;
     }
     .currency-table tbody td.count-cell input {
-      width: 80px;
-      border: 1px solid #7f9db9;
-      border-radius: 4px;
-      padding: 4px 6px;
-      font-size: 0.78rem;
-      font-weight: 600;
-      text-align: center;
-      color: #102c3f;
+      width: 80px; border: 1px solid #7f9db9; border-radius: 4px;
+      padding: 4px 6px; font-size: 0.78rem; font-weight: 600;
+      text-align: center; color: #102c3f;
       font-family: 'Segoe UI', Consolas, monospace;
       background: white;
       box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
-      outline: none;
-      transition: 0.1s;
+      outline: none; transition: 0.1s;
     }
     .currency-table tbody td.count-cell input:focus {
       border-color: #3c7bb0;
@@ -1756,12 +1407,10 @@
       text-align: center;
     }
     .cash-result .result-value {
-      font-size: 2rem;
-      font-weight: 800;
+      font-size: 2rem; font-weight: 800;
       font-family: 'Segoe UI', Consolas, monospace;
       text-shadow: 0 2px 6px rgba(0,0,0,0.4);
-      letter-spacing: -0.01em;
-      line-height: 1.1;
+      letter-spacing: -0.01em; line-height: 1.1;
     }
     .cash-result.positive {
       background: linear-gradient(135deg, #1e6b3a 0%, #2d8b4e 100%);
@@ -1770,166 +1419,91 @@
       background: linear-gradient(135deg, #8b2c2c 0%, #b83e3e 100%);
     }
     .cash-result .result-sub {
-      font-size: 0.68rem;
-      opacity: 0.85;
-      margin-top: 6px;
-      font-weight: 500;
+      font-size: 0.68rem; opacity: 0.85;
+      margin-top: 6px; font-weight: 500;
     }
-
     .cash-breakdown {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      justify-content: center;
-      margin-top: 8px;
+      display: flex; flex-wrap: wrap; gap: 6px;
+      justify-content: center; margin-top: 8px;
     }
     .cash-breakdown .bd-item {
       background: rgba(255,255,255,0.15);
-      border-radius: 20px;
-      padding: 3px 10px;
-      font-size: 0.68rem;
-      font-weight: 600;
+      border-radius: 20px; padding: 3px 10px;
+      font-size: 0.68rem; font-weight: 600;
       backdrop-filter: blur(4px);
       border: 1px solid rgba(255,255,255,0.15);
     }
-
     .cash-actions {
-      display: flex;
-      gap: 8px;
-      margin-top: 10px;
-      flex-wrap: wrap;
+      display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap;
     }
-    .cash-actions .aero-btn {
-      flex: 1 1 auto;
-      min-width: 100px;
-    }
+    .cash-actions .aero-btn { flex: 1 1 auto; min-width: 100px; }
 
     .staff-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 10px;
-      flex-wrap: nowrap;
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 10px; flex-wrap: nowrap;
     }
-
     .staff-row .staff-photo-small {
-      width: 42px;
-      height: 42px;
-      border-radius: 6px;
-      border: 2px solid #7f9db9;
-      background: #d0e6fa;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.3rem;
-      overflow: hidden;
-      flex-shrink: 0;
+      width: 42px; height: 42px; border-radius: 6px;
+      border: 2px solid #7f9db9; background: #d0e6fa;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem; overflow: hidden; flex-shrink: 0;
       box-shadow: inset 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.1);
     }
     .staff-row .staff-photo-small img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
+      width: 100%; height: 100%; object-fit: cover; display: block;
     }
-
     .combo-wrap.staff-combo-medium {
-      flex: 1 1 auto;
-      min-width: 140px;
-      max-width: 240px;
-      min-height: 34px;
+      flex: 1 1 auto; min-width: 140px; max-width: 240px; min-height: 34px;
     }
     .combo-wrap.staff-combo-medium select {
-      font-size: 0.82rem;
-      padding: 7px 4px 7px 10px;
+      font-size: 0.82rem; padding: 7px 4px 7px 10px;
     }
-
     .staff-action-buttons {
-      display: flex;
-      gap: 4px;
-      flex-shrink: 0;
+      display: flex; gap: 4px; flex-shrink: 0;
     }
     .staff-action-buttons .aero-btn {
-      padding: 6px 10px;
-      min-width: 34px;
-      min-height: 34px;
-      font-size: 0.9rem;
+      padding: 6px 10px; min-width: 34px; min-height: 34px; font-size: 0.9rem;
     }
 
     .employee-big-photo-wrapper {
-      display: flex;
-      justify-content: flex-end;
-      margin: 6px 0 10px 0;
-      padding: 0;
+      display: flex; justify-content: flex-end;
+      margin: 6px 0 10px 0; padding: 0;
     }
     .employee-big-photo {
-      width: 140px;
-      height: 140px;
-      border-radius: 16px;
+      width: 140px; height: 140px; border-radius: 16px;
       border: 4px solid #7f9db9;
       background: radial-gradient(circle at 35% 30%, #ffffff 0%, #d0e6fa 60%, #a0c8e8 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 3.6rem;
-      overflow: hidden;
-      box-shadow: 
-        0 8px 24px rgba(0, 0, 0, 0.3),
-        inset 0 3px 12px rgba(255, 255, 255, 0.8),
-        0 0 0 2px rgba(255, 255, 255, 0.5);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 3.6rem; overflow: hidden;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3), inset 0 3px 12px rgba(255, 255, 255, 0.8), 0 0 0 2px rgba(255, 255, 255, 0.5);
       transition: transform 0.2s ease, box-shadow 0.2s ease;
       flex-shrink: 0;
     }
     .employee-big-photo:hover {
       transform: scale(1.03);
-      box-shadow: 
-        0 10px 30px rgba(0, 0, 0, 0.4),
-        inset 0 3px 12px rgba(255, 255, 255, 0.8),
-        0 0 0 2px rgba(255, 255, 255, 0.6),
-        0 0 28px rgba(100, 180, 255, 0.5);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), inset 0 3px 12px rgba(255, 255, 255, 0.8), 0 0 0 2px rgba(255, 255, 255, 0.6), 0 0 28px rgba(100, 180, 255, 0.5);
     }
     .employee-big-photo img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
+      width: 100%; height: 100%; object-fit: cover; display: block;
     }
 
     .compact-result-row {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      margin-top: 6px;
-      margin-bottom: 4px;
-      flex-wrap: wrap;
-      justify-content: space-between;
+      display: flex; align-items: center; gap: 16px;
+      margin-top: 6px; margin-bottom: 4px;
+      flex-wrap: wrap; justify-content: space-between;
     }
     .compact-result-row .cash-result {
-      flex: 1 1 0;
-      min-width: 220px;
-      margin-top: 0;
-      padding: 16px 18px;
+      flex: 1 1 0; min-width: 220px; margin-top: 0; padding: 16px 18px;
     }
-    .compact-result-row .cash-result .result-value {
-      font-size: 2.2rem;
-    }
-    .compact-result-row .cash-result .result-sub {
-      font-size: 0.72rem;
-    }
+    .compact-result-row .cash-result .result-value { font-size: 2.2rem; }
+    .compact-result-row .cash-result .result-sub { font-size: 0.72rem; }
     .compact-result-row .employee-big-photo-wrapper {
-      flex: 0 0 auto;
-      margin: 0;
-      justify-content: flex-end;
+      flex: 0 0 auto; margin: 0; justify-content: flex-end;
     }
     .compact-result-row .employee-big-photo {
-      width: 140px;
-      height: 140px;
-      font-size: 3.6rem;
-      border-width: 4px;
+      width: 140px; height: 140px; font-size: 3.6rem; border-width: 4px;
     }
-    .compact-result-row .cash-breakdown {
-      margin-top: 6px;
-    }
+    .compact-result-row .cash-breakdown { margin-top: 6px; }
 
     @media (max-width: 480px) {
       .staff-row { flex-wrap: wrap; }
@@ -1939,37 +1513,23 @@
     }
 
     .photo-preview {
-      width: 70px;
-      height: 70px;
-      border-radius: 8px;
-      border: 2px solid #7f9db9;
-      background: #e0edf9;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.8rem;
-      color: #4a7ba3;
+      width: 70px; height: 70px; border-radius: 8px;
+      border: 2px solid #7f9db9; background: #e0edf9;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.8rem; color: #4a7ba3;
       overflow: hidden;
       box-shadow: inset 0 2px 6px rgba(0,0,0,0.1);
     }
     .photo-preview img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
+      width: 100%; height: 100%; object-fit: cover; display: block;
     }
 
     .desktop-context-menu {
-      position: fixed;
-      z-index: 100001;
-      min-width: 200px;
+      position: fixed; z-index: 100001; min-width: 200px;
       background: linear-gradient(180deg, rgba(240, 248, 255, 0.97) 0%, rgba(220, 235, 250, 0.97) 100%);
       border: 1px solid #6b8fae;
       border-radius: 6px;
-      box-shadow: 
-        0 0 0 1px rgba(255, 255, 255, 0.6) inset,
-        0 10px 30px rgba(0, 0, 0, 0.5),
-        0 2px 8px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.6) inset, 0 10px 30px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.3);
       backdrop-filter: blur(12px);
       padding: 5px 0;
       display: none;
@@ -1982,13 +1542,9 @@
     }
     .ctx-menu-item {
       padding: 9px 16px 9px 14px;
-      font-size: 0.8rem;
-      font-weight: 500;
-      color: #10344b;
+      font-size: 0.8rem; font-weight: 500; color: #10344b;
       cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 10px;
+      display: flex; align-items: center; gap: 10px;
       transition: 0.08s;
       text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
     }
@@ -1996,193 +1552,106 @@
       background: linear-gradient(90deg, rgba(100, 165, 220, 0.5) 0%, rgba(150, 200, 240, 0.4) 100%);
     }
     .ctx-menu-item .ctx-icon {
-      font-size: 0.95rem;
-      width: 20px;
-      text-align: center;
+      font-size: 0.95rem; width: 20px; text-align: center;
     }
 
     .notepad-toolbar {
-      display: flex;
-      align-items: center;
-      gap: 6px;
+      display: flex; align-items: center; gap: 6px;
       padding: 8px 12px;
       background: rgba(235, 245, 255, 0.8);
       border-bottom: 1px solid #aac2db;
-      flex-wrap: wrap;
-      flex-shrink: 0;
+      flex-wrap: wrap; flex-shrink: 0;
     }
     .notepad-toolbar .aero-btn {
-      padding: 5px 10px;
-      font-size: 0.72rem;
-      min-height: 28px;
+      padding: 5px 10px; font-size: 0.72rem; min-height: 28px;
     }
     .notepad-toolbar .toolbar-sep {
-      width: 1px;
-      height: 20px;
-      background: #aac2db;
-      margin: 0 4px;
-      flex-shrink: 0;
+      width: 1px; height: 20px; background: #aac2db;
+      margin: 0 4px; flex-shrink: 0;
     }
     .notepad-textarea-wrap {
-      flex: 1;
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      background: #ffffff;
-      min-height: 120px;
+      flex: 1; position: relative; display: flex; flex-direction: column;
+      background: #ffffff; min-height: 120px;
     }
     .notepad-textarea-wrap textarea {
-      flex: 1;
-      width: 100%;
-      border: none;
-      outline: none;
-      resize: none;
+      flex: 1; width: 100%; border: none; outline: none; resize: none;
       padding: 14px 18px;
       font-family: 'Consolas', 'Segoe UI', monospace;
-      font-size: 0.9rem;
-      line-height: 1.55;
-      color: #102c3f;
-      background: #ffffff;
-      user-select: text;
+      font-size: 0.9rem; line-height: 1.55;
+      color: #102c3f; background: #ffffff; user-select: text;
     }
     .notepad-status-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      display: flex; align-items: center; justify-content: space-between;
       padding: 4px 12px;
       background: rgba(235, 245, 255, 0.8);
       border-top: 1px solid #aac2db;
-      font-size: 0.66rem;
-      color: #2a5777;
-      font-weight: 500;
-      flex-shrink: 0;
-      gap: 8px;
-      flex-wrap: wrap;
+      font-size: 0.66rem; color: #2a5777; font-weight: 500;
+      flex-shrink: 0; gap: 8px; flex-wrap: wrap;
     }
-    .notepad-status-bar .status-left {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .notepad-status-bar .status-right {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+    .notepad-status-bar .status-left { display: flex; align-items: center; gap: 8px; }
+    .notepad-status-bar .status-right { display: flex; align-items: center; gap: 8px; }
     .notepad-status-bar .status-dot-notepad {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: #4caf50;
-      box-shadow: 0 0 5px #4caf50;
-      flex-shrink: 0;
+      width: 7px; height: 7px; border-radius: 50%;
+      background: #4caf50; box-shadow: 0 0 5px #4caf50; flex-shrink: 0;
     }
     .notepad-status-bar .status-dot-notepad.saving {
-      background: #f39c12;
-      box-shadow: 0 0 5px #f39c12;
+      background: #f39c12; box-shadow: 0 0 5px #f39c12;
       animation: pulse 1s infinite;
     }
     .notepad-status-bar .status-dot-notepad.error {
-      background: #e74c3c;
-      box-shadow: 0 0 5px #e74c3c;
+      background: #e74c3c; box-shadow: 0 0 5px #e74c3c;
     }
 
     .notes-list-panel {
-      position: absolute;
-      top: 0; right: 0; bottom: 0;
-      width: 240px;
+      position: absolute; top: 0; right: 0; bottom: 0; width: 240px;
       background: rgba(235, 245, 255, 0.97);
       border-left: 1px solid #aac2db;
       backdrop-filter: blur(8px);
-      display: none;
-      flex-direction: column;
-      z-index: 20;
+      display: none; flex-direction: column; z-index: 20;
       box-shadow: -4px 0 12px rgba(0, 0, 0, 0.1);
     }
     .notes-list-panel.open { display: flex; }
     .notes-list-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      display: flex; align-items: center; justify-content: space-between;
       padding: 8px 10px;
       background: linear-gradient(180deg, #e3eff9 0%, #c3d9ed 100%);
       border-bottom: 1px solid #8eb0ce;
-      font-size: 0.74rem;
-      font-weight: 700;
-      color: #10344b;
-      text-shadow: 0 1px 0 white;
-      flex-shrink: 0;
+      font-size: 0.74rem; font-weight: 700; color: #10344b;
+      text-shadow: 0 1px 0 white; flex-shrink: 0;
     }
     .notes-list-body {
-      flex: 1;
-      overflow-y: auto;
-      padding: 4px;
+      flex: 1; overflow-y: auto; padding: 4px;
     }
     .notes-list-body::-webkit-scrollbar { width: 6px; }
     .notes-list-body::-webkit-scrollbar-thumb { background: #9bb9d6; border-radius: 10px; }
     .note-item {
-      padding: 7px 10px;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 0.72rem;
-      color: #1a3e5a;
-      margin-bottom: 3px;
-      border: 1px solid transparent;
-      transition: 0.1s;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 6px;
+      padding: 7px 10px; border-radius: 5px; cursor: pointer;
+      font-size: 0.72rem; color: #1a3e5a; margin-bottom: 3px;
+      border: 1px solid transparent; transition: 0.1s;
+      display: flex; align-items: center; justify-content: space-between; gap: 6px;
     }
-    .note-item:hover {
-      background: #e1effc;
-      border-color: #aac2db;
-    }
+    .note-item:hover { background: #e1effc; border-color: #aac2db; }
     .note-item.active {
-      background: #c8dff5;
-      border-color: #5b8bb5;
+      background: #c8dff5; border-color: #5b8bb5;
       box-shadow: inset 0 0 0 1px #5b8bb5;
     }
     .note-item .note-title {
-      font-weight: 600;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      flex: 1;
-      min-width: 0;
+      font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      flex: 1; min-width: 0;
     }
     .note-item .note-del-btn {
-      width: 20px;
-      height: 20px;
-      border-radius: 4px;
-      background: #f5d5d5;
-      border: 1px solid #c26b6b;
-      color: #8b2c2c;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.7rem;
-      font-weight: 700;
-      cursor: pointer;
-      flex-shrink: 0;
-      line-height: 1;
+      width: 20px; height: 20px; border-radius: 4px;
+      background: #f5d5d5; border: 1px solid #c26b6b; color: #8b2c2c;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.7rem; font-weight: 700; cursor: pointer; flex-shrink: 0; line-height: 1;
     }
-    .note-item .note-del-btn:hover {
-      background: #e8a5a5;
-      color: white;
-    }
+    .note-item .note-del-btn:hover { background: #e8a5a5; color: white; }
     .notes-empty {
-      text-align: center;
-      padding: 20px 10px;
-      font-size: 0.72rem;
-      color: #6a8ba5;
-      font-weight: 500;
+      text-align: center; padding: 20px 10px;
+      font-size: 0.72rem; color: #6a8ba5; font-weight: 500;
     }
 
-    .resize-handle {
-      position: absolute;
-      z-index: 50;
-    }
+    .resize-handle { position: absolute; z-index: 50; }
     .resize-handle.n { top: 0; left: 8px; right: 8px; height: 6px; cursor: n-resize; }
     .resize-handle.s { bottom: 0; left: 8px; right: 8px; height: 6px; cursor: s-resize; }
     .resize-handle.e { right: 0; top: 8px; bottom: 8px; width: 6px; cursor: e-resize; }
@@ -2193,14 +1662,12 @@
     .resize-handle.sw { bottom: 0; left: 0; width: 10px; height: 10px; cursor: sw-resize; }
 
     .window.resizing, .window-price.resizing, .window-load.resizing, .window-cash.resizing, .window-notepad.resizing {
-      transition: none !important;
-      user-select: none;
+      transition: none !important; user-select: none;
     }
 
     @media (max-width: 1200px) {
       .window, .window-price, .window-load, .window-cash, .window-notepad {
-        position: relative; top: auto !important;
-        left: auto !important; right: auto !important;
+        position: relative; top: auto !important; left: auto !important; right: auto !important;
         margin: 0 auto 20px auto; max-width: 540px; width: 100%;
       }
       .window-notepad { max-width: 640px; }
@@ -2267,7 +1734,7 @@
     <div class="cal-grid" id="calGrid"></div>
   </div>
 
-  <!-- ================= PACKING CALCULATOR ================= -->
+  <!-- PACKING CALCULATOR -->
   <div class="window" id="calcWindow">
     <div class="title-bar" id="calcTitleBar">
       <div class="title-text">
@@ -2366,7 +1833,7 @@
     <div class="loading-overlay" id="calcLoading"><div class="loading-spinner"></div></div>
   </div>
 
-  <!-- ================= PRODUCTS WINDOW ================= -->
+  <!-- PRODUCTS -->
   <div class="window-price" id="priceWindow">
     <div class="title-bar" id="priceTitleBar">
       <div class="title-text">
@@ -2432,7 +1899,7 @@
     <div class="loading-overlay" id="priceLoading"><div class="loading-spinner"></div></div>
   </div>
 
-  <!-- ================= LOAD CALCULATOR ================= -->
+  <!-- LOAD CALCULATOR -->
   <div class="window-load" id="loadWindow">
     <div class="title-bar" id="loadTitleBar">
       <div class="title-text"><span>🚚</span> Load Calculator</div>
@@ -2473,7 +1940,6 @@
             </div>
           </div>
         </div>
-        <!-- Reset button row -->
         <div class="load-reset-row">
           <button class="aero-btn" id="resetLoadBtn" type="button" title="Reset all load calculator fields">
             <span>🔄</span> Reset
@@ -2493,7 +1959,7 @@
     </div>
   </div>
 
-  <!-- ================= CASH COLLECTION WINDOW ================= -->
+  <!-- CASH COLLECTION -->
   <div class="window-cash" id="cashWindow">
     <div class="title-bar" id="cashTitleBar">
       <div class="title-text"><span>💵</span> Cash Collection</div>
@@ -2595,7 +2061,7 @@
     </div>
   </div>
 
-  <!-- ================= NOTEPAD WINDOW ================= -->
+  <!-- NOTEPAD -->
   <div class="window-notepad" id="notepadWindow">
     <div class="title-bar" id="notepadTitleBar">
       <div class="title-text">
@@ -2655,7 +2121,7 @@
     </div>
   </div>
 
-  <!-- ================= MODALS ================= -->
+  <!-- MODALS -->
   <div class="modal-overlay" id="modalOverlay">
     <div class="modal" id="modalBox">
       <div class="title-bar">
@@ -2690,7 +2156,7 @@
     </div>
   </div>
 
-  <!-- ================= WALLPAPER WINDOW ================= -->
+  <!-- WALLPAPER WINDOW -->
   <div class="wallpaper-mini-window" id="wallpaperMiniWindow">
     <div class="title-bar" id="wallpaperMiniTitleBar">
       <div class="title-text">
@@ -2724,7 +2190,7 @@
     </div>
   </div>
 
-  <!-- ================= START MENU ================= -->
+  <!-- START MENU -->
   <div class="start-menu" id="startMenu">
     <div class="start-user-header">
       <div class="start-user-avatar" id="userAvatar">S</div>
@@ -2759,7 +2225,7 @@
     </div>
   </div>
 
-  <!-- ================= START BAR ================= -->
+  <!-- START BAR -->
   <div class="startbar" id="startbar">
     <div class="start-btn" id="startBtn">
       <div class="start-orb"></div>
@@ -3283,23 +2749,19 @@
       });
       window.addEventListener('blur', hideDesktopContextMenu);
 
-      // ==================== DRAGGABLE + AERO SNAP + RESIZE ====================
+      // ==================== DRAGGABLE / SNAP / RESIZE ====================
       let snapPreview = null;
-
       function createSnapPreview() {
         if (!snapPreview) {
           snapPreview = document.createElement('div');
           snapPreview.style.cssText = `
-            position: fixed;
-            z-index: 999999;
-            pointer-events: none;
+            position: fixed; z-index: 999999; pointer-events: none;
             background: rgba(100, 180, 255, 0.35);
             border: 2px solid rgba(120, 200, 255, 0.9);
             border-radius: 8px;
             box-shadow: 0 0 20px rgba(100, 180, 255, 0.5), inset 0 0 30px rgba(150, 220, 255, 0.3);
             backdrop-filter: blur(4px);
-            transition: all 0.12s ease;
-            display: none;
+            transition: all 0.12s ease; display: none;
           `;
           document.body.appendChild(snapPreview);
         }
@@ -3309,13 +2771,10 @@
       function showSnapPreview(side) {
         const preview = createSnapPreview();
         const halfW = Math.floor(window.innerWidth / 2);
-        const taskbarH = TASKBAR_HEIGHT;
-        const totalH = window.innerHeight - taskbarH;
-
+        const totalH = window.innerHeight - TASKBAR_HEIGHT;
         preview.style.display = 'block';
         preview.style.top = '0px';
         preview.style.height = totalH + 'px';
-
         if (side === 'left') {
           preview.style.left = '0px';
           preview.style.width = halfW + 'px';
@@ -3326,15 +2785,12 @@
       }
 
       function hideSnapPreview() {
-        if (snapPreview) {
-          snapPreview.style.display = 'none';
-        }
+        if (snapPreview) snapPreview.style.display = 'none';
       }
 
       function snapWindowToSide(winEl, side) {
         const halfW = Math.floor(window.innerWidth / 2);
         const totalH = window.innerHeight - TASKBAR_HEIGHT;
-
         const stateKey = winEl.id;
         if (windowState[stateKey] && !windowState[stateKey].origRect) {
           const rect = winEl.getBoundingClientRect();
@@ -3343,14 +2799,12 @@
             right: 'auto', width: rect.width + 'px', height: rect.height + 'px'
           };
         }
-
         if (winEl.classList.contains('maximized')) {
           winEl.classList.remove('maximized');
           windowState[stateKey].maximized = false;
           const maxBtn = winEl.querySelector('.caption-btn.maximize');
           if (maxBtn) { maxBtn.textContent = '□'; maxBtn.title = 'Maximize'; }
         }
-
         winEl.classList.add('snap-' + side);
         winEl.style.top = '0px';
         winEl.style.left = (side === 'left' ? '0' : halfW) + 'px';
@@ -3359,7 +2813,6 @@
         winEl.style.right = 'auto';
         winEl.style.maxWidth = 'none';
         winEl.style.maxHeight = 'none';
-
         bringToFront(winEl);
       }
 
@@ -3454,7 +2907,6 @@
           e.preventDefault();
           isDragging = true;
           wasSnapped = windowEl.classList.contains('snap-left') || windowEl.classList.contains('snap-right');
-
           const rect = windowEl.getBoundingClientRect();
           startLeft = rect.left; startTop = rect.top;
           windowEl.style.left = startLeft + 'px';
@@ -3506,12 +2958,10 @@
           document.removeEventListener('touchmove', onTouchMove);
           document.removeEventListener('touchend', onTouchEnd);
           hideSnapPreview();
-
           const touch = e.changedTouches[0];
           if (!touch) return;
           const snapEdge = 15;
           const screenW = window.innerWidth;
-
           if (touch.clientX <= snapEdge && !windowEl.classList.contains('maximized')) {
             snapWindowToSide(windowEl, 'left');
           } else if (touch.clientX >= screenW - snapEdge && !windowEl.classList.contains('maximized')) {
@@ -3525,7 +2975,6 @@
 
       function addResizeHandles(winEl) {
         if (winEl.querySelector('.resize-handle')) return;
-
         const handles = ['n', 's', 'e', 'w', 'ne', 'nw', 'se', 'sw'];
         handles.forEach(dir => {
           const h = document.createElement('div');
@@ -3533,7 +2982,6 @@
           h.dataset.dir = dir;
           winEl.appendChild(h);
         });
-
         winEl.querySelectorAll('.resize-handle').forEach(handle => {
           handle.addEventListener('mousedown', (e) => startResize(e, winEl, handle.dataset.dir));
           handle.addEventListener('touchstart', (e) => startResize(e, winEl, handle.dataset.dir, true), { passive: false });
@@ -3549,7 +2997,6 @@
 
         const clientX = isTouch ? e.touches[0].clientX : e.clientX;
         const clientY = isTouch ? e.touches[0].clientY : e.clientY;
-
         const rect = winEl.getBoundingClientRect();
         const startLeft = rect.left;
         const startTop = rect.top;
@@ -3559,7 +3006,6 @@
         const startY = clientY;
 
         winEl.classList.remove('snap-left', 'snap-right');
-
         winEl.classList.add('resizing');
         winEl.style.position = 'fixed';
         winEl.style.left = startLeft + 'px';
@@ -3578,28 +3024,17 @@
           const cy = isTouch ? ev.touches[0].clientY : ev.clientY;
           const dx = cx - startX;
           const dy = cy - startY;
-
-          let newLeft = startLeft;
-          let newTop = startTop;
-          let newWidth = startWidth;
-          let newHeight = startHeight;
+          let newLeft = startLeft, newTop = startTop, newWidth = startWidth, newHeight = startHeight;
 
           if (dir.includes('e')) newWidth = Math.max(MIN_WIDTH, startWidth + dx);
           if (dir.includes('s')) newHeight = Math.max(MIN_HEIGHT, startHeight + dy);
-          if (dir.includes('w')) {
-            newWidth = Math.max(MIN_WIDTH, startWidth - dx);
-            newLeft = startLeft + (startWidth - newWidth);
-          }
-          if (dir.includes('n')) {
-            newHeight = Math.max(MIN_HEIGHT, startHeight - dy);
-            newTop = startTop + (startHeight - newHeight);
-          }
+          if (dir.includes('w')) { newWidth = Math.max(MIN_WIDTH, startWidth - dx); newLeft = startLeft + (startWidth - newWidth); }
+          if (dir.includes('n')) { newHeight = Math.max(MIN_HEIGHT, startHeight - dy); newTop = startTop + (startHeight - newHeight); }
 
           if (newLeft < 0) { newWidth += newLeft; newLeft = 0; }
           if (newTop < 0) { newHeight += newTop; newTop = 0; }
           if (newLeft + newWidth > window.innerWidth) newWidth = window.innerWidth - newLeft;
           if (newTop + newHeight > window.innerHeight - TASKBAR_HEIGHT) newHeight = window.innerHeight - TASKBAR_HEIGHT - newTop;
-
           if (newWidth < MIN_WIDTH) newWidth = MIN_WIDTH;
           if (newHeight < MIN_HEIGHT) newHeight = MIN_HEIGHT;
 
@@ -3653,7 +3088,7 @@
         winEl.style.margin = '0';
       }
 
-      // ==================== DESKTOP GADGET CLOCK ====================
+      // ==================== DESKTOP CLOCK ====================
       const desktopGadget = document.getElementById('desktopGadget');
       const gadgetAnalog = document.getElementById('gadgetAnalog');
       const gadgetHourHand = document.getElementById('gadgetHourHand');
@@ -3689,7 +3124,6 @@
         const secDeg = s * 6;
         const minDeg = m * 6 + s * 0.1;
         const hourDeg = (h % 12) * 30 + m * 0.5;
-
         gadgetSecondHand.style.transform = `rotate(${secDeg}deg)`;
         gadgetMinuteHand.style.transform = `rotate(${minDeg}deg)`;
         gadgetHourHand.style.transform = `rotate(${hourDeg}deg)`;
@@ -3699,7 +3133,6 @@
 
       (function makeGadgetDraggable() {
         let isDragging = false, startX = 0, startY = 0, startLeft = 0, startTop = 0;
-
         function startDrag(clientX, clientY) {
           isDragging = true;
           const rect = desktopGadget.getBoundingClientRect();
@@ -3710,7 +3143,6 @@
           startX = clientX; startY = clientY;
           desktopGadget.classList.add('dragging');
         }
-
         function moveDrag(clientX, clientY) {
           if (!isDragging) return;
           const dx = clientX - startX, dy = clientY - startY;
@@ -3723,7 +3155,6 @@
           desktopGadget.style.left = nl + 'px';
           desktopGadget.style.top = nt + 'px';
         }
-
         function endDrag() {
           isDragging = false;
           desktopGadget.classList.remove('dragging');
@@ -3736,21 +3167,18 @@
           document.addEventListener('mousemove', onMouseMove);
           document.addEventListener('mouseup', onMouseUp);
         });
-
         function onMouseMove(e) { moveDrag(e.clientX, e.clientY); }
         function onMouseUp() {
           endDrag();
           document.removeEventListener('mousemove', onMouseMove);
           document.removeEventListener('mouseup', onMouseUp);
         }
-
         desktopGadget.addEventListener('touchstart', (e) => {
           const touch = e.touches[0];
           startDrag(touch.clientX, touch.clientY);
           document.addEventListener('touchmove', onTouchMove, { passive: false });
           document.addEventListener('touchend', onTouchEnd);
         }, { passive: false });
-
         function onTouchMove(e) {
           if (!isDragging) return;
           e.preventDefault();
@@ -3764,13 +3192,12 @@
         }
       })();
 
-      // ==================== DESKTOP CALENDAR GADGET ====================
+      // ==================== DESKTOP CALENDAR ====================
       const desktopCalendar = document.getElementById('desktopCalendar');
       const calMonthLabel = document.getElementById('calMonthLabel');
       const calGrid = document.getElementById('calGrid');
       const calPrevMonth = document.getElementById('calPrevMonth');
       const calNextMonth = document.getElementById('calNextMonth');
-
       let calendarViewDate = new Date();
 
       function renderCalendar() {
@@ -3778,29 +3205,19 @@
         const month = calendarViewDate.getMonth();
         const today = new Date();
         const isCurrentMonth = (today.getFullYear() === year && today.getMonth() === month);
-
         const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
                            'July', 'August', 'September', 'October', 'November', 'December'];
         calMonthLabel.textContent = `${monthNames[month]} ${year}`;
-
         const firstDay = new Date(year, month, 1).getDay();
         const daysInMonth = new Date(year, month + 1, 0).getDate();
-
         const dayHeaders = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
         let html = '';
-        dayHeaders.forEach(d => {
-          html += `<div class="cal-cell header">${d}</div>`;
-        });
-
-        for (let i = 0; i < firstDay; i++) {
-          html += `<div class="cal-cell empty"></div>`;
-        }
-
+        dayHeaders.forEach(d => { html += `<div class="cal-cell header">${d}</div>`; });
+        for (let i = 0; i < firstDay; i++) html += `<div class="cal-cell empty"></div>`;
         for (let d = 1; d <= daysInMonth; d++) {
           const isToday = (isCurrentMonth && d === today.getDate()) ? ' today' : '';
           html += `<div class="cal-cell${isToday}">${d}</div>`;
         }
-
         calGrid.innerHTML = html;
       }
 
@@ -3809,18 +3226,15 @@
         calendarViewDate.setMonth(calendarViewDate.getMonth() - 1);
         renderCalendar();
       });
-
       calNextMonth.addEventListener('click', (e) => {
         e.stopPropagation();
         calendarViewDate.setMonth(calendarViewDate.getMonth() + 1);
         renderCalendar();
       });
-
       renderCalendar();
 
       (function makeCalendarDraggable() {
         let isDragging = false, startX = 0, startY = 0, startLeft = 0, startTop = 0;
-
         function startDrag(clientX, clientY) {
           isDragging = true;
           const rect = desktopCalendar.getBoundingClientRect();
@@ -3831,7 +3245,6 @@
           startX = clientX; startY = clientY;
           desktopCalendar.classList.add('dragging');
         }
-
         function moveDrag(clientX, clientY) {
           if (!isDragging) return;
           const dx = clientX - startX, dy = clientY - startY;
@@ -3844,12 +3257,10 @@
           desktopCalendar.style.left = nl + 'px';
           desktopCalendar.style.top = nt + 'px';
         }
-
         function endDrag() {
           isDragging = false;
           desktopCalendar.classList.remove('dragging');
         }
-
         desktopCalendar.addEventListener('mousedown', (e) => {
           if (e.button !== 0) return;
           if (e.target.closest('.cal-nav-btn')) return;
@@ -3858,14 +3269,12 @@
           document.addEventListener('mousemove', onMouseMove);
           document.addEventListener('mouseup', onMouseUp);
         });
-
         function onMouseMove(e) { moveDrag(e.clientX, e.clientY); }
         function onMouseUp() {
           endDrag();
           document.removeEventListener('mousemove', onMouseMove);
           document.removeEventListener('mouseup', onMouseUp);
         }
-
         desktopCalendar.addEventListener('touchstart', (e) => {
           if (e.target.closest('.cal-nav-btn')) return;
           const touch = e.touches[0];
@@ -3873,7 +3282,6 @@
           document.addEventListener('touchmove', onTouchMove, { passive: false });
           document.addEventListener('touchend', onTouchEnd);
         }, { passive: false });
-
         function onTouchMove(e) {
           if (!isDragging) return;
           e.preventDefault();
@@ -4028,6 +3436,9 @@
       let notepadIsDirty = false;
       const NOTEPAD_DRAFT_KEY = 'notepad_current_draft';
 
+      // Prevent change handler from loading data when we programmatically set the value
+      let isLoadingStaffRecord = false;
+
       const formatKg = (value) => {
         if (value === 0) return '0.000';
         let str = value.toFixed(3);
@@ -4159,16 +3570,12 @@
 
       function showTaskbarItem(winId) {
         const taskbarItem = document.querySelector(`.taskbar-item[data-restore="${winId}"]`);
-        if (taskbarItem) {
-          taskbarItem.style.display = 'flex';
-        }
+        if (taskbarItem) taskbarItem.style.display = 'flex';
       }
 
       function hideTaskbarItem(winId) {
         const taskbarItem = document.querySelector(`.taskbar-item[data-restore="${winId}"]`);
-        if (taskbarItem) {
-          taskbarItem.style.display = 'none';
-        }
+        if (taskbarItem) taskbarItem.style.display = 'none';
       }
 
       function restoreWindowFromTaskbar(winId) {
@@ -4279,7 +3686,7 @@
         });
       });
 
-      // ==================== CUSTOM CONFIRM ====================
+      // ==================== CONFIRM ====================
       function showConfirm({ title, message, confirmLabel = 'Yes, Delete', type = 'danger', icon = '⚠️' }) {
         return new Promise((resolve) => {
           confirmTitleBar.textContent = title || '⚠️ Confirm';
@@ -4372,10 +3779,7 @@
 
       async function saveEmployee(employee) {
         setSyncing();
-        const basePayload = {
-          name: employee.name,
-          section: employee.section
-        };
+        const basePayload = { name: employee.name, section: employee.section };
         if (employee.photo) basePayload.photo = employee.photo;
 
         const attempts = [
@@ -4388,39 +3792,24 @@
         let lastError = null;
         for (const attempt of attempts) {
           try {
-            console.log('Attempting employee insert:', attempt.label, attempt.payload);
             const { data, error } = await supabase
               .from('employees')
               .insert([attempt.payload])
               .select()
               .single();
-            if (error) {
-              console.warn('Insert attempt failed:', attempt.label, error.message);
-              lastError = error;
-              continue;
-            }
-            if (!data) {
-              console.warn('Insert attempt returned no data:', attempt.label);
-              lastError = new Error('No data returned from insert');
-              continue;
-            }
-            console.log('✅ Employee saved successfully:', data);
+            if (error) { lastError = error; continue; }
+            if (!data) { lastError = new Error('No data returned from insert'); continue; }
             setOnlineStatus(true);
             return {
-              id: data.id,
-              name: data.name,
-              section: data.section || '',
-              photo: data.photo || null
+              id: data.id, name: data.name,
+              section: data.section || '', photo: data.photo || null
             };
           } catch (err) {
-            console.warn('Insert attempt threw:', attempt.label, err.message);
             lastError = err;
           }
         }
-
         setOnlineStatus(false);
-        console.error('❌ All saveEmployee attempts failed:', lastError);
-        throw lastError || new Error('Could not save employee — please check the database table exists');
+        throw lastError || new Error('Could not save employee');
       }
 
       async function updateEmployee(id, updates) {
@@ -4428,24 +3817,15 @@
         try {
           const payload = { name: updates.name, section: updates.section };
           if (updates.photo !== undefined) payload.photo = updates.photo;
-
           const { data, error } = await supabase
-            .from('employees')
-            .update(payload)
-            .eq('id', id)
-            .select()
-            .single();
-
+            .from('employees').update(payload).eq('id', id).select().single();
           if (error) throw error;
           setOnlineStatus(true);
           return {
-            id: data.id,
-            name: data.name,
-            section: data.section || '',
-            photo: data.photo || null
+            id: data.id, name: data.name,
+            section: data.section || '', photo: data.photo || null
           };
         } catch (err) {
-          console.error('Update employee error:', err);
           setOnlineStatus(false);
           throw err;
         }
@@ -4459,7 +3839,6 @@
           setOnlineStatus(true);
           return true;
         } catch (err) {
-          console.error('Delete employee error:', err);
           setOnlineStatus(false);
           throw err;
         }
@@ -4476,7 +3855,6 @@
           setOnlineStatus(true);
           return { id: data.id, name: data.name, customer: data.customer, pcsPerBag: data.pcs_per_bag, price: Number(data.price) };
         } catch (err) {
-          console.error('Save product error:', err);
           setOnlineStatus(false);
           throw err;
         }
@@ -4494,38 +3872,21 @@
               price: updates.price
             })
             .eq('id', id);
-
           if (updateError) throw updateError;
 
           const { data, error: fetchError } = await supabase
-            .from('products')
-            .select('*')
-            .eq('id', id)
-            .maybeSingle();
-
+            .from('products').select('*').eq('id', id).maybeSingle();
           if (fetchError) throw fetchError;
 
           setOnlineStatus(true);
-
           if (!data) {
-            return {
-              id,
-              name: updates.name,
-              customer: updates.customer,
-              pcsPerBag: updates.pcsPerBag,
-              price: updates.price
-            };
+            return { id, name: updates.name, customer: updates.customer, pcsPerBag: updates.pcsPerBag, price: updates.price };
           }
-
           return {
-            id: data.id,
-            name: data.name,
-            customer: data.customer,
-            pcsPerBag: data.pcs_per_bag,
-            price: Number(data.price)
+            id: data.id, name: data.name, customer: data.customer,
+            pcsPerBag: data.pcs_per_bag, price: Number(data.price)
           };
         } catch (err) {
-          console.error('Update product error:', err);
           setOnlineStatus(false);
           throw err;
         }
@@ -4539,7 +3900,6 @@
           setOnlineStatus(true);
           return true;
         } catch (err) {
-          console.error('Delete product error:', err);
           setOnlineStatus(false);
           throw err;
         }
@@ -4553,7 +3913,6 @@
           setOnlineStatus(true);
           return true;
         } catch (err) {
-          console.error('Clear all error:', err);
           setOnlineStatus(false);
           throw err;
         }
@@ -4575,7 +3934,6 @@
           setOnlineStatus(true);
           return data;
         } catch (err) {
-          console.error('Save packing record error:', err);
           setOnlineStatus(false);
           throw err;
         }
@@ -4607,6 +3965,29 @@
         }
       }
 
+      // *** NEW: Load last cash record for an employee ***
+      async function loadLastCashRecordForEmployee(employeeName) {
+        if (!employeeName) return null;
+        try {
+          const { data, error } = await supabase
+            .from('cash_collections')
+            .select('*')
+            .eq('staff_name', employeeName)
+            .order('created_at', { ascending: false })
+            .limit(1)
+            .maybeSingle();
+
+          if (error) {
+            console.warn('Could not load last cash record:', error.message);
+            return null;
+          }
+          return data || null;
+        } catch (err) {
+          console.warn('Load last cash record error:', err.message);
+          return null;
+        }
+      }
+
       async function loadNotes() {
         try {
           const { data, error } = await supabase
@@ -4615,10 +3996,8 @@
             .order('updated_at', { ascending: false });
           if (error) throw error;
           notesList = (data || []).map(n => ({
-            id: n.id,
-            title: n.title || 'Untitled',
-            content: n.content || '',
-            updatedAt: n.updated_at
+            id: n.id, title: n.title || 'Untitled',
+            content: n.content || '', updatedAt: n.updated_at
           }));
           renderNotesList();
           updateNotepadStatus('✅ Notes loaded', false);
@@ -4645,13 +4024,10 @@
           if (error) throw error;
           setOnlineStatus(true);
           return {
-            id: data.id,
-            title: data.title,
-            content: data.content,
-            updatedAt: data.updated_at
+            id: data.id, title: data.title,
+            content: data.content, updatedAt: data.updated_at
           };
         } catch (err) {
-          console.error('Save note error:', err);
           setOnlineStatus(false);
           throw err;
         }
@@ -4665,7 +4041,6 @@
           setOnlineStatus(true);
           return true;
         } catch (err) {
-          console.error('Delete note error:', err);
           setOnlineStatus(false);
           throw err;
         }
@@ -4681,14 +4056,18 @@
         if (currentValue && uniqueCustomers.includes(currentValue)) customerFilter.value = currentValue;
       }
 
-      function renderStaffCombo() {
-        const currentValue = staffCombo.value;
+      function renderStaffCombo(preserveValue) {
+        const savedValue = (preserveValue !== undefined) ? preserveValue : staffCombo.value;
+        isLoadingStaffRecord = true;
         let html = '<option value="">👤 Select Employee</option>';
         employeesList.forEach(s => {
           html += `<option value="${s.id}">${escapeHtml(s.name)} — ${escapeHtml(s.section)}</option>`;
         });
         staffCombo.innerHTML = html;
-        if (currentValue) staffCombo.value = currentValue;
+        if (savedValue && employeesList.some(s => s.id === savedValue)) {
+          staffCombo.value = savedValue;
+        }
+        isLoadingStaffRecord = false;
         updateStaffInfo();
       }
 
@@ -4696,7 +4075,6 @@
         const empId = staffCombo.value;
         editStaffBtn.disabled = false;
         deleteStaffBtn.disabled = false;
-
         if (!empId) {
           staffPhotoSmall.innerHTML = '<span>👤</span>';
           staffCombo.title = '';
@@ -4720,7 +4098,60 @@
         staffCombo.title = `${emp.name} — ${emp.section}`;
       }
 
-      staffCombo.addEventListener('change', updateStaffInfo);
+      // *** NEW: Cash record loading on employee change ***
+      async function handleStaffChange() {
+        updateStaffInfo();
+        if (isLoadingStaffRecord) return;
+
+        const empId = staffCombo.value;
+        if (!empId) {
+          // Clearing selection — clear cash inputs
+          cashAmount.value = '';
+          cashExpense.value = '';
+          currencyTableBody.querySelectorAll('.denom-count-input').forEach(inp => { inp.value = ''; });
+          calculateCash();
+          return;
+        }
+        const emp = employeesList.find(s => s.id === empId);
+        if (!emp) return;
+
+        // Try to load last cash record for this employee
+        const lastRecord = await loadLastCashRecordForEmployee(emp.name);
+
+        if (lastRecord) {
+          // Populate amount and expense
+          cashAmount.value = (lastRecord.amount != null && !isNaN(lastRecord.amount)) ? lastRecord.amount : '';
+          cashExpense.value = (lastRecord.expense != null && !isNaN(lastRecord.expense)) ? lastRecord.expense : '';
+
+          // Populate currency counts from saved denominations
+          currencyTableBody.querySelectorAll('.denom-count-input').forEach(inp => { inp.value = ''; });
+          const denoms = lastRecord.denominations;
+          if (Array.isArray(denoms)) {
+            denoms.forEach(item => {
+              if (!item || !item.label) return;
+              // Extract numeric value from label like "₹500"
+              const numericValue = parseInt(String(item.label).replace(/[^0-9]/g, ''), 10);
+              if (!numericValue) return;
+              const inputEl = document.getElementById(`denom_${numericValue}`);
+              if (inputEl) {
+                inputEl.value = (item.count != null && !isNaN(item.count)) ? item.count : '';
+              }
+            });
+          }
+          calculateCash();
+
+          // Show a small toast so user knows data loaded
+
+        } else {
+          // No saved record — clear fields
+          cashAmount.value = '';
+          cashExpense.value = '';
+          currencyTableBody.querySelectorAll('.denom-count-input').forEach(inp => { inp.value = ''; });
+          calculateCash();
+        }
+      }
+
+      staffCombo.addEventListener('change', handleStaffChange);
 
       function renderPriceTable() {
         if (filteredProducts.length === 0) {
@@ -4965,34 +4396,28 @@
         });
       });
 
-      // ==================== LOAD CALC RESET ====================
       function resetLoadCalculator({ clearResult = false } = {}) {
         loadWeightPerPc.value = '';
         loadPcsPerBag.value = '';
         loadTotalKg.value = '';
-
         if (clearResult) {
           loadResultContent.innerHTML = `<div class="empty-hint">📝 Enter weight per pc, pcs per bag &amp; total kg<span class="small">The result updates live as you type</span></div>`;
         }
       }
 
       resetLoadBtn.addEventListener('click', () => {
-        // Reset button clears fields AND the result panel
         resetLoadCalculator({ clearResult: true });
         loadWeightPerPc.focus();
       });
 
-      // ==================== LOAD CALC ENTER/ESC NAV ====================
       function handleLoadEnterKey(e, currentIndex) {
         if (e.key !== 'Enter') return;
         e.preventDefault();
 
         if (currentIndex < loadFieldOrder.length - 1) {
-          // Move to next field
           const nextField = loadFieldOrder[currentIndex + 1];
           if (nextField) { nextField.focus(); if (nextField.select) nextField.select(); }
         } else {
-          // Last field — clear all inputs but KEEP the result panel
           resetLoadCalculator({ clearResult: false });
           loadWeightPerPc.focus();
         }
@@ -5214,21 +4639,21 @@
               const updated = await updateEmployee(existingEmployee.id, { name, section, photo: photoData });
               const idx = employeesList.findIndex(s => s.id === existingEmployee.id);
               if (idx !== -1) employeesList[idx] = updated;
-              renderStaffCombo();
+              renderStaffCombo(updated.id);
               staffCombo.value = updated.id;
               updateStaffInfo();
             } else {
               const saved = await saveEmployee({ name, section, photo: photoData });
               employeesList.push(saved);
               employeesList.sort((a, b) => a.name.localeCompare(b.name));
-              renderStaffCombo();
+              renderStaffCombo(saved.id);
               staffCombo.value = saved.id;
               updateStaffInfo();
             }
             return true;
           } catch (err) {
             console.error('Save employee failed:', err);
-            errorEl.textContent = '❌ Failed to save: ' + (err.message || 'Unknown error. Check that the "employees" table exists in Supabase.');
+            errorEl.textContent = '❌ Failed to save: ' + (err.message || 'Unknown error');
             errorEl.classList.add('show');
             saveBtn.disabled = false;
             saveBtn.textContent = isEdit ? '💾 Update Employee' : '💾 Save Employee';
@@ -5254,28 +4679,16 @@
       addStaffBtn.addEventListener('click', () => openEmployeeFormModal(null));
       editStaffBtn.addEventListener('click', () => {
         const empId = staffCombo.value;
-        if (!empId) {
-          alert('Please select an employee first.');
-          return;
-        }
+        if (!empId) { alert('Please select an employee first.'); return; }
         const emp = employeesList.find(s => s.id === empId);
-        if (!emp) {
-          alert('Employee not found. Please refresh.');
-          return;
-        }
+        if (!emp) { alert('Employee not found. Please refresh.'); return; }
         openEmployeeFormModal(emp);
       });
       deleteStaffBtn.addEventListener('click', async () => {
         const empId = staffCombo.value;
-        if (!empId) {
-          alert('Please select an employee first.');
-          return;
-        }
+        if (!empId) { alert('Please select an employee first.'); return; }
         const emp = employeesList.find(s => s.id === empId);
-        if (!emp) {
-          alert('Employee not found. Please refresh.');
-          return;
-        }
+        if (!emp) { alert('Employee not found. Please refresh.'); return; }
 
         const confirmed = await showConfirm({
           title: '🗑️ Delete Employee',
@@ -5289,7 +4702,7 @@
         try {
           await deleteEmployee(emp.id);
           employeesList = employeesList.filter(s => s.id !== emp.id);
-          renderStaffCombo();
+          renderStaffCombo('');
           staffCombo.value = '';
           updateStaffInfo();
         } catch (err) {
@@ -5311,19 +4724,47 @@
 
       cashSaveBtn.addEventListener('click', async () => {
         const result = calculateCash();
-        if (result.amount === 0 && result.currencyTotal === 0 && result.expense === 0) {
+
+        if (result.amount === 0 && result.currencyTotal === 0 && result.expense === 0 && result.breakdown.length === 0) {
+          await showConfirm({
+            title: '⚠️ Nothing to Save',
+            message: 'Please enter at least a total amount, expense, or currency counts before saving.',
+            confirmLabel: 'OK',
+            type: 'warning',
+            icon: '⚠️'
+          });
           return;
         }
 
         const empId = staffCombo.value;
         if (!empId) {
+          await showConfirm({
+            title: '👤 Employee Required',
+            message: 'Please select an employee before saving the cash record.',
+            confirmLabel: 'OK',
+            type: 'warning',
+            icon: '👤'
+          });
           staffCombo.focus();
           return;
         }
         const emp = employeesList.find(s => s.id === empId);
         if (!emp) {
+          await showConfirm({
+            title: '⚠️ Employee Not Found',
+            message: 'The selected employee could not be found. Please refresh.',
+            confirmLabel: 'OK',
+            type: 'danger',
+            icon: '⚠️'
+          });
           return;
         }
+
+        const savedEmpId = empId;
+
+        cashSaveBtn.disabled = true;
+        const originalText = cashSaveBtn.innerHTML;
+        cashSaveBtn.innerHTML = '<span>⏳</span> Saving…';
 
         try {
           await saveCashRecord({
@@ -5336,8 +4777,32 @@
             section: emp.section,
             photoData: emp.photo
           });
+
+
+
+          cashAmount.value = '';
+          cashExpense.value = '';
+          currencyTableBody.querySelectorAll('.denom-count-input').forEach(inp => { inp.value = ''; });
+          calculateCash();
+
+          if (savedEmpId && employeesList.some(s => s.id === savedEmpId)) {
+            isLoadingStaffRecord = true;
+            staffCombo.value = savedEmpId;
+            isLoadingStaffRecord = false;
+            updateStaffInfo();
+          }
         } catch (err) {
-          // ignore
+          console.error('Cash save failed:', err);
+          await showConfirm({
+            title: '❌ Save Failed',
+            message: `Could not save the cash record.<br><br><em>${escapeHtml(err.message || 'Unknown error')}</em><br><br>Make sure the <strong>cash_collections</strong> table exists with columns:<br>amount, expense, currency_total, net_result, denominations, staff_name, section, photo_data.`,
+            confirmLabel: 'OK',
+            type: 'danger',
+            icon: '❌'
+          });
+        } finally {
+          cashSaveBtn.disabled = false;
+          cashSaveBtn.innerHTML = originalText;
         }
       });
 
@@ -5370,7 +4835,7 @@
         showEmptyHint();
       }
 
-      // ==================== PACKING: ENTER / ESC NAV ====================
+      // ==================== PACKING ENTER/ESC ====================
       async function handleEnterKey(e, currentIndex) {
         if (e.key !== 'Enter') return;
         e.preventDefault();
@@ -5602,9 +5067,7 @@
 
       // ==================== PRINT PRODUCTS ====================
       printProductsBtn.addEventListener('click', () => {
-        if (filteredProducts.length === 0) {
-          return;
-        }
+        if (filteredProducts.length === 0) return;
         const now = new Date();
         const dateStr = now.toLocaleDateString() + ' ' + now.toLocaleTimeString();
         const customerLabel = customerFilter.value || 'All Customers';
@@ -5625,97 +5088,23 @@
         printWindow.document.write(`
           <!DOCTYPE html>
           <html>
-          <head>
-            <title>Products List - KCST Windows</title>
+          <head><title>Products List - KCST Windows</title>
             <style>
               * { margin: 0; padding: 0; box-sizing: border-box; }
-              body {
-                font-family: 'Segoe UI', Arial, sans-serif;
-                padding: 30px;
-                color: #1a3e5a;
-              }
-              .header {
-                text-align: center;
-                margin-bottom: 20px;
-                padding-bottom: 15px;
-                border-bottom: 2px solid #2a6088;
-              }
-              .header h1 {
-                font-size: 1.5rem;
-                color: #15415f;
-                margin-bottom: 4px;
-              }
-              .header .sub {
-                font-size: 0.8rem;
-                color: #5a7f9a;
-              }
-              .meta {
-                display: flex;
-                justify-content: space-between;
-                font-size: 0.75rem;
-                color: #3a6382;
-                margin-bottom: 15px;
-                flex-wrap: wrap;
-                gap: 8px;
-              }
+              body { font-family: 'Segoe UI', Arial, sans-serif; padding: 30px; color: #1a3e5a; }
+              .header { text-align: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px solid #2a6088; }
+              .header h1 { font-size: 1.5rem; color: #15415f; margin-bottom: 4px; }
+              .header .sub { font-size: 0.8rem; color: #5a7f9a; }
+              .meta { display: flex; justify-content: space-between; font-size: 0.75rem; color: #3a6382; margin-bottom: 15px; flex-wrap: wrap; gap: 8px; }
               .meta span { background: #eef5fc; padding: 4px 10px; border-radius: 20px; border: 1px solid #b8d4ec; }
-              table {
-                width: 100%;
-                border-collapse: collapse;
-                font-size: 0.82rem;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-              }
-              thead th {
-                background: linear-gradient(180deg, #e3eff9 0%, #c3d9ed 100%);
-                color: #10344b;
-                font-weight: 700;
-                font-size: 0.72rem;
-                text-transform: uppercase;
-                letter-spacing: 0.4px;
-                padding: 10px 12px;
-                text-align: left;
-                border: 1px solid #8eb0ce;
-              }
-              tbody td {
-                padding: 9px 12px;
-                border: 1px solid #d5e3ef;
-                color: #1a3e5a;
-              }
+              table { width: 100%; border-collapse: collapse; font-size: 0.82rem; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+              thead th { background: linear-gradient(180deg, #e3eff9 0%, #c3d9ed 100%); color: #10344b; font-weight: 700; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.4px; padding: 10px 12px; text-align: left; border: 1px solid #8eb0ce; }
+              tbody td { padding: 9px 12px; border: 1px solid #d5e3ef; color: #1a3e5a; }
               tbody tr:nth-child(even) { background: #f4faff; }
-              tbody tr:hover { background: #e1effc; }
-              .footer {
-                margin-top: 20px;
-                text-align: center;
-                font-size: 0.7rem;
-                color: #6a8ba5;
-                border-top: 1px solid #b8d4ec;
-                padding-top: 12px;
-              }
-              .total-row {
-                font-weight: 700;
-                background: #dcecfc !important;
-                border-top: 2px solid #7ea5c9 !important;
-              }
-              @media print {
-                body { padding: 15px; }
-                .no-print { display: none; }
-              }
-              .print-btn {
-                position: fixed;
-                top: 16px;
-                right: 16px;
-                padding: 10px 22px;
-                background: linear-gradient(180deg, #4a85b3 0%, #2a6088 45%, #15415f 100%);
-                color: white;
-                border: 1px solid #1b4260;
-                border-radius: 6px;
-                font-size: 0.85rem;
-                font-weight: 600;
-                cursor: pointer;
-                box-shadow: 0 3px 10px rgba(0,0,0,0.3);
-                font-family: 'Segoe UI', Arial, sans-serif;
-              }
-              .print-btn:hover { background: linear-gradient(180deg, #5f9ac9 0%, #356e97 45%, #1b4d6f 100%); }
+              .footer { margin-top: 20px; text-align: center; font-size: 0.7rem; color: #6a8ba5; border-top: 1px solid #b8d4ec; padding-top: 12px; }
+              .total-row { font-weight: 700; background: #dcecfc !important; border-top: 2px solid #7ea5c9 !important; }
+              @media print { body { padding: 15px; } .no-print { display: none; } }
+              .print-btn { position: fixed; top: 16px; right: 16px; padding: 10px 22px; background: linear-gradient(180deg, #4a85b3 0%, #2a6088 45%, #15415f 100%); color: white; border: 1px solid #1b4260; border-radius: 6px; font-size: 0.85rem; font-weight: 600; cursor: pointer; box-shadow: 0 3px 10px rgba(0,0,0,0.3); }
               @media print { .print-btn { display: none; } }
             </style>
           </head>
@@ -5749,12 +5138,8 @@
                 </tr>
               </tbody>
             </table>
-            <div class="footer">
-              Generated by KCST Windows · ${dateStr}
-            </div>
-            <script>
-              window.onload = function() { setTimeout(function() { window.print(); }, 400); };
-            <\/script>
+            <div class="footer">Generated by KCST Windows · ${dateStr}</div>
+            <script>window.onload=function(){setTimeout(function(){window.print();},400);};<\/script>
           </body>
           </html>
         `);
@@ -5763,7 +5148,7 @@
 
       // ==================== CLEAR ALL ====================
       clearAllBtn.addEventListener('click', async () => {
-        if (products.length === 0) { return; }
+        if (products.length === 0) return;
         const confirmed = await showConfirm({
           title: '⚠️ Clear All Products',
           message: `Are you sure you want to delete <strong>ALL ${products.length} product${products.length !== 1 ? 's' : ''}</strong> from the database?<br><br>This action <strong>cannot</strong> be undone.`,
@@ -5781,9 +5166,7 @@
       });
 
       // ==================== FILTER EVENTS ====================
-      customerFilter.addEventListener('change', () => {
-        applyFilters();
-      });
+      customerFilter.addEventListener('change', () => { applyFilters(); });
       searchInput.addEventListener('input', applyFilters);
       clearSearchBtn.addEventListener('click', () => { searchInput.value = ''; applyFilters(); searchInput.focus(); });
       searchInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') e.preventDefault(); });
@@ -5920,20 +5303,14 @@
 
       async function saveCurrentNote() {
         const content = notepadTextarea.value;
-        if (!content.trim()) {
-          return;
-        }
+        if (!content.trim()) return;
         const firstLine = content.split('\n').find(l => l.trim()) || 'Untitled';
         const title = firstLine.trim().slice(0, 60);
         updateNotepadStatus('💾 Saving…', false, true);
         notepadSaveBtn.disabled = true;
         notepadSaveBtn.textContent = '⏳ Saving…';
         try {
-          const saved = await saveNote({
-            id: currentNoteId,
-            title: title,
-            content: content
-          });
+          const saved = await saveNote({ id: currentNoteId, title: title, content: content });
           currentNoteId = saved.id;
           currentNoteTitle = saved.title;
           notepadIsDirty = false;
@@ -5959,15 +5336,11 @@
       }
 
       async function deleteCurrentNote() {
-        if (!currentNoteId) {
-          return;
-        }
+        if (!currentNoteId) return;
         const confirmed = await showConfirm({
           title: '🗑️ Delete Note',
           message: `Are you sure you want to delete <strong>"${escapeHtml(currentNoteTitle)}"</strong>?<br><br>This action cannot be undone.`,
-          confirmLabel: 'Yes, Delete',
-          type: 'danger',
-          icon: '🗑️'
+          confirmLabel: 'Yes, Delete', type: 'danger', icon: '🗑️'
         });
         if (!confirmed) return;
         try {
@@ -5982,9 +5355,7 @@
           renderNotesList();
           updateNotepadStatus('🗑️ Note deleted');
           try { localStorage.removeItem(NOTEPAD_DRAFT_KEY); } catch (e) {}
-        } catch (err) {
-          // ignore
-        }
+        } catch (err) {}
       }
 
       notesListBody.addEventListener('click', async (e) => {
@@ -5997,9 +5368,7 @@
           const confirmed = await showConfirm({
             title: '🗑️ Delete Note',
             message: `Are you sure you want to delete <strong>"${escapeHtml(note.title)}"</strong>?`,
-            confirmLabel: 'Yes, Delete',
-            type: 'danger',
-            icon: '🗑️'
+            confirmLabel: 'Yes, Delete', type: 'danger', icon: '🗑️'
           });
           if (!confirmed) return;
           try {
@@ -6014,9 +5383,7 @@
               updateNotepadTitleDisplay();
             }
             renderNotesList();
-          } catch (err) {
-            // ignore
-          }
+          } catch (err) {}
           return;
         }
         const item = e.target.closest('.note-item');
@@ -6033,9 +5400,7 @@
             confirmLabel: 'Yes, Start New',
             type: 'warning',
             icon: '⚠️'
-          }).then(confirmed => {
-            if (confirmed) startNewNote();
-          });
+          }).then(confirmed => { if (confirmed) startNewNote(); });
         } else {
           startNewNote();
         }
@@ -6068,9 +5433,7 @@
         try { localStorage.setItem(NOTEPAD_DRAFT_KEY, notepadTextarea.value); } catch (e) {}
         updateNotepadStatus('✎ Editing…', false, true);
         if (notepadSaveTimer) clearTimeout(notepadSaveTimer);
-        notepadSaveTimer = setTimeout(() => {
-          updateNotepadStatus('Ready');
-        }, 1200);
+        notepadSaveTimer = setTimeout(() => { updateNotepadStatus('Ready'); }, 1200);
       });
 
       notepadTextarea.addEventListener('keydown', (e) => {
