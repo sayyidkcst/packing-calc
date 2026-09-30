@@ -625,7 +625,7 @@
       position: relative; top: -20px; margin-bottom: -18px;
     }
 
-    /* ========== TWO-ROW INPUT (first row 5 fields, second row return bags) ========== */
+    /* ========== TWO-ROW INPUT ========== */
     .input-row-five {
       display: flex;
       flex-wrap: wrap;
@@ -665,7 +665,6 @@
       margin-left: 1px;
     }
 
-    /* Second row container for return bags + bag preview + reset button */
     .input-row-second {
       display: flex;
       flex-wrap: wrap;
@@ -703,7 +702,6 @@
       margin-left: 1px;
     }
 
-    /* Compact bag preview on the same line as Return bags */
     .compact-bag-preview {
       flex: 0 1 auto;
       width: auto;
@@ -718,7 +716,6 @@
       padding: 2px 7px;
     }
 
-    /* Reset button in the second row - compact */
     .inline-reset-btn {
       flex: 0 0 auto;
       padding: 4px 10px;
@@ -728,7 +725,18 @@
       height: 24px;
     }
 
-    /* ========== NARROWER INPUT ROW ========== */
+    /* Load calc reset button row */
+    .load-reset-row {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 8px;
+    }
+    .load-reset-row .aero-btn {
+      padding: 5px 12px;
+      font-size: 0.72rem;
+      min-height: 28px;
+    }
+
     .input-row { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: flex-end; }
     .input-group { flex: 0 1 auto; min-width: 80px; max-width: 150px; display: flex; flex-direction: column; gap: 3px; }
     .input-group.full-width { flex: 0 1 auto; min-width: 140px; max-width: 240px; }
@@ -740,7 +748,6 @@
       white-space: nowrap;
     }
 
-    /* ========== COMPACT INPUT WRAP ========== */
     .input-wrap {
       display: flex; align-items: center; background: white;
       border: 1px solid #7f9db9; border-radius: 5px;
@@ -774,7 +781,6 @@
       white-space: nowrap; margin-left: 4px; flex-shrink: 0;
     }
 
-    /* ========== COMPACT COMBO / SEARCH ========== */
     .combo-wrap {
       display: flex; align-items: center; background: white;
       border: 1px solid #7f9db9; border-radius: 5px;
@@ -902,16 +908,8 @@
       margin-top: 5px; display: block;
     }
 
-    .footer-note {
-      font-size: 0.6rem; color: #316385; text-align: center;
-      margin-top: 8px; text-shadow: 0 1px 0 #d9ecff;
-      border-top: 1px solid #a7c2db;
-      padding-top: 6px; letter-spacing: 0.2px;
-    }
-
     .price-top-actions { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
 
-    /* ========== COMPACT SEARCH WRAP ========== */
     .search-wrap {
       display: flex; align-items: center; background: white;
       border: 1px solid #7f9db9; border-radius: 5px;
@@ -941,7 +939,6 @@
     }
     .search-wrap .clear-search:hover { background: #a8c8e0; }
 
-    /* ========== PRODUCT TABLE: BIGGER TEXT ========== */
     .price-table {
       width: 100%; border-collapse: separate; border-spacing: 0;
       font-size: 0.82rem; background: white;
@@ -1061,7 +1058,6 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ========== COMPACT AERO BUTTON ========== */
     .aero-btn {
       border: 1px solid #6f95b6;
       background: linear-gradient(180deg, #f5faff 0%, #d5e6f5 45%, #b3cee5 100%);
@@ -1112,18 +1108,6 @@
     }
     .aero-btn.success:hover {
       background: linear-gradient(180deg, #6fc96f 0%, #4a9e4a 45%, #357a35 100%);
-    }
-
-    /* ---------- RESET BUTTON ROW (kept for other uses, but no longer used in calc) ---------- */
-    .calc-actions-row {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 10px;
-      flex-wrap: wrap;
-    }
-    .calc-actions-row .aero-btn {
-      flex: 0 0 auto;
-      min-width: 130px;
     }
 
     .toast {
@@ -1441,7 +1425,6 @@
     }
     .start-menu-item .smi-icon { font-size: 1rem; width: 20px; text-align: center; }
 
-    /* ---------- SMALL WALLPAPER WINDOW (compact) ---------- */
     .wallpaper-mini-window {
       position: fixed;
       width: 380px;
@@ -1531,10 +1514,7 @@
       box-shadow: 0 1px 3px rgba(0,0,0,0.4);
     }
 
-    /* Uploaded wallpaper thumb (with delete badge) */
-    .wp-thumb.uploaded {
-      position: relative;
-    }
+    .wp-thumb.uploaded { position: relative; }
     .wp-thumb.uploaded .wp-thumb-delete {
       position: absolute;
       bottom: 4px;
@@ -1605,9 +1585,7 @@
       box-shadow: inset 0 1px 4px #ffffff;
       transition: 0.15s;
     }
-    .wp-delete-area.hidden {
-      display: none;
-    }
+    .wp-delete-area.hidden { display: none; }
     .wp-delete-area .delete-label {
       display: flex;
       align-items: center;
@@ -1648,7 +1626,6 @@
     .sync-badge-mini.saved { background: #1e6b3a; }
     .sync-badge-mini.error { background: #8b2c2c; }
 
-    /* ========== CASH COLLECTION SPECIFIC ========== */
     .cash-section {
       background: rgba(235, 245, 255, 0.6);
       border: 1px solid #8eb0ce; border-radius: 8px;
@@ -1778,15 +1755,6 @@
       box-shadow: inset 0 1px 0 rgba(255,255,255,0.2), 0 4px 12px rgba(0,0,0,0.3);
       text-align: center;
     }
-    .cash-result .result-label {
-      font-size: 0.72rem;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      opacity: 0.85;
-      margin-bottom: 4px;
-      text-shadow: 0 1px 2px rgba(0,0,0,0.4);
-    }
     .cash-result .result-value {
       font-size: 2rem;
       font-weight: 800;
@@ -1836,7 +1804,6 @@
       min-width: 100px;
     }
 
-    /* Employee Row */
     .staff-row {
       display: flex;
       align-items: center;
@@ -1866,7 +1833,6 @@
       display: block;
     }
 
-    /* Medium-width combo */
     .combo-wrap.staff-combo-medium {
       flex: 1 1 auto;
       min-width: 140px;
@@ -1878,7 +1844,6 @@
       padding: 7px 4px 7px 10px;
     }
 
-    /* Action buttons group */
     .staff-action-buttons {
       display: flex;
       gap: 4px;
@@ -1891,7 +1856,6 @@
       font-size: 0.9rem;
     }
 
-    /* ========== BIG EMPLOYEE PHOTO (right side, larger) ========== */
     .employee-big-photo-wrapper {
       display: flex;
       justify-content: flex-end;
@@ -1931,7 +1895,6 @@
       display: block;
     }
 
-    /* === RESULT + BIG IMAGE same line, image on RIGHT === */
     .compact-result-row {
       display: flex;
       align-items: center;
@@ -1975,7 +1938,6 @@
       .compact-result-row .employee-big-photo { width: 100px; height: 100px; font-size: 2.6rem; }
     }
 
-    /* Photo preview inside modal */
     .photo-preview {
       width: 70px;
       height: 70px;
@@ -1997,7 +1959,6 @@
       display: block;
     }
 
-    /* ========== DESKTOP RIGHT-CLICK CONTEXT MENU ========== */
     .desktop-context-menu {
       position: fixed;
       z-index: 100001;
@@ -2039,13 +2000,7 @@
       width: 20px;
       text-align: center;
     }
-    .ctx-menu-divider {
-      height: 1px;
-      background: linear-gradient(90deg, transparent 5%, #aac2db 50%, transparent 95%);
-      margin: 4px 8px;
-    }
 
-    /* ========== NOTEPAD SPECIFIC ========== */
     .notepad-toolbar {
       display: flex;
       align-items: center;
@@ -2132,7 +2087,6 @@
       box-shadow: 0 0 5px #e74c3c;
     }
 
-    /* Notes list (saved notes sidebar) */
     .notes-list-panel {
       position: absolute;
       top: 0; right: 0; bottom: 0;
@@ -2225,7 +2179,6 @@
       font-weight: 500;
     }
 
-    /* ========== RESIZE HANDLES ========== */
     .resize-handle {
       position: absolute;
       z-index: 50;
@@ -2284,7 +2237,6 @@
 <body class="not-connected">
   <div class="wallpaper-layer" id="wallpaperLayer"></div>
 
-  <!-- ================= BOOT / CONNECTING OVERLAY ================= -->
   <div class="boot-overlay" id="bootOverlay">
     <div class="boot-logo">📦</div>
     <div class="boot-title">KCST Windows</div>
@@ -2293,23 +2245,19 @@
     <div class="boot-status" id="bootStatus">Connecting to database…</div>
   </div>
 
-  <!-- ================= DESKTOP CLOCK GADGET ================= -->
   <div class="desktop-gadget" id="desktopGadget" title="Drag to move">
     <div class="gadget-grip"></div>
-
     <div class="gadget-analog" id="gadgetAnalog">
       <div class="gadget-hand hour" id="gadgetHourHand"></div>
       <div class="gadget-hand minute" id="gadgetMinuteHand"></div>
       <div class="gadget-hand second" id="gadgetSecondHand"></div>
       <div class="gadget-center-dot"></div>
     </div>
-
     <div class="gadget-time" id="gadgetTime">--:--</div>
     <div class="gadget-date" id="gadgetDate">--/--/----</div>
     <div class="gadget-day" id="gadgetDay">---</div>
   </div>
 
-  <!-- ================= DESKTOP CALENDAR GADGET ================= -->
   <div class="desktop-calendar" id="desktopCalendar" title="Drag to move">
     <div class="cal-header" id="calHeader">
       <button class="cal-nav-btn" id="calPrevMonth" title="Previous month">◀</button>
@@ -2319,7 +2267,7 @@
     <div class="cal-grid" id="calGrid"></div>
   </div>
 
-  <!-- ================= LEFT WINDOW (Packing Calculator) ================= -->
+  <!-- ================= PACKING CALCULATOR ================= -->
   <div class="window" id="calcWindow">
     <div class="title-bar" id="calcTitleBar">
       <div class="title-text">
@@ -2348,8 +2296,6 @@
       </div>
 
       <div class="fieldset">
-
-        <!-- ========== FIRST ROW: Weight/pc, Pcs/bag, #bags, Extra, Return pcs ========== -->
         <div class="input-row-five">
           <div class="input-group">
             <label><span>⚖️</span> Wt/pc</label>
@@ -2388,7 +2334,6 @@
           </div>
         </div>
 
-        <!-- ========== SECOND ROW: Return bags + compact bag preview + Reset button ========== -->
         <div class="input-row-second">
           <div class="input-group">
             <label><span>↩️</span> Return bags</label>
@@ -2405,7 +2350,6 @@
             <span>🔄</span> Reset
           </button>
         </div>
-
       </div>
 
       <div class="result-panel" id="resultArea">
@@ -2417,13 +2361,12 @@
           </div>
         </div>
       </div>
-
     </div>
 
     <div class="loading-overlay" id="calcLoading"><div class="loading-spinner"></div></div>
   </div>
 
-  <!-- ================= RIGHT WINDOW (Products) ================= -->
+  <!-- ================= PRODUCTS WINDOW ================= -->
   <div class="window-price" id="priceWindow">
     <div class="title-bar" id="priceTitleBar">
       <div class="title-text">
@@ -2489,7 +2432,7 @@
     <div class="loading-overlay" id="priceLoading"><div class="loading-spinner"></div></div>
   </div>
 
-  <!-- ================= BOTTOM-LEFT WINDOW (Load Calculator) ================= -->
+  <!-- ================= LOAD CALCULATOR ================= -->
   <div class="window-load" id="loadWindow">
     <div class="title-bar" id="loadTitleBar">
       <div class="title-text"><span>🚚</span> Load Calculator</div>
@@ -2530,6 +2473,12 @@
             </div>
           </div>
         </div>
+        <!-- Reset button row -->
+        <div class="load-reset-row">
+          <button class="aero-btn" id="resetLoadBtn" type="button" title="Reset all load calculator fields">
+            <span>🔄</span> Reset
+          </button>
+        </div>
       </div>
 
       <div class="result-panel">
@@ -2556,23 +2505,16 @@
     </div>
 
     <div class="window-content">
-
-      <!-- EMPLOYEE ROW: photo + combo + buttons -->
       <div class="staff-row">
-        <!-- Photo (small, left of combo) -->
         <div class="staff-photo-small" id="staffPhotoSmall" title="Employee photo">
           <span>👤</span>
         </div>
-
-        <!-- Medium-sized combo -->
         <div class="combo-wrap staff-combo-medium">
           <select id="staffCombo" tabindex="10">
             <option value="">👤 Select Employee</option>
           </select>
           <span class="combo-arrow">▼</span>
         </div>
-
-        <!-- Action buttons -->
         <div class="staff-action-buttons">
           <button class="aero-btn primary" id="addStaffBtn" type="button" tabindex="11" title="Add new employee">
             <span>➕</span>
@@ -2586,7 +2528,6 @@
         </div>
       </div>
 
-      <!-- ====== RESULT + BIG IMAGE (image on RIGHT, larger) ====== -->
       <div class="compact-result-row">
         <div class="cash-result" id="cashResult" style="flex:1 1 0; min-width:220px; margin-top:0;">
           <div class="result-value" id="cashResultValue">₹0.00</div>
@@ -2600,7 +2541,6 @@
         </div>
       </div>
 
-      <!-- CURRENCY DENOMINATIONS SECTION -->
       <div class="cash-section">
         <table class="currency-table">
           <thead>
@@ -2611,9 +2551,7 @@
               <th style="text-align:right;">Amount</th>
             </tr>
           </thead>
-          <tbody id="currencyTableBody">
-            <!-- Populated by JS -->
-          </tbody>
+          <tbody id="currencyTableBody"></tbody>
           <tfoot>
             <tr class="cash-total-row">
               <td colspan="3" style="text-align:right;">Total Currency:</td>
@@ -2623,7 +2561,6 @@
         </table>
       </div>
 
-      <!-- AMOUNT & EXPENSE SECTION -->
       <div class="cash-section">
         <div class="cash-section-legend">💰 Amount & Expenses</div>
         <div class="cash-top-row">
@@ -2644,7 +2581,6 @@
         </div>
       </div>
 
-      <!-- ACTIONS -->
       <div class="cash-actions">
         <button class="aero-btn" id="cashResetBtn" type="button">
           <span>🔄</span> Reset
@@ -2673,7 +2609,6 @@
       </div>
     </div>
 
-    <!-- NOTEPAD TOOLBAR -->
     <div class="notepad-toolbar">
       <button class="aero-btn" id="notepadNewBtn" type="button" title="New note">
         <span>📄</span> New
@@ -2694,11 +2629,9 @@
       </button>
     </div>
 
-    <!-- TEXT AREA -->
     <div class="notepad-textarea-wrap">
       <textarea id="notepadTextarea" placeholder="Start typing your note here…&#10;&#10;Tip: Press Ctrl+S to save, Ctrl+N for a new note, Ctrl+L to toggle the notes list." spellcheck="false"></textarea>
 
-      <!-- SAVED NOTES PANEL -->
       <div class="notes-list-panel" id="notesListPanel">
         <div class="notes-list-header">
           <span>📋 Saved Notes</span>
@@ -2710,7 +2643,6 @@
       </div>
     </div>
 
-    <!-- STATUS BAR -->
     <div class="notepad-status-bar">
       <div class="status-left">
         <span class="status-dot-notepad" id="notepadConnDot"></span>
@@ -2723,7 +2655,7 @@
     </div>
   </div>
 
-  <!-- ================= ADD PRODUCT MODAL ================= -->
+  <!-- ================= MODALS ================= -->
   <div class="modal-overlay" id="modalOverlay">
     <div class="modal" id="modalBox">
       <div class="title-bar">
@@ -2736,7 +2668,6 @@
     </div>
   </div>
 
-  <!-- ================= CONFIRM DIALOG ================= -->
   <div class="modal-overlay" id="confirmOverlay">
     <div class="modal confirm-dialog" id="confirmBox">
       <div class="title-bar">
@@ -2759,7 +2690,7 @@
     </div>
   </div>
 
-  <!-- ================= SMALL WALLPAPER WINDOW ================= -->
+  <!-- ================= WALLPAPER WINDOW ================= -->
   <div class="wallpaper-mini-window" id="wallpaperMiniWindow">
     <div class="title-bar" id="wallpaperMiniTitleBar">
       <div class="title-text">
@@ -2869,7 +2800,6 @@
     </div>
   </div>
 
-  <!-- ================= DESKTOP RIGHT-CLICK CONTEXT MENU ================= -->
   <div class="desktop-context-menu" id="desktopContextMenu">
     <div class="ctx-menu-item" id="ctxReload">
       <span class="ctx-icon">🔄</span> Reload
@@ -2879,7 +2809,6 @@
     </div>
   </div>
 
-  <!-- ===================== SUPABASE SDK ===================== -->
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
     const SUPABASE_URL = 'https://rrtpnknbrrcwzmlqeyha.supabase.co';
@@ -2931,7 +2860,6 @@
       const WALLPAPER_SETTING_KEY = 'wallpaper';
       const WALLPAPER_UPLOADS_KEY = 'wallpaper_uploads';
 
-      // Built-in wallpapers (always available, not deletable)
       const BUILTIN_WALLPAPERS = [
         { id: 'tropical', name: 'Tropical Beach', url: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1920&q=80' },
         { id: 'mountains', name: 'Mountains', url: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&q=80' },
@@ -2947,7 +2875,6 @@
         { id: 'gradient3', name: 'Aero Green', url: 'linear-gradient(135deg, #0f3a2c 0%, #2d6e4e 50%, #0a2a1c 100%)' }
       ];
 
-      // Uploaded wallpapers (loaded from DB)
       let uploadedWallpapers = [];
       let allWallpapers = [...BUILTIN_WALLPAPERS];
 
@@ -2962,7 +2889,6 @@
       const wpUploadProgress = document.getElementById('wpUploadProgress');
       const wallpaperStatusMini = document.getElementById('wallpaperStatusMini');
       const wallpaperSyncBadgeMini = document.getElementById('wallpaperSyncBadgeMini');
-      const wallpaperScrollContainer = document.getElementById('wallpaperScrollContainer');
       const wpDeleteArea = document.getElementById('wpDeleteArea');
       const wpDeleteBtn = document.getElementById('wpDeleteBtn');
 
@@ -2992,7 +2918,6 @@
         }
       }
 
-      // ========== DATABASE: LOAD / SAVE UPLOADED WALLPAPERS ==========
       async function loadUploadedWallpapers() {
         try {
           const cached = localStorage.getItem(WALLPAPER_UPLOADS_KEY);
@@ -3120,7 +3045,6 @@
         renderWallpaperGridMini();
       }
 
-      // ========== DELETE UPLOADED WALLPAPER (single thumbnail) ==========
       async function deleteUploadedWallpaper(id) {
         const item = uploadedWallpapers.find(w => w.id === id);
         if (!item) return;
@@ -3150,7 +3074,6 @@
         }
       }
 
-      // ========== DELETE CURRENT CUSTOM WALLPAPER (banner button) ==========
       async function deleteCustomWallpaper() {
         const item = uploadedWallpapers.find(w => w.url === currentWallpaper);
         if (!item) return;
@@ -3180,7 +3103,6 @@
 
       wpDeleteBtn.addEventListener('click', deleteCustomWallpaper);
 
-      // ========== RENDER GRID ==========
       function renderWallpaperGridMini() {
         let html = '';
         allWallpapers.forEach(wp => {
@@ -3204,7 +3126,6 @@
         updateDeleteButtonVisibility();
       }
 
-      // ========== GRID CLICK HANDLERS ==========
       wallpaperGridMini.addEventListener('click', async (e) => {
         const delBadge = e.target.closest('[data-wp-delete]');
         if (delBadge) {
@@ -3220,7 +3141,6 @@
         await setWallpaper(url);
       });
 
-      // ========== MULTIPLE UPLOAD HANDLER ==========
       wpUploadAreaMini.addEventListener('click', () => wpUploadInputMini.click());
 
       wpUploadInputMini.addEventListener('change', async (e) => {
@@ -3600,7 +3520,6 @@
         }
       }
 
-      // ==================== RESIZABLE WINDOWS ====================
       const MIN_WIDTH = 280;
       const MIN_HEIGHT = 180;
 
@@ -3719,7 +3638,6 @@
       let highestZ = 10;
       function bringToFront(el) { highestZ++; el.style.zIndex = highestZ; }
 
-      // ==================== CENTER WINDOWS ON SCREEN ====================
       function centerWindow(winEl) {
         if (!winEl) return;
         if (winEl.classList.contains('minimized') || winEl.classList.contains('maximized')) return;
@@ -4008,8 +3926,8 @@
       const loadPcsPerBag = document.getElementById('loadPcsPerBag');
       const loadTotalKg = document.getElementById('loadTotalKg');
       const loadResultContent = document.getElementById('loadResultContent');
+      const resetLoadBtn = document.getElementById('resetLoadBtn');
 
-      // Cash Collection elements
       const cashAmount = document.getElementById('cashAmount');
       const cashExpense = document.getElementById('cashExpense');
       const currencyTableBody = document.getElementById('currencyTableBody');
@@ -4022,7 +3940,6 @@
       const cashClearCountsBtn = document.getElementById('cashClearCountsBtn');
       const cashSaveBtn = document.getElementById('cashSaveBtn');
 
-      // Employee elements
       const staffCombo = document.getElementById('staffCombo');
       const addStaffBtn = document.getElementById('addStaffBtn');
       const editStaffBtn = document.getElementById('editStaffBtn');
@@ -4030,7 +3947,6 @@
       const staffPhotoSmall = document.getElementById('staffPhotoSmall');
       const employeeBigPhoto = document.getElementById('employeeBigPhoto');
 
-      // Notepad elements
       const notepadTextarea = document.getElementById('notepadTextarea');
       const notepadNewBtn = document.getElementById('notepadNewBtn');
       const notepadSaveBtn = document.getElementById('notepadSaveBtn');
@@ -4070,7 +3986,6 @@
       const startBtn = document.getElementById('startBtn');
       const startMenu = document.getElementById('startMenu');
 
-      // Make all main windows draggable
       makeDraggable(calcWindow, calcTitleBar);
       makeDraggable(priceWindow, priceTitleBar);
       makeDraggable(loadWindow, loadTitleBar);
@@ -4078,7 +3993,6 @@
       makeDraggable(notepadWindow, notepadTitleBar);
       makeDraggable(confirmBox, confirmBox.querySelector('.title-bar'));
 
-      // Add resize handles to all main windows
       [calcWindow, priceWindow, loadWindow, cashWindow, notepadWindow].forEach(addResizeHandles);
 
       calcWindow.addEventListener('mousedown', () => bringToFront(calcWindow));
@@ -4088,6 +4002,7 @@
       notepadWindow.addEventListener('mousedown', () => bringToFront(notepadWindow));
 
       const fieldOrder = [weightPerPcInput, pcsPerBagInput, numBagsInput, extraPcsInput, returnPcsInput, returnBagsInput];
+      const loadFieldOrder = [loadWeightPerPc, loadPcsPerBag, loadTotalKg];
 
       // ==================== STATE ====================
       let products = [];
@@ -4106,7 +4021,6 @@
         notepadWindow: { minimized: false, maximized: false, origRect: null }
       };
 
-      // ==================== NOTEPAD STATE ====================
       let currentNoteId = null;
       let currentNoteTitle = 'Untitled';
       let notesList = [];
@@ -4114,7 +4028,6 @@
       let notepadIsDirty = false;
       const NOTEPAD_DRAFT_KEY = 'notepad_current_draft';
 
-      // ==================== HELPERS ====================
       const formatKg = (value) => {
         if (value === 0) return '0.000';
         let str = value.toFixed(3);
@@ -4435,7 +4348,6 @@
         }
       }
 
-      // ==================== EMPLOYEES ====================
       async function loadEmployees() {
         try {
           const { data, error } = await supabase
@@ -4695,7 +4607,6 @@
         }
       }
 
-      // ==================== NOTEPAD DATABASE ====================
       async function loadNotes() {
         try {
           const { data, error } = await supabase
@@ -4866,7 +4777,6 @@
         renderPriceTable();
       }
 
-      // ==================== TOTAL QTY ====================
       function updateTotalQtyDisplay() {
         const pcsPerBag = parseFloat(pcsPerBagInput.value) || 0;
         const numBags = parseInt(numBagsInput.value) || 0;
@@ -4878,7 +4788,6 @@
         totalBagsValue.textContent = numBags + ' bag' + (numBags !== 1 ? 's' : '');
       }
 
-      // ==================== PREVIEW / CALC ====================
       function updateBagPreview() {
         const w = parseFloat(weightPerPcInput.value) || 0;
         const p = parseFloat(pcsPerBagInput.value) || 0;
@@ -4895,8 +4804,8 @@
         const pcsPerBag = parseFloat(pcsPerBagInput.value);
         const numBags = parseFloat(numBagsInput.value);
         const extraPcs = parseFloat(extraPcsInput.value);
-        const returnPcs = parseFloat(returnPcsInput.value) || 0;
-        const returnBags = parseFloat(returnBagsInput.value) || 0;
+        const returnPcs = (returnPcsInput.value === '' ? 0 : parseFloat(returnPcsInput.value));
+        const returnBags = (returnBagsInput.value === '' ? 0 : parseFloat(returnBagsInput.value));
 
         const anyEmpty = weightPerPcInput.value === '' || pcsPerBagInput.value === '' || numBagsInput.value === '' || extraPcsInput.value === '';
         if (anyEmpty) { showEmptyHint(); return null; }
@@ -4988,7 +4897,6 @@
         inp.addEventListener('input', autoRecalc);
       });
 
-      // ==================== RESET CALCULATOR ====================
       function resetPackingCalculator() {
         weightPerPcInput.value = '';
         pcsPerBagInput.value = '';
@@ -5054,6 +4962,55 @@
         inp.addEventListener('input', () => {
           if (loadDebounce) clearTimeout(loadDebounce);
           loadDebounce = setTimeout(calculateLoad, 120);
+        });
+      });
+
+      // ==================== LOAD CALC RESET ====================
+      function resetLoadCalculator({ clearResult = false } = {}) {
+        loadWeightPerPc.value = '';
+        loadPcsPerBag.value = '';
+        loadTotalKg.value = '';
+
+        if (clearResult) {
+          loadResultContent.innerHTML = `<div class="empty-hint">📝 Enter weight per pc, pcs per bag &amp; total kg<span class="small">The result updates live as you type</span></div>`;
+        }
+      }
+
+      resetLoadBtn.addEventListener('click', () => {
+        // Reset button clears fields AND the result panel
+        resetLoadCalculator({ clearResult: true });
+        loadWeightPerPc.focus();
+      });
+
+      // ==================== LOAD CALC ENTER/ESC NAV ====================
+      function handleLoadEnterKey(e, currentIndex) {
+        if (e.key !== 'Enter') return;
+        e.preventDefault();
+
+        if (currentIndex < loadFieldOrder.length - 1) {
+          // Move to next field
+          const nextField = loadFieldOrder[currentIndex + 1];
+          if (nextField) { nextField.focus(); if (nextField.select) nextField.select(); }
+        } else {
+          // Last field — clear all inputs but KEEP the result panel
+          resetLoadCalculator({ clearResult: false });
+          loadWeightPerPc.focus();
+        }
+      }
+
+      function handleLoadEscKey(e, currentIndex) {
+        if (e.key !== 'Escape') return;
+        e.preventDefault();
+        if (currentIndex > 0) {
+          const prevField = loadFieldOrder[currentIndex - 1];
+          if (prevField) { prevField.focus(); if (prevField.select) prevField.select(); }
+        }
+      }
+
+      loadFieldOrder.forEach((input, index) => {
+        input.addEventListener('keydown', (e) => {
+          handleLoadEnterKey(e, index);
+          handleLoadEscKey(e, index);
         });
       });
 
@@ -5174,7 +5131,7 @@
         });
       });
 
-      // ========== EMPLOYEE FORM MODAL (Add/Edit) ==========
+      // ========== EMPLOYEE FORM MODAL ==========
       function openEmployeeFormModal(existingEmployee = null) {
         const isEdit = !!existingEmployee;
         const title = isEdit ? '✎ Edit Employee' : '👤 Add New Employee';
@@ -5267,7 +5224,6 @@
               renderStaffCombo();
               staffCombo.value = saved.id;
               updateStaffInfo();
-              console.log('✅ Employee added to list. Total:', employeesList.length);
             }
             return true;
           } catch (err) {
@@ -5414,7 +5370,7 @@
         showEmptyHint();
       }
 
-      // ==================== ENTER NAV + ESC BACK ====================
+      // ==================== PACKING: ENTER / ESC NAV ====================
       async function handleEnterKey(e, currentIndex) {
         if (e.key !== 'Enter') return;
         e.preventDefault();
@@ -5440,7 +5396,6 @@
           const kgText = formatKg(result.totalKg);
           const pcsText = result.totalPcs;
           showLoading('calc');
-          let saved = false;
           try {
             await savePackingRecord({
               customer: result.customerName, productName: result.productName,
@@ -5448,7 +5403,6 @@
               numBags: result.numBags, extraPcs: result.extraPcs,
               totalKg: result.totalKg, totalPcs: result.totalPcs
             });
-            saved = true;
           } catch (err) {
             console.error('Save failed:', err);
           } finally {
@@ -6165,7 +6119,6 @@
       calculateCash();
       await loadProducts();
 
-      // Hide all windows initially — do NOT auto-open on boot
       ['calcWindow', 'priceWindow', 'loadWindow', 'cashWindow', 'notepadWindow'].forEach(id => {
         const winEl = document.getElementById(id);
         if (winEl) {
