@@ -112,6 +112,7 @@
     body.not-connected .window-load,
     body.not-connected .window-cash,
     body.not-connected .window-notepad,
+    body.not-connected .window-vehicle,
     body.not-connected .startbar,
     body.not-connected .start-menu {
       opacity: 0 !important;
@@ -120,7 +121,7 @@
     }
 
     .desktop-gadget, .desktop-calendar, .startbar { transition: opacity 0.6s ease; }
-    .window, .window-price, .window-load, .window-cash, .window-notepad {
+    .window, .window-price, .window-load, .window-cash, .window-notepad, .window-vehicle {
       transition: opacity 0.2s, transform 0.2s, top 0.15s, left 0.15s, width 0.15s, height 0.15s;
     }
 
@@ -329,7 +330,7 @@
     }
 
     /* ---------- WINDOW BASE ---------- */
-    .window, .window-price, .window-load, .window-cash, .window-notepad {
+    .window, .window-price, .window-load, .window-cash, .window-notepad, .window-vehicle {
       position: absolute;
       background: rgba(220, 235, 250, 0.78);
       backdrop-filter: blur(12px);
@@ -350,22 +351,23 @@
     .window-load { width: 500px; max-width: calc(100vw - 40px); z-index: 12; }
     .window-cash { width: 520px; max-width: calc(100vw - 40px); z-index: 13; }
     .window-notepad { width: 640px; max-width: calc(100vw - 40px); z-index: 14; }
+    .window-vehicle { width: 980px; max-width: calc(100vw - 40px); z-index: 15; }
 
-    .window.minimized, .window-price.minimized, .window-load.minimized, .window-cash.minimized, .window-notepad.minimized { display: none; }
+    .window.minimized, .window-price.minimized, .window-load.minimized, .window-cash.minimized, .window-notepad.minimized, .window-vehicle.minimized { display: none; }
 
-    .window.maximized, .window-price.maximized, .window-load.maximized, .window-cash.maximized, .window-notepad.maximized {
+    .window.maximized, .window-price.maximized, .window-load.maximized, .window-cash.maximized, .window-notepad.maximized, .window-vehicle.maximized {
       top: 0 !important; left: 0 !important; right: 0 !important;
       width: 100vw !important; max-width: 100vw !important;
       height: calc(100vh - var(--taskbar-height)) !important;
       max-height: calc(100vh - var(--taskbar-height)) !important;
       border-radius: 0; border-top: none; border-left: none; border-right: none; border-bottom: none;
     }
-    .window.maximized .title-bar, .window-price.maximized .title-bar, .window-load.maximized .title-bar, .window-cash.maximized .title-bar, .window-notepad.maximized .title-bar {
+    .window.maximized .title-bar, .window-price.maximized .title-bar, .window-load.maximized .title-bar, .window-cash.maximized .title-bar, .window-notepad.maximized .title-bar, .window-vehicle.maximized .title-bar {
       border-radius: 0; cursor: default !important;
     }
 
-    .window.snap-left, .window-price.snap-left, .window-load.snap-left, .window-cash.snap-left, .window-notepad.snap-left,
-    .window.snap-right, .window-price.snap-right, .window-load.snap-right, .window-cash.snap-right, .window-notepad.snap-right {
+    .window.snap-left, .window-price.snap-left, .window-load.snap-left, .window-cash.snap-left, .window-notepad.snap-left, .window-vehicle.snap-left,
+    .window.snap-right, .window-price.snap-right, .window-load.snap-right, .window-cash.snap-right, .window-notepad.snap-right, .window-vehicle.snap-right {
       transition: top 0.15s ease, left 0.15s ease, width 0.15s ease, height 0.15s ease;
     }
 
@@ -1661,16 +1663,42 @@
     .resize-handle.se { bottom: 0; right: 0; width: 10px; height: 10px; cursor: se-resize; }
     .resize-handle.sw { bottom: 0; left: 0; width: 10px; height: 10px; cursor: sw-resize; }
 
-    .window.resizing, .window-price.resizing, .window-load.resizing, .window-cash.resizing, .window-notepad.resizing {
+    .window.resizing, .window-price.resizing, .window-load.resizing, .window-cash.resizing, .window-notepad.resizing, .window-vehicle.resizing {
       transition: none !important; user-select: none;
     }
 
+    /* ---------- VEHICLE WINDOW SPECIFIC ---------- */
+    .window-vehicle .price-table tbody td.vehicle-name-cell {
+      font-weight: 600; color: #10344b;
+    }
+    .window-vehicle .price-table tbody td.vehicle-number-cell {
+      font-weight: 600; color: #1d4a6b;
+      font-family: 'Segoe UI', Consolas, monospace;
+      white-space: nowrap;
+    }
+    .window-vehicle .price-table tbody td.driver-cell {
+      font-weight: 500; color: #5a3a7e; font-size: 0.78rem;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      max-width: 110px;
+    }
+    .window-vehicle .price-table tbody td.date-cell {
+      font-weight: 500; color: #1a3e5a; font-size: 0.76rem;
+      white-space: nowrap;
+    }
+    .window-vehicle .price-table tbody td.date-cell.expired {
+      color: #c0392b; font-weight: 700;
+    }
+    .window-vehicle .price-table tbody td.date-cell.expiring {
+      color: #e67e22; font-weight: 700;
+    }
+
     @media (max-width: 1200px) {
-      .window, .window-price, .window-load, .window-cash, .window-notepad {
+      .window, .window-price, .window-load, .window-cash, .window-notepad, .window-vehicle {
         position: relative; top: auto !important; left: auto !important; right: auto !important;
         margin: 0 auto 20px auto; max-width: 540px; width: 100%;
       }
       .window-notepad { max-width: 640px; }
+      .window-vehicle { max-width: 980px; }
       .window-price { right: auto; }
       body { overflow-y: auto; padding: 20px 12px calc(var(--taskbar-height) + 20px) 12px; }
       .input-row-five { flex-wrap: wrap; }
@@ -1698,6 +1726,9 @@
       .notepad-toolbar { gap: 4px; padding: 6px 8px; }
       .notepad-toolbar .aero-btn { padding: 4px 7px; font-size: 0.66rem; }
       .notes-list-panel { width: 200px; }
+      .window-vehicle .price-table { font-size: 0.68rem; }
+      .window-vehicle .price-table thead th { font-size: 0.6rem; padding: 5px 4px; }
+      .window-vehicle .price-table tbody td { padding: 5px 4px; }
     }
   </style>
 </head>
@@ -2121,6 +2152,77 @@
     </div>
   </div>
 
+  <!-- ==================== VEHICLE MANAGER WINDOW ==================== -->
+  <div class="window-vehicle" id="vehicleWindow">
+    <div class="title-bar" id="vehicleTitleBar">
+      <div class="title-text">
+        <span>🚛</span> Vehicle Manager
+        <span class="status-dot" id="vehicleStatusDot" title="Database status"></span>
+      </div>
+      <div class="caption-buttons">
+        <div class="caption-btn minimize" data-minimize="vehicleWindow" title="Minimize">—</div>
+        <div class="caption-btn maximize" data-maximize="vehicleWindow" title="Maximize">□</div>
+        <div class="caption-btn close" data-close="vehicleWindow" title="Close (remove from taskbar)">✕</div>
+      </div>
+    </div>
+
+    <div class="window-content" style="flex:1; display:flex; flex-direction:column;">
+      <div class="price-top-actions">
+        <button class="aero-btn primary" id="addVehicleBtn" type="button">
+          <span>🚛➕</span> Add Vehicle
+        </button>
+        <button class="aero-btn" id="printVehiclesBtn" type="button">
+          <span>🖨️</span> Print
+        </button>
+        <button class="aero-btn danger" id="clearAllVehiclesBtn" type="button">
+          <span>🗑️</span> Clear All
+        </button>
+      </div>
+
+      <div class="top-row">
+        <div class="combo-wrap">
+          <select id="vehicleSearchType">
+            <option value="all">🔍 All Fields</option>
+            <option value="name">🚛 Vehicle Name</option>
+            <option value="number">🔢 Vehicle Number</option>
+            <option value="driver">👤 Driver</option>
+          </select>
+          <span class="combo-arrow">▼</span>
+          <span class="combo-icon">🚛</span>
+        </div>
+        <div class="search-wrap">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="vehicleSearchInput" placeholder="Search vehicle...">
+          <span class="clear-search" id="clearVehicleSearchBtn" title="Clear search">✕</span>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <table class="price-table">
+          <thead>
+            <tr>
+              <th>Vehicle Name</th>
+              <th>Number</th>
+              <th>Driver</th>
+              <th>Insurance Expiry</th>
+              <th>Fitness Upto</th>
+              <th>Registration Date</th>
+              <th>Tax Upto</th>
+              <th style="width:64px;"></th>
+            </tr>
+          </thead>
+          <tbody id="vehicleTableBody">
+            <tr><td colspan="8">
+              <div class="no-results">🚛 No vehicles yet<span class="small">Click "Add Vehicle" to create your first entry</span></div>
+            </td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="loading-overlay" id="vehicleLoading"><div class="loading-spinner"></div></div>
+  </div>
+
   <!-- MODALS -->
   <div class="modal-overlay" id="modalOverlay">
     <div class="modal" id="modalBox">
@@ -2215,6 +2317,9 @@
     <div class="start-menu-item" data-restore="notepadWindow">
       <span class="smi-icon">📝</span> Notepad
     </div>
+    <div class="start-menu-item" data-restore="vehicleWindow">
+      <span class="smi-icon">🚛</span> Vehicle Manager
+    </div>
     <div class="start-menu-header">Personalize</div>
     <div class="start-menu-item" id="startChangeWallpaper">
       <span class="smi-icon">🖼️</span> Change Wallpaper
@@ -2253,6 +2358,10 @@
     <div class="taskbar-item" id="taskbarNotepad" data-restore="notepadWindow" style="display:none;">
       <span class="tb-icon">📝</span>
       <span class="tb-label">Notepad</span>
+    </div>
+    <div class="taskbar-item" id="taskbarVehicle" data-restore="vehicleWindow" style="display:none;">
+      <span class="tb-icon">🚛</span>
+      <span class="tb-label">Vehicle Manager</span>
     </div>
 
     <div class="system-tray">
@@ -2733,7 +2842,7 @@
       });
 
       document.body.addEventListener('contextmenu', (e) => {
-        if (e.target.closest('.window, .window-price, .window-load, .window-cash, .window-notepad, .startbar, .start-menu, .modal-overlay, .desktop-gadget, .desktop-calendar, .wallpaper-mini-window, .desktop-context-menu')) return;
+        if (e.target.closest('.window, .window-price, .window-load, .window-cash, .window-notepad, .window-vehicle, .startbar, .start-menu, .modal-overlay, .desktop-gadget, .desktop-calendar, .wallpaper-mini-window, .desktop-context-menu')) return;
         e.preventDefault();
         showDesktopContextMenu(e.clientX, e.clientY);
       });
@@ -3324,11 +3433,13 @@
       const loadWindow = document.getElementById('loadWindow');
       const cashWindow = document.getElementById('cashWindow');
       const notepadWindow = document.getElementById('notepadWindow');
+      const vehicleWindow = document.getElementById('vehicleWindow');
       const calcTitleBar = document.getElementById('calcTitleBar');
       const priceTitleBar = document.getElementById('priceTitleBar');
       const loadTitleBar = document.getElementById('loadTitleBar');
       const cashTitleBar = document.getElementById('cashTitleBar');
       const notepadTitleBar = document.getElementById('notepadTitleBar');
+      const vehicleTitleBar = document.getElementById('vehicleTitleBar');
 
       const loadWeightPerPc = document.getElementById('loadWeightPerPc');
       const loadPcsPerBag = document.getElementById('loadPcsPerBag');
@@ -3394,20 +3505,33 @@
       const startBtn = document.getElementById('startBtn');
       const startMenu = document.getElementById('startMenu');
 
+      // Vehicle elements
+      const vehicleTableBody = document.getElementById('vehicleTableBody');
+      const vehicleSearchType = document.getElementById('vehicleSearchType');
+      const vehicleSearchInput = document.getElementById('vehicleSearchInput');
+      const clearVehicleSearchBtn = document.getElementById('clearVehicleSearchBtn');
+      const addVehicleBtn = document.getElementById('addVehicleBtn');
+      const printVehiclesBtn = document.getElementById('printVehiclesBtn');
+      const clearAllVehiclesBtn = document.getElementById('clearAllVehiclesBtn');
+      const vehicleLoading = document.getElementById('vehicleLoading');
+      const vehicleStatusDot = document.getElementById('vehicleStatusDot');
+
       makeDraggable(calcWindow, calcTitleBar);
       makeDraggable(priceWindow, priceTitleBar);
       makeDraggable(loadWindow, loadTitleBar);
       makeDraggable(cashWindow, cashTitleBar);
       makeDraggable(notepadWindow, notepadTitleBar);
+      makeDraggable(vehicleWindow, vehicleTitleBar);
       makeDraggable(confirmBox, confirmBox.querySelector('.title-bar'));
 
-      [calcWindow, priceWindow, loadWindow, cashWindow, notepadWindow].forEach(addResizeHandles);
+      [calcWindow, priceWindow, loadWindow, cashWindow, notepadWindow, vehicleWindow].forEach(addResizeHandles);
 
       calcWindow.addEventListener('mousedown', () => bringToFront(calcWindow));
       priceWindow.addEventListener('mousedown', () => bringToFront(priceWindow));
       loadWindow.addEventListener('mousedown', () => bringToFront(loadWindow));
       cashWindow.addEventListener('mousedown', () => bringToFront(cashWindow));
       notepadWindow.addEventListener('mousedown', () => bringToFront(notepadWindow));
+      vehicleWindow.addEventListener('mousedown', () => bringToFront(vehicleWindow));
 
       const fieldOrder = [weightPerPcInput, pcsPerBagInput, numBagsInput, extraPcsInput, returnPcsInput, returnBagsInput];
       const loadFieldOrder = [loadWeightPerPc, loadPcsPerBag, loadTotalKg];
@@ -3421,12 +3545,18 @@
       let isOnline = false;
       let employeesList = [];
 
+      // Vehicle state
+      let vehicles = [];
+      let filteredVehicles = [];
+      let selectedVehicleId = null;
+
       const windowState = {
         calcWindow: { minimized: false, maximized: false, origRect: null },
         priceWindow: { minimized: false, maximized: false, origRect: null },
         loadWindow: { minimized: false, maximized: false, origRect: null },
         cashWindow: { minimized: false, maximized: false, origRect: null },
-        notepadWindow: { minimized: false, maximized: false, origRect: null }
+        notepadWindow: { minimized: false, maximized: false, origRect: null },
+        vehicleWindow: { minimized: false, maximized: false, origRect: null }
       };
 
       let currentNoteId = null;
@@ -3470,11 +3600,13 @@
       function showLoading(which) {
         if (which === 'calc') calcLoading.classList.add('active');
         if (which === 'price') priceLoading.classList.add('active');
+        if (which === 'vehicle') vehicleLoading.classList.add('active');
       }
 
       function hideLoading(which) {
         if (which === 'calc') calcLoading.classList.remove('active');
         if (which === 'price') priceLoading.classList.remove('active');
+        if (which === 'vehicle') vehicleLoading.classList.remove('active');
       }
 
       function escapeHtml(s) {
@@ -3523,7 +3655,7 @@
 
       document.getElementById('startMinimizeAll').addEventListener('click', () => {
         startMenu.classList.remove('open');
-        ['calcWindow', 'priceWindow', 'loadWindow', 'cashWindow', 'notepadWindow'].forEach(id => {
+        ['calcWindow', 'priceWindow', 'loadWindow', 'cashWindow', 'notepadWindow', 'vehicleWindow'].forEach(id => {
           const winEl = document.getElementById(id);
           if (winEl && !windowState[id].minimized) {
             if (windowState[id].maximized) restoreFromMaximize(id);
@@ -3541,12 +3673,14 @@
         const tbLoad = document.getElementById('taskbarLoad');
         const tbCash = document.getElementById('taskbarCash');
         const tbNotepad = document.getElementById('taskbarNotepad');
+        const tbVehicle = document.getElementById('taskbarVehicle');
         [
           ['calcWindow', tbCalc],
           ['priceWindow', tbPrice],
           ['loadWindow', tbLoad],
           ['cashWindow', tbCash],
-          ['notepadWindow', tbNotepad]
+          ['notepadWindow', tbNotepad],
+          ['vehicleWindow', tbVehicle]
         ].forEach(([id, tb]) => {
           const state = windowState[id];
           if (tb.style.display !== 'none') {
@@ -3560,7 +3694,7 @@
       function updateMinimizeAllMenuItemVisibility() {
         const minimizeAllItem = document.getElementById('startMinimizeAll');
         if (!minimizeAllItem) return;
-        const anyWindowVisible = ['calcWindow', 'priceWindow', 'loadWindow', 'cashWindow', 'notepadWindow'].some(id => {
+        const anyWindowVisible = ['calcWindow', 'priceWindow', 'loadWindow', 'cashWindow', 'notepadWindow', 'vehicleWindow'].some(id => {
           const winEl = document.getElementById(id);
           if (!winEl) return false;
           return !winEl.classList.contains('minimized');
@@ -3918,6 +4052,133 @@
         }
       }
 
+      // ==================== VEHICLE DATABASE ====================
+      async function loadVehicles() {
+        showLoading('vehicle');
+        setSyncing();
+        try {
+          const { data, error } = await supabase
+            .from('vehicles')
+            .select('*')
+            .order('created_at', { ascending: false });
+          if (error) throw error;
+          vehicles = (data || []).map(v => ({
+            id: v.id,
+            name: v.name || '',
+            number: v.number || '',
+            driver: v.driver || '',
+            insuranceExpiry: v.insurance_expiry || '',
+            fitnessUpto: v.fitness_upto || '',
+            registrationDate: v.registration_date || '',
+            taxUpto: v.tax_upto || ''
+          }));
+          filteredVehicles = [...vehicles];
+          vehicleStatusDot.className = 'status-dot online';
+          applyVehicleFilters();
+        } catch (err) {
+          console.error('Load vehicles error:', err);
+          vehicleStatusDot.className = 'status-dot offline';
+          vehicleTableBody.innerHTML = `
+            <tr><td colspan="8">
+              <div class="no-results">⚠️ Database error<span class="small">${err.message || 'Check that the "vehicles" table exists'}</span></div>
+            </td></tr>`;
+        } finally {
+          hideLoading('vehicle');
+        }
+      }
+
+      async function saveVehicle(vehicle) {
+        setSyncing();
+        try {
+          const { data, error } = await supabase
+            .from('vehicles')
+            .insert([{
+              name: vehicle.name,
+              number: vehicle.number,
+              driver: vehicle.driver,
+              insurance_expiry: vehicle.insuranceExpiry || null,
+              fitness_upto: vehicle.fitnessUpto || null,
+              registration_date: vehicle.registrationDate || null,
+              tax_upto: vehicle.taxUpto || null
+            }])
+            .select().single();
+          if (error) throw error;
+          vehicleStatusDot.className = 'status-dot online';
+          return {
+            id: data.id,
+            name: data.name,
+            number: data.number,
+            driver: data.driver,
+            insuranceExpiry: data.insurance_expiry || '',
+            fitnessUpto: data.fitness_upto || '',
+            registrationDate: data.registration_date || '',
+            taxUpto: data.tax_upto || ''
+          };
+        } catch (err) {
+          vehicleStatusDot.className = 'status-dot offline';
+          throw err;
+        }
+      }
+
+      async function updateVehicle(id, updates) {
+        setSyncing();
+        try {
+          const { error } = await supabase
+            .from('vehicles')
+            .update({
+              name: updates.name,
+              number: updates.number,
+              driver: updates.driver,
+              insurance_expiry: updates.insuranceExpiry || null,
+              fitness_upto: updates.fitnessUpto || null,
+              registration_date: updates.registrationDate || null,
+              tax_upto: updates.taxUpto || null
+            })
+            .eq('id', id);
+          if (error) throw error;
+          vehicleStatusDot.className = 'status-dot online';
+          return {
+            id: id,
+            name: updates.name,
+            number: updates.number,
+            driver: updates.driver,
+            insuranceExpiry: updates.insuranceExpiry || '',
+            fitnessUpto: updates.fitnessUpto || '',
+            registrationDate: updates.registrationDate || '',
+            taxUpto: updates.taxUpto || ''
+          };
+        } catch (err) {
+          vehicleStatusDot.className = 'status-dot offline';
+          throw err;
+        }
+      }
+
+      async function deleteVehicle(id) {
+        setSyncing();
+        try {
+          const { error } = await supabase.from('vehicles').delete().eq('id', id);
+          if (error) throw error;
+          vehicleStatusDot.className = 'status-dot online';
+          return true;
+        } catch (err) {
+          vehicleStatusDot.className = 'status-dot offline';
+          throw err;
+        }
+      }
+
+      async function clearAllVehicles() {
+        setSyncing();
+        try {
+          const { error } = await supabase.from('vehicles').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+          if (error) throw error;
+          vehicleStatusDot.className = 'status-dot online';
+          return true;
+        } catch (err) {
+          vehicleStatusDot.className = 'status-dot offline';
+          throw err;
+        }
+      }
+
       async function savePackingRecord(record) {
         setSyncing();
         try {
@@ -3965,7 +4226,6 @@
         }
       }
 
-      // *** NEW: Load last cash record for an employee ***
       async function loadLastCashRecordForEmployee(employeeName) {
         if (!employeeName) return null;
         try {
@@ -4098,14 +4358,12 @@
         staffCombo.title = `${emp.name} — ${emp.section}`;
       }
 
-      // *** NEW: Cash record loading on employee change ***
       async function handleStaffChange() {
         updateStaffInfo();
         if (isLoadingStaffRecord) return;
 
         const empId = staffCombo.value;
         if (!empId) {
-          // Clearing selection — clear cash inputs
           cashAmount.value = '';
           cashExpense.value = '';
           currencyTableBody.querySelectorAll('.denom-count-input').forEach(inp => { inp.value = ''; });
@@ -4115,21 +4373,17 @@
         const emp = employeesList.find(s => s.id === empId);
         if (!emp) return;
 
-        // Try to load last cash record for this employee
         const lastRecord = await loadLastCashRecordForEmployee(emp.name);
 
         if (lastRecord) {
-          // Populate amount and expense
           cashAmount.value = (lastRecord.amount != null && !isNaN(lastRecord.amount)) ? lastRecord.amount : '';
           cashExpense.value = (lastRecord.expense != null && !isNaN(lastRecord.expense)) ? lastRecord.expense : '';
 
-          // Populate currency counts from saved denominations
           currencyTableBody.querySelectorAll('.denom-count-input').forEach(inp => { inp.value = ''; });
           const denoms = lastRecord.denominations;
           if (Array.isArray(denoms)) {
             denoms.forEach(item => {
               if (!item || !item.label) return;
-              // Extract numeric value from label like "₹500"
               const numericValue = parseInt(String(item.label).replace(/[^0-9]/g, ''), 10);
               if (!numericValue) return;
               const inputEl = document.getElementById(`denom_${numericValue}`);
@@ -4139,11 +4393,7 @@
             });
           }
           calculateCash();
-
-          // Show a small toast so user knows data loaded
-
         } else {
-          // No saved record — clear fields
           cashAmount.value = '';
           cashExpense.value = '';
           currencyTableBody.querySelectorAll('.denom-count-input').forEach(inp => { inp.value = ''; });
@@ -4778,8 +5028,6 @@
             photoData: emp.photo
           });
 
-
-
           cashAmount.value = '';
           cashExpense.value = '';
           currencyTableBody.querySelectorAll('.denom-count-input').forEach(inp => { inp.value = ''; });
@@ -4808,6 +5056,383 @@
 
       buildCurrencyTable();
       calculateCash();
+
+      // ==================== VEHICLE UI ====================
+      function renderVehicleTable() {
+        if (filteredVehicles.length === 0) {
+          if (vehicles.length === 0) {
+            vehicleTableBody.innerHTML = `<tr><td colspan="8"><div class="no-results">🚛 No vehicles yet<span class="small">Click "Add Vehicle" to create your first entry</span></div></td></tr>`;
+          } else {
+            vehicleTableBody.innerHTML = `<tr><td colspan="8"><div class="no-results">🔍 No vehicles match your search<span class="small">Try a different search term</span></div></td></tr>`;
+          }
+          return;
+        }
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        let html = '';
+        filteredVehicles.forEach(v => {
+          const selected = (v.id === selectedVehicleId) ? ' selected-row' : '';
+
+          const getDateClass = (dateStr) => {
+            if (!dateStr) return '';
+            const d = new Date(dateStr);
+            if (isNaN(d.getTime())) return '';
+            const diffDays = Math.ceil((d - today) / (1000 * 60 * 60 * 24));
+            if (diffDays < 0) return ' expired';
+            if (diffDays <= 30) return ' expiring';
+            return '';
+          };
+
+          html += `<tr class="${selected}" data-id="${v.id}"
+            data-name="${escapeHtml(v.name)}"
+            data-number="${escapeHtml(v.number)}"
+            data-driver="${escapeHtml(v.driver)}"
+            data-insurance="${v.insuranceExpiry}"
+            data-fitness="${v.fitnessUpto}"
+            data-registration="${v.registrationDate}"
+            data-tax="${v.taxUpto}">
+            <td class="vehicle-name-cell">${escapeHtml(v.name)}</td>
+            <td class="vehicle-number-cell">${escapeHtml(v.number)}</td>
+            <td class="driver-cell">👤 ${escapeHtml(v.driver)}</td>
+            <td class="date-cell${getDateClass(v.insuranceExpiry)}">${v.insuranceExpiry || '—'}</td>
+            <td class="date-cell${getDateClass(v.fitnessUpto)}">${v.fitnessUpto || '—'}</td>
+            <td class="date-cell">${v.registrationDate || '—'}</td>
+            <td class="date-cell${getDateClass(v.taxUpto)}">${v.taxUpto || '—'}</td>
+            <td class="action-cell">
+              <button class="row-edit-btn" data-edit-id="${v.id}" title="Edit">✎</button>
+              <button class="row-delete-btn" data-delete-id="${v.id}" title="Delete">✕</button>
+            </td>
+          </tr>`;
+        });
+        vehicleTableBody.innerHTML = html;
+      }
+
+      function applyVehicleFilters() {
+        const query = vehicleSearchInput.value.trim().toLowerCase();
+        const searchType = vehicleSearchType.value;
+
+        filteredVehicles = vehicles.filter(v => {
+          if (!query) return true;
+          const name = v.name.toLowerCase();
+          const number = v.number.toLowerCase();
+          const driver = v.driver.toLowerCase();
+
+          if (searchType === 'name') return name.includes(query);
+          if (searchType === 'number') return number.includes(query);
+          if (searchType === 'driver') return driver.includes(query);
+          return name.includes(query) || number.includes(query) || driver.includes(query);
+        });
+        renderVehicleTable();
+      }
+
+      // ==================== VEHICLE MODAL ====================
+      function openVehicleModal(existingVehicle = null) {
+        const isEdit = !!existingVehicle;
+        const title = isEdit ? '✎ Edit Vehicle' : '🚛 Add New Vehicle';
+        const v = existingVehicle || {};
+
+        const html = `
+          <div class="modal-error" id="vehicleModalError"></div>
+          <div class="modal-field">
+            <label>🚛 Vehicle Name</label>
+            <div class="input-wrap">
+              <input type="text" id="vehicleName" placeholder="Enter vehicle name" value="${isEdit ? escapeHtml(v.name) : ''}">
+            </div>
+          </div>
+          <div class="modal-field">
+            <label>🔢 Vehicle Number</label>
+            <div class="input-wrap">
+              <input type="text" id="vehicleNumber" placeholder="e.g. KL-01-AB-1234" value="${isEdit ? escapeHtml(v.number) : ''}">
+            </div>
+          </div>
+          <div class="modal-field">
+            <label>👤 Driver Name</label>
+            <div class="input-wrap">
+              <input type="text" id="vehicleDriver" placeholder="Enter driver name" value="${isEdit ? escapeHtml(v.driver) : ''}">
+            </div>
+          </div>
+          <div class="modal-field">
+            <label>📅 Insurance Expiry</label>
+            <div class="input-wrap">
+              <input type="date" id="vehicleInsurance" value="${isEdit && v.insuranceExpiry ? v.insuranceExpiry : ''}">
+            </div>
+          </div>
+          <div class="modal-field">
+            <label>📅 Fitness Upto</label>
+            <div class="input-wrap">
+              <input type="date" id="vehicleFitness" value="${isEdit && v.fitnessUpto ? v.fitnessUpto : ''}">
+            </div>
+          </div>
+          <div class="modal-field">
+            <label>📅 Registration Date</label>
+            <div class="input-wrap">
+              <input type="date" id="vehicleRegistration" value="${isEdit && v.registrationDate ? v.registrationDate : ''}">
+            </div>
+          </div>
+          <div class="modal-field">
+            <label>📅 Tax Upto</label>
+            <div class="input-wrap">
+              <input type="date" id="vehicleTax" value="${isEdit && v.taxUpto ? v.taxUpto : ''}">
+            </div>
+          </div>
+          <div class="modal-actions">
+            <button class="aero-btn" id="modalCancelBtn" type="button">Cancel</button>
+            <button class="aero-btn primary" id="modalSaveBtn" type="button">${isEdit ? '💾 Update Vehicle' : '💾 Save Vehicle'}</button>
+          </div>`;
+
+        openModal(title, html, async (content) => {
+          const errorEl = content.querySelector('#vehicleModalError');
+          const nameEl = content.querySelector('#vehicleName');
+          const numberEl = content.querySelector('#vehicleNumber');
+          const driverEl = content.querySelector('#vehicleDriver');
+          const insuranceEl = content.querySelector('#vehicleInsurance');
+          const fitnessEl = content.querySelector('#vehicleFitness');
+          const registrationEl = content.querySelector('#vehicleRegistration');
+          const taxEl = content.querySelector('#vehicleTax');
+          const saveBtn = content.querySelector('#modalSaveBtn');
+
+          errorEl.classList.remove('show');
+          errorEl.textContent = '';
+
+          const name = nameEl.value.trim();
+          const number = numberEl.value.trim();
+          const driver = driverEl.value.trim();
+
+          if (name === '') {
+            errorEl.textContent = '⚠️ Vehicle name is required.';
+            errorEl.classList.add('show');
+            nameEl.focus();
+            return false;
+          }
+          if (number === '') {
+            errorEl.textContent = '⚠️ Vehicle number is required.';
+            errorEl.classList.add('show');
+            numberEl.focus();
+            return false;
+          }
+          if (driver === '') {
+            errorEl.textContent = '⚠️ Driver name is required.';
+            errorEl.classList.add('show');
+            driverEl.focus();
+            return false;
+          }
+
+          if (!isEdit && vehicles.some(v => v.number.toLowerCase() === number.toLowerCase())) {
+            errorEl.textContent = '⚠️ A vehicle with this number already exists.';
+            errorEl.classList.add('show');
+            numberEl.focus();
+            return false;
+          }
+          if (isEdit && vehicles.some(v => v.id !== existingVehicle.id && v.number.toLowerCase() === number.toLowerCase())) {
+            errorEl.textContent = '⚠️ A vehicle with this number already exists.';
+            errorEl.classList.add('show');
+            numberEl.focus();
+            return false;
+          }
+
+          saveBtn.disabled = true;
+          saveBtn.textContent = isEdit ? '⏳ Updating…' : '⏳ Saving…';
+
+          try {
+            if (isEdit) {
+              const updated = await updateVehicle(existingVehicle.id, {
+                name, number, driver,
+                insuranceExpiry: insuranceEl.value,
+                fitnessUpto: fitnessEl.value,
+                registrationDate: registrationEl.value,
+                taxUpto: taxEl.value
+              });
+              const idx = vehicles.findIndex(v => v.id === existingVehicle.id);
+              if (idx !== -1) vehicles[idx] = updated;
+              applyVehicleFilters();
+            } else {
+              const saved = await saveVehicle({
+                name, number, driver,
+                insuranceExpiry: insuranceEl.value,
+                fitnessUpto: fitnessEl.value,
+                registrationDate: registrationEl.value,
+                taxUpto: taxEl.value
+              });
+              vehicles.unshift(saved);
+              applyVehicleFilters();
+            }
+            return true;
+          } catch (err) {
+            console.error('Save vehicle failed:', err);
+            errorEl.textContent = '❌ Failed to save: ' + (err.message || 'Unknown error');
+            errorEl.classList.add('show');
+            saveBtn.disabled = false;
+            saveBtn.textContent = isEdit ? '💾 Update Vehicle' : '💾 Save Vehicle';
+            return false;
+          }
+        });
+      }
+
+      // ==================== VEHICLE TABLE EVENTS ====================
+      vehicleTableBody.addEventListener('click', async (e) => {
+        const editBtn = e.target.closest('.row-edit-btn');
+        if (editBtn) {
+          e.stopPropagation();
+          const id = editBtn.dataset.editId;
+          if (!id) return;
+          const vehicle = vehicles.find(v => v.id === id);
+          if (!vehicle) return;
+          await openVehicleModal(vehicle);
+          return;
+        }
+
+        const delBtn = e.target.closest('.row-delete-btn');
+        if (delBtn) {
+          e.stopPropagation();
+          const id = delBtn.dataset.deleteId;
+          if (!id) return;
+          const vehicle = vehicles.find(v => v.id === id);
+          if (!vehicle) return;
+          const confirmed = await showConfirm({
+            title: '🗑️ Delete Vehicle',
+            message: `Are you sure you want to delete <strong>"${escapeHtml(vehicle.name)}"</strong> (${escapeHtml(vehicle.number)})?<br><br>This action cannot be undone.`,
+            confirmLabel: 'Yes, Delete', type: 'danger', icon: '🗑️'
+          });
+          if (!confirmed) return;
+          showLoading('vehicle');
+          try {
+            await deleteVehicle(id);
+            vehicles = vehicles.filter(v => v.id !== id);
+            if (selectedVehicleId === id) selectedVehicleId = null;
+            applyVehicleFilters();
+          } catch (err) {
+            console.error('Delete vehicle failed:', err);
+          } finally {
+            hideLoading('vehicle');
+          }
+          return;
+        }
+
+        const row = e.target.closest('tr');
+        if (!row || !row.dataset.id) return;
+        selectedVehicleId = row.dataset.id;
+        renderVehicleTable();
+      });
+
+      // ==================== VEHICLE BUTTON EVENTS ====================
+      addVehicleBtn.addEventListener('click', () => openVehicleModal(null));
+
+      vehicleSearchInput.addEventListener('input', applyVehicleFilters);
+      vehicleSearchType.addEventListener('change', applyVehicleFilters);
+
+      clearVehicleSearchBtn.addEventListener('click', () => {
+        vehicleSearchInput.value = '';
+        applyVehicleFilters();
+        vehicleSearchInput.focus();
+      });
+
+      vehicleSearchInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') e.preventDefault();
+      });
+
+      printVehiclesBtn.addEventListener('click', () => {
+        if (filteredVehicles.length === 0) return;
+        const now = new Date();
+        const dateStr = now.toLocaleDateString() + ' ' + now.toLocaleTimeString();
+        const searchLabel = vehicleSearchInput.value.trim() || '—';
+        const searchTypeLabel = vehicleSearchType.options[vehicleSearchType.selectedIndex].text;
+
+        let rows = '';
+        filteredVehicles.forEach((v, i) => {
+          rows += `<tr>
+            <td>${i + 1}</td>
+            <td>${escapeHtml(v.name)}</td>
+            <td>${escapeHtml(v.number)}</td>
+            <td>${escapeHtml(v.driver)}</td>
+            <td style="text-align:center;">${v.insuranceExpiry || '—'}</td>
+            <td style="text-align:center;">${v.fitnessUpto || '—'}</td>
+            <td style="text-align:center;">${v.registrationDate || '—'}</td>
+            <td style="text-align:center;">${v.taxUpto || '—'}</td>
+          </tr>`;
+        });
+
+        const printWindow = window.open('', '_blank', 'width=1100,height=700');
+        printWindow.document.write(`
+          <!DOCTYPE html>
+          <html>
+          <head><title>Vehicles List - KCST Windows</title>
+            <style>
+              * { margin: 0; padding: 0; box-sizing: border-box; }
+              body { font-family: 'Segoe UI', Arial, sans-serif; padding: 30px; color: #1a3e5a; }
+              .header { text-align: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px solid #2a6088; }
+              .header h1 { font-size: 1.5rem; color: #15415f; margin-bottom: 4px; }
+              .header .sub { font-size: 0.8rem; color: #5a7f9a; }
+              .meta { display: flex; justify-content: space-between; font-size: 0.75rem; color: #3a6382; margin-bottom: 15px; flex-wrap: wrap; gap: 8px; }
+              .meta span { background: #eef5fc; padding: 4px 10px; border-radius: 20px; border: 1px solid #b8d4ec; }
+              table { width: 100%; border-collapse: collapse; font-size: 0.78rem; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+              thead th { background: linear-gradient(180deg, #e3eff9 0%, #c3d9ed 100%); color: #10344b; font-weight: 700; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.4px; padding: 8px 10px; text-align: left; border: 1px solid #8eb0ce; }
+              tbody td { padding: 7px 10px; border: 1px solid #d5e3ef; color: #1a3e5a; }
+              tbody tr:nth-child(even) { background: #f4faff; }
+              .footer { margin-top: 20px; text-align: center; font-size: 0.7rem; color: #6a8ba5; border-top: 1px solid #b8d4ec; padding-top: 12px; }
+              .total-row { font-weight: 700; background: #dcecfc !important; border-top: 2px solid #7ea5c9 !important; }
+              @media print { body { padding: 15px; } .no-print { display: none; } }
+              .print-btn { position: fixed; top: 16px; right: 16px; padding: 10px 22px; background: linear-gradient(180deg, #4a85b3 0%, #2a6088 45%, #15415f 100%); color: white; border: 1px solid #1b4260; border-radius: 6px; font-size: 0.85rem; font-weight: 600; cursor: pointer; box-shadow: 0 3px 10px rgba(0,0,0,0.3); }
+              @media print { .print-btn { display: none; } }
+            </style>
+          </head>
+          <body>
+            <button class="print-btn no-print" onclick="window.print()">🖨️ Print</button>
+            <div class="header">
+              <h1>🚛 KCST Windows — Vehicles List</h1>
+              <div class="sub">Fleet &amp; Vehicle Management System</div>
+            </div>
+            <div class="meta">
+              <span>🔍 ${escapeHtml(searchTypeLabel)}: ${escapeHtml(searchLabel)}</span>
+              <span>📅 ${dateStr}</span>
+              <span>📊 Total: ${filteredVehicles.length} vehicle(s)</span>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th style="width:40px;">#</th>
+                  <th>Vehicle Name</th>
+                  <th>Number</th>
+                  <th>Driver</th>
+                  <th style="text-align:center;">Insurance Expiry</th>
+                  <th style="text-align:center;">Fitness Upto</th>
+                  <th style="text-align:center;">Registration Date</th>
+                  <th style="text-align:center;">Tax Upto</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${rows}
+                <tr class="total-row">
+                  <td colspan="3" style="text-align:right;">Total Vehicles:</td>
+                  <td colspan="5" style="text-align:center;">${filteredVehicles.length}</td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="footer">Generated by KCST Windows · ${dateStr}</div>
+            <script>window.onload=function(){setTimeout(function(){window.print();},400);};<\/script>
+          </body>
+          </html>
+        `);
+        printWindow.document.close();
+      });
+
+      clearAllVehiclesBtn.addEventListener('click', async () => {
+        if (vehicles.length === 0) return;
+        const confirmed = await showConfirm({
+          title: '⚠️ Clear All Vehicles',
+          message: `Are you sure you want to delete <strong>ALL ${vehicles.length} vehicle${vehicles.length !== 1 ? 's' : ''}</strong> from the database?<br><br>This action <strong>cannot</strong> be undone.`,
+          confirmLabel: 'Yes, Delete All', type: 'danger', icon: '⚠️'
+        });
+        if (!confirmed) return;
+        showLoading('vehicle');
+        try {
+          await clearAllVehicles();
+          vehicles = []; filteredVehicles = [];
+          selectedVehicleId = null;
+          applyVehicleFilters();
+        } catch (err) { }
+        finally { hideLoading('vehicle'); }
+      });
 
       // ==================== CLIPBOARD ====================
       function copyToClipboard(text) {
@@ -5173,7 +5798,7 @@
 
       // ==================== WINDOW RESIZE ====================
       window.addEventListener('resize', () => {
-        ['calcWindow', 'priceWindow', 'loadWindow', 'cashWindow', 'notepadWindow'].forEach(id => {
+        ['calcWindow', 'priceWindow', 'loadWindow', 'cashWindow', 'notepadWindow', 'vehicleWindow'].forEach(id => {
           const win = document.getElementById(id);
           if (!win) return;
           if (win.classList.contains('minimized') || win.classList.contains('maximized')) return;
@@ -5481,8 +6106,9 @@
       calculateLoad();
       calculateCash();
       await loadProducts();
+      await loadVehicles();
 
-      ['calcWindow', 'priceWindow', 'loadWindow', 'cashWindow', 'notepadWindow'].forEach(id => {
+      ['calcWindow', 'priceWindow', 'loadWindow', 'cashWindow', 'notepadWindow', 'vehicleWindow'].forEach(id => {
         const winEl = document.getElementById(id);
         if (winEl) {
           winEl.classList.add('minimized');
