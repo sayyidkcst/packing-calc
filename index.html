@@ -370,7 +370,6 @@
     .prayer-row:hover {
       background: rgba(255, 255, 255, 0.15);
     }
-    /* NEXT prayer highlight */
     .prayer-row.next {
       background: linear-gradient(90deg, rgba(120, 200, 255, 0.45) 0%, rgba(80, 160, 230, 0.3) 100%);
       border-color: rgba(160, 220, 255, 0.85);
@@ -1830,6 +1829,8 @@
     .window-vehicle .price-table tbody td.date-cell {
       font-weight: 500; color: #1a3e5a; font-size: 0.76rem;
       white-space: nowrap;
+      font-family: 'Segoe UI', Consolas, monospace;
+      text-align: center;
     }
     .window-vehicle .price-table tbody td.date-cell.expired {
       color: #c0392b; font-weight: 700;
@@ -2380,10 +2381,10 @@
               <th>Vehicle Name</th>
               <th>Number</th>
               <th>Driver</th>
-              <th>Insurance Expiry</th>
-              <th>Fitness Upto</th>
-              <th>Registration Date</th>
-              <th>Tax Upto</th>
+              <th style="text-align:center;">Insurance Expiry</th>
+              <th style="text-align:center;">Fitness Upto</th>
+              <th style="text-align:center;">Registration Date</th>
+              <th style="text-align:center;">Tax Upto</th>
               <th style="width:64px;"></th>
             </tr>
           </thead>
@@ -2605,6 +2606,39 @@
     window.addEventListener('supabase-ready', async () => {
       const supabase = window.supabase;
       const TASKBAR_HEIGHT = 40;
+
+      // ==================== DATE HELPERS (DD-MM-YYYY everywhere) ====================
+      // Format a Date object as DD-MM-YYYY
+      function formatDateDDMMYYYY(date) {
+        if (!date) return '';
+        const d = (date instanceof Date) ? date : new Date(date);
+        if (isNaN(d.getTime())) return '';
+        const dd = String(d.getDate()).padStart(2, '0');
+        const mm = String(d.getMonth() + 1).padStart(2, '0');
+        const yyyy = d.getFullYear();
+        return `${dd}-${mm}-${yyyy}`;
+      }
+
+      // Format date + time as DD-MM-YYYY HH:MM:SS
+      function formatDateTimeDDMMYYYY(date) {
+        const d = (date instanceof Date) ? date : new Date(date);
+        if (isNaN(d.getTime())) return '';
+        const dd = String(d.getDate()).padStart(2, '0');
+        const mm = String(d.getMonth() + 1).padStart(2, '0');
+        const yyyy = d.getFullYear();
+        const hh = String(d.getHours()).padStart(2, '0');
+        const mi = String(d.getMinutes()).padStart(2, '0');
+        const ss = String(d.getSeconds()).padStart(2, '0');
+        return `${dd}-${mm}-${yyyy} ${hh}:${mi}:${ss}`;
+      }
+
+      // Convert a stored ISO date (YYYY-MM-DD) to DD-MM-YYYY for display
+      function isoToDDMMYYYY(isoStr) {
+        if (!isoStr) return '';
+        const m = String(isoStr).match(/^(\d{4})-(\d{2})-(\d{2})/);
+        if (!m) return String(isoStr);
+        return `${m[3]}-${m[2]}-${m[1]}`;
+      }
 
       // ==================== WALLPAPER SYSTEM ====================
       const DEFAULT_WALLPAPER = 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1920&q=80';
@@ -3402,7 +3436,8 @@
 
         const pad = (n) => String(n).padStart(2, '0');
         gadgetTime.innerHTML = `${pad(h)}:${pad(m)}<span class="seconds">:${pad(s)}</span><span class="ampm">${ampm}</span>`;
-        gadgetDate.textContent = `${pad(now.getDate())}/${pad(now.getMonth() + 1)}/${now.getFullYear()}`;
+        // DD-MM-YYYY format
+        gadgetDate.textContent = formatDateDDMMYYYY(now);
         const dayNames = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
         gadgetDay.textContent = dayNames[now.getDay()];
 
@@ -3592,7 +3627,6 @@
       const prayerIsha = document.getElementById('prayerIsha');
       const prayerStatus = document.getElementById('prayerStatus');
 
-      // Countdown elements
       const countdownEls = {
         fajr: document.getElementById('countdownFajr'),
         dhuhr: document.getElementById('countdownDhuhr'),
@@ -3601,7 +3635,7 @@
         isha: document.getElementById('countdownIsha')
       };
 
-      const PRAYER_METHOD = 3; // Muslim World League
+      const PRAYER_METHOD = 3;
       const DEFAULT_LAT = 9.9816;
       const DEFAULT_LNG = 76.2999;
 
@@ -3610,7 +3644,6 @@
       let currentLng = DEFAULT_LNG;
       let nextPrayerName = null;
 
-      // Fallback times (Ernakulam, October 2026)
       const FALLBACK_TIMES = {
         Fajr: '05:04',
         Dhuhr: '12:15',
@@ -3631,7 +3664,6 @@
         return `${h}:${m} ${ampm}`;
       }
 
-      // Convert "HH:MM" to minutes since midnight
       function timeToMinutes(timeStr) {
         if (!timeStr) return null;
         const match = String(timeStr).match(/^(\d{1,2}):(\d{2})/);
@@ -3639,7 +3671,6 @@
         return parseInt(match[1]) * 60 + parseInt(match[2]);
       }
 
-      // Returns { name, minutes, tomorrow } for the NEXT upcoming prayer
       function getNextPrayer(timings) {
         if (!timings) return null;
         const now = new Date();
@@ -3653,7 +3684,6 @@
           { name: 'isha', time: timings.Isha }
         ];
 
-        // Find first prayer whose time is strictly greater than current time
         for (const p of order) {
           const mins = timeToMinutes(p.time);
           if (mins === null) continue;
@@ -3662,13 +3692,11 @@
           }
         }
 
-        // All today's prayers have passed — next is Fajr tomorrow
         const fajrMins = timeToMinutes(timings.Fajr);
         if (fajrMins === null) return null;
         return { name: 'fajr', minutes: fajrMins, tomorrow: true };
       }
 
-      // Format remaining minutes as "in 1h 24m" or "in 24m"
       function formatCountdown(remainingMinutes) {
         if (remainingMinutes == null) return '';
         if (remainingMinutes < 0) remainingMinutes = 0;
@@ -3684,7 +3712,6 @@
         const next = getNextPrayer(timings);
         nextPrayerName = next ? next.name : null;
 
-        // Clear all highlights & countdowns
         document.querySelectorAll('#desktopPrayer .prayer-row').forEach(row => {
           row.classList.remove('next');
         });
@@ -3694,11 +3721,9 @@
 
         if (!next) return;
 
-        // Highlight the next prayer row
         const nextRow = document.querySelector(`#desktopPrayer .prayer-row[data-prayer="${next.name}"]`);
         if (nextRow) nextRow.classList.add('next');
 
-        // Show countdown on the next prayer
         const now = new Date();
         const currentMinutes = now.getHours() * 60 + now.getMinutes();
         let remaining = next.minutes - currentMinutes;
@@ -3740,7 +3765,8 @@
       async function fetchPrayerTimes(lat, lng) {
         try {
           const today = new Date();
-          const dateStr = `${today.getDate()}-${today.getMonth() + 1}-${today.getFullYear()}`;
+          // API expects DD-MM-YYYY
+          const dateStr = formatDateDDMMYYYY(today);
           const url = `https://api.aladhan.com/v1/timings/${dateStr}?latitude=${lat}&longitude=${lng}&method=${PRAYER_METHOD}`;
 
           const controller = new AbortController();
@@ -3794,10 +3820,8 @@
       }
 
       updatePrayerGadget();
-      // Refresh times every 10 minutes
       setInterval(updatePrayerGadget, 10 * 60 * 1000);
 
-      // Update next-prayer highlight + countdown every 30 seconds
       setInterval(() => {
         if (prayerTimesData?.timings) {
           updatePrayerHighlight(prayerTimesData.timings);
@@ -4085,11 +4109,9 @@
         h = h ? h : 12;
         const m = String(now.getMinutes()).padStart(2, '0');
         const s = String(now.getSeconds()).padStart(2, '0');
-        const d = String(now.getDate()).padStart(2, '0');
-        const mo = String(now.getMonth() + 1).padStart(2, '0');
-        const y = now.getFullYear();
+        // DD-MM-YYYY format
         document.getElementById('clockTime').textContent = `${String(h).padStart(2, '0')}:${m}:${s} ${ampm}`;
-        document.getElementById('clockDate').textContent = `${d}/${mo}/${y}`;
+        document.getElementById('clockDate').textContent = formatDateDDMMYYYY(now);
       }
       updateClock();
       setInterval(updateClock, 1000);
@@ -5545,6 +5567,7 @@
             return '';
           };
 
+          // Display dates as DD-MM-YYYY
           html += `<tr class="${selected}" data-id="${v.id}"
             data-name="${escapeHtml(v.name)}"
             data-number="${escapeHtml(v.number)}"
@@ -5556,10 +5579,10 @@
             <td class="vehicle-name-cell">${escapeHtml(v.name)}</td>
             <td class="vehicle-number-cell">${escapeHtml(v.number)}</td>
             <td class="driver-cell">👤 ${escapeHtml(v.driver)}</td>
-            <td class="date-cell${getDateClass(v.insuranceExpiry)}">${v.insuranceExpiry || '—'}</td>
-            <td class="date-cell${getDateClass(v.fitnessUpto)}">${v.fitnessUpto || '—'}</td>
-            <td class="date-cell">${v.registrationDate || '—'}</td>
-            <td class="date-cell${getDateClass(v.taxUpto)}">${v.taxUpto || '—'}</td>
+            <td class="date-cell${getDateClass(v.insuranceExpiry)}">${isoToDDMMYYYY(v.insuranceExpiry) || '—'}</td>
+            <td class="date-cell${getDateClass(v.fitnessUpto)}">${isoToDDMMYYYY(v.fitnessUpto) || '—'}</td>
+            <td class="date-cell">${isoToDDMMYYYY(v.registrationDate) || '—'}</td>
+            <td class="date-cell${getDateClass(v.taxUpto)}">${isoToDDMMYYYY(v.taxUpto) || '—'}</td>
             <td class="action-cell">
               <button class="row-edit-btn" data-edit-id="${v.id}" title="Edit">✎</button>
               <button class="row-delete-btn" data-delete-id="${v.id}" title="Delete">✕</button>
@@ -5614,25 +5637,25 @@
             </div>
           </div>
           <div class="modal-field">
-            <label>📅 Insurance Expiry</label>
+            <label>📅 Insurance Expiry <span style="font-size:0.62rem; color:#6a8ba5; font-weight:500;">(DD-MM-YYYY)</span></label>
             <div class="input-wrap">
               <input type="date" id="vehicleInsurance" value="${isEdit && v.insuranceExpiry ? v.insuranceExpiry : ''}">
             </div>
           </div>
           <div class="modal-field">
-            <label>📅 Fitness Upto</label>
+            <label>📅 Fitness Upto <span style="font-size:0.62rem; color:#6a8ba5; font-weight:500;">(DD-MM-YYYY)</span></label>
             <div class="input-wrap">
               <input type="date" id="vehicleFitness" value="${isEdit && v.fitnessUpto ? v.fitnessUpto : ''}">
             </div>
           </div>
           <div class="modal-field">
-            <label>📅 Registration Date</label>
+            <label>📅 Registration Date <span style="font-size:0.62rem; color:#6a8ba5; font-weight:500;">(DD-MM-YYYY)</span></label>
             <div class="input-wrap">
               <input type="date" id="vehicleRegistration" value="${isEdit && v.registrationDate ? v.registrationDate : ''}">
             </div>
           </div>
           <div class="modal-field">
-            <label>📅 Tax Upto</label>
+            <label>📅 Tax Upto <span style="font-size:0.62rem; color:#6a8ba5; font-weight:500;">(DD-MM-YYYY)</span></label>
             <div class="input-wrap">
               <input type="date" id="vehicleTax" value="${isEdit && v.taxUpto ? v.taxUpto : ''}">
             </div>
@@ -5795,21 +5818,22 @@
       printVehiclesBtn.addEventListener('click', () => {
         if (filteredVehicles.length === 0) return;
         const now = new Date();
-        const dateStr = now.toLocaleDateString() + ' ' + now.toLocaleTimeString();
+        const dateStr = formatDateTimeDDMMYYYY(now);
         const searchLabel = vehicleSearchInput.value.trim() || '—';
         const searchTypeLabel = vehicleSearchType.options[vehicleSearchType.selectedIndex].text;
 
         let rows = '';
         filteredVehicles.forEach((v, i) => {
+          // Display dates as DD-MM-YYYY in print too
           rows += `<tr>
             <td>${i + 1}</td>
             <td>${escapeHtml(v.name)}</td>
             <td>${escapeHtml(v.number)}</td>
             <td>${escapeHtml(v.driver)}</td>
-            <td style="text-align:center;">${v.insuranceExpiry || '—'}</td>
-            <td style="text-align:center;">${v.fitnessUpto || '—'}</td>
-            <td style="text-align:center;">${v.registrationDate || '—'}</td>
-            <td style="text-align:center;">${v.taxUpto || '—'}</td>
+            <td style="text-align:center;">${isoToDDMMYYYY(v.insuranceExpiry) || '—'}</td>
+            <td style="text-align:center;">${isoToDDMMYYYY(v.fitnessUpto) || '—'}</td>
+            <td style="text-align:center;">${isoToDDMMYYYY(v.registrationDate) || '—'}</td>
+            <td style="text-align:center;">${isoToDDMMYYYY(v.taxUpto) || '—'}</td>
           </tr>`;
         });
 
@@ -6155,7 +6179,7 @@
       printProductsBtn.addEventListener('click', () => {
         if (filteredProducts.length === 0) return;
         const now = new Date();
-        const dateStr = now.toLocaleDateString() + ' ' + now.toLocaleTimeString();
+        const dateStr = formatDateTimeDDMMYYYY(now);
         const customerLabel = customerFilter.value || 'All Customers';
         const searchLabel = searchInput.value.trim() || '—';
 
