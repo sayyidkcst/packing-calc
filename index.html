@@ -364,20 +364,36 @@
       padding: 4px 8px; border-radius: 6px;
       background: rgba(255, 255, 255, 0.08);
       border: 1px solid rgba(255, 255, 255, 0.1);
-      transition: background 0.15s;
+      transition: background 0.15s, border-color 0.25s, box-shadow 0.25s;
+      position: relative;
     }
     .prayer-row:hover {
       background: rgba(255, 255, 255, 0.15);
     }
-    .prayer-row.active {
-      background: rgba(100, 180, 255, 0.35);
-      border-color: rgba(140, 200, 255, 0.6);
-      box-shadow: 0 0 10px rgba(100, 180, 255, 0.4);
+    /* NEXT prayer highlight */
+    .prayer-row.next {
+      background: linear-gradient(90deg, rgba(120, 200, 255, 0.45) 0%, rgba(80, 160, 230, 0.3) 100%);
+      border-color: rgba(160, 220, 255, 0.85);
+      box-shadow: 0 0 12px rgba(120, 200, 255, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+      animation: nextPulse 2.4s ease-in-out infinite;
+    }
+    @keyframes nextPulse {
+      0%, 100% {
+        box-shadow: 0 0 10px rgba(120, 200, 255, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+      }
+      50% {
+        box-shadow: 0 0 18px rgba(140, 220, 255, 0.85), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+      }
     }
     .prayer-name {
       font-size: 0.72rem; font-weight: 600; color: rgba(235, 245, 255, 0.95);
       text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
       display: flex; align-items: center; gap: 5px;
+    }
+    .prayer-row.next .prayer-name {
+      color: #ffffff;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7), 0 0 8px rgba(160, 220, 255, 0.7);
+      font-weight: 700;
     }
     .prayer-name .prayer-icon {
       font-size: 0.75rem;
@@ -387,6 +403,29 @@
       font-family: 'Segoe UI', Consolas, monospace;
       text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6), 0 0 8px rgba(140, 200, 255, 0.4);
       letter-spacing: 0.03em;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .prayer-row.next .prayer-time {
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8), 0 0 10px rgba(180, 230, 255, 0.9);
+    }
+    .prayer-countdown {
+      font-size: 0.56rem;
+      font-weight: 700;
+      color: #ffffff;
+      background: rgba(30, 90, 140, 0.85);
+      padding: 1px 6px;
+      border-radius: 20px;
+      border: 1px solid rgba(160, 220, 255, 0.7);
+      text-shadow: 0 1px 1px rgba(0, 0, 0, 0.6);
+      letter-spacing: 0.02em;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 1px 3px rgba(0, 0, 0, 0.3);
+      white-space: nowrap;
+      font-family: 'Segoe UI', Consolas, monospace;
+    }
+    .prayer-row.next .prayer-countdown {
+      background: linear-gradient(180deg, #4a9ed8 0%, #1e5a8a 100%);
+      border-color: rgba(200, 235, 255, 0.9);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 1px 4px rgba(0, 0, 0, 0.4), 0 0 8px rgba(140, 210, 255, 0.6);
     }
     .prayer-status {
       text-align: center; font-size: 0.62rem; font-weight: 500;
@@ -427,6 +466,7 @@
       .prayer-row { padding: 3px 6px; }
       .prayer-name { font-size: 0.64rem; }
       .prayer-time { font-size: 0.7rem; }
+      .prayer-countdown { font-size: 0.5rem; padding: 1px 4px; }
       .prayer-header { font-size: 0.7rem; }
       .prayer-hijri { font-size: 0.58rem; }
       .prayer-status { font-size: 0.56rem; }
@@ -1871,7 +1911,7 @@
     <div class="cal-grid" id="calGrid"></div>
   </div>
 
-  <!-- ISLAMIC PRAYER TIMES GADGET (bottom-right anchored) -->
+  <!-- ISLAMIC PRAYER TIMES GADGET (highlights NEXT prayer) -->
   <div class="desktop-prayer" id="desktopPrayer" title="Drag to move">
     <div class="prayer-grip"></div>
     <div class="prayer-header">🕌 Prayer Times</div>
@@ -1879,23 +1919,23 @@
     <div class="prayer-list" id="prayerList">
       <div class="prayer-row" data-prayer="fajr">
         <span class="prayer-name"><span class="prayer-icon">🌙</span> Fajr</span>
-        <span class="prayer-time" id="prayerFajr">--:--</span>
+        <span class="prayer-time"><span id="prayerFajr">--:--</span><span class="prayer-countdown" id="countdownFajr" style="display:none;"></span></span>
       </div>
       <div class="prayer-row" data-prayer="dhuhr">
         <span class="prayer-name"><span class="prayer-icon">☀️</span> Dhuhr</span>
-        <span class="prayer-time" id="prayerDhuhr">--:--</span>
+        <span class="prayer-time"><span id="prayerDhuhr">--:--</span><span class="prayer-countdown" id="countdownDhuhr" style="display:none;"></span></span>
       </div>
       <div class="prayer-row" data-prayer="asr">
         <span class="prayer-name"><span class="prayer-icon">🌤️</span> Asr</span>
-        <span class="prayer-time" id="prayerAsr">--:--</span>
+        <span class="prayer-time"><span id="prayerAsr">--:--</span><span class="prayer-countdown" id="countdownAsr" style="display:none;"></span></span>
       </div>
       <div class="prayer-row" data-prayer="maghrib">
         <span class="prayer-name"><span class="prayer-icon">🌅</span> Maghrib</span>
-        <span class="prayer-time" id="prayerMaghrib">--:--</span>
+        <span class="prayer-time"><span id="prayerMaghrib">--:--</span><span class="prayer-countdown" id="countdownMaghrib" style="display:none;"></span></span>
       </div>
       <div class="prayer-row" data-prayer="isha">
         <span class="prayer-name"><span class="prayer-icon">🌙</span> Isha</span>
-        <span class="prayer-time" id="prayerIsha">--:--</span>
+        <span class="prayer-time"><span id="prayerIsha">--:--</span><span class="prayer-countdown" id="countdownIsha" style="display:none;"></span></span>
       </div>
     </div>
     <div class="prayer-status loading" id="prayerStatus">Loading…</div>
@@ -3542,7 +3582,7 @@
         }
       })();
 
-      // ==================== ISLAMIC PRAYER TIMES GADGET ====================
+      // ==================== ISLAMIC PRAYER TIMES GADGET (NEXT PRAYER HIGHLIGHT + COUNTDOWN) ====================
       const desktopPrayer = document.getElementById('desktopPrayer');
       const prayerHijri = document.getElementById('prayerHijri');
       const prayerFajr = document.getElementById('prayerFajr');
@@ -3552,14 +3592,25 @@
       const prayerIsha = document.getElementById('prayerIsha');
       const prayerStatus = document.getElementById('prayerStatus');
 
-      const PRAYER_METHOD = 3;
+      // Countdown elements
+      const countdownEls = {
+        fajr: document.getElementById('countdownFajr'),
+        dhuhr: document.getElementById('countdownDhuhr'),
+        asr: document.getElementById('countdownAsr'),
+        maghrib: document.getElementById('countdownMaghrib'),
+        isha: document.getElementById('countdownIsha')
+      };
+
+      const PRAYER_METHOD = 3; // Muslim World League
       const DEFAULT_LAT = 9.9816;
       const DEFAULT_LNG = 76.2999;
 
       let prayerTimesData = null;
       let currentLat = DEFAULT_LAT;
       let currentLng = DEFAULT_LNG;
+      let nextPrayerName = null;
 
+      // Fallback times (Ernakulam, October 2026)
       const FALLBACK_TIMES = {
         Fajr: '05:04',
         Dhuhr: '12:15',
@@ -3580,11 +3631,21 @@
         return `${h}:${m} ${ampm}`;
       }
 
-      function getCurrentPrayer(timings) {
+      // Convert "HH:MM" to minutes since midnight
+      function timeToMinutes(timeStr) {
+        if (!timeStr) return null;
+        const match = String(timeStr).match(/^(\d{1,2}):(\d{2})/);
+        if (!match) return null;
+        return parseInt(match[1]) * 60 + parseInt(match[2]);
+      }
+
+      // Returns { name, minutes, tomorrow } for the NEXT upcoming prayer
+      function getNextPrayer(timings) {
+        if (!timings) return null;
         const now = new Date();
         const currentMinutes = now.getHours() * 60 + now.getMinutes();
 
-        const prayers = [
+        const order = [
           { name: 'fajr', time: timings.Fajr },
           { name: 'dhuhr', time: timings.Dhuhr },
           { name: 'asr', time: timings.Asr },
@@ -3592,27 +3653,62 @@
           { name: 'isha', time: timings.Isha }
         ];
 
-        let current = 'isha';
-        for (const prayer of prayers) {
-          if (!prayer.time) continue;
-          const match = String(prayer.time).match(/^(\d{1,2}):(\d{2})/);
-          if (!match) continue;
-          const prayerMinutes = parseInt(match[1]) * 60 + parseInt(match[2]);
-          if (prayerMinutes <= currentMinutes) {
-            current = prayer.name;
-          } else {
-            break;
+        // Find first prayer whose time is strictly greater than current time
+        for (const p of order) {
+          const mins = timeToMinutes(p.time);
+          if (mins === null) continue;
+          if (mins > currentMinutes) {
+            return { name: p.name, minutes: mins, tomorrow: false };
           }
         }
-        return current;
+
+        // All today's prayers have passed — next is Fajr tomorrow
+        const fajrMins = timeToMinutes(timings.Fajr);
+        if (fajrMins === null) return null;
+        return { name: 'fajr', minutes: fajrMins, tomorrow: true };
+      }
+
+      // Format remaining minutes as "in 1h 24m" or "in 24m"
+      function formatCountdown(remainingMinutes) {
+        if (remainingMinutes == null) return '';
+        if (remainingMinutes < 0) remainingMinutes = 0;
+        const h = Math.floor(remainingMinutes / 60);
+        const m = remainingMinutes % 60;
+        if (h > 0) return `in ${h}h ${m}m`;
+        return `in ${m}m`;
       }
 
       function updatePrayerHighlight(timings) {
         if (!timings) return;
-        const current = getCurrentPrayer(timings);
+
+        const next = getNextPrayer(timings);
+        nextPrayerName = next ? next.name : null;
+
+        // Clear all highlights & countdowns
         document.querySelectorAll('#desktopPrayer .prayer-row').forEach(row => {
-          row.classList.toggle('active', row.dataset.prayer === current);
+          row.classList.remove('next');
         });
+        Object.values(countdownEls).forEach(el => {
+          if (el) { el.style.display = 'none'; el.textContent = ''; }
+        });
+
+        if (!next) return;
+
+        // Highlight the next prayer row
+        const nextRow = document.querySelector(`#desktopPrayer .prayer-row[data-prayer="${next.name}"]`);
+        if (nextRow) nextRow.classList.add('next');
+
+        // Show countdown on the next prayer
+        const now = new Date();
+        const currentMinutes = now.getHours() * 60 + now.getMinutes();
+        let remaining = next.minutes - currentMinutes;
+        if (next.tomorrow) remaining += 24 * 60;
+
+        const cdEl = countdownEls[next.name];
+        if (cdEl) {
+          cdEl.textContent = formatCountdown(remaining);
+          cdEl.style.display = 'inline-block';
+        }
       }
 
       function updateHijriDisplay(hijri) {
@@ -3698,7 +3794,10 @@
       }
 
       updatePrayerGadget();
+      // Refresh times every 10 minutes
       setInterval(updatePrayerGadget, 10 * 60 * 1000);
+
+      // Update next-prayer highlight + countdown every 30 seconds
       setInterval(() => {
         if (prayerTimesData?.timings) {
           updatePrayerHighlight(prayerTimesData.timings);
