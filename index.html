@@ -312,7 +312,7 @@
     .cal-cell.empty { color: transparent; }
     .cal-cell:hover:not(.header):not(.empty) { background: rgba(255, 255, 255, 0.15); }
 
-    /* ---------- PRAYER TIME GADGET (anchored bottom-right) ---------- */
+    /* ---------- PRAYER TIME GADGET (compact by default, expandable) ---------- */
     .desktop-prayer {
       position: fixed;
       right: 30px;
@@ -327,7 +327,7 @@
       border-bottom: 1px solid rgba(80, 120, 160, 0.5);
       box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.25) inset, 0 0 0 1px rgba(30, 63, 90, 0.5), 0 12px 35px rgba(0, 0, 0, 0.55), 0 2px 10px rgba(0, 0, 0, 0.4), inset 0 1px 20px rgba(255, 255, 255, 0.25);
       backdrop-filter: blur(16px);
-      padding: 14px 12px 12px 12px;
+      padding: 12px 12px 10px 12px;
       cursor: grab;
       transition: box-shadow 0.2s ease, transform 0.2s ease;
       overflow: hidden;
@@ -343,10 +343,28 @@
       transform: scale(1.02);
     }
     .prayer-header {
-      font-size: 0.78rem; font-weight: 700; color: #ffffff; text-align: center;
+      font-size: 0.78rem; font-weight: 700; color: #ffffff;
       text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6), 0 0 12px rgba(140, 200, 255, 0.5);
       letter-spacing: 0.06em; margin-bottom: 6px; position: relative; z-index: 1;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 4px; padding: 0 2px;
     }
+    .prayer-title {
+      flex: 1; text-align: center;
+    }
+    .prayer-expand-btn {
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      border-radius: 4px; color: #ffffff;
+      width: 22px; height: 22px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 0.72rem; font-weight: 700; line-height: 1; padding: 0;
+      transition: background 0.15s, border-color 0.15s, transform 0.2s;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+      flex-shrink: 0; pointer-events: auto;
+    }
+    .prayer-expand-btn:hover { background: rgba(255, 255, 255, 0.3); border-color: rgba(255, 255, 255, 0.6); }
+    .prayer-expand-btn:active { background: rgba(255, 255, 255, 0.45); transform: scale(0.94); }
     .prayer-hijri {
       font-size: 0.65rem; font-weight: 500; color: rgba(220, 240, 255, 0.85);
       text-align: center; margin-bottom: 8px;
@@ -355,9 +373,73 @@
       border-bottom: 1px solid rgba(255, 255, 255, 0.18);
       padding-bottom: 6px;
     }
+
+    /* NEXT PRAYER — always visible */
+    .prayer-next-view {
+      position: relative; z-index: 1;
+    }
+    .prayer-next-card {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 8px 10px; border-radius: 8px;
+      background: linear-gradient(90deg, rgba(120, 200, 255, 0.45) 0%, rgba(80, 160, 230, 0.3) 100%);
+      border: 1px solid rgba(160, 220, 255, 0.85);
+      box-shadow: 0 0 12px rgba(120, 200, 255, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+      animation: nextPulse 2.4s ease-in-out infinite;
+    }
+    @keyframes nextPulse {
+      0%, 100% { box-shadow: 0 0 10px rgba(120, 200, 255, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.25); }
+      50%      { box-shadow: 0 0 18px rgba(140, 220, 255, 0.85), inset 0 1px 0 rgba(255, 255, 255, 0.35); }
+    }
+    .prayer-next-name {
+      font-size: 0.78rem; font-weight: 700; color: #ffffff;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7), 0 0 8px rgba(160, 220, 255, 0.7);
+      display: flex; align-items: center; gap: 5px;
+    }
+    .prayer-next-name .prayer-icon {
+      font-size: 0.82rem;
+    }
+    .prayer-next-meta {
+      display: flex; flex-direction: column; align-items: flex-end;
+      gap: 2px;
+    }
+    .prayer-next-time {
+      font-size: 0.82rem; font-weight: 700; color: #ffffff;
+      font-family: 'Segoe UI', Consolas, monospace;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8), 0 0 10px rgba(180, 230, 255, 0.9);
+      letter-spacing: 0.03em;
+    }
+    .prayer-next-countdown {
+      font-size: 0.56rem;
+      font-weight: 700;
+      color: #ffffff;
+      background: linear-gradient(180deg, #4a9ed8 0%, #1e5a8a 100%);
+      padding: 1px 6px;
+      border-radius: 20px;
+      border: 1px solid rgba(200, 235, 255, 0.9);
+      text-shadow: 0 1px 1px rgba(0, 0, 0, 0.6);
+      letter-spacing: 0.02em;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 1px 4px rgba(0, 0, 0, 0.4), 0 0 8px rgba(140, 210, 255, 0.6);
+      white-space: nowrap;
+      font-family: 'Segoe UI', Consolas, monospace;
+    }
+
+    /* All prayers — hidden by default, revealed when expanded */
+    .prayer-all-view {
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      transition: max-height 0.32s ease, opacity 0.25s ease, margin-top 0.25s ease;
+      position: relative;
+      z-index: 1;
+      margin-top: 0;
+    }
+    .desktop-prayer.expanded .prayer-all-view {
+      max-height: 320px;
+      opacity: 1;
+      margin-top: 8px;
+    }
     .prayer-list {
       display: flex; flex-direction: column; gap: 4px;
-      position: relative; z-index: 1;
     }
     .prayer-row {
       display: flex; justify-content: space-between; align-items: center;
@@ -367,22 +449,11 @@
       transition: background 0.15s, border-color 0.25s, box-shadow 0.25s;
       position: relative;
     }
-    .prayer-row:hover {
-      background: rgba(255, 255, 255, 0.15);
-    }
+    .prayer-row:hover { background: rgba(255, 255, 255, 0.15); }
     .prayer-row.next {
-      background: linear-gradient(90deg, rgba(120, 200, 255, 0.45) 0%, rgba(80, 160, 230, 0.3) 100%);
-      border-color: rgba(160, 220, 255, 0.85);
-      box-shadow: 0 0 12px rgba(120, 200, 255, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.25);
-      animation: nextPulse 2.4s ease-in-out infinite;
-    }
-    @keyframes nextPulse {
-      0%, 100% {
-        box-shadow: 0 0 10px rgba(120, 200, 255, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.25);
-      }
-      50% {
-        box-shadow: 0 0 18px rgba(140, 220, 255, 0.85), inset 0 1px 0 rgba(255, 255, 255, 0.35);
-      }
+      background: linear-gradient(90deg, rgba(120, 200, 255, 0.35) 0%, rgba(80, 160, 230, 0.22) 100%);
+      border-color: rgba(160, 220, 255, 0.65);
+      box-shadow: 0 0 8px rgba(120, 200, 255, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
     }
     .prayer-name {
       font-size: 0.72rem; font-weight: 600; color: rgba(235, 245, 255, 0.95);
@@ -426,8 +497,9 @@
       border-color: rgba(200, 235, 255, 0.9);
       box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 1px 4px rgba(0, 0, 0, 0.4), 0 0 8px rgba(140, 210, 255, 0.6);
     }
+
     .prayer-status {
-      text-align: center; font-size: 0.62rem; font-weight: 500;
+      text-align: center; font-size: 0.6rem; font-weight: 500;
       color: rgba(200, 225, 250, 0.75);
       margin-top: 6px; padding-top: 6px;
       border-top: 1px solid rgba(255, 255, 255, 0.18);
@@ -469,6 +541,9 @@
       .prayer-header { font-size: 0.7rem; }
       .prayer-hijri { font-size: 0.58rem; }
       .prayer-status { font-size: 0.56rem; }
+      .prayer-next-name { font-size: 0.7rem; }
+      .prayer-next-time { font-size: 0.74rem; }
+      .prayer-next-countdown { font-size: 0.5rem; padding: 1px 4px; }
     }
     @media (max-width: 480px) {
       .desktop-prayer { width: 160px; right: 8px; }
@@ -1912,33 +1987,54 @@
     <div class="cal-grid" id="calGrid"></div>
   </div>
 
-  <!-- ISLAMIC PRAYER TIMES GADGET (highlights NEXT prayer) -->
+  <!-- ISLAMIC PRAYER TIMES GADGET (compact next-prayer view, expandable) -->
   <div class="desktop-prayer" id="desktopPrayer" title="Drag to move">
     <div class="prayer-grip"></div>
-    <div class="prayer-header">🕌 Prayer Times</div>
+    <div class="prayer-header">
+      <span class="prayer-title">🕌 Prayer Times</span>
+      <button class="prayer-expand-btn" id="prayerExpandBtn" title="Show all prayers">▾</button>
+    </div>
     <div class="prayer-hijri" id="prayerHijri">Loading…</div>
-    <div class="prayer-list" id="prayerList">
-      <div class="prayer-row" data-prayer="fajr">
-        <span class="prayer-name"><span class="prayer-icon">🌙</span> Fajr</span>
-        <span class="prayer-time"><span id="prayerFajr">--:--</span><span class="prayer-countdown" id="countdownFajr" style="display:none;"></span></span>
-      </div>
-      <div class="prayer-row" data-prayer="dhuhr">
-        <span class="prayer-name"><span class="prayer-icon">☀️</span> Dhuhr</span>
-        <span class="prayer-time"><span id="prayerDhuhr">--:--</span><span class="prayer-countdown" id="countdownDhuhr" style="display:none;"></span></span>
-      </div>
-      <div class="prayer-row" data-prayer="asr">
-        <span class="prayer-name"><span class="prayer-icon">🌤️</span> Asr</span>
-        <span class="prayer-time"><span id="prayerAsr">--:--</span><span class="prayer-countdown" id="countdownAsr" style="display:none;"></span></span>
-      </div>
-      <div class="prayer-row" data-prayer="maghrib">
-        <span class="prayer-name"><span class="prayer-icon">🌅</span> Maghrib</span>
-        <span class="prayer-time"><span id="prayerMaghrib">--:--</span><span class="prayer-countdown" id="countdownMaghrib" style="display:none;"></span></span>
-      </div>
-      <div class="prayer-row" data-prayer="isha">
-        <span class="prayer-name"><span class="prayer-icon">🌙</span> Isha</span>
-        <span class="prayer-time"><span id="prayerIsha">--:--</span><span class="prayer-countdown" id="countdownIsha" style="display:none;"></span></span>
+
+    <!-- NEXT PRAYER (always visible) -->
+    <div class="prayer-next-view">
+      <div class="prayer-next-card" id="prayerNextCard">
+        <span class="prayer-next-name" id="prayerNextName">
+          <span class="prayer-icon">⏳</span> Loading…
+        </span>
+        <div class="prayer-next-meta">
+          <span class="prayer-next-time" id="prayerNextTime">--:--</span>
+          <span class="prayer-next-countdown" id="prayerNextCountdown" style="display:none;"></span>
+        </div>
       </div>
     </div>
+
+    <!-- ALL PRAYERS (collapsed by default) -->
+    <div class="prayer-all-view" id="prayerAllView">
+      <div class="prayer-list" id="prayerList">
+        <div class="prayer-row" data-prayer="fajr">
+          <span class="prayer-name"><span class="prayer-icon">🌙</span> Fajr</span>
+          <span class="prayer-time"><span id="prayerFajr">--:--</span><span class="prayer-countdown" id="countdownFajr" style="display:none;"></span></span>
+        </div>
+        <div class="prayer-row" data-prayer="dhuhr">
+          <span class="prayer-name"><span class="prayer-icon">☀️</span> Dhuhr</span>
+          <span class="prayer-time"><span id="prayerDhuhr">--:--</span><span class="prayer-countdown" id="countdownDhuhr" style="display:none;"></span></span>
+        </div>
+        <div class="prayer-row" data-prayer="asr">
+          <span class="prayer-name"><span class="prayer-icon">🌤️</span> Asr</span>
+          <span class="prayer-time"><span id="prayerAsr">--:--</span><span class="prayer-countdown" id="countdownAsr" style="display:none;"></span></span>
+        </div>
+        <div class="prayer-row" data-prayer="maghrib">
+          <span class="prayer-name"><span class="prayer-icon">🌅</span> Maghrib</span>
+          <span class="prayer-time"><span id="prayerMaghrib">--:--</span><span class="prayer-countdown" id="countdownMaghrib" style="display:none;"></span></span>
+        </div>
+        <div class="prayer-row" data-prayer="isha">
+          <span class="prayer-name"><span class="prayer-icon">🌙</span> Isha</span>
+          <span class="prayer-time"><span id="prayerIsha">--:--</span><span class="prayer-countdown" id="countdownIsha" style="display:none;"></span></span>
+        </div>
+      </div>
+    </div>
+
     <div class="prayer-status loading" id="prayerStatus">Loading…</div>
   </div>
 
@@ -2608,7 +2704,6 @@
       const TASKBAR_HEIGHT = 40;
 
       // ==================== DATE HELPERS (DD-MM-YYYY everywhere) ====================
-      // Format a Date object as DD-MM-YYYY
       function formatDateDDMMYYYY(date) {
         if (!date) return '';
         const d = (date instanceof Date) ? date : new Date(date);
@@ -2619,7 +2714,6 @@
         return `${dd}-${mm}-${yyyy}`;
       }
 
-      // Format date + time as DD-MM-YYYY HH:MM:SS
       function formatDateTimeDDMMYYYY(date) {
         const d = (date instanceof Date) ? date : new Date(date);
         if (isNaN(d.getTime())) return '';
@@ -2632,7 +2726,6 @@
         return `${dd}-${mm}-${yyyy} ${hh}:${mi}:${ss}`;
       }
 
-      // Convert a stored ISO date (YYYY-MM-DD) to DD-MM-YYYY for display
       function isoToDDMMYYYY(isoStr) {
         if (!isoStr) return '';
         const m = String(isoStr).match(/^(\d{4})-(\d{2})-(\d{2})/);
@@ -3146,6 +3239,7 @@
 
         handleEl.addEventListener('mousedown', (e) => {
           if (e.target.closest('.caption-btn')) return;
+          if (e.target.closest('.prayer-expand-btn')) return;
           if (windowEl.classList.contains('minimized')) return;
           if (windowEl.classList.contains('maximized')) return;
           e.preventDefault();
@@ -3220,6 +3314,7 @@
 
         handleEl.addEventListener('touchstart', (e) => {
           if (e.target.closest('.caption-btn')) return;
+          if (e.target.closest('.prayer-expand-btn')) return;
           if (windowEl.classList.contains('minimized')) return;
           if (windowEl.classList.contains('maximized')) return;
           const touch = e.touches[0];
@@ -3436,7 +3531,6 @@
 
         const pad = (n) => String(n).padStart(2, '0');
         gadgetTime.innerHTML = `${pad(h)}:${pad(m)}<span class="seconds">:${pad(s)}</span><span class="ampm">${ampm}</span>`;
-        // DD-MM-YYYY format
         gadgetDate.textContent = formatDateDDMMYYYY(now);
         const dayNames = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
         gadgetDay.textContent = dayNames[now.getDay()];
@@ -3617,9 +3711,14 @@
         }
       })();
 
-      // ==================== ISLAMIC PRAYER TIMES GADGET (NEXT PRAYER HIGHLIGHT + COUNTDOWN) ====================
+      // ==================== ISLAMIC PRAYER TIMES GADGET (COMPACT NEXT-PRAYER VIEW, EXPANDABLE) ====================
       const desktopPrayer = document.getElementById('desktopPrayer');
+      const prayerExpandBtn = document.getElementById('prayerExpandBtn');
+      const prayerAllView = document.getElementById('prayerAllView');
       const prayerHijri = document.getElementById('prayerHijri');
+      const prayerNextName = document.getElementById('prayerNextName');
+      const prayerNextTime = document.getElementById('prayerNextTime');
+      const prayerNextCountdown = document.getElementById('prayerNextCountdown');
       const prayerFajr = document.getElementById('prayerFajr');
       const prayerDhuhr = document.getElementById('prayerDhuhr');
       const prayerAsr = document.getElementById('prayerAsr');
@@ -3635,6 +3734,23 @@
         isha: document.getElementById('countdownIsha')
       };
 
+      const PRAYER_ICONS = {
+        fajr: '🌙',
+        dhuhr: '☀️',
+        asr: '🌤️',
+        maghrib: '🌅',
+        isha: '🌙'
+      };
+
+      const PRAYER_LABELS = {
+        fajr: 'Fajr',
+        dhuhr: 'Dhuhr',
+        asr: 'Asr',
+        maghrib: 'Maghrib',
+        isha: 'Isha'
+      };
+
+      const PRAYER_EXPAND_KEY = 'prayer_gadget_expanded';
       const PRAYER_METHOD = 3;
       const DEFAULT_LAT = 9.9816;
       const DEFAULT_LNG = 76.2999;
@@ -3642,7 +3758,39 @@
       let prayerTimesData = null;
       let currentLat = DEFAULT_LAT;
       let currentLng = DEFAULT_LNG;
-      let nextPrayerName = null;
+      let isPrayerExpanded = false;
+
+      // Restore expanded state from localStorage
+      try {
+        isPrayerExpanded = localStorage.getItem(PRAYER_EXPAND_KEY) === '1';
+      } catch (e) { isPrayerExpanded = false; }
+
+      function applyPrayerExpandedState() {
+        desktopPrayer.classList.toggle('expanded', isPrayerExpanded);
+        prayerExpandBtn.textContent = isPrayerExpanded ? '▴' : '▾';
+        prayerExpandBtn.title = isPrayerExpanded ? 'Hide all prayers' : 'Show all prayers';
+      }
+
+      function togglePrayerExpand() {
+        isPrayerExpanded = !isPrayerExpanded;
+        applyPrayerExpandedState();
+        try { localStorage.setItem(PRAYER_EXPAND_KEY, isPrayerExpanded ? '1' : '0'); } catch (e) {}
+      }
+
+      prayerExpandBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        togglePrayerExpand();
+      });
+      // Also prevent drag when clicking the expand button
+      prayerExpandBtn.addEventListener('mousedown', (e) => {
+        e.stopPropagation();
+      });
+      prayerExpandBtn.addEventListener('touchstart', (e) => {
+        e.stopPropagation();
+      }, { passive: true });
+
+      // Apply initial expanded state
+      applyPrayerExpandedState();
 
       const FALLBACK_TIMES = {
         Fajr: '05:04',
@@ -3710,8 +3858,8 @@
         if (!timings) return;
 
         const next = getNextPrayer(timings);
-        nextPrayerName = next ? next.name : null;
 
+        // Clear all highlight states
         document.querySelectorAll('#desktopPrayer .prayer-row').forEach(row => {
           row.classList.remove('next');
         });
@@ -3719,16 +3867,37 @@
           if (el) { el.style.display = 'none'; el.textContent = ''; }
         });
 
-        if (!next) return;
+        if (!next) {
+          prayerNextName.innerHTML = `<span class="prayer-icon">⏳</span> —`;
+          prayerNextTime.textContent = '--:--';
+          prayerNextCountdown.style.display = 'none';
+          return;
+        }
 
-        const nextRow = document.querySelector(`#desktopPrayer .prayer-row[data-prayer="${next.name}"]`);
-        if (nextRow) nextRow.classList.add('next');
+        // Update the compact NEXT-PRAYER card
+        const nextTimeStr = timings[
+          next.name === 'fajr' ? 'Fajr' :
+          next.name === 'dhuhr' ? 'Dhuhr' :
+          next.name === 'asr' ? 'Asr' :
+          next.name === 'maghrib' ? 'Maghrib' : 'Isha'
+        ];
 
+        prayerNextName.innerHTML = `<span class="prayer-icon">${PRAYER_ICONS[next.name]}</span> ${PRAYER_LABELS[next.name]}`;
+        prayerNextTime.textContent = formatPrayerTime(nextTimeStr);
+
+        // Countdown on the compact card
         const now = new Date();
         const currentMinutes = now.getHours() * 60 + now.getMinutes();
         let remaining = next.minutes - currentMinutes;
         if (next.tomorrow) remaining += 24 * 60;
+        prayerNextCountdown.textContent = formatCountdown(remaining);
+        prayerNextCountdown.style.display = 'inline-block';
 
+        // Highlight the row in the expanded list
+        const nextRow = document.querySelector(`#desktopPrayer .prayer-row[data-prayer="${next.name}"]`);
+        if (nextRow) nextRow.classList.add('next');
+
+        // Add countdown pill in the expanded list too
         const cdEl = countdownEls[next.name];
         if (cdEl) {
           cdEl.textContent = formatCountdown(remaining);
@@ -3765,7 +3934,6 @@
       async function fetchPrayerTimes(lat, lng) {
         try {
           const today = new Date();
-          // API expects DD-MM-YYYY
           const dateStr = formatDateDDMMYYYY(today);
           const url = `https://api.aladhan.com/v1/timings/${dateStr}?latitude=${lat}&longitude=${lng}&method=${PRAYER_METHOD}`;
 
@@ -3860,6 +4028,7 @@
 
         desktopPrayer.addEventListener('mousedown', (e) => {
           if (e.button !== 0) return;
+          if (e.target.closest('.prayer-expand-btn')) return;
           e.preventDefault();
           startDrag(e.clientX, e.clientY);
           document.addEventListener('mousemove', onMouseMove);
@@ -3872,6 +4041,7 @@
           document.removeEventListener('mouseup', onMouseUp);
         }
         desktopPrayer.addEventListener('touchstart', (e) => {
+          if (e.target.closest('.prayer-expand-btn')) return;
           const touch = e.touches[0];
           startDrag(touch.clientX, touch.clientY);
           document.addEventListener('touchmove', onTouchMove, { passive: false });
@@ -3991,7 +4161,6 @@
       const startBtn = document.getElementById('startBtn');
       const startMenu = document.getElementById('startMenu');
 
-      // Vehicle elements
       const vehicleTableBody = document.getElementById('vehicleTableBody');
       const vehicleSearchType = document.getElementById('vehicleSearchType');
       const vehicleSearchInput = document.getElementById('vehicleSearchInput');
@@ -4031,7 +4200,6 @@
       let isOnline = false;
       let employeesList = [];
 
-      // Vehicle state
       let vehicles = [];
       let filteredVehicles = [];
       let selectedVehicleId = null;
@@ -4109,7 +4277,6 @@
         h = h ? h : 12;
         const m = String(now.getMinutes()).padStart(2, '0');
         const s = String(now.getSeconds()).padStart(2, '0');
-        // DD-MM-YYYY format
         document.getElementById('clockTime').textContent = `${String(h).padStart(2, '0')}:${m}:${s} ${ampm}`;
         document.getElementById('clockDate').textContent = formatDateDDMMYYYY(now);
       }
@@ -4386,7 +4553,6 @@
             photo: s.photo || null
           })).filter(s => s.name);
           renderStaffCombo();
-          console.log('✅ Loaded', employeesList.length, 'employees');
         } catch (err) {
           console.warn('Could not load employees from DB:', err.message);
           employeesList = [];
@@ -5567,7 +5733,6 @@
             return '';
           };
 
-          // Display dates as DD-MM-YYYY
           html += `<tr class="${selected}" data-id="${v.id}"
             data-name="${escapeHtml(v.name)}"
             data-number="${escapeHtml(v.number)}"
@@ -5824,7 +5989,6 @@
 
         let rows = '';
         filteredVehicles.forEach((v, i) => {
-          // Display dates as DD-MM-YYYY in print too
           rows += `<tr>
             <td>${i + 1}</td>
             <td>${escapeHtml(v.name)}</td>
