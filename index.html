@@ -312,22 +312,22 @@
     .cal-cell.empty { color: transparent; }
     .cal-cell:hover:not(.header):not(.empty) { background: rgba(255, 255, 255, 0.15); }
 
-    /* ---------- PRAYER TIME GADGET (compact by default, expandable) ---------- */
+    /* ---------- PRAYER TIME GADGET (compact next-prayer view, expandable) ---------- */
     .desktop-prayer {
       position: fixed;
       right: 30px;
       bottom: calc(var(--taskbar-height) + 20px);
       z-index: 6;
-      width: 240px;
+      width: 170px;
       background: radial-gradient(circle at 50% 30%, rgba(255, 255, 255, 0.28) 0%, rgba(220, 235, 250, 0.18) 40%, rgba(140, 180, 220, 0.14) 100%);
-      border-radius: 14px;
+      border-radius: 12px;
       border-top: 1px solid rgba(255, 255, 255, 0.55);
       border-left: 1px solid rgba(255, 255, 255, 0.35);
       border-right: 1px solid rgba(120, 160, 200, 0.4);
       border-bottom: 1px solid rgba(80, 120, 160, 0.5);
       box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.25) inset, 0 0 0 1px rgba(30, 63, 90, 0.5), 0 12px 35px rgba(0, 0, 0, 0.55), 0 2px 10px rgba(0, 0, 0, 0.4), inset 0 1px 20px rgba(255, 255, 255, 0.25);
       backdrop-filter: blur(16px);
-      padding: 12px 12px 10px 12px;
+      padding: 8px 8px 8px 8px;
       cursor: grab;
       transition: box-shadow 0.2s ease, transform 0.2s ease;
       overflow: hidden;
@@ -342,78 +342,68 @@
       box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.35) inset, 0 0 0 1px rgba(30, 63, 90, 0.6), 0 18px 45px rgba(0, 0, 0, 0.7), 0 4px 14px rgba(0, 0, 0, 0.5);
       transform: scale(1.02);
     }
-    .prayer-header {
-      font-size: 0.78rem; font-weight: 700; color: #ffffff;
-      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6), 0 0 12px rgba(140, 200, 255, 0.5);
-      letter-spacing: 0.06em; margin-bottom: 6px; position: relative; z-index: 1;
-      display: flex; align-items: center; justify-content: space-between;
-      gap: 4px; padding: 0 2px;
-    }
-    .prayer-title {
-      flex: 1; text-align: center;
-    }
+
+    /* Small expand button at the top-right corner */
     .prayer-expand-btn {
+      position: absolute;
+      top: 5px; right: 5px;
       background: rgba(255, 255, 255, 0.15);
       border: 1px solid rgba(255, 255, 255, 0.35);
       border-radius: 4px; color: #ffffff;
-      width: 22px; height: 22px;
+      width: 18px; height: 18px;
       display: flex; align-items: center; justify-content: center;
-      cursor: pointer; font-size: 0.72rem; font-weight: 700; line-height: 1; padding: 0;
+      cursor: pointer; font-size: 0.62rem; font-weight: 700; line-height: 1; padding: 0;
       transition: background 0.15s, border-color 0.15s, transform 0.2s;
       text-shadow: 0 1px 2px rgba(0,0,0,0.5);
-      flex-shrink: 0; pointer-events: auto;
+      flex-shrink: 0; pointer-events: auto; z-index: 3;
     }
     .prayer-expand-btn:hover { background: rgba(255, 255, 255, 0.3); border-color: rgba(255, 255, 255, 0.6); }
     .prayer-expand-btn:active { background: rgba(255, 255, 255, 0.45); transform: scale(0.94); }
-    .prayer-hijri {
-      font-size: 0.65rem; font-weight: 500; color: rgba(220, 240, 255, 0.85);
-      text-align: center; margin-bottom: 8px;
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-      position: relative; z-index: 1;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.18);
-      padding-bottom: 6px;
-    }
 
     /* NEXT PRAYER — always visible */
     .prayer-next-view {
       position: relative; z-index: 1;
+      padding-right: 20px; /* space for expand button */
     }
     .prayer-next-card {
       display: flex; justify-content: space-between; align-items: center;
-      padding: 8px 10px; border-radius: 8px;
+      padding: 6px 8px; border-radius: 8px;
       background: linear-gradient(90deg, rgba(120, 200, 255, 0.45) 0%, rgba(80, 160, 230, 0.3) 100%);
       border: 1px solid rgba(160, 220, 255, 0.85);
       box-shadow: 0 0 12px rgba(120, 200, 255, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.25);
       animation: nextPulse 2.4s ease-in-out infinite;
+      gap: 4px;
     }
     @keyframes nextPulse {
       0%, 100% { box-shadow: 0 0 10px rgba(120, 200, 255, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.25); }
       50%      { box-shadow: 0 0 18px rgba(140, 220, 255, 0.85), inset 0 1px 0 rgba(255, 255, 255, 0.35); }
     }
     .prayer-next-name {
-      font-size: 0.78rem; font-weight: 700; color: #ffffff;
+      font-size: 0.7rem; font-weight: 700; color: #ffffff;
       text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7), 0 0 8px rgba(160, 220, 255, 0.7);
-      display: flex; align-items: center; gap: 5px;
+      display: flex; align-items: center; gap: 3px;
+      white-space: nowrap;
     }
     .prayer-next-name .prayer-icon {
-      font-size: 0.82rem;
+      font-size: 0.75rem;
     }
     .prayer-next-meta {
       display: flex; flex-direction: column; align-items: flex-end;
-      gap: 2px;
+      gap: 1px;
     }
     .prayer-next-time {
-      font-size: 0.82rem; font-weight: 700; color: #ffffff;
+      font-size: 0.72rem; font-weight: 700; color: #ffffff;
       font-family: 'Segoe UI', Consolas, monospace;
       text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8), 0 0 10px rgba(180, 230, 255, 0.9);
-      letter-spacing: 0.03em;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
     }
     .prayer-next-countdown {
-      font-size: 0.56rem;
+      font-size: 0.5rem;
       font-weight: 700;
       color: #ffffff;
       background: linear-gradient(180deg, #4a9ed8 0%, #1e5a8a 100%);
-      padding: 1px 6px;
+      padding: 1px 5px;
       border-radius: 20px;
       border: 1px solid rgba(200, 235, 255, 0.9);
       text-shadow: 0 1px 1px rgba(0, 0, 0, 0.6);
@@ -436,14 +426,14 @@
     .desktop-prayer.expanded .prayer-all-view {
       max-height: 320px;
       opacity: 1;
-      margin-top: 8px;
+      margin-top: 6px;
     }
     .prayer-list {
-      display: flex; flex-direction: column; gap: 4px;
+      display: flex; flex-direction: column; gap: 3px;
     }
     .prayer-row {
       display: flex; justify-content: space-between; align-items: center;
-      padding: 4px 8px; border-radius: 6px;
+      padding: 3px 6px; border-radius: 5px;
       background: rgba(255, 255, 255, 0.08);
       border: 1px solid rgba(255, 255, 255, 0.1);
       transition: background 0.15s, border-color 0.25s, box-shadow 0.25s;
@@ -456,9 +446,9 @@
       box-shadow: 0 0 8px rgba(120, 200, 255, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
     }
     .prayer-name {
-      font-size: 0.72rem; font-weight: 600; color: rgba(235, 245, 255, 0.95);
+      font-size: 0.64rem; font-weight: 600; color: rgba(235, 245, 255, 0.95);
       text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-      display: flex; align-items: center; gap: 5px;
+      display: flex; align-items: center; gap: 4px;
     }
     .prayer-row.next .prayer-name {
       color: #ffffff;
@@ -466,24 +456,24 @@
       font-weight: 700;
     }
     .prayer-name .prayer-icon {
-      font-size: 0.75rem;
+      font-size: 0.68rem;
     }
     .prayer-time {
-      font-size: 0.78rem; font-weight: 700; color: #ffffff;
+      font-size: 0.7rem; font-weight: 700; color: #ffffff;
       font-family: 'Segoe UI', Consolas, monospace;
       text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6), 0 0 8px rgba(140, 200, 255, 0.4);
-      letter-spacing: 0.03em;
-      display: flex; align-items: center; gap: 6px;
+      letter-spacing: 0.02em;
+      display: flex; align-items: center; gap: 4px;
     }
     .prayer-row.next .prayer-time {
       text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8), 0 0 10px rgba(180, 230, 255, 0.9);
     }
     .prayer-countdown {
-      font-size: 0.56rem;
+      font-size: 0.5rem;
       font-weight: 700;
       color: #ffffff;
       background: rgba(30, 90, 140, 0.85);
-      padding: 1px 6px;
+      padding: 1px 5px;
       border-radius: 20px;
       border: 1px solid rgba(160, 220, 255, 0.7);
       text-shadow: 0 1px 1px rgba(0, 0, 0, 0.6);
@@ -498,19 +488,9 @@
       box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 1px 4px rgba(0, 0, 0, 0.4), 0 0 8px rgba(140, 210, 255, 0.6);
     }
 
-    .prayer-status {
-      text-align: center; font-size: 0.6rem; font-weight: 500;
-      color: rgba(200, 225, 250, 0.75);
-      margin-top: 6px; padding-top: 6px;
-      border-top: 1px solid rgba(255, 255, 255, 0.18);
-      position: relative; z-index: 1;
-    }
-    .prayer-status.loading { color: rgba(255, 230, 150, 0.9); }
-    .prayer-status.error { color: rgba(255, 160, 160, 0.9); }
-    .prayer-status.ok { color: rgba(160, 240, 180, 0.9); }
     .prayer-grip {
       position: absolute; top: 4px; left: 50%; transform: translateX(-50%);
-      width: 40px; height: 3px; border-radius: 3px;
+      width: 30px; height: 2px; border-radius: 3px;
       background: rgba(255, 255, 255, 0.18);
       opacity: 0; transition: opacity 0.2s; pointer-events: none;
     }
@@ -522,7 +502,7 @@
       .gadget-analog { width: 96px; height: 96px; }
       .gadget-tick { transform-origin: center 44px; }
       .desktop-calendar { width: 200px; top: 280px; right: 20px; }
-      .desktop-prayer { width: 200px; right: 20px; bottom: calc(var(--taskbar-height) + 16px); }
+      .desktop-prayer { width: 160px; right: 20px; bottom: calc(var(--taskbar-height) + 16px); }
     }
     @media (max-width: 600px) {
       .desktop-gadget { width: 170px; padding: 12px 10px 10px 10px; }
@@ -533,20 +513,17 @@
       .desktop-calendar { width: 170px; top: 240px; }
       .cal-cell { font-size: 0.6rem; padding: 3px 0; }
       .cal-nav-btn { width: 18px; height: 18px; font-size: 0.65rem; }
-      .desktop-prayer { width: 170px; right: 10px; bottom: calc(var(--taskbar-height) + 10px); }
-      .prayer-row { padding: 3px 6px; }
-      .prayer-name { font-size: 0.64rem; }
-      .prayer-time { font-size: 0.7rem; }
-      .prayer-countdown { font-size: 0.5rem; padding: 1px 4px; }
-      .prayer-header { font-size: 0.7rem; }
-      .prayer-hijri { font-size: 0.58rem; }
-      .prayer-status { font-size: 0.56rem; }
-      .prayer-next-name { font-size: 0.7rem; }
-      .prayer-next-time { font-size: 0.74rem; }
-      .prayer-next-countdown { font-size: 0.5rem; padding: 1px 4px; }
+      .desktop-prayer { width: 150px; right: 10px; bottom: calc(var(--taskbar-height) + 10px); }
+      .prayer-row { padding: 2px 5px; }
+      .prayer-name { font-size: 0.6rem; }
+      .prayer-time { font-size: 0.66rem; }
+      .prayer-countdown { font-size: 0.46rem; padding: 1px 4px; }
+      .prayer-next-name { font-size: 0.66rem; }
+      .prayer-next-time { font-size: 0.68rem; }
+      .prayer-next-countdown { font-size: 0.46rem; padding: 1px 4px; }
     }
     @media (max-width: 480px) {
-      .desktop-prayer { width: 160px; right: 8px; }
+      .desktop-prayer { width: 140px; right: 8px; }
     }
 
     /* ---------- WINDOW BASE ---------- */
@@ -1987,14 +1964,10 @@
     <div class="cal-grid" id="calGrid"></div>
   </div>
 
-  <!-- ISLAMIC PRAYER TIMES GADGET (compact next-prayer view, expandable) -->
+  <!-- PRAYER TIMES GADGET (compact, no header label) -->
   <div class="desktop-prayer" id="desktopPrayer" title="Drag to move">
     <div class="prayer-grip"></div>
-    <div class="prayer-header">
-      <span class="prayer-title">🕌 Prayer Times</span>
-      <button class="prayer-expand-btn" id="prayerExpandBtn" title="Show all prayers">▾</button>
-    </div>
-    <div class="prayer-hijri" id="prayerHijri">Loading…</div>
+    <button class="prayer-expand-btn" id="prayerExpandBtn" title="Show all prayers">▾</button>
 
     <!-- NEXT PRAYER (always visible) -->
     <div class="prayer-next-view">
@@ -2034,8 +2007,6 @@
         </div>
       </div>
     </div>
-
-    <div class="prayer-status loading" id="prayerStatus">Loading…</div>
   </div>
 
   <!-- PACKING CALCULATOR -->
@@ -3715,7 +3686,6 @@
       const desktopPrayer = document.getElementById('desktopPrayer');
       const prayerExpandBtn = document.getElementById('prayerExpandBtn');
       const prayerAllView = document.getElementById('prayerAllView');
-      const prayerHijri = document.getElementById('prayerHijri');
       const prayerNextName = document.getElementById('prayerNextName');
       const prayerNextTime = document.getElementById('prayerNextTime');
       const prayerNextCountdown = document.getElementById('prayerNextCountdown');
@@ -3724,7 +3694,6 @@
       const prayerAsr = document.getElementById('prayerAsr');
       const prayerMaghrib = document.getElementById('prayerMaghrib');
       const prayerIsha = document.getElementById('prayerIsha');
-      const prayerStatus = document.getElementById('prayerStatus');
 
       const countdownEls = {
         fajr: document.getElementById('countdownFajr'),
@@ -3760,7 +3729,6 @@
       let currentLng = DEFAULT_LNG;
       let isPrayerExpanded = false;
 
-      // Restore expanded state from localStorage
       try {
         isPrayerExpanded = localStorage.getItem(PRAYER_EXPAND_KEY) === '1';
       } catch (e) { isPrayerExpanded = false; }
@@ -3781,7 +3749,6 @@
         e.stopPropagation();
         togglePrayerExpand();
       });
-      // Also prevent drag when clicking the expand button
       prayerExpandBtn.addEventListener('mousedown', (e) => {
         e.stopPropagation();
       });
@@ -3789,7 +3756,6 @@
         e.stopPropagation();
       }, { passive: true });
 
-      // Apply initial expanded state
       applyPrayerExpandedState();
 
       const FALLBACK_TIMES = {
@@ -3859,7 +3825,6 @@
 
         const next = getNextPrayer(timings);
 
-        // Clear all highlight states
         document.querySelectorAll('#desktopPrayer .prayer-row').forEach(row => {
           row.classList.remove('next');
         });
@@ -3874,7 +3839,6 @@
           return;
         }
 
-        // Update the compact NEXT-PRAYER card
         const nextTimeStr = timings[
           next.name === 'fajr' ? 'Fajr' :
           next.name === 'dhuhr' ? 'Dhuhr' :
@@ -3885,7 +3849,6 @@
         prayerNextName.innerHTML = `<span class="prayer-icon">${PRAYER_ICONS[next.name]}</span> ${PRAYER_LABELS[next.name]}`;
         prayerNextTime.textContent = formatPrayerTime(nextTimeStr);
 
-        // Countdown on the compact card
         const now = new Date();
         const currentMinutes = now.getHours() * 60 + now.getMinutes();
         let remaining = next.minutes - currentMinutes;
@@ -3893,11 +3856,9 @@
         prayerNextCountdown.textContent = formatCountdown(remaining);
         prayerNextCountdown.style.display = 'inline-block';
 
-        // Highlight the row in the expanded list
         const nextRow = document.querySelector(`#desktopPrayer .prayer-row[data-prayer="${next.name}"]`);
         if (nextRow) nextRow.classList.add('next');
 
-        // Add countdown pill in the expanded list too
         const cdEl = countdownEls[next.name];
         if (cdEl) {
           cdEl.textContent = formatCountdown(remaining);
@@ -3905,29 +3866,12 @@
         }
       }
 
-      function updateHijriDisplay(hijri) {
-        if (hijri && hijri.day && hijri.month) {
-          prayerHijri.textContent = `${hijri.day} ${hijri.month.en || ''} ${hijri.year} AH`;
-          return;
-        }
-        try {
-          const today = new Date();
-          const fmt = new Intl.DateTimeFormat('en-u-ca-islamic-umalqura-nu-latn', {
-            day: 'numeric', month: 'long', year: 'numeric'
-          });
-          prayerHijri.textContent = fmt.format(today).replace(/\s*AH\s*/i, '') + ' AH';
-        } catch (e) {
-          prayerHijri.textContent = '---';
-        }
-      }
-
-      function applyPrayerTimes(timings, hijri) {
+      function applyPrayerTimes(timings) {
         prayerFajr.textContent = formatPrayerTime(timings.Fajr);
         prayerDhuhr.textContent = formatPrayerTime(timings.Dhuhr);
         prayerAsr.textContent = formatPrayerTime(timings.Asr);
         prayerMaghrib.textContent = formatPrayerTime(timings.Maghrib);
         prayerIsha.textContent = formatPrayerTime(timings.Isha);
-        updateHijriDisplay(hijri);
         updatePrayerHighlight(timings);
       }
 
@@ -3954,9 +3898,6 @@
       }
 
       async function updatePrayerGadget() {
-        prayerStatus.textContent = '⏳ Loading…';
-        prayerStatus.className = 'prayer-status loading';
-
         if (navigator.geolocation) {
           try {
             const pos = await new Promise((resolve, reject) => {
@@ -3976,14 +3917,10 @@
 
         if (data && data.timings) {
           prayerTimesData = data;
-          applyPrayerTimes(data.timings, data.date?.hijri);
-          prayerStatus.textContent = '✅ ' + (data.meta?.timezone || 'Live');
-          prayerStatus.className = 'prayer-status ok';
+          applyPrayerTimes(data.timings);
         } else {
           prayerTimesData = { timings: FALLBACK_TIMES };
-          applyPrayerTimes(FALLBACK_TIMES, null);
-          prayerStatus.textContent = '⚠️ Cached times';
-          prayerStatus.className = 'prayer-status error';
+          applyPrayerTimes(FALLBACK_TIMES);
         }
       }
 
