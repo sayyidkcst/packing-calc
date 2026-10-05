@@ -2081,7 +2081,7 @@
       max-height: 220px;
       overflow-y: auto;
       display: none;
-      min-width: 320px;
+      min-width: 340px;
       font-size: 0.78rem;
     }
     .product-suggest-list.open { display: block; }
@@ -2858,7 +2858,7 @@
 
   <!-- INVOICE MODAL -->
   <div class="modal-overlay" id="invoiceModalOverlay">
-    <div class="modal" id="invoiceModalBox" style="width:820px;">
+    <div class="modal" id="invoiceModalBox" style="width:860px;">
       <div class="title-bar">
         <div class="title-text" id="invoiceModalTitle">🧾 New Invoice</div>
         <div class="caption-buttons">
@@ -6655,7 +6655,7 @@
           const rect = anchorInput.getBoundingClientRect();
           listContainer.style.left = rect.left + 'px';
           listContainer.style.top = (rect.bottom + 2) + 'px';
-          listContainer.style.minWidth = Math.max(320, rect.width) + 'px';
+          listContainer.style.minWidth = Math.max(340, rect.width) + 'px';
         }
 
         function updateHighlight() {
@@ -6716,13 +6716,11 @@
           );
         }
 
-        // ---- INPUT ----
         anchorInput.addEventListener('input', () => {
           const matches = filterProducts(anchorInput.value);
           renderList(matches);
         });
 
-        // ---- FOCUS ----
         anchorInput.addEventListener('focus', () => {
           const selectedCustomer = getCustomerFn ? (getCustomerFn() || '').trim() : '';
           if (!selectedCustomer) {
@@ -6735,7 +6733,6 @@
           if (custProds.length > 0) renderList(custProds);
         });
 
-        // ---- KEYDOWN: full arrow/Enter/Escape navigation ----
         anchorInput.addEventListener('keydown', (e) => {
           if (isOpen() && currentMatches.length > 0) {
             if (e.key === 'ArrowDown') {
@@ -6761,7 +6758,6 @@
                   return;
                 }
                 hideList();
-                // fall through for Enter/Tab to move to next field
               }
             }
             if (e.key === 'Escape') {
@@ -6793,7 +6789,6 @@
           }
         });
 
-        // ---- MOUSE CLICK ----
         listContainer.addEventListener('mousedown', (e) => {
           const item = e.target.closest('.product-suggest-item');
           if (item) {
@@ -6805,7 +6800,6 @@
           }
         });
 
-        // ---- CLICK OUTSIDE ----
         document.addEventListener('mousedown', (e) => {
           if (!listContainer.contains(e.target) && e.target !== anchorInput) {
             hideList();
@@ -6910,11 +6904,16 @@
               ${renderItemsRows(inv.items)}
             </tbody>
           </table>
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; gap:10px; flex-wrap:wrap;">
             <button class="invoice-add-item-btn" id="invoiceAddItemBtn" type="button"><span>➕</span> Add Item</button>
-            <div class="invoice-total-row">
-              <span class="total-label">Total:</span>
-              <span class="total-value" id="invoiceTotalDisplay">${formatCurrency(inv.total || 0)}</span>
+            <div style="display:flex; gap:8px; align-items:center; margin-left:auto;">
+              <button class="aero-btn" id="invoicePrintThisBtn" type="button" title="Print this invoice">
+                <span>🖨️</span> Print This Invoice
+              </button>
+              <div class="invoice-total-row" style="padding:0;">
+                <span class="total-label">Total:</span>
+                <span class="total-value" id="invoiceTotalDisplay">${formatCurrency(inv.total || 0)}</span>
+              </div>
             </div>
           </div>
 
@@ -7006,7 +7005,6 @@
                 recalcInvoiceTotal();
                 hideAllSuggests();
 
-                // After product selection, jump to Bags field
                 if (bagsInput) {
                   setTimeout(() => { bagsInput.focus(); bagsInput.select(); }, 30);
                 }
@@ -7016,17 +7014,12 @@
             row._hideSuggest = suggest.hideList;
           }
 
-          // ---------- ROW KEYBOARD FLOW ----------
-          // Desc → Bags → Extra → Rate → (next row desc OR add new row)
           const rowFields = [descInput, bagsInput, extraInput, rateInput].filter(Boolean);
-
           rowFields.forEach((inp, idx) => {
             inp.addEventListener('keydown', (e) => {
-              // Let product-suggest handle keys when list is open on desc field
               if (inp === descInput && suggestListEl && suggestListEl.classList.contains('open')) {
                 return;
               }
-
               if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
                 if (idx < rowFields.length - 1) {
@@ -7034,7 +7027,6 @@
                   next.focus();
                   if (next.select) next.select();
                 } else {
-                  // last field in row → next row's desc OR add a new row
                   const allRows = Array.from(itemsBody.querySelectorAll('tr'));
                   const currentRowIdx = allRows.indexOf(row);
                   if (currentRowIdx === allRows.length - 1) {
@@ -7100,6 +7092,189 @@
           const firstInput = newRow.querySelector('.item-desc');
           if (firstInput) firstInput.focus();
         });
+
+        // ==================== PRINT THIS INVOICE ====================
+        const printThisBtn = invoiceModalContent.querySelector('#invoicePrintThisBtn');
+        if (printThisBtn) {
+          printThisBtn.addEventListener('click', () => {
+            const invoiceNumber = invoiceModalContent.querySelector('#invoiceNumberInput').value.trim() || '—';
+            const customer = customerInput.value.trim() || '—';
+            const dateInput = invoiceModalContent.querySelector('#invoiceDateInput').value || '';
+            const dateStr = dateInput ? isoToDDMMYYYY(dateInput) : formatDateTimeDDMMYYYY(new Date());
+            const notes = invoiceModalContent.querySelector('#invoiceNotesInput').value.trim();
+
+            const items = [];
+            itemsBody.querySelectorAll('tr').forEach(row => {
+              const desc = row.querySelector('.item-desc')?.value.trim() || '';
+              const { bags, extra, pcsPerBag, unit, rate, totalPieces, amount } = computeItemAmount(row);
+              if (desc || bags > 0 || rate > 0) {
+                items.push({ desc, bags, extra, pcsPerBag, unit, rate, totalPieces, amount });
+              }
+            });
+
+            if (items.length === 0) {
+              // nothing to print — show a quick warning toast
+              showToast('⚠️ Add at least one item before printing', 'warning');
+              return;
+            }
+
+            const total = items.reduce((s, it) => s + it.amount, 0);
+
+            // Build rows with unit-aware display
+            let rowsHtml = '';
+            let grandTotalPcs = 0;
+            let grandTotalKg = 0;
+            items.forEach((it, i) => {
+              // Determine what to show in the "Total" column based on unit
+              let displayTotal = '';
+              if (it.unit === 'Kg' || it.unit === 'kg' || it.unit === 'gm') {
+                // total weight = (bags × pcsPerBag + extra) × ??? — but rate is per pc
+                // In this invoice context the "total" column shows total pieces, not kg
+                // However the user asked: if unit is Kg show total kg
+                // We use bags × pcsPerBag + extra as the counted pieces (this is what rate is multiplied against)
+                // For Kg we can treat pcsPerBag as kg per bag → total kg = bags × pcsPerBag + extra
+                displayTotal = (it.bags * it.pcsPerBag + it.extra).toFixed(3) + ' kg';
+                grandTotalKg += (it.bags * it.pcsPerBag + it.extra);
+              } else {
+                displayTotal = it.totalPieces + ' pcs';
+                grandTotalPcs += it.totalPieces;
+              }
+              rowsHtml += `<tr>
+                <td>${i + 1}</td>
+                <td>${escapeHtml(it.desc)}</td>
+                <td style="text-align:center;">${it.bags}</td>
+                <td style="text-align:center;">${it.extra}</td>
+                <td style="text-align:center;">${it.pcsPerBag}</td>
+                <td style="text-align:center;">${escapeHtml(it.unit)}</td>
+                <td style="text-align:right;">${formatCurrency(it.rate)}</td>
+                <td style="text-align:right;">${displayTotal}</td>
+                <td style="text-align:right;">${formatCurrency(it.amount)}</td>
+              </tr>`;
+            });
+
+            // Summary line: if all Kg → show total Kg; else show total pcs
+            const allKg = items.every(it => it.unit === 'Kg' || it.unit === 'kg' || it.unit === 'gm');
+            const allPcs = items.every(it => it.unit === 'Pcs' || it.unit === 'pcs');
+            let summaryLine = '';
+            if (allKg) {
+              summaryLine = `<span class="summary-chip">⚖️ Total Weight: <strong>${grandTotalKg.toFixed(3)} kg</strong></span>`;
+            } else if (allPcs) {
+              summaryLine = `<span class="summary-chip">📦 Total Pieces: <strong>${grandTotalPcs}</strong></span>`;
+            } else {
+              summaryLine = `<span class="summary-chip">📦 Total Pieces: <strong>${grandTotalPcs} pcs</strong></span>
+                             <span class="summary-chip">⚖️ Total Weight: <strong>${grandTotalKg.toFixed(3)} kg</strong></span>`;
+            }
+
+            const printWindow = window.open('', '_blank', 'width=900,height=700');
+            printWindow.document.write(`
+              <!DOCTYPE html>
+              <html>
+              <head>
+                <title>Invoice ${escapeHtml(invoiceNumber)} - KCST Windows</title>
+                <style>
+                  * { margin: 0; padding: 0; box-sizing: border-box; }
+                  body { font-family: 'Tahoma', Arial, sans-serif; padding: 30px; color: #0a2862; background: #ffffff; }
+                  .header { text-align: center; margin-bottom: 22px; padding-bottom: 15px; border-bottom: 3px double #2a63c8; }
+                  .header h1 { font-size: 1.6rem; color: #0a2862; margin-bottom: 4px; letter-spacing: 0.04em; }
+                  .header .sub { font-size: 0.8rem; color: #4a6a8a; font-style: italic; }
+                  .invoice-meta { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 18px; flex-wrap: wrap; }
+                  .invoice-meta .box { background: #f0f6ff; border: 1px solid #a8c8f0; border-radius: 4px; padding: 8px 14px; font-size: 0.8rem; }
+                  .invoice-meta .box .lbl { font-size: 0.65rem; text-transform: uppercase; color: #4a6a8a; font-weight: 700; letter-spacing: 0.5px; }
+                  .invoice-meta .box .val { font-weight: 700; color: #0a2862; margin-top: 2px; }
+                  table { width: 100%; border-collapse: collapse; font-size: 0.82rem; margin-bottom: 14px; }
+                  thead th { background: linear-gradient(180deg, #f0f6ff 0%, #d8e8fb 100%); color: #0a2862; font-weight: 700; font-size: 0.7rem; padding: 8px 10px; text-align: left; border: 1px solid #a8c8f0; text-transform: uppercase; letter-spacing: 0.4px; }
+                  tbody td { padding: 7px 10px; border: 1px solid #d8e8fb; color: #000000; vertical-align: middle; }
+                  tbody tr:nth-child(even) { background: #f5f9ff; }
+                  .totals { display: flex; justify-content: flex-end; gap: 20px; margin-top: 8px; margin-bottom: 18px; }
+                  .totals .grand { background: linear-gradient(180deg, #3f7ae0 0%, #15419c 100%); color: #ffffff; padding: 10px 22px; border-radius: 4px; font-size: 1.15rem; font-weight: 800; font-family: 'Tahoma', Consolas, monospace; border: 1px solid #0a2862; box-shadow: 0 3px 8px rgba(0,0,0,0.3); }
+                  .summary-row { display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; margin-bottom: 18px; }
+                  .summary-chip { background: #d8e8fb; border: 1px solid #a8c8f0; border-radius: 4px; padding: 6px 14px; font-size: 0.78rem; color: #0a2862; }
+                  .summary-chip strong { font-weight: 700; }
+                  .notes-box { background: #fffbe6; border: 1px solid #e0c060; border-radius: 4px; padding: 10px 14px; font-size: 0.78rem; color: #5a3a00; margin-bottom: 18px; }
+                  .notes-box .lbl { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 3px; }
+                  .footer { margin-top: 26px; text-align: center; font-size: 0.7rem; color: #6a8ba5; border-top: 1px solid #a8c8f0; padding-top: 12px; }
+                  .signature-line { display: flex; justify-content: space-between; margin-top: 40px; gap: 30px; }
+                  .signature-line .sig { flex: 1; text-align: center; }
+                  .signature-line .sig .line { border-top: 1px solid #0a2862; margin-bottom: 4px; height: 40px; }
+                  .signature-line .sig .txt { font-size: 0.72rem; font-weight: 600; color: #15419c; }
+                  @media print { body { padding: 15px; } .no-print { display: none !important; } }
+                  .print-btn { position: fixed; top: 16px; right: 16px; padding: 10px 22px; background: linear-gradient(180deg, #3f7ae0 0%, #15419c 100%); color: white; border: 1px solid #0a2862; border-radius: 3px; font-size: 0.85rem; font-weight: 700; cursor: pointer; box-shadow: 0 3px 8px rgba(0,0,0,0.3); }
+                </style>
+              </head>
+              <body>
+                <button class="print-btn no-print" onclick="window.print()">🖨️ Print</button>
+
+                <div class="header">
+                  <h1>🧾 KCST Windows — INVOICE</h1>
+                  <div class="sub">Billing &amp; Customer Management System</div>
+                </div>
+
+                <div class="invoice-meta">
+                  <div class="box">
+                    <div class="lbl">Invoice Number</div>
+                    <div class="val">${escapeHtml(invoiceNumber)}</div>
+                  </div>
+                  <div class="box">
+                    <div class="lbl">Customer</div>
+                    <div class="val">👤 ${escapeHtml(customer)}</div>
+                  </div>
+                  <div class="box">
+                    <div class="lbl">Date</div>
+                    <div class="val">📅 ${dateStr}</div>
+                  </div>
+                </div>
+
+                <table>
+                  <thead>
+                    <tr>
+                      <th style="width:36px; text-align:center;">#</th>
+                      <th>Product</th>
+                      <th style="text-align:center; width:60px;">Bag</th>
+                      <th style="text-align:center; width:70px;">Extra Pcs</th>
+                      <th style="text-align:center; width:70px;">Pcs/Bag</th>
+                      <th style="text-align:center; width:60px;">Unit</th>
+                      <th style="text-align:right; width:90px;">Rate (₹)</th>
+                      <th style="text-align:right; width:100px;">Total</th>
+                      <th style="text-align:right; width:110px;">Amount</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${rowsHtml}
+                  </tbody>
+                </table>
+
+                <div class="summary-row">
+                  ${summaryLine}
+                </div>
+
+                <div class="totals">
+                  <div class="grand">💰 Grand Total: ${formatCurrency(total)}</div>
+                </div>
+
+                ${notes ? `<div class="notes-box"><div class="lbl">📝 Notes</div>${escapeHtml(notes)}</div>` : ''}
+
+                <div class="signature-line">
+                  <div class="sig">
+                    <div class="line"></div>
+                    <div class="txt">Customer Signature</div>
+                  </div>
+                  <div class="sig">
+                    <div class="line"></div>
+                    <div class="txt">Authorised Signature</div>
+                  </div>
+                </div>
+
+                <div class="footer">
+                  Generated by KCST Windows · ${formatDateTimeDDMMYYYY(new Date())}
+                </div>
+
+                <script>window.onload=function(){setTimeout(function(){window.print();},500);};<\/script>
+              </body>
+              </html>
+            `);
+            printWindow.document.close();
+          });
+        }
 
         const saveBtn = invoiceModalContent.querySelector('#modalSaveBtn');
         const cancelBtn = invoiceModalContent.querySelector('#modalCancelBtn');
@@ -7178,6 +7353,23 @@
             saveBtn.textContent = isEdit ? '💾 Update Invoice' : '💾 Save Invoice';
           }
         });
+      }
+
+      // ==================== SIMPLE TOAST ====================
+      function showToast(text, type = '') {
+        let toastEl = document.getElementById('globalToast');
+        if (!toastEl) {
+          toastEl = document.createElement('div');
+          toastEl.id = 'globalToast';
+          toastEl.className = 'toast';
+          document.body.appendChild(toastEl);
+        }
+        toastEl.textContent = text;
+        toastEl.className = 'toast show ' + (type || '');
+        clearTimeout(toastEl._hideTimer);
+        toastEl._hideTimer = setTimeout(() => {
+          toastEl.classList.remove('show');
+        }, 2200);
       }
 
       // ==================== INVOICE TABLE EVENTS ====================
