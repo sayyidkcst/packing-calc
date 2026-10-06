@@ -929,6 +929,11 @@
       text-align: center;
       font-size: 0.72rem;
     }
+    .price-table tbody td.size-cell {
+      color: #0a2862; font-weight: 700;
+      text-align: center;
+      font-size: 0.72rem;
+    }
     .price-table tbody td.action-cell { text-align: center; width: 64px; padding: 4px; }
     .row-edit-btn, .row-delete-btn {
       border-radius: 2px;
@@ -2175,6 +2180,17 @@
       flex-shrink: 0; height: 100%; min-height: 22px; font-weight: 700;
     }
 
+    /* ---------- SIZE INPUT ROW IN PRODUCT MODAL ---------- */
+    .size-input-row {
+      display: flex; gap: 8px; align-items: center;
+    }
+    .size-input-row .size-value-input {
+      flex: 0 0 90px;
+    }
+    .size-input-row .size-unit-select {
+      flex: 0 0 90px;
+    }
+
     @media (max-width: 1200px) {
       .window, .window-price, .window-load, .window-cash, .window-notepad, .window-vehicle, .window-invoice {
         position: relative; top: auto !important; left: auto !important; right: auto !important;
@@ -2220,6 +2236,9 @@
       .invoice-items-table thead th { font-size: 0.58rem; padding: 4px 3px; }
       .invoice-items-table tbody td { padding: 4px 3px; }
       .start-menu { width: 96vw; }
+      .size-input-row { flex-direction: column; align-items: stretch; gap: 6px; }
+      .size-input-row .size-value-input,
+      .size-input-row .size-unit-select { flex: 1 1 auto; }
     }
   </style>
 </head>
@@ -2448,12 +2467,13 @@
               <th>Customer</th>
               <th style="text-align:center;">Pcs/Bag</th>
               <th style="text-align:center;">Unit</th>
+              <th style="text-align:center;">Size</th>
               <th>Price</th>
               <th style="width:64px;"></th>
             </tr>
           </thead>
           <tbody id="priceTableBody">
-            <tr><td colspan="6">
+            <tr><td colspan="7">
               <div class="no-results">📦 No products yet<span class="small">Click "Add Product" to create your first entry</span></div>
             </td></tr>
           </tbody>
@@ -4893,7 +4913,9 @@
           products = (data || []).map(p => ({
             id: p.id, name: p.name, customer: p.customer,
             pcsPerBag: p.pcs_per_bag, price: Number(p.price),
-            unit: p.unit || 'Pcs'
+            unit: p.unit || 'Pcs',
+            size: p.size || '',
+            sizeUnit: p.size_unit || 'mm'
           }));
           filteredProducts = [...products];
           setOnlineStatus(true);
@@ -4903,7 +4925,7 @@
           console.error('Load products error:', err);
           setOnlineStatus(false);
           priceTableBody.innerHTML = `
-            <tr><td colspan="6">
+            <tr><td colspan="7">
               <div class="no-results">⚠️ Database error<span class="small">${err.message || 'Check that the "products" table exists'}</span></div>
             </td></tr>`;
         } finally {
@@ -5009,7 +5031,9 @@
               customer: product.customer,
               pcs_per_bag: product.pcsPerBag,
               price: product.price,
-              unit: product.unit || 'Pcs'
+              unit: product.unit || 'Pcs',
+              size: product.size || null,
+              size_unit: product.sizeUnit || 'mm'
             }])
             .select().single();
           if (error) throw error;
@@ -5017,7 +5041,9 @@
           return {
             id: data.id, name: data.name, customer: data.customer,
             pcsPerBag: data.pcs_per_bag, price: Number(data.price),
-            unit: data.unit || 'Pcs'
+            unit: data.unit || 'Pcs',
+            size: data.size || '',
+            sizeUnit: data.size_unit || 'mm'
           };
         } catch (err) {
           setOnlineStatus(false);
@@ -5035,7 +5061,9 @@
               customer: updates.customer,
               pcs_per_bag: updates.pcsPerBag,
               price: updates.price,
-              unit: updates.unit || 'Pcs'
+              unit: updates.unit || 'Pcs',
+              size: updates.size || null,
+              size_unit: updates.sizeUnit || 'mm'
             })
             .eq('id', id);
           if (updateError) throw updateError;
@@ -5049,13 +5077,17 @@
             return {
               id, name: updates.name, customer: updates.customer,
               pcsPerBag: updates.pcsPerBag, price: updates.price,
-              unit: updates.unit || 'Pcs'
+              unit: updates.unit || 'Pcs',
+              size: updates.size || '',
+              sizeUnit: updates.sizeUnit || 'mm'
             };
           }
           return {
             id: data.id, name: data.name, customer: data.customer,
             pcsPerBag: data.pcs_per_bag, price: Number(data.price),
-            unit: data.unit || 'Pcs'
+            unit: data.unit || 'Pcs',
+            size: data.size || '',
+            sizeUnit: data.size_unit || 'mm'
           };
         } catch (err) {
           setOnlineStatus(false);
@@ -5558,9 +5590,9 @@
       function renderPriceTable() {
         if (filteredProducts.length === 0) {
           if (products.length === 0) {
-            priceTableBody.innerHTML = `<tr><td colspan="6"><div class="no-results">📦 No products yet<span class="small">Click "Add Product" to create your first entry</span></div></td></tr>`;
+            priceTableBody.innerHTML = `<tr><td colspan="7"><div class="no-results">📦 No products yet<span class="small">Click "Add Product" to create your first entry</span></div></td></tr>`;
           } else {
-            priceTableBody.innerHTML = `<tr><td colspan="6"><div class="no-results">🔍 No products match your filter<span class="small">Try a different customer or product name</span></div></td></tr>`;
+            priceTableBody.innerHTML = `<tr><td colspan="7"><div class="no-results">🔍 No products match your filter<span class="small">Try a different customer or product name</span></div></td></tr>`;
           }
           priceCount.textContent = '0';
           return;
@@ -5569,11 +5601,13 @@
         filteredProducts.forEach(p => {
           const selected = (p.id === selectedProductId) ? ' selected-row' : '';
           const unit = p.unit || 'Pcs';
-          html += `<tr class="${selected}" data-id="${p.id}" data-name="${escapeHtml(p.name)}" data-customer="${escapeHtml(p.customer)}" data-pcs="${p.pcsPerBag}" data-price="${p.price}" data-unit="${escapeHtml(unit)}">
+          const sizeDisplay = p.size ? `${p.size} ${p.sizeUnit || 'gm'}` : '—';
+          html += `<tr class="${selected}" data-id="${p.id}" data-name="${escapeHtml(p.name)}" data-customer="${escapeHtml(p.customer)}" data-pcs="${p.pcsPerBag}" data-price="${p.price}" data-unit="${escapeHtml(unit)}" data-size="${escapeHtml(p.size || '')}" data-size-unit="${escapeHtml(p.sizeUnit || 'gm')}">
             <td class="name-cell">${escapeHtml(p.name)}</td>
             <td class="customer-cell">👤 ${escapeHtml(p.customer)}</td>
             <td class="pcs-cell">${p.pcsPerBag}</td>
             <td class="unit-cell">${escapeHtml(unit)}</td>
+            <td class="size-cell">${escapeHtml(sizeDisplay)}</td>
             <td class="price-cell">${formatPrice(p.price)}</td>
             <td class="action-cell">
               <button class="row-edit-btn" data-edit-id="${p.id}" title="Edit">✎</button>
@@ -7663,6 +7697,21 @@
               <span class="unit-arrow">▼</span>
             </div>
           </div>
+          <div class="modal-field">
+            <label>📐 Size</label>
+            <div class="size-input-row">
+              <div class="input-wrap size-value-input">
+                <input type="number" id="modalProductSize" min="0" step="0.01" placeholder="e.g. 10">
+              </div>
+              <div class="unit-select-wrap size-unit-select">
+                <select id="modalProductSizeUnit">
+                  <option value="gm">gm (grams)</option>
+                  <option value="kg">kg (kilograms)</option>
+                </select>
+                <span class="unit-arrow">▼</span>
+              </div>
+            </div>
+          </div>
           <div class="modal-field"><label>💰 Price (₹)</label><div class="input-wrap"><input type="number" id="modalProductPrice" min="0" step="0.01" placeholder="e.g. 25.00"></div></div>
           <div class="modal-actions">
             <button class="aero-btn" id="modalCancelBtn" type="button">Cancel</button>
@@ -7674,6 +7723,8 @@
           const pcs = content.querySelector('#modalProductPcs').value;
           const price = content.querySelector('#modalProductPrice').value;
           const unit = content.querySelector('#modalProductUnit').value;
+          const size = content.querySelector('#modalProductSize').value.trim();
+          const sizeUnit = content.querySelector('#modalProductSizeUnit').value;
           if (name === '') { return false; }
           if (customer === '') { return false; }
           if (!pcs || isNaN(pcs) || parseInt(pcs) <= 0) { return false; }
@@ -7682,7 +7733,7 @@
           const saveBtn = content.querySelector('#modalSaveBtn');
           saveBtn.disabled = true; saveBtn.textContent = '⏳ Saving…';
           try {
-            const saved = await saveProduct({ name, customer, pcsPerBag: parseInt(pcs), price: parseFloat(price), unit });
+            const saved = await saveProduct({ name, customer, pcsPerBag: parseInt(pcs), price: parseFloat(price), unit, size: size || '', sizeUnit });
             products.unshift(saved);
             filteredProducts = [...products];
             renderCustomerFilter();
@@ -7701,6 +7752,8 @@
         let datalistOptions = '';
         uniqueCustomers.forEach(c => { datalistOptions += `<option value="${escapeHtml(c)}">`; });
         const currentUnit = product.unit || 'Pcs';
+        const currentSize = product.size || '';
+        const currentSizeUnit = product.sizeUnit || 'gm';
         const html = `
           <div class="modal-field"><label>📦 Product Name</label><div class="input-wrap"><input type="text" id="modalEditName" value="${escapeHtml(product.name)}" placeholder="Enter product name"></div></div>
           <div class="modal-field"><label>👤 Customer Name</label><div class="input-wrap"><input type="text" id="modalEditCustomer" list="editCustomerList" value="${escapeHtml(product.customer)}" placeholder="Enter customer name"></div><datalist id="editCustomerList">${datalistOptions}</datalist></div>
@@ -7716,6 +7769,21 @@
               <span class="unit-arrow">▼</span>
             </div>
           </div>
+          <div class="modal-field">
+            <label>📐 Size</label>
+            <div class="size-input-row">
+              <div class="input-wrap size-value-input">
+                <input type="number" id="modalEditSize" min="0" step="0.01" value="${currentSize}" placeholder="e.g. 10">
+              </div>
+              <div class="unit-select-wrap size-unit-select">
+                <select id="modalEditSizeUnit">
+                  <option value="gm" ${currentSizeUnit === 'gm' ? 'selected' : ''}>gm (grams)</option>
+                  <option value="kg" ${currentSizeUnit === 'kg' ? 'selected' : ''}>kg (kilograms)</option>
+                </select>
+                <span class="unit-arrow">▼</span>
+              </div>
+            </div>
+          </div>
           <div class="modal-field"><label>💰 Price (₹)</label><div class="input-wrap"><input type="number" id="modalEditPrice" min="0" step="0.01" value="${product.price}" placeholder="e.g. 25.00"></div></div>
           <div class="modal-actions">
             <button class="aero-btn" id="modalCancelBtn" type="button">Cancel</button>
@@ -7727,6 +7795,8 @@
           const pcs = content.querySelector('#modalEditPcs').value;
           const price = content.querySelector('#modalEditPrice').value;
           const unit = content.querySelector('#modalEditUnit').value;
+          const size = content.querySelector('#modalEditSize').value.trim();
+          const sizeUnit = content.querySelector('#modalEditSizeUnit').value;
           if (name === '') { return false; }
           if (customer === '') { return false; }
           if (!pcs || isNaN(pcs) || parseInt(pcs) <= 0) { return false; }
@@ -7741,7 +7811,9 @@
               name, customer,
               pcsPerBag: parseInt(pcs),
               price: parseFloat(price),
-              unit: unit
+              unit: unit,
+              size: size || '',
+              sizeUnit: sizeUnit
             });
             const idx = products.findIndex(p => p.id === product.id);
             if (idx !== -1) products[idx] = updated;
@@ -7820,12 +7892,14 @@
         let rows = '';
         filteredProducts.forEach((p, i) => {
           const unit = p.unit || 'Pcs';
+          const sizeDisplay = p.size ? `${p.size} ${p.sizeUnit || 'gm'}` : '—';
           rows += `<tr>
             <td>${i + 1}</td>
             <td>${escapeHtml(p.name)}</td>
             <td>${escapeHtml(p.customer)}</td>
             <td style="text-align:center;">${p.pcsPerBag}</td>
             <td style="text-align:center;">${escapeHtml(unit)}</td>
+            <td style="text-align:center;">${escapeHtml(sizeDisplay)}</td>
             <td style="text-align:right;">₹${Number(p.price).toFixed(2)}</td>
           </tr>`;
         });
@@ -7874,6 +7948,7 @@
                   <th>Customer</th>
                   <th style="text-align:center; width:90px;">Pcs/Bag</th>
                   <th style="text-align:center; width:80px;">Unit</th>
+                  <th style="text-align:center; width:100px;">Size</th>
                   <th style="text-align:right; width:110px;">Price</th>
                 </tr>
               </thead>
@@ -7881,7 +7956,7 @@
                 ${rows}
                 <tr class="total-row">
                   <td colspan="3" style="text-align:right;">Total Products:</td>
-                  <td colspan="3" style="text-align:center;">${filteredProducts.length}</td>
+                  <td colspan="4" style="text-align:center;">${filteredProducts.length}</td>
                 </tr>
               </tbody>
             </table>
