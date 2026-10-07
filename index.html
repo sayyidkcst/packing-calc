@@ -450,6 +450,52 @@
       border-color: #a5660a;
     }
 
+    /* ---------- JUMU'AH (Friday) special row ---------- */
+    .prayer-row.jumuah-row {
+      background: linear-gradient(180deg, #fff8e0 0%, #ffe9a8 100%);
+      border-color: #c9a227;
+    }
+    .prayer-row.jumuah-row:hover {
+      background: linear-gradient(180deg, #fffbe8 0%, #fff0bd 100%);
+    }
+    .prayer-row.jumuah-row.next {
+      background: linear-gradient(180deg, #fff2b0 0%, #ffd54a 100%);
+      border-color: #a5830a;
+      box-shadow: 0 0 0 1px #f5d76e inset;
+    }
+    .prayer-row.jumuah-row .prayer-name {
+      color: #5a3f00;
+    }
+    .prayer-row.jumuah-row .prayer-icon {
+      filter: drop-shadow(0 0 3px rgba(201, 162, 39, 0.6));
+    }
+    .prayer-row.jumuah-row .prayer-time {
+      color: #5a3f00;
+    }
+    .jumuah-badge {
+      display: inline-block;
+      background: linear-gradient(180deg, #2f8a2f 0%, #1a5c1a 100%);
+      color: #ffffff;
+      font-size: 0.5rem;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      padding: 1px 5px;
+      border-radius: 20px;
+      border: 1px solid #0e4a12;
+      margin-left: 3px;
+      text-shadow: 0 1px 1px rgba(0,0,0,0.4);
+      vertical-align: middle;
+      text-transform: uppercase;
+    }
+    .prayer-row.jumuah-row.next .jumuah-badge {
+      background: linear-gradient(180deg, #3f7ae0 0%, #15419c 100%);
+      border-color: #0a2862;
+    }
+    /* Hide Jumu'ah row when not Friday (JS toggles this class) */
+    .desktop-prayer:not(.is-friday) .prayer-row.jumuah-row { display: none; }
+    /* Hide Dhuhr row on Fridays (JS toggles this class) */
+    .desktop-prayer.is-friday .prayer-row[data-prayer="dhuhr"] { display: none; }
+
     .prayer-grip {
       position: absolute; top: 4px; left: 50%; transform: translateX(-50%);
       width: 40px; height: 3px; border-radius: 3px;
@@ -483,6 +529,7 @@
       .prayer-next-name { font-size: 0.7rem; }
       .prayer-next-time { font-size: 0.74rem; }
       .prayer-next-countdown { font-size: 0.5rem; padding: 1px 4px; }
+      .jumuah-badge { font-size: 0.44rem; padding: 0px 4px; }
     }
 
     /* ==================== WINDOW BASE — WINDOWS XP LUNA BLUE ==================== */
@@ -689,6 +736,74 @@
     }
     .load-reset-row .aero-btn {
       padding: 5px 12px; font-size: 0.72rem; min-height: 24px;
+    }
+
+    /* ---------- LOAD CALCULATOR — new one-line layout ---------- */
+    .load-input-row {
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 6px;
+      align-items: flex-start;
+    }
+    .load-input-row .load-input-group {
+      flex: 1 1 0;
+      min-width: 0;
+      max-width: none;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .load-input-row .load-input-group label {
+      font-size: 0.6rem;
+      font-weight: 700;
+      color: #0a2862;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-left: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .load-input-row .load-input-group .input-wrap {
+      padding: 1px 4px 1px 6px;
+      min-height: 24px;
+    }
+    .load-input-row .load-input-group .input-wrap input {
+      font-size: 0.78rem;
+      padding: 3px 0;
+      text-align: center;
+    }
+    .load-input-row .load-input-group .input-wrap .unit {
+      font-size: 0.5rem;
+      padding: 1px 4px;
+      margin-left: 2px;
+    }
+
+    .load-bag-weight-display {
+      font-size: 0.6rem;
+      font-weight: 700;
+      color: #15419c;
+      text-align: center;
+      background: linear-gradient(180deg, #e8f2fc 0%, #d8e8fb 100%);
+      border: 1px solid #a8c8f0;
+      border-radius: 2px;
+      padding: 3px 4px;
+      margin-top: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      min-height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Tahoma', Consolas, monospace;
+    }
+
+    @media (max-width: 480px) {
+      .load-input-row { flex-wrap: wrap; }
+      .load-input-row .load-input-group { flex: 1 1 45%; }
+      .load-input-row .load-input-group:last-child { flex: 1 1 100%; }
     }
 
     .input-row { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: flex-end; }
@@ -2409,6 +2524,16 @@
           <span class="prayer-name"><span class="prayer-icon">☀️</span> Dhuhr</span>
           <span class="prayer-time"><span id="prayerDhuhr">--:--</span><span class="prayer-countdown" id="countdownDhuhr" style="display:none;"></span></span>
         </div>
+        <div class="prayer-row jumuah-row" data-prayer="jumuah">
+          <span class="prayer-name">
+            <span class="prayer-icon">🕌</span> Jumu'ah
+            <span class="jumuah-badge">Friday</span>
+          </span>
+          <span class="prayer-time">
+            <span id="prayerJumuah">--:--</span>
+            <span class="prayer-countdown" id="countdownJumuah" style="display:none;"></span>
+          </span>
+        </div>
         <div class="prayer-row" data-prayer="asr">
           <span class="prayer-name"><span class="prayer-icon">🌤️</span> Asr</span>
           <span class="prayer-time"><span id="prayerAsr">--:--</span><span class="prayer-countdown" id="countdownAsr" style="display:none;"></span></span>
@@ -2606,24 +2731,26 @@
     <div class="window-content">
       <div class="fieldset">
         <div class="fieldset-legend">📥 Input</div>
-        <div class="input-row">
-          <div class="input-group">
+
+        <div class="load-input-row">
+          <div class="load-input-group">
             <label><span>⚖️</span> Weight per pc</label>
             <div class="input-wrap">
               <input type="number" id="loadWeightPerPc" min="0.001" max="9999" step="0.001" placeholder="0.000" tabindex="7" maxlength="4">
               <span class="unit">kg</span>
             </div>
           </div>
-          <div class="input-group">
+
+          <div class="load-input-group">
             <label><span>🛍️</span> Pcs per bag</label>
             <div class="input-wrap">
               <input type="number" id="loadPcsPerBag" min="1" max="9999" step="1" placeholder="0" tabindex="8" maxlength="4">
               <span class="unit">pcs</span>
             </div>
+            <div class="load-bag-weight-display" id="loadBagWeightDisplay">Total: 0.000 kg</div>
           </div>
-        </div>
-        <div class="input-row" style="margin-top: 8px;">
-          <div class="input-group full-width">
+
+          <div class="load-input-group">
             <label><span>🏋️</span> Total weight available</label>
             <div class="input-wrap">
               <input type="number" id="loadTotalKg" min="0" max="9999" step="0.001" placeholder="0.000" tabindex="9" maxlength="4">
@@ -2631,6 +2758,7 @@
             </div>
           </div>
         </div>
+
         <div class="load-reset-row">
           <button class="aero-btn" id="resetLoadBtn" type="button" title="Reset all load calculator fields">
             <span>🔄</span> Reset
@@ -4175,6 +4303,7 @@
       const prayerNextCountdown = document.getElementById('prayerNextCountdown');
       const prayerFajr = document.getElementById('prayerFajr');
       const prayerDhuhr = document.getElementById('prayerDhuhr');
+      const prayerJumuah = document.getElementById('prayerJumuah');
       const prayerAsr = document.getElementById('prayerAsr');
       const prayerMaghrib = document.getElementById('prayerMaghrib');
       const prayerIsha = document.getElementById('prayerIsha');
@@ -4182,13 +4311,14 @@
       const countdownEls = {
         fajr: document.getElementById('countdownFajr'),
         dhuhr: document.getElementById('countdownDhuhr'),
+        jumuah: document.getElementById('countdownJumuah'),
         asr: document.getElementById('countdownAsr'),
         maghrib: document.getElementById('countdownMaghrib'),
         isha: document.getElementById('countdownIsha')
       };
 
-      const PRAYER_ICONS = { fajr: '🌙', dhuhr: '☀️', asr: '🌤️', maghrib: '🌅', isha: '🌙' };
-      const PRAYER_LABELS = { fajr: 'Fajr', dhuhr: 'Dhuhr', asr: 'Asr', maghrib: 'Maghrib', isha: 'Isha' };
+      const PRAYER_ICONS = { fajr: '🌙', dhuhr: '☀️', jumuah: '🕌', asr: '🌤️', maghrib: '🌅', isha: '🌙' };
+      const PRAYER_LABELS = { fajr: 'Fajr', dhuhr: 'Dhuhr', jumuah: "Jumu'ah", asr: 'Asr', maghrib: 'Maghrib', isha: 'Isha' };
       const PRAYER_EXPAND_KEY = 'prayer_gadget_expanded';
       const PRAYER_METHOD = 3;
       const DEFAULT_LAT = 9.9816;
@@ -4200,6 +4330,15 @@
       let isPrayerExpanded = false;
 
       try { isPrayerExpanded = localStorage.getItem(PRAYER_EXPAND_KEY) === '1'; } catch (e) { isPrayerExpanded = false; }
+
+      function isFriday() {
+        return new Date().getDay() === 5;
+      }
+
+      function applyFridayState() {
+        if (isFriday()) desktopPrayer.classList.add('is-friday');
+        else desktopPrayer.classList.remove('is-friday');
+      }
 
       function applyPrayerExpandedState() {
         desktopPrayer.classList.toggle('expanded', isPrayerExpanded);
@@ -4217,6 +4356,7 @@
       prayerExpandBtn.addEventListener('mousedown', (e) => { e.stopPropagation(); });
       prayerExpandBtn.addEventListener('touchstart', (e) => { e.stopPropagation(); }, { passive: true });
       applyPrayerExpandedState();
+      applyFridayState();
 
       const FALLBACK_TIMES = { Fajr: '05:04', Dhuhr: '12:15', Asr: '15:32', Maghrib: '18:15', Isha: '19:25' };
 
@@ -4243,11 +4383,25 @@
         if (!timings) return null;
         const now = new Date();
         const currentMinutes = now.getHours() * 60 + now.getMinutes();
-        const order = [
-          { name: 'fajr', time: timings.Fajr }, { name: 'dhuhr', time: timings.Dhuhr },
-          { name: 'asr', time: timings.Asr }, { name: 'maghrib', time: timings.Maghrib },
-          { name: 'isha', time: timings.Isha }
-        ];
+        const friday = isFriday();
+
+        // On Fridays, Dhuhr is replaced by Jumu'ah (using Dhuhr time)
+        const order = friday
+          ? [
+              { name: 'fajr',    time: timings.Fajr },
+              { name: 'jumuah',  time: timings.Dhuhr },
+              { name: 'asr',     time: timings.Asr },
+              { name: 'maghrib', time: timings.Maghrib },
+              { name: 'isha',    time: timings.Isha }
+            ]
+          : [
+              { name: 'fajr',    time: timings.Fajr },
+              { name: 'dhuhr',   time: timings.Dhuhr },
+              { name: 'asr',     time: timings.Asr },
+              { name: 'maghrib', time: timings.Maghrib },
+              { name: 'isha',    time: timings.Isha }
+            ];
+
         for (const p of order) {
           const mins = timeToMinutes(p.time);
           if (mins === null) continue;
@@ -4269,24 +4423,36 @@
 
       function updatePrayerHighlight(timings) {
         if (!timings) return;
+        applyFridayState();
+
         const next = getNextPrayer(timings);
         document.querySelectorAll('#desktopPrayer .prayer-row').forEach(row => row.classList.remove('next'));
         Object.values(countdownEls).forEach(el => { if (el) { el.style.display = 'none'; el.textContent = ''; } });
+
         if (!next) {
           prayerNextName.innerHTML = `<span class="prayer-icon">⏳</span> —`;
           prayerNextTime.textContent = '--:--';
           prayerNextCountdown.style.display = 'none';
           return;
         }
-        const nextTimeStr = timings[next.name === 'fajr' ? 'Fajr' : next.name === 'dhuhr' ? 'Dhuhr' : next.name === 'asr' ? 'Asr' : next.name === 'maghrib' ? 'Maghrib' : 'Isha'];
+
+        // Map internal key -> timings key (Jumu'ah uses Dhuhr time)
+        const timingsKeyMap = {
+          fajr: 'Fajr', dhuhr: 'Dhuhr', jumuah: 'Dhuhr',
+          asr: 'Asr', maghrib: 'Maghrib', isha: 'Isha'
+        };
+        const nextTimeStr = timings[timingsKeyMap[next.name]];
+
         prayerNextName.innerHTML = `<span class="prayer-icon">${PRAYER_ICONS[next.name]}</span> ${PRAYER_LABELS[next.name]}`;
         prayerNextTime.textContent = formatPrayerTime(nextTimeStr);
+
         const now = new Date();
         const currentMinutes = now.getHours() * 60 + now.getMinutes();
         let remaining = next.minutes - currentMinutes;
         if (next.tomorrow) remaining += 24 * 60;
         prayerNextCountdown.textContent = formatCountdown(remaining);
         prayerNextCountdown.style.display = 'inline-block';
+
         const nextRow = document.querySelector(`#desktopPrayer .prayer-row[data-prayer="${next.name}"]`);
         if (nextRow) nextRow.classList.add('next');
         const cdEl = countdownEls[next.name];
@@ -4296,9 +4462,11 @@
       function applyPrayerTimes(timings) {
         prayerFajr.textContent = formatPrayerTime(timings.Fajr);
         prayerDhuhr.textContent = formatPrayerTime(timings.Dhuhr);
+        if (prayerJumuah) prayerJumuah.textContent = formatPrayerTime(timings.Dhuhr);
         prayerAsr.textContent = formatPrayerTime(timings.Asr);
         prayerMaghrib.textContent = formatPrayerTime(timings.Maghrib);
         prayerIsha.textContent = formatPrayerTime(timings.Isha);
+        applyFridayState();
         updatePrayerHighlight(timings);
       }
 
@@ -4424,6 +4592,7 @@
       const loadWeightPerPc = document.getElementById('loadWeightPerPc');
       const loadPcsPerBag = document.getElementById('loadPcsPerBag');
       const loadTotalKg = document.getElementById('loadTotalKg');
+      const loadBagWeightDisplay = document.getElementById('loadBagWeightDisplay');
       const loadResultContent = document.getElementById('loadResultContent');
       const resetLoadBtn = document.getElementById('resetLoadBtn');
       const cashAmount = document.getElementById('cashAmount');
@@ -5274,10 +5443,23 @@
       resetCalcBtn.addEventListener('click', resetPackingCalculator);
 
       // ==================== LOAD CALCULATOR ====================
+      function updateLoadBagWeight() {
+        const w = parseFloat(loadWeightPerPc.value);
+        const p = parseFloat(loadPcsPerBag.value);
+        if (!isNaN(w) && !isNaN(p) && w > 0 && p > 0) {
+          loadBagWeightDisplay.textContent = `Total: ${formatKg(w * p)} kg`;
+        } else {
+          loadBagWeightDisplay.textContent = 'Total: 0.000 kg';
+        }
+      }
+
       function calculateLoad() {
         const w = parseFloat(loadWeightPerPc.value);
         const p = parseFloat(loadPcsPerBag.value);
         const totalKg = parseFloat(loadTotalKg.value);
+
+        updateLoadBagWeight();
+
         const anyEmpty = loadWeightPerPc.value === '' || loadPcsPerBag.value === '' || loadTotalKg.value === '';
         if (anyEmpty) {
           loadResultContent.innerHTML = `<div class="empty-hint">📝 Enter weight per pc, pcs per bag &amp; total kg<span class="small">The result updates live as you type</span></div>`;
@@ -5318,6 +5500,7 @@
 
       function resetLoadCalculator({ clearResult = false } = {}) {
         loadWeightPerPc.value = ''; loadPcsPerBag.value = ''; loadTotalKg.value = '';
+        if (loadBagWeightDisplay) loadBagWeightDisplay.textContent = 'Total: 0.000 kg';
         if (clearResult) {
           loadResultContent.innerHTML = `<div class="empty-hint">📝 Enter weight per pc, pcs per bag &amp; total kg<span class="small">The result updates live as you type</span></div>`;
         }
