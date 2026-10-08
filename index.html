@@ -54,7 +54,7 @@
       justify-content: stretch;
       background: #000000;
       opacity: 1;
-      transition: opacity 0.6s ease;
+      transition: opacity 0.35s ease;
       pointer-events: auto;
       font-family: 'Tahoma', 'Trebuchet MS', sans-serif;
       color: #ffffff;
@@ -88,7 +88,6 @@
       margin-bottom: 6px;
     }
 
-    /* KCST four-colour geometric mark (decorative) */
     .xp-flag {
       position: relative;
       width: 60px;
@@ -150,7 +149,7 @@
       gap: 3px;
       height: 100%;
       align-items: center;
-      animation: xpBlocksSlide 2.4s linear infinite;
+      animation: xpBlocksSlide 1.4s linear infinite;
     }
     .xp-boot-blocks span {
       display: block;
@@ -212,7 +211,6 @@
 
     body.not-connected .desktop-gadget,
     body.not-connected .desktop-calendar,
-    body.not-connected .desktop-prayer,
     body.not-connected .window,
     body.not-connected .window-price,
     body.not-connected .window-load,
@@ -228,7 +226,7 @@
       visibility: hidden !important;
     }
 
-    .desktop-gadget, .desktop-calendar, .desktop-prayer, .startbar { transition: opacity 0.6s ease; }
+    .desktop-gadget, .desktop-calendar, .startbar { transition: opacity 0.6s ease; }
 
     /* ---------- DESKTOP CLOCK GADGET (XP style) ---------- */
     .desktop-gadget {
@@ -405,214 +403,12 @@
     .cal-cell.empty { color: transparent; }
     .cal-cell:hover:not(.header):not(.empty) { background: #c8dcf0; }
 
-    /* ---------- PRAYER TIME GADGET (XP style) ---------- */
-    .desktop-prayer {
-      position: fixed;
-      right: 30px;
-      bottom: calc(var(--taskbar-height) + 20px);
-      z-index: 6;
-      width: 240px;
-      background: linear-gradient(180deg, #f0f6ff 0%, #d8e8fb 50%, #b8d4f0 100%);
-      border-radius: 8px;
-      border: 1px solid #0831a0;
-      box-shadow: 0 0 0 1px #a8c8f0 inset, 0 4px 14px rgba(0, 0, 0, 0.4);
-      padding: 10px;
-      cursor: grab;
-      overflow: hidden;
-    }
-    .desktop-prayer::before {
-      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 22px;
-      background: linear-gradient(180deg, #3f7ae0 0%, #2a63c8 12%, #1e50ad 50%, #15419c 88%, #0f3484 100%);
-      border-bottom: 1px solid #0a2862;
-      border-radius: 7px 7px 0 0;
-      pointer-events: none;
-    }
-    .desktop-prayer::after {
-      content: '🕌 Prayer Times'; position: absolute; top: 4px; left: 12px;
-      color: #ffffff; font-size: 0.78rem; font-weight: 700;
-      text-shadow: 0 1px 2px rgba(0,0,0,0.6);
-      pointer-events: none;
-      font-family: 'Trebuchet MS', Tahoma, sans-serif;
-    }
-    .desktop-prayer:active { cursor: grabbing; }
-    .desktop-prayer.dragging {
-      box-shadow: 0 0 0 1px #a8c8f0 inset, 0 8px 24px rgba(0, 0, 0, 0.6);
-    }
-
-    .prayer-expand-btn {
-      position: absolute;
-      top: 24px; right: 6px;
-      background: linear-gradient(180deg, #f0f6ff 0%, #d8e8fb 50%, #b8d4f0 100%);
-      border: 1px solid #15419c;
-      border-radius: 3px; color: #0a2862;
-      width: 20px; height: 20px;
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer; font-size: 0.68rem; font-weight: 700; line-height: 1; padding: 0;
-      flex-shrink: 0; pointer-events: auto; z-index: 3;
-      box-shadow: inset 0 1px 0 #ffffff;
-    }
-    .prayer-expand-btn:hover { background: linear-gradient(180deg, #ffffff 0%, #e8f2fc 50%, #c8dcf0 100%); }
-    .prayer-expand-btn:active { background: linear-gradient(180deg, #b8d4f0 0%, #d8e8fb 50%, #f0f6ff 100%); }
-
-    .prayer-next-view {
-      position: relative; z-index: 1;
-      padding-right: 24px;
-      margin-top: 22px;
-    }
-    .prayer-next-card {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 8px 10px; border-radius: 4px;
-      background: linear-gradient(180deg, #ffffff 0%, #e8f2fc 100%);
-      border: 1px solid #2a63c8;
-      gap: 6px;
-    }
-    .prayer-next-name {
-      font-size: 0.78rem; font-weight: 700; color: #0a2862;
-      display: flex; align-items: center; gap: 4px;
-      white-space: nowrap;
-    }
-    .prayer-next-name .prayer-icon {
-      font-size: 0.82rem;
-    }
-    .prayer-next-meta {
-      display: flex; flex-direction: column; align-items: flex-end;
-      gap: 2px;
-    }
-    .prayer-next-time {
-      font-size: 0.82rem; font-weight: 700; color: #0a2862;
-      font-family: 'Tahoma', Consolas, monospace;
-      letter-spacing: 0.03em;
-      white-space: nowrap;
-    }
-    .prayer-next-countdown {
-      font-size: 0.56rem;
-      font-weight: 700;
-      color: #ffffff;
-      background: linear-gradient(180deg, #3f7ae0 0%, #15419c 100%);
-      padding: 1px 6px;
-      border-radius: 20px;
-      border: 1px solid #0a2862;
-      white-space: nowrap;
-      font-family: 'Tahoma', Consolas, monospace;
-    }
-
-    .prayer-all-view {
-      max-height: 0;
-      opacity: 0;
-      overflow: hidden;
-      transition: max-height 0.32s ease, opacity 0.25s ease, margin-top 0.25s ease;
-      position: relative;
-      z-index: 1;
-      margin-top: 0;
-    }
-    .desktop-prayer.expanded .prayer-all-view {
-      max-height: 320px;
-      opacity: 1;
-      margin-top: 8px;
-    }
-    .prayer-list {
-      display: flex; flex-direction: column; gap: 4px;
-    }
-    .prayer-row {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 4px 8px; border-radius: 3px;
-      background: linear-gradient(180deg, #ffffff 0%, #e8f2fc 100%);
-      border: 1px solid #a8c8f0;
-      position: relative;
-    }
-    .prayer-row:hover { background: linear-gradient(180deg, #ffffff 0%, #d8e8fb 100%); }
-    .prayer-row.next {
-      background: linear-gradient(180deg, #fff9d0 0%, #ffe88a 100%);
-      border-color: #c09000;
-    }
-    .prayer-name {
-      font-size: 0.72rem; font-weight: 700; color: #0a2862;
-      display: flex; align-items: center; gap: 5px;
-    }
-    .prayer-name .prayer-icon {
-      font-size: 0.75rem;
-    }
-    .prayer-time {
-      font-size: 0.78rem; font-weight: 700; color: #0a2862;
-      font-family: 'Tahoma', Consolas, monospace;
-      letter-spacing: 0.03em;
-      display: flex; align-items: center; gap: 6px;
-    }
-    .prayer-countdown {
-      font-size: 0.56rem;
-      font-weight: 700;
-      color: #ffffff;
-      background: #15419c;
-      padding: 1px 6px;
-      border-radius: 20px;
-      border: 1px solid #0a2862;
-      white-space: nowrap;
-      font-family: 'Tahoma', Consolas, monospace;
-    }
-    .prayer-row.next .prayer-countdown {
-      background: linear-gradient(180deg, #f5a623 0%, #d8880a 100%);
-      border-color: #a5660a;
-    }
-
-    /* ---------- JUMU'AH (Friday) special row ---------- */
-    .prayer-row.jumuah-row {
-      background: linear-gradient(180deg, #fff8e0 0%, #ffe9a8 100%);
-      border-color: #c9a227;
-    }
-    .prayer-row.jumuah-row:hover {
-      background: linear-gradient(180deg, #fffbe8 0%, #fff0bd 100%);
-    }
-    .prayer-row.jumuah-row.next {
-      background: linear-gradient(180deg, #fff2b0 0%, #ffd54a 100%);
-      border-color: #a5830a;
-      box-shadow: 0 0 0 1px #f5d76e inset;
-    }
-    .prayer-row.jumuah-row .prayer-name {
-      color: #5a3f00;
-    }
-    .prayer-row.jumuah-row .prayer-icon {
-      filter: drop-shadow(0 0 3px rgba(201, 162, 39, 0.6));
-    }
-    .prayer-row.jumuah-row .prayer-time {
-      color: #5a3f00;
-    }
-    .jumuah-badge {
-      display: inline-block;
-      background: linear-gradient(180deg, #2f8a2f 0%, #1a5c1a 100%);
-      color: #ffffff;
-      font-size: 0.5rem;
-      font-weight: 800;
-      letter-spacing: 0.5px;
-      padding: 1px 5px;
-      border-radius: 20px;
-      border: 1px solid #0e4a12;
-      margin-left: 3px;
-      text-shadow: 0 1px 1px rgba(0,0,0,0.4);
-      vertical-align: middle;
-      text-transform: uppercase;
-    }
-    .prayer-row.jumuah-row.next .jumuah-badge {
-      background: linear-gradient(180deg, #3f7ae0 0%, #15419c 100%);
-      border-color: #0a2862;
-    }
-    .desktop-prayer:not(.is-friday) .prayer-row.jumuah-row { display: none; }
-    .desktop-prayer.is-friday .prayer-row[data-prayer="dhuhr"] { display: none; }
-
-    .prayer-grip {
-      position: absolute; top: 4px; left: 50%; transform: translateX(-50%);
-      width: 40px; height: 3px; border-radius: 3px;
-      background: rgba(255, 255, 255, 0.18);
-      opacity: 0; transition: opacity 0.2s; pointer-events: none;
-    }
-    .desktop-prayer:hover .prayer-grip { opacity: 0; }
-
     @media (max-width: 1200px) {
       .desktop-gadget { width: 200px; top: 20px; right: 20px; padding: 14px 12px 12px 12px; }
       .gadget-time { font-size: 2.2rem; }
       .gadget-analog { width: 96px; height: 96px; }
       .gadget-tick { transform-origin: center 44px; }
       .desktop-calendar { width: 200px; top: 280px; right: 20px; }
-      .desktop-prayer { width: 200px; right: 20px; bottom: calc(var(--taskbar-height) + 16px); }
     }
     @media (max-width: 600px) {
       .desktop-gadget { width: 170px; padding: 12px 10px 10px 10px; }
@@ -623,15 +419,6 @@
       .desktop-calendar { width: 170px; top: 240px; }
       .cal-cell { font-size: 0.6rem; padding: 3px 0; }
       .cal-nav-btn { width: 18px; height: 18px; font-size: 0.65rem; }
-      .desktop-prayer { width: 170px; right: 10px; bottom: calc(var(--taskbar-height) + 10px); }
-      .prayer-row { padding: 3px 6px; }
-      .prayer-name { font-size: 0.64rem; }
-      .prayer-time { font-size: 0.7rem; }
-      .prayer-countdown { font-size: 0.5rem; padding: 1px 4px; }
-      .prayer-next-name { font-size: 0.7rem; }
-      .prayer-next-time { font-size: 0.74rem; }
-      .prayer-next-countdown { font-size: 0.5rem; padding: 1px 4px; }
-      .jumuah-badge { font-size: 0.44rem; padding: 0px 4px; }
     }
 
     /* ==================== WINDOW BASE — KCST WINDOWS XP LUNA BLUE ==================== */
@@ -2629,58 +2416,6 @@
     <div class="cal-grid" id="calGrid"></div>
   </div>
 
-  <div class="desktop-prayer" id="desktopPrayer" title="Drag to move">
-    <div class="prayer-grip"></div>
-    <button class="prayer-expand-btn" id="prayerExpandBtn" title="Show all prayers">▾</button>
-
-    <div class="prayer-next-view">
-      <div class="prayer-next-card" id="prayerNextCard">
-        <span class="prayer-next-name" id="prayerNextName">
-          <span class="prayer-icon">⏳</span> Loading…
-        </span>
-        <div class="prayer-next-meta">
-          <span class="prayer-next-time" id="prayerNextTime">--:--</span>
-          <span class="prayer-next-countdown" id="prayerNextCountdown" style="display:none;"></span>
-        </div>
-      </div>
-    </div>
-
-    <div class="prayer-all-view" id="prayerAllView">
-      <div class="prayer-list" id="prayerList">
-        <div class="prayer-row" data-prayer="fajr">
-          <span class="prayer-name"><span class="prayer-icon">🌙</span> Fajr</span>
-          <span class="prayer-time"><span id="prayerFajr">--:--</span><span class="prayer-countdown" id="countdownFajr" style="display:none;"></span></span>
-        </div>
-        <div class="prayer-row" data-prayer="dhuhr">
-          <span class="prayer-name"><span class="prayer-icon">☀️</span> Dhuhr</span>
-          <span class="prayer-time"><span id="prayerDhuhr">--:--</span><span class="prayer-countdown" id="countdownDhuhr" style="display:none;"></span></span>
-        </div>
-        <div class="prayer-row jumuah-row" data-prayer="jumuah">
-          <span class="prayer-name">
-            <span class="prayer-icon">🕌</span> Jumu'ah
-            <span class="jumuah-badge">Friday</span>
-          </span>
-          <span class="prayer-time">
-            <span id="prayerJumuah">--:--</span>
-            <span class="prayer-countdown" id="countdownJumuah" style="display:none;"></span>
-          </span>
-        </div>
-        <div class="prayer-row" data-prayer="asr">
-          <span class="prayer-name"><span class="prayer-icon">🌤️</span> Asr</span>
-          <span class="prayer-time"><span id="prayerAsr">--:--</span><span class="prayer-countdown" id="countdownAsr" style="display:none;"></span></span>
-        </div>
-        <div class="prayer-row" data-prayer="maghrib">
-          <span class="prayer-name"><span class="prayer-icon">🌅</span> Maghrib</span>
-          <span class="prayer-time"><span id="prayerMaghrib">--:--</span><span class="prayer-countdown" id="countdownMaghrib" style="display:none;"></span></span>
-        </div>
-        <div class="prayer-row" data-prayer="isha">
-          <span class="prayer-name"><span class="prayer-icon">🌙</span> Isha</span>
-          <span class="prayer-time"><span id="prayerIsha">--:--</span><span class="prayer-countdown" id="countdownIsha" style="display:none;"></span></span>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- PACKING CALCULATOR -->
   <div class="window" id="calcWindow">
     <div class="title-bar" id="calcTitleBar">
@@ -3457,16 +3192,25 @@
       if (bootOverlay) {
         setBootStatus('✅ Ready — welcome to KCST Windows XP', 'ok');
         bootOverlay.classList.add('hidden');
-        setTimeout(() => { bootOverlay.style.display = 'none'; }, 700);
+        setTimeout(() => { bootOverlay.style.display = 'none'; }, 400);
       }
     }
 
+    // Fast boot: force reveal after 4s maximum, no matter what
     const bootTimeout = setTimeout(() => {
       if (document.body.classList.contains('not-connected')) {
-        setBootStatus('⚠️ Database slow — loading anyway…', 'error');
+        setBootStatus('⚠️ Loading in background…', 'error');
         revealDesktop();
       }
-    }, 15000);
+    }, 4000);
+
+    // Helper: race a promise against a timeout so slow DB calls never block boot
+    function withTimeout(promise, ms = 3000) {
+      return Promise.race([
+        promise,
+        new Promise((resolve) => setTimeout(() => resolve(null), ms))
+      ]);
+    }
 
     window.addEventListener('supabase-ready', async () => {
       const supabase = window.supabase;
@@ -3553,15 +3297,13 @@
         } catch (e) {}
 
         try {
-          const { data, error } = await supabase
-            .from('app_settings')
-            .select('setting_value')
-            .eq('setting_key', COMPANY_SETTINGS_KEY)
-            .maybeSingle();
-          if (error) throw error;
-          if (data && data.setting_value) {
+          const result = await withTimeout(
+            supabase.from('app_settings').select('setting_value').eq('setting_key', COMPANY_SETTINGS_KEY).maybeSingle(),
+            2500
+          );
+          if (result && result.data && result.data.setting_value) {
             try {
-              const parsed = JSON.parse(data.setting_value);
+              const parsed = JSON.parse(result.data.setting_value);
               if (parsed && typeof parsed === 'object') {
                 companySettings = { ...DEFAULT_COMPANY_SETTINGS, ...parsed };
               }
@@ -3698,15 +3440,13 @@
         } catch (e) { uploadedWallpapers = []; }
 
         try {
-          const { data, error } = await supabase
-            .from('app_settings')
-            .select('setting_value')
-            .eq('setting_key', WALLPAPER_UPLOADS_KEY)
-            .maybeSingle();
-          if (error) throw error;
-          if (data && data.setting_value) {
+          const result = await withTimeout(
+            supabase.from('app_settings').select('setting_value').eq('setting_key', WALLPAPER_UPLOADS_KEY).maybeSingle(),
+            2000
+          );
+          if (result && result.data && result.data.setting_value) {
             try {
-              const parsed = JSON.parse(data.setting_value);
+              const parsed = JSON.parse(result.data.setting_value);
               if (Array.isArray(parsed)) uploadedWallpapers = parsed;
             } catch (e) {}
           }
@@ -3748,15 +3488,13 @@
         if (cached) applyWallpaper(cached);
 
         try {
-          const { data, error } = await supabase
-            .from('app_settings')
-            .select('setting_value')
-            .eq('setting_key', WALLPAPER_SETTING_KEY)
-            .maybeSingle();
-          if (error) throw error;
-          if (data && data.setting_value) {
-            applyWallpaper(data.setting_value);
-            try { localStorage.setItem('wallpaper', data.setting_value); } catch (e) {}
+          const result = await withTimeout(
+            supabase.from('app_settings').select('setting_value').eq('setting_key', WALLPAPER_SETTING_KEY).maybeSingle(),
+            2000
+          );
+          if (result && result.data && result.data.setting_value) {
+            applyWallpaper(result.data.setting_value);
+            try { localStorage.setItem('wallpaper', result.data.setting_value); } catch (e) {}
             wallpaperStatusMini.textContent = '✅ Loaded from DB';
           } else {
             wallpaperStatusMini.textContent = 'ℹ️ Using default';
@@ -3955,7 +3693,7 @@
       ctxPersonalize.addEventListener('click', () => { hideDesktopContextMenu(); openWallpaperMini(); });
 
       document.body.addEventListener('contextmenu', (e) => {
-        if (e.target.closest('.window, .window-price, .window-load, .window-cash, .window-notepad, .window-vehicle, .window-invoice, .window-settings, .startbar, .start-menu, .window-modal-overlay, .desktop-gadget, .desktop-calendar, .desktop-prayer, .wallpaper-mini-window, .desktop-context-menu')) return;
+        if (e.target.closest('.window, .window-price, .window-load, .window-cash, .window-notepad, .window-vehicle, .window-invoice, .window-settings, .startbar, .start-menu, .window-modal-overlay, .desktop-gadget, .desktop-calendar, .wallpaper-mini-window, .desktop-context-menu')) return;
         e.preventDefault();
         showDesktopContextMenu(e.clientX, e.clientY);
       });
@@ -4041,7 +3779,6 @@
 
         handleEl.addEventListener('mousedown', (e) => {
           if (e.target.closest('.caption-btn')) return;
-          if (e.target.closest('.prayer-expand-btn')) return;
           if (windowEl.classList.contains('minimized')) return;
           if (windowEl.classList.contains('maximized')) return;
           e.preventDefault();
@@ -4101,7 +3838,6 @@
 
         handleEl.addEventListener('touchstart', (e) => {
           if (e.target.closest('.caption-btn')) return;
-          if (e.target.closest('.prayer-expand-btn')) return;
           if (windowEl.classList.contains('minimized')) return;
           if (windowEl.classList.contains('maximized')) return;
           const touch = e.touches[0];
@@ -4426,261 +4162,6 @@
         function onTouchEnd() { endDrag(); document.removeEventListener('touchmove', onTouchMove); document.removeEventListener('touchend', onTouchEnd); }
       })();
 
-      // ==================== ISLAMIC PRAYER TIMES GADGET ====================
-      const desktopPrayer = document.getElementById('desktopPrayer');
-      const prayerExpandBtn = document.getElementById('prayerExpandBtn');
-      const prayerNextName = document.getElementById('prayerNextName');
-      const prayerNextTime = document.getElementById('prayerNextTime');
-      const prayerNextCountdown = document.getElementById('prayerNextCountdown');
-      const prayerFajr = document.getElementById('prayerFajr');
-      const prayerDhuhr = document.getElementById('prayerDhuhr');
-      const prayerJumuah = document.getElementById('prayerJumuah');
-      const prayerAsr = document.getElementById('prayerAsr');
-      const prayerMaghrib = document.getElementById('prayerMaghrib');
-      const prayerIsha = document.getElementById('prayerIsha');
-
-      const countdownEls = {
-        fajr: document.getElementById('countdownFajr'),
-        dhuhr: document.getElementById('countdownDhuhr'),
-        jumuah: document.getElementById('countdownJumuah'),
-        asr: document.getElementById('countdownAsr'),
-        maghrib: document.getElementById('countdownMaghrib'),
-        isha: document.getElementById('countdownIsha')
-      };
-
-      const PRAYER_ICONS = { fajr: '🌙', dhuhr: '☀️', jumuah: '🕌', asr: '🌤️', maghrib: '🌅', isha: '🌙' };
-      const PRAYER_LABELS = { fajr: 'Fajr', dhuhr: 'Dhuhr', jumuah: "Jumu'ah", asr: 'Asr', maghrib: 'Maghrib', isha: 'Isha' };
-      const PRAYER_EXPAND_KEY = 'prayer_gadget_expanded';
-      const PRAYER_METHOD = 3;
-      const DEFAULT_LAT = 9.9816;
-      const DEFAULT_LNG = 76.2999;
-
-      let prayerTimesData = null;
-      let currentLat = DEFAULT_LAT;
-      let currentLng = DEFAULT_LNG;
-      let isPrayerExpanded = false;
-
-      try { isPrayerExpanded = localStorage.getItem(PRAYER_EXPAND_KEY) === '1'; } catch (e) { isPrayerExpanded = false; }
-
-      function isFriday() {
-        return new Date().getDay() === 5;
-      }
-
-      function applyFridayState() {
-        if (isFriday()) desktopPrayer.classList.add('is-friday');
-        else desktopPrayer.classList.remove('is-friday');
-      }
-
-      function applyPrayerExpandedState() {
-        desktopPrayer.classList.toggle('expanded', isPrayerExpanded);
-        prayerExpandBtn.textContent = isPrayerExpanded ? '▴' : '▾';
-        prayerExpandBtn.title = isPrayerExpanded ? 'Hide all prayers' : 'Show all prayers';
-      }
-
-      function togglePrayerExpand() {
-        isPrayerExpanded = !isPrayerExpanded;
-        applyPrayerExpandedState();
-        try { localStorage.setItem(PRAYER_EXPAND_KEY, isPrayerExpanded ? '1' : '0'); } catch (e) {}
-      }
-
-      prayerExpandBtn.addEventListener('click', (e) => { e.stopPropagation(); togglePrayerExpand(); });
-      prayerExpandBtn.addEventListener('mousedown', (e) => { e.stopPropagation(); });
-      prayerExpandBtn.addEventListener('touchstart', (e) => { e.stopPropagation(); }, { passive: true });
-      applyPrayerExpandedState();
-      applyFridayState();
-
-      const FALLBACK_TIMES = { Fajr: '05:04', Dhuhr: '12:15', Asr: '15:32', Maghrib: '18:15', Isha: '19:25' };
-
-      function formatPrayerTime(timeStr) {
-        if (!timeStr) return '--:--';
-        const match = String(timeStr).match(/^(\d{1,2}):(\d{2})/);
-        if (!match) return String(timeStr);
-        let h = parseInt(match[1]);
-        const m = match[2];
-        const ampm = h >= 12 ? 'PM' : 'AM';
-        h = h % 12;
-        h = h ? h : 12;
-        return `${h}:${m} ${ampm}`;
-      }
-
-      function timeToMinutes(timeStr) {
-        if (!timeStr) return null;
-        const match = String(timeStr).match(/^(\d{1,2}):(\d{2})/);
-        if (!match) return null;
-        return parseInt(match[1]) * 60 + parseInt(match[2]);
-      }
-
-      function getNextPrayer(timings) {
-        if (!timings) return null;
-        const now = new Date();
-        const currentMinutes = now.getHours() * 60 + now.getMinutes();
-        const friday = isFriday();
-
-        const order = friday
-          ? [
-              { name: 'fajr',    time: timings.Fajr },
-              { name: 'jumuah',  time: timings.Dhuhr },
-              { name: 'asr',     time: timings.Asr },
-              { name: 'maghrib', time: timings.Maghrib },
-              { name: 'isha',    time: timings.Isha }
-            ]
-          : [
-              { name: 'fajr',    time: timings.Fajr },
-              { name: 'dhuhr',   time: timings.Dhuhr },
-              { name: 'asr',     time: timings.Asr },
-              { name: 'maghrib', time: timings.Maghrib },
-              { name: 'isha',    time: timings.Isha }
-            ];
-
-        for (const p of order) {
-          const mins = timeToMinutes(p.time);
-          if (mins === null) continue;
-          if (mins > currentMinutes) return { name: p.name, minutes: mins, tomorrow: false };
-        }
-        const fajrMins = timeToMinutes(timings.Fajr);
-        if (fajrMins === null) return null;
-        return { name: 'fajr', minutes: fajrMins, tomorrow: true };
-      }
-
-      function formatCountdown(remainingMinutes) {
-        if (remainingMinutes == null) return '';
-        if (remainingMinutes < 0) remainingMinutes = 0;
-        const h = Math.floor(remainingMinutes / 60);
-        const m = remainingMinutes % 60;
-        if (h > 0) return `in ${h}h ${m}m`;
-        return `in ${m}m`;
-      }
-
-      function updatePrayerHighlight(timings) {
-        if (!timings) return;
-        applyFridayState();
-
-        const next = getNextPrayer(timings);
-        document.querySelectorAll('#desktopPrayer .prayer-row').forEach(row => row.classList.remove('next'));
-        Object.values(countdownEls).forEach(el => { if (el) { el.style.display = 'none'; el.textContent = ''; } });
-
-        if (!next) {
-          prayerNextName.innerHTML = `<span class="prayer-icon">⏳</span> —`;
-          prayerNextTime.textContent = '--:--';
-          prayerNextCountdown.style.display = 'none';
-          return;
-        }
-
-        const timingsKeyMap = {
-          fajr: 'Fajr', dhuhr: 'Dhuhr', jumuah: 'Dhuhr',
-          asr: 'Asr', maghrib: 'Maghrib', isha: 'Isha'
-        };
-        const nextTimeStr = timings[timingsKeyMap[next.name]];
-
-        prayerNextName.innerHTML = `<span class="prayer-icon">${PRAYER_ICONS[next.name]}</span> ${PRAYER_LABELS[next.name]}`;
-        prayerNextTime.textContent = formatPrayerTime(nextTimeStr);
-
-        const now = new Date();
-        const currentMinutes = now.getHours() * 60 + now.getMinutes();
-        let remaining = next.minutes - currentMinutes;
-        if (next.tomorrow) remaining += 24 * 60;
-        prayerNextCountdown.textContent = formatCountdown(remaining);
-        prayerNextCountdown.style.display = 'inline-block';
-
-        const nextRow = document.querySelector(`#desktopPrayer .prayer-row[data-prayer="${next.name}"]`);
-        if (nextRow) nextRow.classList.add('next');
-        const cdEl = countdownEls[next.name];
-        if (cdEl) { cdEl.textContent = formatCountdown(remaining); cdEl.style.display = 'inline-block'; }
-      }
-
-      function applyPrayerTimes(timings) {
-        prayerFajr.textContent = formatPrayerTime(timings.Fajr);
-        prayerDhuhr.textContent = formatPrayerTime(timings.Dhuhr);
-        if (prayerJumuah) prayerJumuah.textContent = formatPrayerTime(timings.Dhuhr);
-        prayerAsr.textContent = formatPrayerTime(timings.Asr);
-        prayerMaghrib.textContent = formatPrayerTime(timings.Maghrib);
-        prayerIsha.textContent = formatPrayerTime(timings.Isha);
-        applyFridayState();
-        updatePrayerHighlight(timings);
-      }
-
-      async function fetchPrayerTimes(lat, lng) {
-        try {
-          const today = new Date();
-          const dateStr = formatDateDDMMYYYY(today);
-          const url = `https://api.aladhan.com/v1/timings/${dateStr}?latitude=${lat}&longitude=${lng}&method=${PRAYER_METHOD}`;
-          const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 6000);
-          const response = await fetch(url, { signal: controller.signal });
-          clearTimeout(timeoutId);
-          if (!response.ok) throw new Error('HTTP ' + response.status);
-          const data = await response.json();
-          if (data.code !== 200) throw new Error('Invalid API response');
-          return data.data;
-        } catch (err) { return null; }
-      }
-
-      async function updatePrayerGadget() {
-        if (navigator.geolocation) {
-          try {
-            const pos = await new Promise((resolve, reject) => {
-              navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 4000, maximumAge: 600000 });
-            });
-            currentLat = pos.coords.latitude;
-            currentLng = pos.coords.longitude;
-          } catch (e) {}
-        }
-        const data = await fetchPrayerTimes(currentLat, currentLng);
-        if (data && data.timings) { prayerTimesData = data; applyPrayerTimes(data.timings); }
-        else { prayerTimesData = { timings: FALLBACK_TIMES }; applyPrayerTimes(FALLBACK_TIMES); }
-      }
-
-      updatePrayerGadget();
-      setInterval(updatePrayerGadget, 10 * 60 * 1000);
-      setInterval(() => { if (prayerTimesData?.timings) updatePrayerHighlight(prayerTimesData.timings); }, 30 * 1000);
-
-      (function makePrayerDraggable() {
-        let isDragging = false, startX = 0, startY = 0, startLeft = 0, startTop = 0;
-        function startDrag(clientX, clientY) {
-          isDragging = true;
-          const rect = desktopPrayer.getBoundingClientRect();
-          startLeft = rect.left; startTop = rect.top;
-          desktopPrayer.style.left = startLeft + 'px';
-          desktopPrayer.style.top = startTop + 'px';
-          desktopPrayer.style.right = 'auto';
-          desktopPrayer.style.bottom = 'auto';
-          startX = clientX; startY = clientY;
-          desktopPrayer.classList.add('dragging');
-        }
-        function moveDrag(clientX, clientY) {
-          if (!isDragging) return;
-          const dx = clientX - startX, dy = clientY - startY;
-          let nl = startLeft + dx, nt = startTop + dy;
-          const w = desktopPrayer.offsetWidth, h = desktopPrayer.offsetHeight;
-          if (nl < 5) nl = 5;
-          if (nl > window.innerWidth - w - 5) nl = window.innerWidth - w - 5;
-          if (nt < 5) nt = 5;
-          if (nt > window.innerHeight - TASKBAR_HEIGHT - h - 5) nt = window.innerHeight - TASKBAR_HEIGHT - h - 5;
-          desktopPrayer.style.left = nl + 'px';
-          desktopPrayer.style.top = nt + 'px';
-        }
-        function endDrag() { isDragging = false; desktopPrayer.classList.remove('dragging'); }
-        desktopPrayer.addEventListener('mousedown', (e) => {
-          if (e.button !== 0) return;
-          if (e.target.closest('.prayer-expand-btn')) return;
-          e.preventDefault();
-          startDrag(e.clientX, e.clientY);
-          document.addEventListener('mousemove', onMouseMove);
-          document.addEventListener('mouseup', onMouseUp);
-        });
-        function onMouseMove(e) { moveDrag(e.clientX, e.clientY); }
-        function onMouseUp() { endDrag(); document.removeEventListener('mousemove', onMouseMove); document.removeEventListener('mouseup', onMouseUp); }
-        desktopPrayer.addEventListener('touchstart', (e) => {
-          if (e.target.closest('.prayer-expand-btn')) return;
-          const touch = e.touches[0];
-          startDrag(touch.clientX, touch.clientY);
-          document.addEventListener('touchmove', onTouchMove, { passive: false });
-          document.addEventListener('touchend', onTouchEnd);
-        }, { passive: false });
-        function onTouchMove(e) { if (!isDragging) return; e.preventDefault(); const touch = e.touches[0]; moveDrag(touch.clientX, touch.clientY); }
-        function onTouchEnd() { endDrag(); document.removeEventListener('touchmove', onTouchMove); document.removeEventListener('touchend', onTouchEnd); }
-      })();
-
       // ==================== ELEMENTS ====================
       const weightPerPcInput = document.getElementById('weightPerPc');
       const pcsPerBagInput = document.getElementById('pcsPerBag');
@@ -4958,7 +4439,12 @@
       async function loadProducts() {
         showLoading('price'); setSyncing();
         try {
-          const { data, error } = await supabase.from('products').select('*').order('created_at', { ascending: false });
+          const result = await withTimeout(
+            supabase.from('products').select('*').order('created_at', { ascending: false }),
+            3000
+          );
+          if (!result) throw new Error('Timeout');
+          const { data, error } = result;
           if (error) throw error;
           products = (data || []).map(p => ({
             id: p.id, name: p.name, customer: p.customer,
@@ -4977,7 +4463,12 @@
 
       async function loadEmployees() {
         try {
-          const { data, error } = await supabase.from('employees').select('*').order('name', { ascending: true });
+          const result = await withTimeout(
+            supabase.from('employees').select('*').order('name', { ascending: true }),
+            2500
+          );
+          if (!result) throw new Error('Timeout');
+          const { data, error } = result;
           if (error) throw error;
           employeesList = (data || []).map(s => ({
             id: s.id, name: s.name || '', section: s.section || '', photo: s.photo || null
@@ -5095,7 +4586,12 @@
       async function loadVehicles() {
         showLoading('vehicle'); setSyncing();
         try {
-          const { data, error } = await supabase.from('vehicles').select('*').order('created_at', { ascending: false });
+          const result = await withTimeout(
+            supabase.from('vehicles').select('*').order('created_at', { ascending: false }),
+            3000
+          );
+          if (!result) throw new Error('Timeout');
+          const { data, error } = result;
           if (error) throw error;
           vehicles = (data || []).map(v => ({
             id: v.id, name: v.name || '', number: v.number || '', driver: v.driver || '',
@@ -5171,7 +4667,12 @@
       async function loadInvoices() {
         showLoading('invoice'); setSyncing();
         try {
-          const { data, error } = await supabase.from('invoices').select('*').order('created_at', { ascending: false });
+          const result = await withTimeout(
+            supabase.from('invoices').select('*').order('created_at', { ascending: false }),
+            3000
+          );
+          if (!result) throw new Error('Timeout');
+          const { data, error } = result;
           if (error) throw error;
           invoices = (data || []).map(inv => ({
             id: inv.id, invoiceNumber: inv.invoice_number || '',
@@ -5281,7 +4782,12 @@
 
       async function loadNotes() {
         try {
-          const { data, error } = await supabase.from('notes').select('*').order('updated_at', { ascending: false });
+          const result = await withTimeout(
+            supabase.from('notes').select('*').order('updated_at', { ascending: false }),
+            2500
+          );
+          if (!result) throw new Error('Timeout');
+          const { data, error } = result;
           if (error) throw error;
           notesList = (data || []).map(n => ({
             id: n.id, title: n.title || 'Untitled', content: n.content || '', updatedAt: n.updated_at
@@ -7644,7 +7150,7 @@
       setInterval(updateClock, 1000);
 
       // ==================== INIT ====================
-      // Ensure ALL windows are hidden BEFORE anything loads — no auto-open
+      // Hide all windows BEFORE anything loads — no auto-open
       ['calcWindow', 'priceWindow', 'loadWindow', 'cashWindow', 'notepadWindow', 'vehicleWindow', 'invoiceWindow', 'settingsWindow'].forEach(id => {
         const winEl = document.getElementById(id);
         if (winEl) {
@@ -7657,19 +7163,26 @@
       });
       updateTaskbar();
 
-      // Now load data silently in the background
-      await loadCompanySettings();
-      await loadUploadedWallpapers();
-      await loadWallpaper();
-      await loadEmployees();
-      await loadNotes();
+      // Reveal desktop IMMEDIATELY — don't wait for DB
+      clearTimeout(bootTimeout);
+      revealDesktop();
+
+      // Now load data silently in the background (capped with timeouts so no hang)
+      await Promise.allSettled([
+        loadCompanySettings(),
+        loadUploadedWallpapers(),
+        loadWallpaper(),
+        loadEmployees(),
+        loadNotes(),
+        loadProducts(),
+        loadVehicles(),
+        loadInvoices()
+      ]);
+
       loadNotepadDraft();
       resetAllFields();
       calculateLoad();
       calculateCash();
-      await loadProducts();
-      await loadVehicles();
-      await loadInvoices();
 
       // Keep all windows closed after loading — user must open them via Start Menu
       ['calcWindow', 'priceWindow', 'loadWindow', 'cashWindow', 'notepadWindow', 'vehicleWindow', 'invoiceWindow', 'settingsWindow'].forEach(id => {
@@ -7682,9 +7195,6 @@
         hideTaskbarItem(id);
       });
       updateTaskbar();
-
-      clearTimeout(bootTimeout);
-      revealDesktop();
     });
   </script>
 </body>
