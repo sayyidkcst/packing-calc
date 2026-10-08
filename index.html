@@ -1486,7 +1486,7 @@
     /* ==================== KCST WINDOWS XP START MENU ==================== */
     .start-menu {
       position: fixed; bottom: var(--taskbar-height); left: 0;
-      width: 380px;
+      width: 400px;
       background: linear-gradient(180deg, #1c56b5 0%, #15449c 12%, #0f3880 100%);
       border: 2px solid #1c56b5;
       border-bottom: none;
@@ -1599,7 +1599,7 @@
     }
 
     .xp-right-panel {
-      width: 150px;
+      width: 160px;
       background: linear-gradient(180deg, #dce9f7 0%, #c8dcf0 100%);
       padding: 8px 4px;
       display: flex; flex-direction: column; gap: 2px;
@@ -3542,7 +3542,6 @@
       const SCALES = ['', 'Thousand', 'Million', 'Billion', 'Trillion'];
 
       function chunkToWords(n) {
-        // n is 0..999
         let str = '';
         const hundreds = Math.floor(n / 100);
         const remainder = n % 100;
@@ -3562,7 +3561,6 @@
       }
 
       function numberToWords(num) {
-        // Handles integer input as string or number (up to ~trillions)
         const str = String(num).trim();
         if (str === '') return '';
         if (!/^-?\d+$/.test(str)) return null;
@@ -3571,11 +3569,9 @@
         let digits = str;
         if (digits.startsWith('-')) { negative = true; digits = digits.slice(1); }
 
-        // Strip leading zeros
         digits = digits.replace(/^0+/, '');
         if (digits === '') return 'Zero';
 
-        // Group digits into chunks of 3
         const chunks = [];
         let i = digits.length;
         while (i > 0) {
@@ -3584,7 +3580,7 @@
           i = start;
         }
 
-        if (chunks.length > SCALES.length) return null; // too large
+        if (chunks.length > SCALES.length) return null;
 
         const parts = [];
         for (let c = 0; c < chunks.length; c++) {
@@ -3641,7 +3637,6 @@
           return;
         }
         renderN2WResult(cleaned, words, false);
-        // Clear the input box after Enter (as requested)
         n2wInput.value = '';
       }
 
@@ -4409,11 +4404,10 @@
       const gadgetDate = document.getElementById('gadgetDate');
       const gadgetDay = document.getElementById('gadgetDay');
 
-      // Generate numbers 1–12 around the clock face
       (function generateClockNumbers() {
-        const CLOCK_RADIUS = 55; // px from center to number position
+        const CLOCK_RADIUS = 55;
         for (let i = 1; i <= 12; i++) {
-          const angleDeg = i * 30 - 90; // 12 at top, 1 at 30°, etc.
+          const angleDeg = i * 30 - 90;
           const angleRad = angleDeg * Math.PI / 180;
           const x = Math.cos(angleRad) * CLOCK_RADIUS;
           const y = Math.sin(angleRad) * CLOCK_RADIUS;
@@ -7323,6 +7317,7 @@
       });
 
       // ==================== START MENU BUILD ====================
+      // LEFT panel: main applications
       const XP_PROGRAMS = [
         { id: 'calcWindow', icon: '📦', name: 'Packing Calculator', desc: 'Calculate packing quantities' },
         { id: 'numberWordWindow', icon: '🔢', name: 'Number to Word', desc: 'Convert numbers to words' },
@@ -7331,13 +7326,15 @@
         { id: 'cashWindow', icon: '💵', name: 'Cash Collection', desc: 'Record cash collections' },
         { id: 'notepadWindow', icon: '📝', name: 'Notepad', desc: 'Write and save notes' },
         { id: 'vehicleWindow', icon: '🚛', name: 'Vehicle Manager', desc: 'Manage fleet & documents' },
-        { id: 'invoiceWindow', icon: '🧾', name: 'Invoice', desc: 'Create and manage invoices' },
-        { id: 'settingsWindow', icon: '⚙️', name: 'Settings', desc: 'Company information for print' }
+        { id: 'invoiceWindow', icon: '🧾', name: 'Invoice', desc: 'Create and manage invoices' }
       ];
 
+      // RIGHT panel: quick links + Settings + utilities
       const XP_RIGHT_ITEMS = [
         { id: 'startSettings', icon: '⚙️', name: 'Settings' },
         { id: 'startChangeWallpaper', icon: '🖼️', name: 'My Wallpapers' },
+        { id: 'startNumberWord', icon: '🔢', name: 'Number to Word' },
+        { id: 'startNotepad', icon: '📝', name: 'Notepad' },
         { id: 'xpReload', icon: '🔄', name: 'Refresh Desktop' },
         { id: 'xpPersonalize', icon: '🎨', name: 'Personalize' }
       ];
@@ -7397,6 +7394,8 @@
           else if (action === 'xpReload') { startMenu.classList.remove('open'); setTimeout(() => window.location.reload(), 300); }
           else if (action === 'xpPersonalize') { startMenu.classList.remove('open'); openWallpaperMini(); }
           else if (action === 'startSettings') { startMenu.classList.remove('open'); restoreWindowFromTaskbar('settingsWindow'); }
+          else if (action === 'startNumberWord') { startMenu.classList.remove('open'); restoreWindowFromTaskbar('numberWordWindow'); }
+          else if (action === 'startNotepad') { startMenu.classList.remove('open'); restoreWindowFromTaskbar('notepadWindow'); }
         }
       });
 
