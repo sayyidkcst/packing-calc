@@ -54,7 +54,7 @@
       justify-content: stretch;
       background: #000000;
       opacity: 1;
-      transition: opacity 0.35s ease;
+      transition: opacity 0.55s ease;
       pointer-events: auto;
       font-family: 'Tahoma', 'Trebuchet MS', sans-serif;
       color: #ffffff;
@@ -86,6 +86,11 @@
       align-items: center;
       gap: 18px;
       margin-bottom: 6px;
+      animation: xpLogoFadeIn 0.7s ease;
+    }
+    @keyframes xpLogoFadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
 
     .xp-flag {
@@ -149,7 +154,7 @@
       gap: 3px;
       height: 100%;
       align-items: center;
-      animation: xpBlocksSlide 1.4s linear infinite;
+      animation: xpBlocksSlide 2s linear infinite;
     }
     .xp-boot-blocks span {
       display: block;
@@ -219,6 +224,7 @@
     body.not-connected .window-vehicle,
     body.not-connected .window-invoice,
     body.not-connected .window-settings,
+    body.not-connected .window-number-word,
     body.not-connected .startbar,
     body.not-connected .start-menu {
       opacity: 0 !important;
@@ -228,108 +234,53 @@
 
     .desktop-gadget, .desktop-calendar, .startbar { transition: opacity 0.6s ease; }
 
-    /* ---------- DESKTOP CLOCK GADGET (XP style) ---------- */
+    /* ============================================================
+       BEAUTIFUL CLOCK GADGET — no title, numbers 1-12 inside
+       ============================================================ */
     .desktop-gadget {
-      position: fixed; top: 30px; right: 30px; z-index: 5; width: 240px;
-      background: linear-gradient(180deg, #f0f6ff 0%, #d8e8fb 50%, #b8d4f0 100%);
-      border-radius: 8px;
-      border: 1px solid #0831a0;
-      box-shadow: 0 0 0 1px #a8c8f0 inset, 0 4px 14px rgba(0, 0, 0, 0.4);
-      padding: 18px 16px 16px 16px; text-align: center;
-      cursor: grab;
+      position: fixed;
+      top: 30px;
+      right: 30px;
+      z-index: 5;
+      width: 240px;
+      padding: 0;
+      border-radius: 14px;
+      background:
+        linear-gradient(160deg, rgba(255,255,255,0.98) 0%, rgba(238,244,252,0.96) 45%, rgba(214,228,245,0.96) 100%);
+      border: 1px solid rgba(120, 160, 220, 0.55);
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.7) inset,
+        0 12px 30px rgba(15, 40, 90, 0.35),
+        0 2px 6px rgba(15, 40, 90, 0.15),
+        0 -2px 12px rgba(80, 150, 255, 0.12);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
       overflow: hidden;
+      cursor: grab;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      animation: gadgetFloatIn 0.7s cubic-bezier(0.2, 0.8, 0.3, 1.05) both;
     }
-    .desktop-gadget::before {
-      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 22px;
-      background: linear-gradient(180deg, #3f7ae0 0%, #2a63c8 12%, #1e50ad 50%, #15419c 88%, #0f3484 100%);
-      border-bottom: 1px solid #0a2862;
-      border-radius: 7px 7px 0 0;
-      pointer-events: none;
+    @keyframes gadgetFloatIn {
+      from { opacity: 0; transform: translateY(-12px) scale(0.96); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
     }
-    .desktop-gadget::after {
-      content: '🕐 Clock'; position: absolute; top: 4px; left: 12px;
-      color: #ffffff; font-size: 0.78rem; font-weight: 700;
-      text-shadow: 0 1px 2px rgba(0,0,0,0.6);
-      pointer-events: none;
-      font-family: 'Trebuchet MS', Tahoma, sans-serif;
+    .desktop-gadget:hover {
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.75) inset,
+        0 16px 40px rgba(15, 40, 90, 0.42),
+        0 2px 8px rgba(15, 40, 90, 0.18),
+        0 -2px 16px rgba(80, 150, 255, 0.22);
+      transform: translateY(-1px);
     }
     .desktop-gadget:active { cursor: grabbing; }
     .desktop-gadget.dragging {
-      box-shadow: 0 0 0 1px #a8c8f0 inset, 0 8px 24px rgba(0, 0, 0, 0.6);
+      transform: scale(1.02);
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.8) inset,
+        0 22px 50px rgba(15, 40, 90, 0.55);
+      cursor: grabbing;
     }
-    .gadget-time {
-      position: relative;
-      font-family: 'Tahoma', 'Segoe UI', sans-serif;
-      font-size: 2.6rem; font-weight: 700; color: #0a2862;
-      letter-spacing: 0.02em; line-height: 1;
-      text-shadow: 0 1px 0 #ffffff;
-      margin-bottom: 2px; margin-top: 18px;
-    }
-    .gadget-time .seconds {
-      font-size: 1.2rem; font-weight: 700; color: #2a63c8;
-      margin-left: 4px; vertical-align: 0.35em;
-    }
-    .gadget-time .ampm {
-      font-size: 0.95rem; font-weight: 700; color: #15419c;
-      margin-left: 6px; vertical-align: 0.55em; letter-spacing: 0.06em;
-    }
-    .gadget-date {
-      font-size: 0.82rem; font-weight: 700; color: #0a2862;
-      letter-spacing: 0.04em; margin-bottom: 12px;
-    }
-    .gadget-day {
-      font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.2em;
-      color: #15419c;
-      border-top: 1px solid #a8c8f0;
-      padding-top: 8px; margin-top: 6px;
-    }
-    .gadget-analog {
-      width: 118px; height: 118px; margin: 0 auto 10px auto; border-radius: 50%;
-      background: radial-gradient(circle at 35% 30%, #ffffff 0%, #e8f2fc 55%, #b8d4f0 100%);
-      border: 2px solid #2a63c8;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.9);
-      position: relative;
-    }
-    .gadget-analog::before {
-      content: ''; position: absolute; inset: 8px; border-radius: 50%;
-      border: 1px solid #a8c8f0; pointer-events: none;
-    }
-    .gadget-hand {
-      position: absolute; bottom: 50%; left: 50%; transform-origin: bottom center;
-      border-radius: 4px;
-      transition: transform 0.3s cubic-bezier(0.4, 2.4, 0.55, 0.8);
-    }
-    .gadget-hand.hour {
-      width: 4px; height: 30px;
-      background: #0a2862;
-      margin-left: -2px;
-    }
-    .gadget-hand.minute {
-      width: 3px; height: 42px;
-      background: #15419c;
-      margin-left: -1.5px;
-    }
-    .gadget-hand.second {
-      width: 2px; height: 48px;
-      background: #c0392b;
-      margin-left: -1px;
-      transition: transform 0.1s cubic-bezier(0.4, 2.4, 0.55, 0.8);
-    }
-    .gadget-center-dot {
-      position: absolute; top: 50%; left: 50%;
-      width: 8px; height: 8px; margin: -4px 0 0 -4px; border-radius: 50%;
-      background: radial-gradient(circle at 35% 35%, #ffffff 0%, #b8d8f0 60%, #15419c 100%);
-      border: 1px solid #0a2862;
-      z-index: 3;
-    }
-    .gadget-tick {
-      position: absolute; top: 50%; left: 50%;
-      width: 2px; height: 6px; background: #4a6a8a;
-      border-radius: 1px; transform-origin: center 55px;
-    }
-    .gadget-tick.major {
-      width: 3px; height: 9px; background: #0a2862;
-    }
+
     .gadget-grip {
       position: absolute; top: 4px; left: 50%; transform: translateX(-50%);
       width: 40px; height: 3px; border-radius: 3px;
@@ -337,6 +288,221 @@
       opacity: 0; transition: opacity 0.2s; pointer-events: none;
     }
     .desktop-gadget:hover .gadget-grip { opacity: 0; }
+
+    /* Analog clock — outer frame */
+    .gadget-analog {
+      width: 132px;
+      height: 132px;
+      margin: 22px auto 8px auto;
+      border-radius: 50%;
+      position: relative;
+      background:
+        radial-gradient(circle at 32% 26%, #ffffff 0%, #f4f9ff 45%, #dfeaf9 75%, #c4d5ee 100%);
+      box-shadow:
+        0 0 0 3px #1e50ad,
+        0 0 0 5px #ffffff,
+        0 0 0 6px #15419c,
+        0 8px 18px rgba(15, 40, 90, 0.35),
+        inset 0 2px 6px rgba(255,255,255,0.95),
+        inset 0 -4px 10px rgba(60, 100, 170, 0.18);
+      overflow: visible;
+    }
+    .gadget-analog::before {
+      content: '';
+      position: absolute;
+      inset: 12px;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 40% 35%, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0) 55%);
+      pointer-events: none;
+    }
+    .gadget-analog::after {
+      content: '';
+      position: absolute;
+      inset: 6px;
+      border-radius: 50%;
+      border: 1px solid rgba(30, 80, 173, 0.22);
+      pointer-events: none;
+    }
+
+    /* Clock numbers (1–12) */
+    .gadget-number {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      color: #0a2862;
+      font-family: 'Trebuchet MS', Tahoma, sans-serif;
+      font-weight: 800;
+      font-size: 0.72rem;
+      line-height: 1;
+      pointer-events: none;
+      z-index: 2;
+      text-shadow: 0 1px 0 #ffffff;
+    }
+
+    /* Hands */
+    .gadget-hand {
+      position: absolute;
+      bottom: 50%;
+      left: 50%;
+      transform-origin: bottom center;
+      border-radius: 6px;
+      z-index: 3;
+    }
+    .gadget-hand.hour {
+      width: 5px;
+      height: 34px;
+      margin-left: -2.5px;
+      background: linear-gradient(180deg, #15419c 0%, #0a2862 100%);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.35), 0 0 4px rgba(20, 65, 156, 0.35);
+      transition: transform 0.4s cubic-bezier(0.4, 2.4, 0.55, 0.8);
+    }
+    .gadget-hand.minute {
+      width: 3.5px;
+      height: 48px;
+      margin-left: -1.75px;
+      background: linear-gradient(180deg, #2a63c8 0%, #15419c 100%);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.35), 0 0 4px rgba(42, 99, 200, 0.35);
+      transition: transform 0.4s cubic-bezier(0.4, 2.4, 0.55, 0.8);
+    }
+    .gadget-hand.second {
+      width: 2px;
+      height: 56px;
+      margin-left: -1px;
+      background: linear-gradient(180deg, #ff6a3d 0%, #c0392b 100%);
+      box-shadow: 0 0 6px rgba(255, 106, 61, 0.65);
+      transition: transform 0.12s cubic-bezier(0.4, 2.4, 0.55, 0.8);
+      z-index: 4;
+    }
+
+    /* Center cap */
+    .gadget-center-dot {
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 14px; height: 14px;
+      margin: -7px 0 0 -7px;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 35% 32%, #ffffff 0%, #dbeafe 40%, #2a63c8 75%, #0a2862 100%);
+      border: 1.5px solid #0a2862;
+      box-shadow:
+        0 0 0 2px #ffffff,
+        0 1px 3px rgba(0,0,0,0.4);
+      z-index: 5;
+    }
+    .gadget-center-dot::after {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 5px; height: 5px;
+      margin: -2.5px 0 0 -2.5px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 40% 35%, #ffffff 0%, #bcd6f4 60%, #15419c 100%);
+    }
+
+    /* Time display */
+    .gadget-time {
+      position: relative;
+      text-align: center;
+      font-family: 'Trebuchet MS', 'Tahoma', sans-serif;
+      font-weight: 800;
+      color: #0a2862;
+      letter-spacing: 0.02em;
+      line-height: 1;
+      margin-top: 4px;
+      padding: 0 12px;
+      font-size: 2rem;
+      text-shadow:
+        0 1px 0 #ffffff,
+        0 2px 4px rgba(15, 40, 90, 0.12);
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+    .gadget-time .seconds {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #ffffff;
+      background: linear-gradient(180deg, #3f7ae0 0%, #15419c 100%);
+      padding: 4px 10px;
+      border-radius: 20px;
+      border: 1px solid #0a2862;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.5), 0 2px 4px rgba(15, 40, 90, 0.3);
+      letter-spacing: 0.05em;
+      transform: translateY(-4px);
+      font-family: 'Tahoma', Consolas, monospace;
+    }
+    .gadget-time .ampm {
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: #15419c;
+      background: linear-gradient(180deg, #f0f6ff 0%, #c8dcf0 100%);
+      padding: 4px 10px;
+      border-radius: 20px;
+      border: 1px solid #a8c8f0;
+      box-shadow: inset 0 1px 0 #ffffff, 0 1px 2px rgba(15, 40, 90, 0.15);
+      letter-spacing: 0.12em;
+      transform: translateY(-4px);
+    }
+
+    /* Date line */
+    .gadget-date {
+      text-align: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #15419c;
+      letter-spacing: 0.06em;
+      margin-top: 8px;
+      padding: 0 12px;
+      font-family: 'Tahoma', Consolas, monospace;
+    }
+
+    /* Day pill */
+    .gadget-day {
+      margin: 10px 12px 14px 12px;
+      text-align: center;
+      font-size: 0.6rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.28em;
+      color: #ffffff;
+      background: linear-gradient(180deg, #4a86e8 0%, #2057b8 55%, #15419c 100%);
+      padding: 6px 8px;
+      border-radius: 8px;
+      border: 1px solid #0a2862;
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.45),
+        inset 0 -2px 4px rgba(0,0,0,0.2),
+        0 2px 6px rgba(15, 40, 90, 0.25);
+      text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+      padding-left: calc(8px + 0.28em);
+    }
+
+    /* Responsive */
+    @media (max-width: 1200px) {
+      .desktop-gadget { width: 210px; top: 20px; right: 20px; }
+      .gadget-analog { width: 112px; height: 112px; }
+      .gadget-number { font-size: 0.62rem; }
+      .gadget-time { font-size: 1.65rem; }
+      .gadget-time .seconds { font-size: 0.78rem; padding: 3px 8px; }
+      .gadget-time .ampm { font-size: 0.68rem; padding: 3px 8px; }
+      .gadget-date { font-size: 0.72rem; }
+      .gadget-day { font-size: 0.54rem; letter-spacing: 0.22em; }
+      .desktop-calendar { width: 210px; top: 320px; right: 20px; }
+    }
+    @media (max-width: 600px) {
+      .desktop-gadget { width: 180px; padding-bottom: 4px; }
+      .gadget-analog { width: 96px; height: 96px; }
+      .gadget-number { font-size: 0.55rem; }
+      .gadget-time { font-size: 1.35rem; }
+      .gadget-time .seconds { font-size: 0.68rem; padding: 2px 6px; }
+      .gadget-time .ampm { font-size: 0.6rem; padding: 2px 6px; letter-spacing: 0.08em; }
+      .gadget-date { font-size: 0.64rem; margin-top: 6px; }
+      .gadget-day { font-size: 0.48rem; letter-spacing: 0.2em; padding: 4px 6px; }
+      .desktop-calendar { width: 180px; top: 290px; }
+    }
 
     /* ---------- CALENDAR GADGET (XP style) ---------- */
     .desktop-calendar {
@@ -403,26 +569,8 @@
     .cal-cell.empty { color: transparent; }
     .cal-cell:hover:not(.header):not(.empty) { background: #c8dcf0; }
 
-    @media (max-width: 1200px) {
-      .desktop-gadget { width: 200px; top: 20px; right: 20px; padding: 14px 12px 12px 12px; }
-      .gadget-time { font-size: 2.2rem; }
-      .gadget-analog { width: 96px; height: 96px; }
-      .gadget-tick { transform-origin: center 44px; }
-      .desktop-calendar { width: 200px; top: 280px; right: 20px; }
-    }
-    @media (max-width: 600px) {
-      .desktop-gadget { width: 170px; padding: 12px 10px 10px 10px; }
-      .gadget-time { font-size: 1.8rem; }
-      .gadget-analog { width: 80px; height: 80px; }
-      .gadget-tick { transform-origin: center 36px; }
-      .gadget-date { font-size: 0.72rem; }
-      .desktop-calendar { width: 170px; top: 240px; }
-      .cal-cell { font-size: 0.6rem; padding: 3px 0; }
-      .cal-nav-btn { width: 18px; height: 18px; font-size: 0.65rem; }
-    }
-
     /* ==================== WINDOW BASE — KCST WINDOWS XP LUNA BLUE ==================== */
-    .window, .window-price, .window-load, .window-cash, .window-notepad, .window-vehicle, .window-invoice, .window-settings {
+    .window, .window-price, .window-load, .window-cash, .window-notepad, .window-vehicle, .window-invoice, .window-settings, .window-number-word {
       position: absolute;
       background: #ece9d8;
       border-radius: 8px 8px 0 0;
@@ -442,22 +590,23 @@
     .window-vehicle { width: 1000px; max-width: calc(100vw - 40px); z-index: 15; }
     .window-invoice { width: 840px; max-width: calc(100vw - 40px); z-index: 16; }
     .window-settings { width: 560px; max-width: calc(100vw - 40px); z-index: 17; }
+    .window-number-word { width: 520px; max-width: calc(100vw - 40px); z-index: 18; }
 
-    .window.minimized, .window-price.minimized, .window-load.minimized, .window-cash.minimized, .window-notepad.minimized, .window-vehicle.minimized, .window-invoice.minimized, .window-settings.minimized { display: none !important; }
+    .window.minimized, .window-price.minimized, .window-load.minimized, .window-cash.minimized, .window-notepad.minimized, .window-vehicle.minimized, .window-invoice.minimized, .window-settings.minimized, .window-number-word.minimized { display: none !important; }
 
-    .window.maximized, .window-price.maximized, .window-load.maximized, .window-cash.maximized, .window-notepad.maximized, .window-vehicle.maximized, .window-invoice.maximized, .window-settings.maximized {
+    .window.maximized, .window-price.maximized, .window-load.maximized, .window-cash.maximized, .window-notepad.maximized, .window-vehicle.maximized, .window-invoice.maximized, .window-settings.maximized, .window-number-word.maximized {
       top: 0 !important; left: 0 !important; right: 0 !important;
       width: 100vw !important; max-width: 100vw !important;
       height: calc(100vh - var(--taskbar-height)) !important;
       max-height: calc(100vh - var(--taskbar-height)) !important;
       border-radius: 0; border-top: none; border-left: none; border-right: none; border-bottom: none;
     }
-    .window.maximized .title-bar, .window-price.maximized .title-bar, .window-load.maximized .title-bar, .window-cash.maximized .title-bar, .window-notepad.maximized .title-bar, .window-vehicle.maximized .title-bar, .window-invoice.maximized .title-bar, .window-settings.maximized .title-bar {
+    .window.maximized .title-bar, .window-price.maximized .title-bar, .window-load.maximized .title-bar, .window-cash.maximized .title-bar, .window-notepad.maximized .title-bar, .window-vehicle.maximized .title-bar, .window-invoice.maximized .title-bar, .window-settings.maximized .title-bar, .window-number-word.maximized .title-bar {
       border-radius: 0; cursor: default !important;
     }
 
-    .window.snap-left, .window-price.snap-left, .window-load.snap-left, .window-cash.snap-left, .window-notepad.snap-left, .window-vehicle.snap-left, .window-invoice.snap-left, .window-settings.snap-left,
-    .window.snap-right, .window-price.snap-right, .window-load.snap-right, .window-cash.snap-right, .window-notepad.snap-right, .window-vehicle.snap-right, .window-invoice.snap-right, .window-settings.snap-right {
+    .window.snap-left, .window-price.snap-left, .window-load.snap-left, .window-cash.snap-left, .window-notepad.snap-left, .window-vehicle.snap-left, .window-invoice.snap-left, .window-settings.snap-left, .window-number-word.snap-left,
+    .window.snap-right, .window-price.snap-right, .window-load.snap-right, .window-cash.snap-right, .window-notepad.snap-right, .window-vehicle.snap-right, .window-invoice.snap-right, .window-settings.snap-right, .window-number-word.snap-right {
       transition: top 0.15s ease, left 0.15s ease, width 0.15s ease, height 0.15s ease;
     }
 
@@ -1971,7 +2120,7 @@
     .resize-handle.se { bottom: 0; right: 0; width: 10px; height: 10px; cursor: se-resize; }
     .resize-handle.sw { bottom: 0; left: 0; width: 10px; height: 10px; cursor: sw-resize; }
 
-    .window.resizing, .window-price.resizing, .window-load.resizing, .window-cash.resizing, .window-notepad.resizing, .window-vehicle.resizing, .window-invoice.resizing, .window-settings.resizing {
+    .window.resizing, .window-price.resizing, .window-load.resizing, .window-cash.resizing, .window-notepad.resizing, .window-vehicle.resizing, .window-invoice.resizing, .window-settings.resizing, .window-number-word.resizing {
       transition: none !important; user-select: none;
     }
 
@@ -2300,8 +2449,88 @@
       font-family: 'Tahoma', Consolas, monospace;
     }
 
+    /* ---------- NUMBER TO WORD WINDOW SPECIFIC ---------- */
+    .n2w-input-row {
+      display: flex;
+      gap: 8px;
+      align-items: flex-end;
+      margin-bottom: 10px;
+    }
+    .n2w-input-row .input-group {
+      flex: 1 1 auto;
+      max-width: none;
+    }
+    .n2w-input-row .input-wrap input {
+      font-size: 1.1rem;
+      padding: 8px 6px;
+      text-align: left;
+      font-weight: 700;
+    }
+    .n2w-result-box {
+      background: linear-gradient(180deg, #3f7ae0 0%, #15419c 100%);
+      border-radius: 6px;
+      padding: 20px 22px;
+      color: #ffffff;
+      text-align: center;
+      border: 2px solid #0a2862;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.4), 0 4px 12px rgba(15, 40, 90, 0.35);
+      min-height: 90px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .n2w-result-box .n2w-number-display {
+      font-size: 0.85rem;
+      color: #c8dcff;
+      font-family: 'Tahoma', Consolas, monospace;
+      letter-spacing: 0.05em;
+    }
+    .n2w-result-box .n2w-word-display {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: #ffffff;
+      text-transform: capitalize;
+      letter-spacing: 0.02em;
+      line-height: 1.3;
+      word-wrap: break-word;
+      max-width: 100%;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.4);
+      font-family: 'Trebuchet MS', Tahoma, sans-serif;
+    }
+    .n2w-result-box .n2w-placeholder {
+      font-size: 0.85rem;
+      color: #b8d4ec;
+      font-style: italic;
+    }
+    .n2w-result-box .n2w-error {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #ffb8b8;
+    }
+    .n2w-help {
+      font-size: 0.7rem;
+      color: #4a6a8a;
+      text-align: center;
+      margin-top: 8px;
+      font-weight: 500;
+      line-height: 1.5;
+    }
+    .n2w-help kbd {
+      background: linear-gradient(180deg, #f0f6ff 0%, #d8e8fb 100%);
+      border: 1px solid #a8c8f0;
+      border-radius: 3px;
+      padding: 1px 6px;
+      font-family: 'Tahoma', sans-serif;
+      font-size: 0.66rem;
+      font-weight: 700;
+      color: #0a2862;
+      box-shadow: inset 0 1px 0 #ffffff;
+    }
+
     @media (max-width: 1200px) {
-      .window, .window-price, .window-load, .window-cash, .window-notepad, .window-vehicle, .window-invoice, .window-settings {
+      .window, .window-price, .window-load, .window-cash, .window-notepad, .window-vehicle, .window-invoice, .window-settings, .window-number-word {
         position: relative; top: auto !important; left: auto !important; right: auto !important;
         margin: 0 auto 20px auto; max-width: 540px; width: 100%;
       }
@@ -2310,6 +2539,7 @@
       .window-invoice { max-width: 840px; }
       .window-price { max-width: 580px; right: auto; }
       .window-settings { max-width: 560px; }
+      .window-number-word { max-width: 520px; }
       body { overflow-y: auto; padding: 20px 12px calc(var(--taskbar-height) + 20px) 12px; }
       .input-row-five { flex-wrap: wrap; }
       .input-row-five .input-group { flex: 1 1 18%; width: auto; }
@@ -2394,6 +2624,9 @@
     </div>
   </div>
 
+  <!-- ============================================================
+       BEAUTIFUL CLOCK GADGET — no title, numbers 1-12 shown
+       ============================================================ -->
   <div class="desktop-gadget" id="desktopGadget" title="Drag to move">
     <div class="gadget-grip"></div>
     <div class="gadget-analog" id="gadgetAnalog">
@@ -2414,6 +2647,43 @@
       <button class="cal-nav-btn" id="calNextMonth" title="Next month">▶</button>
     </div>
     <div class="cal-grid" id="calGrid"></div>
+  </div>
+
+  <!-- NUMBER TO WORD -->
+  <div class="window-number-word" id="numberWordWindow">
+    <div class="title-bar" id="numberWordTitleBar">
+      <div class="title-text"><span>🔢</span> Number to Word</div>
+      <div class="caption-buttons">
+        <div class="caption-btn minimize" data-minimize="numberWordWindow" title="Minimize">_</div>
+        <div class="caption-btn maximize" data-maximize="numberWordWindow" title="Maximize">□</div>
+        <div class="caption-btn close" data-close="numberWordWindow" title="Close (remove from taskbar)">✕</div>
+      </div>
+    </div>
+
+    <div class="window-content">
+      <div class="aero-info">
+        <span class="badge">💡</span>
+        <span style="font-size:0.74rem; color:#0a2862;">Type a number and press <strong>Enter</strong> — the text box will clear automatically.</span>
+      </div>
+
+      <div class="n2w-input-row">
+        <div class="input-group">
+          <label><span>🔢</span> Enter Number</label>
+          <div class="input-wrap">
+            <input type="text" id="n2wInput" placeholder="e.g. 1000" autocomplete="off" inputmode="numeric">
+            <span class="unit">#</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="n2w-result-box" id="n2wResultBox">
+        <div class="n2w-placeholder">Result will appear here…</div>
+      </div>
+
+      <div class="n2w-help">
+        Examples: <kbd>1000</kbd> → One Thousand &nbsp;·&nbsp; <kbd>25</kbd> → Twenty Five &nbsp;·&nbsp; <kbd>999999</kbd> → Nine Hundred Ninety Nine Thousand Nine Hundred Ninety Nine
+      </div>
+    </div>
   </div>
 
   <!-- PACKING CALCULATOR -->
@@ -3112,6 +3382,10 @@
       <span class="tb-icon">📦</span>
       <span class="tb-label">Packing Calculator</span>
     </div>
+    <div class="taskbar-item" id="taskbarNumberWord" data-restore="numberWordWindow" style="display:none;">
+      <span class="tb-icon">🔢</span>
+      <span class="tb-label">Number to Word</span>
+    </div>
     <div class="taskbar-item" id="taskbarPrice" data-restore="priceWindow" style="display:none;">
       <span class="tb-icon">💰</span>
       <span class="tb-label">Products</span>
@@ -3174,6 +3448,8 @@
     // ==================== BOOT OVERLAY CONTROL ====================
     const bootOverlay = document.getElementById('bootOverlay');
     const bootStatus = document.getElementById('bootStatus');
+    const BOOT_START_TIME = Date.now();
+    const MIN_BOOT_DURATION = 1800;
 
     function setBootStatus(text, type = '') {
       if (!bootStatus) return;
@@ -3187,24 +3463,28 @@
       }
     });
 
-    function revealDesktop() {
+    async function revealDesktop() {
+      const elapsed = Date.now() - BOOT_START_TIME;
+      const remaining = Math.max(0, MIN_BOOT_DURATION - elapsed);
+      if (remaining > 0) {
+        setBootStatus('✨ Preparing desktop…', 'ok');
+        await new Promise(r => setTimeout(r, remaining));
+      }
       document.body.classList.remove('not-connected');
       if (bootOverlay) {
         setBootStatus('✅ Ready — welcome to KCST Windows XP', 'ok');
         bootOverlay.classList.add('hidden');
-        setTimeout(() => { bootOverlay.style.display = 'none'; }, 400);
+        setTimeout(() => { bootOverlay.style.display = 'none'; }, 650);
       }
     }
 
-    // Fast boot: force reveal after 4s maximum, no matter what
     const bootTimeout = setTimeout(() => {
       if (document.body.classList.contains('not-connected')) {
         setBootStatus('⚠️ Loading in background…', 'error');
         revealDesktop();
       }
-    }, 4000);
+    }, 6000);
 
-    // Helper: race a promise against a timeout so slow DB calls never block boot
     function withTimeout(promise, ms = 3000) {
       return Promise.race([
         promise,
@@ -3250,6 +3530,128 @@
         return String(s).replace(/[&<>"']/g, c => ({
           '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
         }[c]));
+      }
+
+      // ==================== NUMBER TO WORD ENGINE ====================
+      const ONES = [
+        '', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine',
+        'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen',
+        'Seventeen', 'Eighteen', 'Nineteen'
+      ];
+      const TENS = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+      const SCALES = ['', 'Thousand', 'Million', 'Billion', 'Trillion'];
+
+      function chunkToWords(n) {
+        // n is 0..999
+        let str = '';
+        const hundreds = Math.floor(n / 100);
+        const remainder = n % 100;
+        if (hundreds > 0) {
+          str += ONES[hundreds] + ' Hundred';
+          if (remainder > 0) str += ' ';
+        }
+        if (remainder >= 20) {
+          const t = Math.floor(remainder / 10);
+          const o = remainder % 10;
+          str += TENS[t];
+          if (o > 0) str += ' ' + ONES[o];
+        } else if (remainder > 0) {
+          str += ONES[remainder];
+        }
+        return str;
+      }
+
+      function numberToWords(num) {
+        // Handles integer input as string or number (up to ~trillions)
+        const str = String(num).trim();
+        if (str === '') return '';
+        if (!/^-?\d+$/.test(str)) return null;
+
+        let negative = false;
+        let digits = str;
+        if (digits.startsWith('-')) { negative = true; digits = digits.slice(1); }
+
+        // Strip leading zeros
+        digits = digits.replace(/^0+/, '');
+        if (digits === '') return 'Zero';
+
+        // Group digits into chunks of 3
+        const chunks = [];
+        let i = digits.length;
+        while (i > 0) {
+          const start = Math.max(0, i - 3);
+          chunks.unshift(parseInt(digits.slice(start, i), 10));
+          i = start;
+        }
+
+        if (chunks.length > SCALES.length) return null; // too large
+
+        const parts = [];
+        for (let c = 0; c < chunks.length; c++) {
+          const chunk = chunks[c];
+          if (chunk === 0) continue;
+          const scaleIndex = chunks.length - 1 - c;
+          const chunkWords = chunkToWords(chunk);
+          if (scaleIndex > 0) {
+            parts.push(chunkWords + ' ' + SCALES[scaleIndex]);
+          } else {
+            parts.push(chunkWords);
+          }
+        }
+
+        let result = parts.join(' ');
+        if (negative) result = 'Negative ' + result;
+        return result;
+      }
+
+      // ==================== NUMBER TO WORD UI ====================
+      const numberWordWindow = document.getElementById('numberWordWindow');
+      const numberWordTitleBar = document.getElementById('numberWordTitleBar');
+      const n2wInput = document.getElementById('n2wInput');
+      const n2wResultBox = document.getElementById('n2wResultBox');
+
+      function renderN2WResult(numberText, wordText, isError = false) {
+        if (isError) {
+          n2wResultBox.innerHTML = `<div class="n2w-error">${escapeHtml(wordText)}</div>`;
+          return;
+        }
+        if (!numberText) {
+          n2wResultBox.innerHTML = `<div class="n2w-placeholder">Result will appear here…</div>`;
+          return;
+        }
+        n2wResultBox.innerHTML = `
+          <div class="n2w-number-display">${escapeHtml(numberText)}</div>
+          <div class="n2w-word-display">${escapeHtml(wordText)}</div>
+        `;
+      }
+
+      function handleN2WSubmit() {
+        const raw = n2wInput.value.trim();
+        if (raw === '') { renderN2WResult('', '', false); return; }
+        const cleaned = raw.replace(/,/g, '').replace(/\s+/g, '');
+        if (!/^-?\d+$/.test(cleaned)) {
+          renderN2WResult('', '⚠️ Please enter a valid integer number.', true);
+          n2wInput.value = '';
+          return;
+        }
+        const words = numberToWords(cleaned);
+        if (words === null) {
+          renderN2WResult('', '⚠️ Number too large (max ~999 Trillion).', true);
+          n2wInput.value = '';
+          return;
+        }
+        renderN2WResult(cleaned, words, false);
+        // Clear the input box after Enter (as requested)
+        n2wInput.value = '';
+      }
+
+      if (n2wInput) {
+        n2wInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            handleN2WSubmit();
+          }
+        });
       }
 
       // ==================== COMPANY SETTINGS ====================
@@ -3693,7 +4095,7 @@
       ctxPersonalize.addEventListener('click', () => { hideDesktopContextMenu(); openWallpaperMini(); });
 
       document.body.addEventListener('contextmenu', (e) => {
-        if (e.target.closest('.window, .window-price, .window-load, .window-cash, .window-notepad, .window-vehicle, .window-invoice, .window-settings, .startbar, .start-menu, .window-modal-overlay, .desktop-gadget, .desktop-calendar, .wallpaper-mini-window, .desktop-context-menu')) return;
+        if (e.target.closest('.window, .window-price, .window-load, .window-cash, .window-notepad, .window-vehicle, .window-invoice, .window-settings, .window-number-word, .startbar, .start-menu, .window-modal-overlay, .desktop-gadget, .desktop-calendar, .wallpaper-mini-window, .desktop-context-menu')) return;
         e.preventDefault();
         showDesktopContextMenu(e.clientX, e.clientY);
       });
@@ -4007,12 +4409,21 @@
       const gadgetDate = document.getElementById('gadgetDate');
       const gadgetDay = document.getElementById('gadgetDay');
 
-      (function generateTicks() {
-        for (let i = 0; i < 12; i++) {
-          const tick = document.createElement('div');
-          tick.className = 'gadget-tick' + (i % 3 === 0 ? ' major' : '');
-          tick.style.transform = `translate(-50%, -50%) rotate(${i * 30}deg) translateY(-54px)`;
-          gadgetAnalog.appendChild(tick);
+      // Generate numbers 1–12 around the clock face
+      (function generateClockNumbers() {
+        const CLOCK_RADIUS = 55; // px from center to number position
+        for (let i = 1; i <= 12; i++) {
+          const angleDeg = i * 30 - 90; // 12 at top, 1 at 30°, etc.
+          const angleRad = angleDeg * Math.PI / 180;
+          const x = Math.cos(angleRad) * CLOCK_RADIUS;
+          const y = Math.sin(angleRad) * CLOCK_RADIUS;
+          const numEl = document.createElement('div');
+          numEl.className = 'gadget-number';
+          numEl.textContent = String(i);
+          numEl.style.left = `calc(50% + ${x}px)`;
+          numEl.style.top = `calc(50% + ${y}px)`;
+          numEl.style.transform = 'translate(-50%, -50%)';
+          gadgetAnalog.appendChild(numEl);
         }
       })();
 
@@ -4024,7 +4435,7 @@
         const m = now.getMinutes();
         const s = now.getSeconds();
         const pad = (n) => String(n).padStart(2, '0');
-        gadgetTime.innerHTML = `${pad(h)}:${pad(m)}<span class="seconds">:${pad(s)}</span><span class="ampm">${ampm}</span>`;
+        gadgetTime.innerHTML = `${pad(h)}:${pad(m)}<span class="seconds">${pad(s)}</span><span class="ampm">${ampm}</span>`;
         gadgetDate.textContent = formatDateDDMMYYYY(now);
         const dayNames = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
         gadgetDay.textContent = dayNames[now.getDay()];
@@ -4264,6 +4675,7 @@
       const invoiceStatusDot = document.getElementById('invoiceStatusDot');
 
       makeDraggable(calcWindow, calcTitleBar);
+      makeDraggable(numberWordWindow, numberWordTitleBar);
       makeDraggable(priceWindow, priceTitleBar);
       makeDraggable(loadWindow, loadTitleBar);
       makeDraggable(cashWindow, cashTitleBar);
@@ -4272,9 +4684,10 @@
       makeDraggable(invoiceWindow, invoiceTitleBar);
       makeDraggable(settingsWindow, settingsTitleBar);
 
-      [calcWindow, priceWindow, loadWindow, cashWindow, notepadWindow, vehicleWindow, invoiceWindow, settingsWindow].forEach(addResizeHandles);
+      [calcWindow, numberWordWindow, priceWindow, loadWindow, cashWindow, notepadWindow, vehicleWindow, invoiceWindow, settingsWindow].forEach(addResizeHandles);
 
       calcWindow.addEventListener('mousedown', () => bringToFront(calcWindow));
+      numberWordWindow.addEventListener('mousedown', () => bringToFront(numberWordWindow));
       priceWindow.addEventListener('mousedown', () => bringToFront(priceWindow));
       loadWindow.addEventListener('mousedown', () => bringToFront(loadWindow));
       cashWindow.addEventListener('mousedown', () => bringToFront(cashWindow));
@@ -4298,6 +4711,7 @@
 
       const windowState = {
         calcWindow: { minimized: false, maximized: false, origRect: null },
+        numberWordWindow: { minimized: false, maximized: false, origRect: null },
         priceWindow: { minimized: false, maximized: false, origRect: null },
         loadWindow: { minimized: false, maximized: false, origRect: null },
         cashWindow: { minimized: false, maximized: false, origRect: null },
@@ -6911,6 +7325,7 @@
       // ==================== START MENU BUILD ====================
       const XP_PROGRAMS = [
         { id: 'calcWindow', icon: '📦', name: 'Packing Calculator', desc: 'Calculate packing quantities' },
+        { id: 'numberWordWindow', icon: '🔢', name: 'Number to Word', desc: 'Convert numbers to words' },
         { id: 'priceWindow', icon: '💰', name: 'Products', desc: 'Manage products & prices' },
         { id: 'loadWindow', icon: '🚚', name: 'Load Calculator', desc: 'Calculate truck loads' },
         { id: 'cashWindow', icon: '💵', name: 'Cash Collection', desc: 'Record cash collections' },
@@ -7008,6 +7423,7 @@
       // ==================== MINIMIZE / MAXIMIZE / CLOSE ====================
       function updateTaskbar() {
         const tbCalc = document.getElementById('taskbarCalc');
+        const tbNumberWord = document.getElementById('taskbarNumberWord');
         const tbPrice = document.getElementById('taskbarPrice');
         const tbLoad = document.getElementById('taskbarLoad');
         const tbCash = document.getElementById('taskbarCash');
@@ -7016,9 +7432,9 @@
         const tbInvoice = document.getElementById('taskbarInvoice');
         const tbSettings = document.getElementById('taskbarSettings');
         [
-          ['calcWindow', tbCalc], ['priceWindow', tbPrice], ['loadWindow', tbLoad],
-          ['cashWindow', tbCash], ['notepadWindow', tbNotepad], ['vehicleWindow', tbVehicle],
-          ['invoiceWindow', tbInvoice], ['settingsWindow', tbSettings]
+          ['calcWindow', tbCalc], ['numberWordWindow', tbNumberWord], ['priceWindow', tbPrice],
+          ['loadWindow', tbLoad], ['cashWindow', tbCash], ['notepadWindow', tbNotepad],
+          ['vehicleWindow', tbVehicle], ['invoiceWindow', tbInvoice], ['settingsWindow', tbSettings]
         ].forEach(([id, tb]) => {
           const state = windowState[id];
           if (tb && tb.style.display !== 'none') {
@@ -7047,6 +7463,9 @@
         if (!winEl.style.left && !winEl.style.top) centerWindow(winEl);
         bringToFront(winEl);
         updateTaskbar();
+        if (winId === 'numberWordWindow') {
+          setTimeout(() => { n2wInput && n2wInput.focus(); }, 50);
+        }
       }
 
       document.querySelectorAll('.caption-btn.minimize').forEach(btn => {
@@ -7151,7 +7570,7 @@
 
       // ==================== INIT ====================
       // Hide all windows BEFORE anything loads — no auto-open
-      ['calcWindow', 'priceWindow', 'loadWindow', 'cashWindow', 'notepadWindow', 'vehicleWindow', 'invoiceWindow', 'settingsWindow'].forEach(id => {
+      ['calcWindow', 'numberWordWindow', 'priceWindow', 'loadWindow', 'cashWindow', 'notepadWindow', 'vehicleWindow', 'invoiceWindow', 'settingsWindow'].forEach(id => {
         const winEl = document.getElementById(id);
         if (winEl) {
           winEl.classList.add('minimized');
@@ -7163,11 +7582,7 @@
       });
       updateTaskbar();
 
-      // Reveal desktop IMMEDIATELY — don't wait for DB
-      clearTimeout(bootTimeout);
-      revealDesktop();
-
-      // Now load data silently in the background (capped with timeouts so no hang)
+      // Load data in parallel (capped with timeouts so nothing hangs)
       await Promise.allSettled([
         loadCompanySettings(),
         loadUploadedWallpapers(),
@@ -7185,7 +7600,7 @@
       calculateCash();
 
       // Keep all windows closed after loading — user must open them via Start Menu
-      ['calcWindow', 'priceWindow', 'loadWindow', 'cashWindow', 'notepadWindow', 'vehicleWindow', 'invoiceWindow', 'settingsWindow'].forEach(id => {
+      ['calcWindow', 'numberWordWindow', 'priceWindow', 'loadWindow', 'cashWindow', 'notepadWindow', 'vehicleWindow', 'invoiceWindow', 'settingsWindow'].forEach(id => {
         const winEl = document.getElementById(id);
         if (winEl) {
           winEl.classList.add('minimized');
@@ -7195,6 +7610,10 @@
         hideTaskbarItem(id);
       });
       updateTaskbar();
+
+      // Reveal desktop (with minimum 1.8s boot duration so the loading screen is visible at medium speed)
+      clearTimeout(bootTimeout);
+      revealDesktop();
     });
   </script>
 </body>
