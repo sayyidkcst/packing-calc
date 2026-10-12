@@ -6974,15 +6974,105 @@
         renderStockTable();
       }
 
+      // ---- searchable product list (same look and keys as Invoice entry) ----
+      const stockSuggestEl = document.createElement('div');
+      stockSuggestEl.className = 'product-suggest-list';
+      stockSuggestEl.style.position = 'fixed';
+      document.body.appendChild(stockSuggestEl);
+      let stockSuggestCtx = null;
+
+      function hideStockSuggest() {
+        stockSuggestEl.classList.remove('open');
+        if (stockSuggestCtx) { stockSuggestCtx.hi = -1; stockSuggestCtx.matches = []; }
+      }
+      function repositionStockSuggest() {
+        if (!stockSuggestCtx || !stockSuggestEl.classList.contains('open')) return;
+        const r = stockSuggestCtx.input.getBoundingClientRect();
+        stockSuggestEl.style.left = r.left + 'px';
+        stockSuggestEl.style.top = (r.bottom + 2) + 'px';
+        stockSuggestEl.style.minWidth = Math.max(340, r.width) + 'px';
+      }
+      document.addEventListener('mousedown', (e) => {
+        if (stockSuggestCtx && !stockSuggestEl.contains(e.target) && e.target !== stockSuggestCtx.input) hideStockSuggest();
+      });
+      window.addEventListener('resize', repositionStockSuggest);
+      window.addEventListener('scroll', repositionStockSuggest, true);
+      stockSuggestEl.addEventListener('mousedown', (e) => {
+        const item = e.target.closest('.product-suggest-item');
+        if (!item || !stockSuggestCtx) return;
+        e.preventDefault();
+        const prod = products.find(p => String(p.id) === item.dataset.productId);
+        const ctx = stockSuggestCtx;
+        hideStockSuggest();
+        if (prod) ctx.onPick(prod, true);
+      });
+
+      function attachStockSuggest(input, onPick) {
+        const ctx = { input, onPick, hi: -1, matches: [] };
+        const filter = () => {
+          const q = input.value.trim().toLowerCase();
+          return products.filter(p => !q || p.name.toLowerCase().includes(q) || (p.customer || '').toLowerCase().includes(q));
+        };
+        const render = (matches) => {
+          stockSuggestCtx = ctx;
+          ctx.matches = matches.slice(0, 50);
+          ctx.hi = ctx.matches.length ? 0 : -1;
+          if (!ctx.matches.length) {
+            stockSuggestEl.innerHTML = `<div class="product-suggest-empty">${products.length === 0 ? 'No products available' : 'No products found'}</div>`;
+          } else {
+            stockSuggestEl.innerHTML = ctx.matches.map((p, i) => `<div class="product-suggest-item${i === ctx.hi ? ' highlighted' : ''}" data-product-id="${escapeHtml(String(p.id))}">
+              <span class="ps-name">${escapeHtml(p.name)}</span>
+              <span class="ps-meta">
+                ${p.size ? `<span class="ps-unit">${escapeHtml(p.size + ' ' + p.sizeUnit)}</span>` : ''}
+                <span class="ps-pcs">${p.pcsPerBag || 0} pcs</span>
+                ${p.customer ? `<span class="ps-pcs">${escapeHtml(p.customer)}</span>` : ''}
+              </span>
+            </div>`).join('');
+          }
+          stockSuggestEl.classList.add('open');
+          repositionStockSuggest();
+        };
+        const open = () => {
+          if (!input.value.trim()) { hideStockSuggest(); return; }   // empty box -> no list
+          render(filter());
+        };
+        const paint = () => {
+          const items = stockSuggestEl.querySelectorAll('.product-suggest-item');
+          items.forEach((it, i) => it.classList.toggle('highlighted', i === ctx.hi));
+          if (items[ctx.hi]) items[ctx.hi].scrollIntoView({ block: 'nearest' });
+        };
+        input.addEventListener('input', open);
+        input.addEventListener('focus', open);
+        input.addEventListener('keydown', (e) => {
+          const isOpen = stockSuggestEl.classList.contains('open') && stockSuggestCtx === ctx;
+          if (!isOpen) { if (e.key === 'ArrowDown') { e.preventDefault(); open(); } return; }
+          const n = ctx.matches.length;
+          if (e.key === 'ArrowDown' && n) { e.preventDefault(); ctx.hi = (ctx.hi + 1) % n; paint(); }
+          else if (e.key === 'ArrowUp' && n) { e.preventDefault(); ctx.hi = (ctx.hi - 1 + n) % n; paint(); }
+          else if (e.key === 'Home' && n) { e.preventDefault(); ctx.hi = 0; paint(); }
+          else if (e.key === 'End' && n) { e.preventDefault(); ctx.hi = n - 1; paint(); }
+          else if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); hideStockSuggest(); }
+          else if (e.key === 'Enter' && n) {
+            e.preventDefault(); e.stopImmediatePropagation();
+            const prod = ctx.matches[ctx.hi]; hideStockSuggest();
+            if (prod) onPick(prod, true);
+          } else if (e.key === 'Tab' && n && input.value.trim()) {
+            const prod = ctx.matches[ctx.hi]; hideStockSuggest();
+            if (prod) onPick(prod, false);
+          }
+        });
+      }
+
       function openStockModal(existing = null) {
         const isEdit = !!existing;
         const s = existing || {};
-        const names = [...new Set([...products.map(p => p.name), ...stockItems.map(i => i.name)])].sort();
-        const nameOptions = names.map(n => `<option value="${escapeHtml(n)}">`).join('');
+        hideStockSuggest();
+        const sameSize = (p) => String(Number(p.size) || '') === String(Number(s.size) || '') && (!p.size || p.sizeUnit === s.sizeUnit);
+        let stockPicked = isEdit ? (products.find(p => p.name === s.name && sameSize(p)) || products.find(p => p.name === s.name) || null) : null;
         const sizeUnitVal = s.sizeUnit || 'kg';
         const html = `
           <div class="modal-error" id="stockModalError"></div>
-          <div class="modal-field"><label>📦 Item Name</label><div class="input-wrap"><input type="text" id="stockName" list="stockNameList" placeholder="Enter or pick item name" value="${isEdit ? escapeHtml(s.name) : ''}"></div><datalist id="stockNameList">${nameOptions}</datalist></div>
+          <div class="modal-field"><label>📦 Product</label><div class="input-wrap"><input type="text" id="stockName" placeholder="Type product name…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" value="${isEdit ? escapeHtml(s.name) : ''}"></div></div>
           <div class="modal-field"><label>📐 Size</label>
             <div class="size-input-row">
               <div class="input-wrap size-value-input"><input type="number" id="stockSize" min="0" step="0.01" placeholder="e.g. 10" value="${isEdit ? s.size : ''}"></div>
@@ -7010,7 +7100,9 @@
           const saveBtn = content.querySelector('#modalSaveBtn');
           const fail = (msg, el) => { errorEl.textContent = msg; errorEl.classList.add('show'); if (el) el.focus(); return false; };
           errorEl.classList.remove('show'); errorEl.textContent = '';
-          const name = nameEl.value.trim();
+          const typed = nameEl.value.trim();
+          const chosen = stockPicked || products.find(p => p.name.toLowerCase() === typed.toLowerCase()) || null;
+          const name = chosen ? chosen.name : typed;   // not in Products -> saved with the typed name
           const sizeRaw = content.querySelector('#stockSize').value.trim();
           const sizeUnitSel = content.querySelector('#stockSizeUnit').value;
           const num = (id) => { const v = content.querySelector(id).value.trim(); return v === '' ? 0 : Number(v); };
@@ -7061,15 +7153,25 @@
           const pcsTotal = (parseInt(bagsEl.value) || 0) * (parseInt(ppbEl.value) || 0) + (parseInt(pcsEl.value) || 0);
           kgEl.value = pcsTotal ? parseFloat((pcsTotal * w).toFixed(3)) : '';
         };
-        nameEl.addEventListener('change', () => {
-          const p = findProductByName(nameEl.value);
-          if (p) { if (!ppbEl.value) ppbEl.value = p.pcsPerBag; if (!sizeEl.value && p.size) { sizeEl.value = p.size; sizeUnitEl.value = p.sizeUnit || 'gm'; kgManual = false; } }
+        const pickProduct = (p, focusNext) => {
+          stockPicked = p;
+          nameEl.value = p.name;
+          sizeEl.value = p.size || '';
+          sizeUnitEl.value = (p.sizeUnit === 'gm' || p.sizeUnit === 'kg') ? p.sizeUnit : 'kg';
+          ppbEl.value = p.pcsPerBag || '';
+          kgManual = false;
           recalcKg();
+          if (focusNext) setTimeout(() => { bagsEl.focus(); bagsEl.select(); }, 30);
+        };
+        nameEl.addEventListener('input', () => {
+          if (stockPicked && nameEl.value.trim().toLowerCase() !== stockPicked.name.toLowerCase()) stockPicked = null;
         });
+        attachStockSuggest(nameEl, pickProduct);
         [bagsEl, pcsEl, ppbEl, sizeEl, sizeUnitEl].forEach(el => el.addEventListener('input', () => { kgManual = false; recalcKg(); }));
         kgEl.addEventListener('input', () => { kgManual = true; });
         recalcKg();
 
+        setTimeout(() => (isEdit ? sizeEl : nameEl).focus(), 50);   // product search ready for typing / arrow keys
         // Enter moves to the next box; Enter on the last box saves
         const enterOrder = [nameEl, sizeEl, ppbEl, bagsEl, pcsEl, kgEl];
         enterOrder.forEach((el, i) => el.addEventListener('keydown', (e) => {
