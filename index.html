@@ -223,6 +223,7 @@
     body.not-connected .window-notepad,
     body.not-connected .window-vehicle,
     body.not-connected .window-invoice,
+    body.not-connected .window-stock,
     body.not-connected .window-settings,
     body.not-connected .window-number-word,
     body.not-connected .startbar,
@@ -570,7 +571,7 @@
     .cal-cell:hover:not(.header):not(.empty) { background: #c8dcf0; }
 
     /* ==================== WINDOW BASE — KCST WINDOWS XP LUNA BLUE ==================== */
-    .window, .window-price, .window-load, .window-cash, .window-notepad, .window-vehicle, .window-invoice, .window-settings, .window-number-word {
+    .window, .window-price, .window-load, .window-cash, .window-notepad, .window-vehicle, .window-invoice, .window-stock, .window-settings, .window-number-word {
       position: absolute;
       background: #ece9d8;
       border-radius: 8px 8px 0 0;
@@ -589,24 +590,25 @@
     .window-notepad { width: 660px; max-width: calc(100vw - 40px); z-index: 14; }
     .window-vehicle { width: 1000px; max-width: calc(100vw - 40px); z-index: 15; }
     .window-invoice { width: 840px; max-width: calc(100vw - 40px); z-index: 16; }
+    .window-stock { width: 780px; max-width: calc(100vw - 40px); z-index: 19; }
     .window-settings { width: 560px; max-width: calc(100vw - 40px); z-index: 17; }
     .window-number-word { width: 520px; max-width: calc(100vw - 40px); z-index: 18; }
 
-    .window.minimized, .window-price.minimized, .window-load.minimized, .window-cash.minimized, .window-notepad.minimized, .window-vehicle.minimized, .window-invoice.minimized, .window-settings.minimized, .window-number-word.minimized { display: none !important; }
+    .window.minimized, .window-price.minimized, .window-load.minimized, .window-cash.minimized, .window-notepad.minimized, .window-vehicle.minimized, .window-invoice.minimized, .window-stock.minimized, .window-settings.minimized, .window-number-word.minimized { display: none !important; }
 
-    .window.maximized, .window-price.maximized, .window-load.maximized, .window-cash.maximized, .window-notepad.maximized, .window-vehicle.maximized, .window-invoice.maximized, .window-settings.maximized, .window-number-word.maximized {
+    .window.maximized, .window-price.maximized, .window-load.maximized, .window-cash.maximized, .window-notepad.maximized, .window-vehicle.maximized, .window-invoice.maximized, .window-stock.maximized, .window-settings.maximized, .window-number-word.maximized {
       top: 0 !important; left: 0 !important; right: 0 !important;
       width: 100vw !important; max-width: 100vw !important;
       height: calc(100vh - var(--taskbar-height)) !important;
       max-height: calc(100vh - var(--taskbar-height)) !important;
       border-radius: 0; border-top: none; border-left: none; border-right: none; border-bottom: none;
     }
-    .window.maximized .title-bar, .window-price.maximized .title-bar, .window-load.maximized .title-bar, .window-cash.maximized .title-bar, .window-notepad.maximized .title-bar, .window-vehicle.maximized .title-bar, .window-invoice.maximized .title-bar, .window-settings.maximized .title-bar, .window-number-word.maximized .title-bar {
+    .window.maximized .title-bar, .window-price.maximized .title-bar, .window-load.maximized .title-bar, .window-cash.maximized .title-bar, .window-notepad.maximized .title-bar, .window-vehicle.maximized .title-bar, .window-invoice.maximized .title-bar, .window-stock.maximized .title-bar, .window-settings.maximized .title-bar, .window-number-word.maximized .title-bar {
       border-radius: 0; cursor: default !important;
     }
 
-    .window.snap-left, .window-price.snap-left, .window-load.snap-left, .window-cash.snap-left, .window-notepad.snap-left, .window-vehicle.snap-left, .window-invoice.snap-left, .window-settings.snap-left, .window-number-word.snap-left,
-    .window.snap-right, .window-price.snap-right, .window-load.snap-right, .window-cash.snap-right, .window-notepad.snap-right, .window-vehicle.snap-right, .window-invoice.snap-right, .window-settings.snap-right, .window-number-word.snap-right {
+    .window.snap-left, .window-price.snap-left, .window-load.snap-left, .window-cash.snap-left, .window-notepad.snap-left, .window-vehicle.snap-left, .window-invoice.snap-left, .window-stock.snap-left, .window-settings.snap-left, .window-number-word.snap-left,
+    .window.snap-right, .window-price.snap-right, .window-load.snap-right, .window-cash.snap-right, .window-notepad.snap-right, .window-vehicle.snap-right, .window-invoice.snap-right, .window-stock.snap-right, .window-settings.snap-right, .window-number-word.snap-right {
       transition: top 0.15s ease, left 0.15s ease, width 0.15s ease, height 0.15s ease;
     }
 
@@ -2122,7 +2124,7 @@
     .resize-handle.se { bottom: 0; right: 0; width: 10px; height: 10px; cursor: se-resize; }
     .resize-handle.sw { bottom: 0; left: 0; width: 10px; height: 10px; cursor: sw-resize; }
 
-    .window.resizing, .window-price.resizing, .window-load.resizing, .window-cash.resizing, .window-notepad.resizing, .window-vehicle.resizing, .window-invoice.resizing, .window-settings.resizing, .window-number-word.resizing {
+    .window.resizing, .window-price.resizing, .window-load.resizing, .window-cash.resizing, .window-notepad.resizing, .window-vehicle.resizing, .window-invoice.resizing, .window-stock.resizing, .window-settings.resizing, .window-number-word.resizing {
       transition: none !important; user-select: none;
     }
 
@@ -2152,6 +2154,26 @@
     .window-vehicle .price-table tbody td.date-cell.expiring {
       color: #e67e22; font-weight: 700;
     }
+
+    /* ---------- STOCK WINDOW SPECIFIC ---------- */
+    .window-stock .price-table tbody td.stock-name-cell { font-weight: 700; color: #0a2862; }
+    .window-stock .price-table tbody td.stock-unit-cell { text-align: center; font-weight: 700; color: #0a2862; font-size: 0.72rem; }
+    .window-stock .price-table tbody td.stock-num-cell {
+      text-align: center; font-weight: 700; color: #15419c;
+      font-family: 'Tahoma', Consolas, monospace; white-space: nowrap;
+    }
+    .window-stock .price-table tbody td.stock-kg-cell {
+      text-align: right; font-weight: 700; color: #0a2862;
+      font-family: 'Tahoma', Consolas, monospace; white-space: nowrap;
+    }
+    .window-stock .stock-sub { font-size: 0.62rem; font-weight: 500; color: #4a6a8a; margin-top: 1px; }
+    .window-stock .stock-kg-field .input-wrap { width: 120px; }
+    .window-stock .stock-kg-field input { width: 100%; text-align: right; }
+    .window-stock .stock-hint { font-size: 0.66rem; color: #4a6a8a; margin-top: 3px; }
+    .window-stock .stock-mini-row { display: flex; gap: 10px; align-items: flex-start; }
+    .window-stock .stock-mini-row .modal-field { flex: 0 0 auto; margin-bottom: 8px; }
+    .window-stock .stock-mini-row .input-wrap { width: 84px; }
+    .window-stock .stock-mini-row input { width: 100%; text-align: center; padding-left: 6px; padding-right: 6px; }
 
     /* ---------- INVOICE WINDOW SPECIFIC ---------- */
     .window-invoice .price-table tbody td.invoice-number-cell {
@@ -2532,13 +2554,14 @@
     }
 
     @media (max-width: 1200px) {
-      .window, .window-price, .window-load, .window-cash, .window-notepad, .window-vehicle, .window-invoice, .window-settings, .window-number-word {
+      .window, .window-price, .window-load, .window-cash, .window-notepad, .window-vehicle, .window-invoice, .window-stock, .window-settings, .window-number-word {
         position: relative; top: auto !important; left: auto !important; right: auto !important;
         margin: 0 auto 20px auto; max-width: 540px; width: 100%;
       }
       .window-notepad { max-width: 660px; }
       .window-vehicle { max-width: 1000px; }
       .window-invoice { max-width: 840px; }
+      .window-stock { max-width: 780px; }
       .window-price { max-width: 580px; right: auto; }
       .window-settings { max-width: 560px; }
       .window-number-word { max-width: 520px; }
@@ -2574,6 +2597,9 @@
       .window-invoice .price-table { font-size: 0.68rem; }
       .window-invoice .price-table thead th { font-size: 0.6rem; padding: 5px 4px; }
       .window-invoice .price-table tbody td { padding: 5px 4px; }
+      .window-stock .price-table { font-size: 0.68rem; }
+      .window-stock .price-table thead th { font-size: 0.6rem; padding: 5px 4px; }
+      .window-stock .price-table tbody td { padding: 5px 4px; }
       .invoice-items-table { font-size: 0.68rem; }
       .invoice-items-table thead th { font-size: 0.58rem; padding: 4px 3px; }
       .invoice-items-table tbody td { padding: 4px 3px; }
@@ -3149,6 +3175,67 @@
     <div class="loading-overlay" id="vehicleLoading"><div class="loading-spinner"></div></div>
   </div>
 
+  <!-- STOCK LIST -->
+  <div class="window-stock" id="stockWindow">
+    <div class="title-bar" id="stockTitleBar">
+      <div class="title-text">
+        <span>📋</span> Stock List
+        <span class="badge" id="stockCount" style="background:linear-gradient(180deg,#3f7ae0 0%,#15419c 100%); color:white; border-radius:3px; padding:1px 8px; font-size:0.62rem; font-weight:700; border:1px solid #0a2862;">0</span>
+        <span class="status-dot" id="stockStatusDot" title="Database status"></span>
+      </div>
+      <div class="caption-buttons">
+        <div class="caption-btn minimize" data-minimize="stockWindow" title="Minimize">_</div>
+        <div class="caption-btn maximize" data-maximize="stockWindow" title="Maximize">□</div>
+        <div class="caption-btn close" data-close="stockWindow" title="Close (remove from taskbar)">✕</div>
+      </div>
+    </div>
+
+    <div class="window-content" style="flex:1; display:flex; flex-direction:column;">
+      <div class="price-top-actions">
+        <button class="aero-btn primary" id="addStockBtn" type="button">
+          <span>📋</span> Add Stock
+        </button>
+        <button class="aero-btn" id="printStockBtn" type="button">
+          <span>🖨️</span> Print
+        </button>
+        <button class="aero-btn danger" id="clearAllStockBtn" type="button">
+          <span>🗑️</span> Clear All
+        </button>
+      </div>
+
+      <div class="top-row">
+        <div class="search-wrap">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="stockSearchInput" placeholder="Search item..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+          <span class="clear-search" id="clearStockSearchBtn" title="Clear search">✕</span>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <table class="price-table">
+          <thead>
+            <tr>
+              <th>Item Name</th>
+              <th style="text-align:center;">Size</th>
+              <th style="text-align:center;">Pcs/Bag</th>
+              <th style="text-align:center;">Bag</th>
+              <th style="text-align:center;">Pcs</th>
+              <th style="text-align:right;">Total kg</th>
+              <th style="width:64px;"></th>
+            </tr>
+          </thead>
+          <tbody id="stockTableBody">
+            <tr><td colspan="7">
+              <div class="no-results">📋 No stock yet<span class="small">Click "Add Stock" to create your first entry</span></div>
+            </td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="loading-overlay" id="stockLoading"><div class="loading-spinner"></div></div>
+  </div>
+
   <!-- INVOICE WINDOW -->
   <div class="window-invoice" id="invoiceWindow">
     <div class="title-bar" id="invoiceTitleBar">
@@ -3411,6 +3498,10 @@
     <div class="taskbar-item" id="taskbarInvoice" data-restore="invoiceWindow" style="display:none;">
       <span class="tb-icon">🧾</span>
       <span class="tb-label">Invoice</span>
+    </div>
+    <div class="taskbar-item" id="taskbarStock" data-restore="stockWindow" style="display:none;">
+      <span class="tb-icon">📋</span>
+      <span class="tb-label">Stock List</span>
     </div>
     <div class="taskbar-item" id="taskbarSettings" data-restore="settingsWindow" style="display:none;">
       <span class="tb-icon">⚙️</span>
@@ -4092,7 +4183,7 @@
       ctxPersonalize.addEventListener('click', () => { hideDesktopContextMenu(); openWallpaperMini(); });
 
       document.body.addEventListener('contextmenu', (e) => {
-        if (e.target.closest('.window, .window-price, .window-load, .window-cash, .window-notepad, .window-vehicle, .window-invoice, .window-settings, .window-number-word, .startbar, .start-menu, .window-modal-overlay, .desktop-gadget, .desktop-calendar, .wallpaper-mini-window, .desktop-context-menu')) return;
+        if (e.target.closest('.window, .window-price, .window-load, .window-cash, .window-notepad, .window-vehicle, .window-invoice, .window-stock, .window-settings, .window-number-word, .startbar, .start-menu, .window-modal-overlay, .desktop-gadget, .desktop-calendar, .wallpaper-mini-window, .desktop-context-menu')) return;
         e.preventDefault();
         showDesktopContextMenu(e.clientX, e.clientY);
       });
@@ -4669,6 +4760,17 @@
       const clearAllInvoicesBtn = document.getElementById('clearAllInvoicesBtn');
       const invoiceLoading = document.getElementById('invoiceLoading');
       const invoiceStatusDot = document.getElementById('invoiceStatusDot');
+      const stockWindow = document.getElementById('stockWindow');
+      const stockTitleBar = document.getElementById('stockTitleBar');
+      const stockTableBody = document.getElementById('stockTableBody');
+      const stockCount = document.getElementById('stockCount');
+      const stockSearchInput = document.getElementById('stockSearchInput');
+      const clearStockSearchBtn = document.getElementById('clearStockSearchBtn');
+      const addStockBtn = document.getElementById('addStockBtn');
+      const printStockBtn = document.getElementById('printStockBtn');
+      const clearAllStockBtn = document.getElementById('clearAllStockBtn');
+      const stockLoading = document.getElementById('stockLoading');
+      const stockStatusDot = document.getElementById('stockStatusDot');
 
       makeDraggable(calcWindow, calcTitleBar);
       makeDraggable(numberWordWindow, numberWordTitleBar);
@@ -4679,8 +4781,9 @@
       makeDraggable(vehicleWindow, vehicleTitleBar);
       makeDraggable(invoiceWindow, invoiceTitleBar);
       makeDraggable(settingsWindow, settingsTitleBar);
+      makeDraggable(stockWindow, stockTitleBar);
 
-      [calcWindow, numberWordWindow, priceWindow, loadWindow, cashWindow, notepadWindow, vehicleWindow, invoiceWindow, settingsWindow].forEach(addResizeHandles);
+      [calcWindow, numberWordWindow, priceWindow, loadWindow, cashWindow, notepadWindow, vehicleWindow, invoiceWindow, stockWindow, settingsWindow].forEach(addResizeHandles);
 
       calcWindow.addEventListener('mousedown', () => bringToFront(calcWindow));
       numberWordWindow.addEventListener('mousedown', () => bringToFront(numberWordWindow));
@@ -4691,6 +4794,7 @@
       vehicleWindow.addEventListener('mousedown', () => bringToFront(vehicleWindow));
       invoiceWindow.addEventListener('mousedown', () => bringToFront(invoiceWindow));
       settingsWindow.addEventListener('mousedown', () => bringToFront(settingsWindow));
+      stockWindow.addEventListener('mousedown', () => bringToFront(stockWindow));
 
       const fieldOrder = [weightPerPcInput, pcsPerBagInput, numBagsInput, extraPcsInput, returnPcsInput, returnBagsInput];
       const loadFieldOrder = [loadWeightPerPc, loadPcsPerBag, loadTotalKg];
@@ -4704,6 +4808,8 @@
       let selectedVehicleId = null;
       let invoices = [], filteredInvoices = [];
       let selectedInvoiceId = null;
+      let stockItems = [], filteredStock = [];
+      let selectedStockId = null;
 
       const windowState = {
         calcWindow: { minimized: false, maximized: false, origRect: null },
@@ -4714,6 +4820,7 @@
         notepadWindow: { minimized: false, maximized: false, origRect: null },
         vehicleWindow: { minimized: false, maximized: false, origRect: null },
         invoiceWindow: { minimized: false, maximized: false, origRect: null },
+        stockWindow: { minimized: false, maximized: false, origRect: null },
         settingsWindow: { minimized: false, maximized: false, origRect: null }
       };
 
@@ -4759,6 +4866,7 @@
         if (which === 'price') priceLoading.classList.add('active');
         if (which === 'vehicle') vehicleLoading.classList.add('active');
         if (which === 'invoice') invoiceLoading.classList.add('active');
+        if (which === 'stock') stockLoading.classList.add('active');
       }
 
       function hideLoading(which) {
@@ -4766,6 +4874,7 @@
         if (which === 'price') priceLoading.classList.remove('active');
         if (which === 'vehicle') vehicleLoading.classList.remove('active');
         if (which === 'invoice') invoiceLoading.classList.remove('active');
+        if (which === 'stock') stockLoading.classList.remove('active');
       }
 
       // ==================== IN-WINDOW MODAL SYSTEM ====================
@@ -6741,6 +6850,358 @@
         finally { hideLoading('invoice'); }
       });
 
+      // ==================== STOCK LIST ====================
+      // Requires Supabase table "stock_items":
+      //   id uuid pk, name text, size numeric, size_unit text, pcs_per_bag int, bags int, pcs int, total_kg numeric, created_at timestamptz
+      const mapStockRow = (r) => ({
+        id: r.id, name: r.name || '', size: r.size === null || r.size === undefined ? '' : String(r.size), sizeUnit: r.size_unit || 'kg',
+        pcsPerBag: Number(r.pcs_per_bag) || 0, bags: Number(r.bags) || 0,
+        pcs: Number(r.pcs) || 0, totalKg: Number(r.total_kg) || 0
+      });
+
+      const formatQty = (n) => {
+        const v = Number(n) || 0;
+        return Number.isInteger(v) ? String(v) : String(parseFloat(v.toFixed(3)));
+      };
+
+            function findProductByName(name) {
+        const n = (name || '').trim().toLowerCase();
+        return n ? products.find(p => p.name.toLowerCase() === n) : null;
+      }
+      function sizeToKg(size, sizeUnit) {
+        const v = parseFloat(size);
+        if (!v || isNaN(v) || v < 0) return 0;
+        return sizeUnit === 'kg' ? v : v / 1000;
+      }
+
+      // weight of one full bag in kg = Size x Pcs/Bag ('' if unknown)
+      function bagKgText(size, sizeUnit, ppb) {
+        const kg = sizeToKg(size, sizeUnit) * (Number(ppb) || 0);
+        return kg > 0 ? formatQty(parseFloat(kg.toFixed(3))) + ' kg' : '';
+      }
+
+      async function loadStock() {
+        showLoading('stock');
+        stockStatusDot.className = 'status-dot syncing';
+        try {
+          const result = await withTimeout(
+            supabase.from('stock_items').select('*').order('created_at', { ascending: false }),
+            3000
+          );
+          if (!result) throw new Error('Timeout');
+          const { data, error } = result;
+          if (error) throw error;
+          stockItems = (data || []).map(mapStockRow);
+          stockStatusDot.className = 'status-dot online';
+          applyStockFilters();
+        } catch (err) {
+          stockStatusDot.className = 'status-dot offline';
+          stockTableBody.innerHTML = `<tr><td colspan="7"><div class="no-results">⚠️ Database error<span class="small">${escapeHtml(err.message || 'Check that the "stock_items" table exists')}</span></div></td></tr>`;
+        } finally { hideLoading('stock'); }
+      }
+
+      const stockPayload = (i) => ({ name: i.name, size: i.size === '' || i.size === undefined ? null : Number(i.size), size_unit: i.sizeUnit || 'kg', pcs_per_bag: i.pcsPerBag, bags: i.bags, pcs: i.pcs, total_kg: i.totalKg });
+
+      async function saveStock(item) {
+        stockStatusDot.className = 'status-dot syncing';
+        try {
+          const { data, error } = await supabase.from('stock_items').insert([stockPayload(item)]).select().single();
+          if (error) throw error;
+          stockStatusDot.className = 'status-dot online';
+          return mapStockRow(data);
+        } catch (err) { stockStatusDot.className = 'status-dot offline'; throw err; }
+      }
+
+      async function updateStock(id, item) {
+        stockStatusDot.className = 'status-dot syncing';
+        try {
+          const { data, error } = await supabase.from('stock_items').update(stockPayload(item)).eq('id', id).select().single();
+          if (error) throw error;
+          stockStatusDot.className = 'status-dot online';
+          return mapStockRow(data);
+        } catch (err) { stockStatusDot.className = 'status-dot offline'; throw err; }
+      }
+
+      async function deleteStock(id) {
+        stockStatusDot.className = 'status-dot syncing';
+        try {
+          const { error } = await supabase.from('stock_items').delete().eq('id', id);
+          if (error) throw error;
+          stockStatusDot.className = 'status-dot online';
+          return true;
+        } catch (err) { stockStatusDot.className = 'status-dot offline'; throw err; }
+      }
+
+      async function clearAllStock() {
+        stockStatusDot.className = 'status-dot syncing';
+        try {
+          const { error } = await supabase.from('stock_items').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+          if (error) throw error;
+          stockStatusDot.className = 'status-dot online';
+          return true;
+        } catch (err) { stockStatusDot.className = 'status-dot offline'; throw err; }
+      }
+
+      function renderStockTable() {
+        stockCount.textContent = filteredStock.length;
+        if (filteredStock.length === 0) {
+          if (stockItems.length === 0) stockTableBody.innerHTML = `<tr><td colspan="7"><div class="no-results">📋 No stock yet<span class="small">Click "Add Stock" to create your first entry</span></div></td></tr>`;
+          else stockTableBody.innerHTML = `<tr><td colspan="7"><div class="no-results">🔍 No stock matches your search<span class="small">Try a different item name</span></div></td></tr>`;
+          return;
+        }
+        let html = '';
+        filteredStock.forEach(s => {
+          const selected = (s.id === selectedStockId) ? ' selected-row' : '';
+          html += `<tr class="${selected}" data-id="${s.id}">
+            <td class="stock-name-cell">${escapeHtml(s.name)}</td>
+            <td class="stock-unit-cell">${s.size ? escapeHtml(s.size + ' ' + s.sizeUnit) : '—'}</td>
+            <td class="stock-num-cell">${s.pcsPerBag || '—'}${bagKgText(s.size, s.sizeUnit, s.pcsPerBag) ? `<div class="stock-sub">${bagKgText(s.size, s.sizeUnit, s.pcsPerBag)}</div>` : ''}</td>
+            <td class="stock-num-cell">${s.bags}</td>
+            <td class="stock-num-cell">${s.pcs}</td>
+            <td class="stock-kg-cell">${formatQty(s.totalKg)}</td>
+            <td class="action-cell">
+              <button class="row-edit-btn" data-edit-id="${s.id}" title="Edit">✎</button>
+              <button class="row-delete-btn" data-delete-id="${s.id}" title="Delete">✕</button>
+            </td>
+          </tr>`;
+        });
+        stockTableBody.innerHTML = html;
+      }
+
+      function applyStockFilters() {
+        const query = stockSearchInput.value.trim().toLowerCase();
+        filteredStock = stockItems.filter(s => !query || s.name.toLowerCase().includes(query));
+        renderStockTable();
+      }
+
+      function openStockModal(existing = null) {
+        const isEdit = !!existing;
+        const s = existing || {};
+        const names = [...new Set([...products.map(p => p.name), ...stockItems.map(i => i.name)])].sort();
+        const nameOptions = names.map(n => `<option value="${escapeHtml(n)}">`).join('');
+        const sizeUnitVal = s.sizeUnit || 'kg';
+        const html = `
+          <div class="modal-error" id="stockModalError"></div>
+          <div class="modal-field"><label>📦 Item Name</label><div class="input-wrap"><input type="text" id="stockName" list="stockNameList" placeholder="Enter or pick item name" value="${isEdit ? escapeHtml(s.name) : ''}"></div><datalist id="stockNameList">${nameOptions}</datalist></div>
+          <div class="modal-field"><label>📐 Size</label>
+            <div class="size-input-row">
+              <div class="input-wrap size-value-input"><input type="number" id="stockSize" min="0" step="0.01" placeholder="e.g. 10" value="${isEdit ? s.size : ''}"></div>
+              <div class="unit-select-wrap size-unit-select">
+                <select id="stockSizeUnit">
+                  <option value="gm" ${sizeUnitVal === 'gm' ? 'selected' : ''}>gm (grams)</option>
+                  <option value="kg" ${sizeUnitVal === 'kg' ? 'selected' : ''}>kg (kilograms)</option>
+                </select><span class="unit-arrow">▼</span>
+              </div>
+            </div>
+          </div>
+          <div class="stock-mini-row">
+            <div class="modal-field"><label>Pcs/Bag</label><div class="input-wrap"><input type="number" id="stockPpb" min="0" step="1" placeholder="40" value="${isEdit && s.pcsPerBag ? s.pcsPerBag : ''}"></div><div class="stock-hint" id="stockBagKg" style="text-align:center; min-height:1em;"></div></div>
+            <div class="modal-field"><label>Bag</label><div class="input-wrap"><input type="number" id="stockBags" min="0" step="1" placeholder="0" value="${isEdit ? s.bags : ''}"></div></div>
+            <div class="modal-field"><label>Pcs</label><div class="input-wrap"><input type="number" id="stockPcs" min="0" step="1" placeholder="0" value="${isEdit ? s.pcs : ''}"></div></div>
+            <div class="modal-field stock-kg-field"><label>Total kg</label><div class="input-wrap"><input type="number" id="stockKg" min="0" step="0.001" placeholder="0" value="${isEdit ? s.totalKg : ''}"></div></div>
+          </div>
+          <div class="modal-actions">
+            <button class="aero-btn" id="modalCancelBtn" type="button">Cancel</button>
+            <button class="aero-btn primary" id="modalSaveBtn" type="button">${isEdit ? '💾 Update Stock' : '💾 Save Stock'}</button>
+          </div>`;
+        const overlay = openModal(stockWindow, isEdit ? '✎ Edit Stock' : '📋 Add Stock', html, async (content) => {
+          const errorEl = content.querySelector('#stockModalError');
+          const nameEl = content.querySelector('#stockName');
+          const saveBtn = content.querySelector('#modalSaveBtn');
+          const fail = (msg, el) => { errorEl.textContent = msg; errorEl.classList.add('show'); if (el) el.focus(); return false; };
+          errorEl.classList.remove('show'); errorEl.textContent = '';
+          const name = nameEl.value.trim();
+          const sizeRaw = content.querySelector('#stockSize').value.trim();
+          const sizeUnitSel = content.querySelector('#stockSizeUnit').value;
+          const num = (id) => { const v = content.querySelector(id).value.trim(); return v === '' ? 0 : Number(v); };
+          const ppb = num('#stockPpb'), bags = num('#stockBags'), pcs = num('#stockPcs'), kg = num('#stockKg');
+          if (name === '') return fail('⚠️ Item name is required.', nameEl);
+          if ([ppb, bags, pcs, kg].some(v => isNaN(v) || v < 0)) return fail('⚠️ Numbers must be 0 or more.', null);
+          if (!Number.isInteger(ppb) || !Number.isInteger(bags) || !Number.isInteger(pcs)) return fail('⚠️ Pcs/Bag, Bag and Pcs must be whole numbers.', null);
+          if (sizeRaw !== '' && (isNaN(sizeRaw) || Number(sizeRaw) < 0)) return fail('⚠️ Size must be 0 or more.', content.querySelector('#stockSize'));
+          if (bags > 0 && ppb === 0) return fail('⚠️ Enter Pieces per Bag when bags are entered.', content.querySelector('#stockPpb'));
+          const dup = stockItems.some(i => (!isEdit || i.id !== existing.id) && i.name.toLowerCase() === name.toLowerCase() && String(Number(i.size) || '') === String(Number(sizeRaw) || '') && i.sizeUnit === sizeUnitSel && i.pcsPerBag === ppb);
+          if (dup) return fail('⚠️ This item already exists with the same size and Pcs/Bag. Edit that entry instead.', nameEl);
+          const payload = { name, size: sizeRaw, sizeUnit: sizeUnitSel, pcsPerBag: ppb, bags, pcs, totalKg: kg };
+          saveBtn.disabled = true;
+          saveBtn.textContent = isEdit ? '⏳ Updating…' : '⏳ Saving…';
+          try {
+            if (isEdit) {
+              const updated = await updateStock(existing.id, payload);
+              const idx = stockItems.findIndex(i => i.id === existing.id);
+              if (idx !== -1) stockItems[idx] = updated;
+            } else {
+              const saved = await saveStock(payload);
+              stockItems.unshift(saved);
+            }
+            applyStockFilters();
+            return true;
+          } catch (err) {
+            errorEl.textContent = '❌ Failed to save: ' + (err.message || 'Unknown error');
+            errorEl.classList.add('show');
+            saveBtn.disabled = false;
+            saveBtn.textContent = isEdit ? '💾 Update Stock' : '💾 Save Stock';
+            return false;
+          }
+        });
+
+        // Auto-fill from matching product + auto-calc Total kg
+        const body = overlay.querySelector('.modal-body');
+        const nameEl = body.querySelector('#stockName');
+        const sizeEl = body.querySelector('#stockSize'), sizeUnitEl = body.querySelector('#stockSizeUnit');
+        const ppbEl = body.querySelector('#stockPpb'), bagsEl = body.querySelector('#stockBags');
+        const pcsEl = body.querySelector('#stockPcs'), kgEl = body.querySelector('#stockKg');
+        let kgManual = isEdit;   // don't overwrite saved kg until the user changes bags/pcs
+        const bagKgEl = body.querySelector('#stockBagKg');
+        const recalcKg = () => {
+          bagKgEl.textContent = bagKgText(sizeEl.value, sizeUnitEl.value, ppbEl.value);
+          const w = sizeToKg(sizeEl.value, sizeUnitEl.value);
+          if (!w) return;
+          if (kgManual) return;
+          const pcsTotal = (parseInt(bagsEl.value) || 0) * (parseInt(ppbEl.value) || 0) + (parseInt(pcsEl.value) || 0);
+          kgEl.value = pcsTotal ? parseFloat((pcsTotal * w).toFixed(3)) : '';
+        };
+        nameEl.addEventListener('change', () => {
+          const p = findProductByName(nameEl.value);
+          if (p) { if (!ppbEl.value) ppbEl.value = p.pcsPerBag; if (!sizeEl.value && p.size) { sizeEl.value = p.size; sizeUnitEl.value = p.sizeUnit || 'gm'; kgManual = false; } }
+          recalcKg();
+        });
+        [bagsEl, pcsEl, ppbEl, sizeEl, sizeUnitEl].forEach(el => el.addEventListener('input', () => { kgManual = false; recalcKg(); }));
+        kgEl.addEventListener('input', () => { kgManual = true; });
+        recalcKg();
+
+        // Enter moves to the next box; Enter on the last box saves
+        const enterOrder = [nameEl, sizeEl, ppbEl, bagsEl, pcsEl, kgEl];
+        enterOrder.forEach((el, i) => el.addEventListener('keydown', (e) => {
+          if (e.key !== 'Enter') return;
+          e.preventDefault();
+          if (i < enterOrder.length - 1) {
+            const next = enterOrder[i + 1];
+            next.focus();
+            if (next.tagName === 'INPUT') next.select();
+          } else {
+            body.querySelector('#modalSaveBtn').click();
+          }
+        }));
+      }
+
+      stockTableBody.addEventListener('click', async (e) => {
+        const editBtn = e.target.closest('.row-edit-btn');
+        if (editBtn) {
+          e.stopPropagation();
+          const item = stockItems.find(i => i.id === editBtn.dataset.editId);
+          if (item) openStockModal(item);
+          return;
+        }
+        const delBtn = e.target.closest('.row-delete-btn');
+        if (delBtn) {
+          e.stopPropagation();
+          const id = delBtn.dataset.deleteId;
+          const item = stockItems.find(i => i.id === id);
+          if (!item) return;
+          const confirmed = await showConfirm({
+            title: '🗑️ Delete Stock Item',
+            message: `Are you sure you want to delete <strong>"${escapeHtml(item.name)}"</strong> from the stock list?<br><br>This action cannot be undone.`,
+            confirmLabel: 'Yes, Delete', type: 'danger', icon: '🗑️', parentWindow: stockWindow
+          });
+          if (!confirmed) return;
+          showLoading('stock');
+          try {
+            await deleteStock(id);
+            stockItems = stockItems.filter(i => i.id !== id);
+            if (selectedStockId === id) selectedStockId = null;
+            applyStockFilters();
+          } catch (err) {}
+          finally { hideLoading('stock'); }
+          return;
+        }
+        const row = e.target.closest('tr');
+        if (!row || !row.dataset.id) return;
+        selectedStockId = row.dataset.id;
+        renderStockTable();
+      });
+
+      addStockBtn.addEventListener('click', () => openStockModal(null));
+      stockSearchInput.addEventListener('input', applyStockFilters);
+      clearStockSearchBtn.addEventListener('click', () => { stockSearchInput.value = ''; applyStockFilters(); stockSearchInput.focus(); });
+      stockSearchInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') e.preventDefault(); });
+
+      clearAllStockBtn.addEventListener('click', async () => {
+        if (stockItems.length === 0) return;
+        const confirmed = await showConfirm({
+          title: '⚠️ Clear All Stock',
+          message: `Are you sure you want to delete <strong>ALL ${stockItems.length} stock item${stockItems.length !== 1 ? 's' : ''}</strong> from the database?<br><br>This action <strong>cannot</strong> be undone.`,
+          confirmLabel: 'Yes, Delete All', type: 'danger', icon: '⚠️', parentWindow: stockWindow
+        });
+        if (!confirmed) return;
+        showLoading('stock');
+        try {
+          await clearAllStock();
+          stockItems = []; filteredStock = []; selectedStockId = null;
+          applyStockFilters();
+        } catch (err) {}
+        finally { hideLoading('stock'); }
+      });
+
+      printStockBtn.addEventListener('click', () => {
+        if (filteredStock.length === 0) return;
+        const dateStr = formatDateTimeDDMMYYYY(new Date());
+        const searchLabel = stockSearchInput.value.trim() || '—';
+        let rows = '';
+        let totBags = 0, totPcs = 0, totKg = 0;
+        filteredStock.forEach((s, i) => {
+          totBags += s.bags; totPcs += s.pcs; totKg += s.totalKg;
+          rows += `<tr>
+            <td>${i + 1}</td><td>${escapeHtml(s.name)}</td>
+            <td style="text-align:center;">${s.size ? escapeHtml(s.size + ' ' + s.sizeUnit) : '—'}</td>
+            <td style="text-align:center;">${s.pcsPerBag || '—'}${bagKgText(s.size, s.sizeUnit, s.pcsPerBag) ? `<br><small style="color:#4a6a8a;">${bagKgText(s.size, s.sizeUnit, s.pcsPerBag)}</small>` : ''}</td>
+            <td style="text-align:center;">${s.bags}</td>
+            <td style="text-align:center;">${s.pcs}</td>
+            <td style="text-align:right;">${formatQty(s.totalKg)}</td>
+          </tr>`;
+        });
+        const printWindow = window.open('', '_blank', 'width=900,height=700');
+        printWindow.document.write(`
+          <!DOCTYPE html><html><head><title>Stock List - ${escapeHtml(companySettings.name)}</title>
+            <style>
+              * { margin: 0; padding: 0; box-sizing: border-box; }
+              body { font-family: 'Tahoma', Arial, sans-serif; padding: 30px; color: #0a2862; }
+              .meta { display: flex; justify-content: space-between; font-size: 0.75rem; color: #15419c; margin-bottom: 15px; flex-wrap: wrap; gap: 8px; }
+              .meta span { background: #f0f6ff; padding: 4px 10px; border-radius: 3px; border: 1px solid #a8c8f0; }
+              table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+              thead th { background: linear-gradient(180deg, #f0f6ff 0%, #d8e8fb 100%); color: #0a2862; font-weight: 700; font-size: 0.72rem; padding: 10px 12px; text-align: left; border: 1px solid #a8c8f0; }
+              tbody td { padding: 9px 12px; border: 1px solid #d8e8fb; color: #000000; }
+              tbody tr:nth-child(even) { background: #f5f9ff; }
+              .total-row td { font-weight: 700; background: #d8e8fb !important; border-top: 2px solid #a8c8f0; }
+              .footer { margin-top: 20px; text-align: center; font-size: 0.7rem; color: #4a6a8a; border-top: 1px solid #a8c8f0; padding-top: 12px; }
+              .print-btn { position: fixed; top: 16px; right: 16px; padding: 10px 22px; background: linear-gradient(180deg, #3f7ae0 0%, #15419c 100%); color: white; border: 1px solid #0a2862; border-radius: 3px; font-size: 0.85rem; font-weight: 700; cursor: pointer; }
+              @media print { body { padding: 15px; } .print-btn { display: none; } }
+            </style></head><body>
+            <button class="print-btn" onclick="window.print()">🖨️ Print</button>
+            ${getCompanySettingsHeaderHTML(true)}
+            <div style="text-align:center; font-size:0.9rem; color:#15419c; font-weight:700; margin-bottom:12px;">📋 Stock List</div>
+            <div class="meta">
+              <span>🔍 Search: ${escapeHtml(searchLabel)}</span>
+              <span>📅 ${dateStr}</span>
+              <span>📦 Items: ${filteredStock.length}</span>
+            </div>
+            <table><thead><tr>
+              <th style="width:50px;">#</th><th>Item Name</th><th style="text-align:center; width:90px;">Size</th>
+              <th style="text-align:center; width:90px;">Pcs/Bag</th>
+              <th style="text-align:center; width:80px;">Bag</th><th style="text-align:center; width:80px;">Pcs</th>
+              <th style="text-align:right; width:110px;">Total kg</th>
+            </tr></thead><tbody>
+              ${rows}
+              <tr class="total-row"><td colspan="4" style="text-align:right;">Total:</td>
+                <td style="text-align:center;">${totBags}</td><td style="text-align:center;">${totPcs}</td>
+                <td style="text-align:right;">${formatQty(parseFloat(totKg.toFixed(3)))}</td></tr>
+            </tbody></table>
+            <div class="footer">Generated by ${escapeHtml(companySettings.name || 'KCST Windows XP')} · ${dateStr}</div>
+            <script>window.onload=function(){setTimeout(function(){window.print();},400);};<\/script>
+          </body></html>`);
+        printWindow.document.close();
+      });
+
       // ==================== PRODUCT TABLE CLICKS ====================
       priceTableBody.addEventListener('click', async (e) => {
         const editBtn = e.target.closest('.row-edit-btn');
@@ -7326,7 +7787,8 @@
         { id: 'loadWindow', icon: '🚚', name: 'Load Calculator', desc: 'Calculate truck loads' },
         { id: 'cashWindow', icon: '💵', name: 'Cash Collection', desc: 'Record cash collections' },
         { id: 'vehicleWindow', icon: '🚛', name: 'Vehicle Manager', desc: 'Manage fleet & documents' },
-        { id: 'invoiceWindow', icon: '🧾', name: 'Invoice', desc: 'Create and manage invoices' }
+        { id: 'invoiceWindow', icon: '🧾', name: 'Invoice', desc: 'Create and manage invoices' },
+        { id: 'stockWindow', icon: '📋', name: 'Stock List', desc: 'Track stock levels' }
       ];
 
       // RIGHT panel: quick links + Settings + utilities
@@ -7430,10 +7892,11 @@
         const tbVehicle = document.getElementById('taskbarVehicle');
         const tbInvoice = document.getElementById('taskbarInvoice');
         const tbSettings = document.getElementById('taskbarSettings');
+        const tbStock = document.getElementById('taskbarStock');
         [
           ['calcWindow', tbCalc], ['numberWordWindow', tbNumberWord], ['priceWindow', tbPrice],
           ['loadWindow', tbLoad], ['cashWindow', tbCash], ['notepadWindow', tbNotepad],
-          ['vehicleWindow', tbVehicle], ['invoiceWindow', tbInvoice], ['settingsWindow', tbSettings]
+          ['vehicleWindow', tbVehicle], ['invoiceWindow', tbInvoice], ['stockWindow', tbStock], ['settingsWindow', tbSettings]
         ].forEach(([id, tb]) => {
           const state = windowState[id];
           if (tb && tb.style.display !== 'none') {
@@ -7569,7 +8032,7 @@
 
       // ==================== INIT ====================
       // Hide all windows BEFORE anything loads — no auto-open
-      ['calcWindow', 'numberWordWindow', 'priceWindow', 'loadWindow', 'cashWindow', 'notepadWindow', 'vehicleWindow', 'invoiceWindow', 'settingsWindow'].forEach(id => {
+      ['calcWindow', 'numberWordWindow', 'priceWindow', 'loadWindow', 'cashWindow', 'notepadWindow', 'vehicleWindow', 'invoiceWindow', 'stockWindow', 'settingsWindow'].forEach(id => {
         const winEl = document.getElementById(id);
         if (winEl) {
           winEl.classList.add('minimized');
@@ -7590,7 +8053,8 @@
         loadNotes(),
         loadProducts(),
         loadVehicles(),
-        loadInvoices()
+        loadInvoices(),
+        loadStock()
       ]);
 
       loadNotepadDraft();
@@ -7599,7 +8063,7 @@
       calculateCash();
 
       // Keep all windows closed after loading — user must open them via Start Menu
-      ['calcWindow', 'numberWordWindow', 'priceWindow', 'loadWindow', 'cashWindow', 'notepadWindow', 'vehicleWindow', 'invoiceWindow', 'settingsWindow'].forEach(id => {
+      ['calcWindow', 'numberWordWindow', 'priceWindow', 'loadWindow', 'cashWindow', 'notepadWindow', 'vehicleWindow', 'invoiceWindow', 'stockWindow', 'settingsWindow'].forEach(id => {
         const winEl = document.getElementById(id);
         if (winEl) {
           winEl.classList.add('minimized');
