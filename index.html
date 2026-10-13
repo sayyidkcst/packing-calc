@@ -2155,6 +2155,16 @@
       color: #e67e22; font-weight: 700;
     }
 
+    /* ---------- BULK PRODUCT ADD ---------- */
+    .bulk-prod-head, .bulk-prod-row {
+      display: grid; grid-template-columns: minmax(180px, 1fr) 66px 78px 70px 84px 84px 24px; gap: 6px; align-items: center;
+    }
+    .bulk-prod-head { font-size: 0.66rem; font-weight: 700; color: #15419c; padding: 0 2px 3px; }
+    .bulk-prod-rows { max-height: 42vh; overflow-y: auto; padding-right: 2px; }
+    .bulk-prod-row { margin-bottom: 6px; }
+    .bulk-prod-row .input-wrap, .bulk-prod-row .unit-select-wrap { width: 100%; min-width: 0; }
+    .bulk-prod-row input, .bulk-prod-row select { width: 100%; box-sizing: border-box; }
+    .bulk-prod-row input[type=number] { text-align: center; padding-left: 4px; padding-right: 4px; }
     /* ---------- STOCK WINDOW SPECIFIC ---------- */
     .window-stock .price-table tbody td.stock-name-cell { font-weight: 700; color: #0a2862; }
     .window-stock .price-table tbody td.stock-unit-cell { text-align: center; font-weight: 700; color: #0a2862; font-size: 0.72rem; }
@@ -2856,6 +2866,9 @@
       <div class="price-top-actions">
         <button class="aero-btn primary" id="addProductBtn" type="button">
           <span>📦</span> Add Product
+        </button>
+        <button class="aero-btn" id="bulkProductBtn" type="button">
+          <span>📚</span> Bulk Add
         </button>
         <button class="aero-btn" id="printProductsBtn" type="button">
           <span>🖨️</span> Print
@@ -7856,6 +7869,106 @@
           }
         });
       });
+
+      // ---- Bulk Add Products: one customer, many products ----
+      function openBulkProductModal() {
+        const uniqueCustomers = [...new Set(products.map(p => p.customer))].sort();
+        const datalistOptions = uniqueCustomers.map(c => `<option value="${escapeHtml(c)}">`).join('');
+        const html = `
+          <div class="modal-error" id="bulkProdError"></div>
+          <div class="modal-field"><label>👤 Customer Name (for all rows)</label><div class="input-wrap"><input type="text" id="bulkProdCustomer" list="bulkCustomerList" placeholder="Enter customer name" autocomplete="off"></div><datalist id="bulkCustomerList">${datalistOptions}</datalist></div>
+          <div class="bulk-prod-head"><span>Product Name</span><span style="text-align:center;">Pcs/Bag</span><span>Unit</span><span style="text-align:center;">Size</span><span>Size Unit</span><span style="text-align:center;">Price (₹)</span><span></span></div>
+          <div class="bulk-prod-rows" id="bulkProdRows"></div>
+          <button class="aero-btn" id="bulkProdAddRow" type="button" style="margin:4px 0 6px;"><span>➕</span> Add Row</button>
+          <div class="stock-hint" style="margin-bottom:4px; font-size:0.66rem; color:#4a6a8a;">Enter moves to the next box; Enter on the last Price box adds a new row. Empty rows are skipped.</div>
+          <div class="modal-actions">
+            <button class="aero-btn" id="modalCancelBtn" type="button">Cancel</button>
+            <button class="aero-btn primary" id="modalSaveBtn" type="button">💾 Save All to Database</button>
+          </div>`;
+        const rows = [];
+        let body = null;
+
+        const addRow = (focus = true) => {
+          const el = document.createElement('div');
+          el.className = 'bulk-prod-row';
+          el.innerHTML = `
+            <div class="input-wrap"><input type="text" class="bp-name" placeholder="Product name" autocomplete="off"></div>
+            <div class="input-wrap"><input type="number" class="bp-pcs" min="1" step="1" placeholder="40"></div>
+            <div class="unit-select-wrap"><select class="bp-unit"><option value="Pcs">Pcs</option><option value="Kg">Kg</option><option value="gm">gm</option></select><span class="unit-arrow">▼</span></div>
+            <div class="input-wrap"><input type="number" class="bp-size" min="0" step="0.01" placeholder="10"></div>
+            <div class="unit-select-wrap"><select class="bp-sizeunit"><option value="gm">gm</option><option value="kg">kg</option><option value="ml">ml</option><option value="ltr">ltr</option></select><span class="unit-arrow">▼</span></div>
+            <div class="input-wrap"><input type="number" class="bp-price" min="0" step="0.01" placeholder="25.00"></div>
+            <button type="button" class="row-delete-btn bp-del" title="Remove row">✕</button>`;
+          body.querySelector('#bulkProdRows').appendChild(el);
+          const r = { el, nameEl: el.querySelector('.bp-name'), pcsEl: el.querySelector('.bp-pcs'), unitEl: el.querySelector('.bp-unit'),
+            sizeEl: el.querySelector('.bp-size'), sizeUnitEl: el.querySelector('.bp-sizeunit'), priceEl: el.querySelector('.bp-price') };
+          rows.push(r);
+          const order = [r.nameEl, r.pcsEl, r.sizeEl, r.priceEl];
+          order.forEach((x, i) => x.addEventListener('keydown', (e) => {
+            if (e.key !== 'Enter') return;
+            e.preventDefault();
+            if (i < order.length - 1) { order[i + 1].focus(); order[i + 1].select(); return; }
+            const idx = rows.indexOf(r);
+            if (idx < rows.length - 1) rows[idx + 1].nameEl.focus(); else addRow(true);
+          }));
+          el.querySelector('.bp-del').addEventListener('click', () => {
+            if (rows.length === 1) { [r.nameEl, r.pcsEl, r.sizeEl, r.priceEl].forEach(x => x.value = ''); r.nameEl.focus(); return; }
+            rows.splice(rows.indexOf(r), 1); el.remove();
+          });
+          if (focus) setTimeout(() => { r.nameEl.focus(); el.scrollIntoView({ block: 'nearest' }); }, 30);
+          return r;
+        };
+
+        const overlay = openModal(priceWindow, '📚 Bulk Add Products', html, async (content) => {
+          const errorEl = content.querySelector('#bulkProdError');
+          const saveBtn = content.querySelector('#modalSaveBtn');
+          const customerEl = content.querySelector('#bulkProdCustomer');
+          const fail = (msg, el) => { errorEl.textContent = msg; errorEl.classList.add('show'); if (el) el.focus(); return false; };
+          errorEl.classList.remove('show'); errorEl.textContent = '';
+          const customer = customerEl.value.trim();
+          if (customer === '') return fail('⚠️ Customer name is required.', customerEl);
+          const active = rows.filter(r => r.nameEl.value.trim() || r.pcsEl.value.trim() || r.sizeEl.value.trim() || r.priceEl.value.trim());
+          if (active.length === 0) return fail('⚠️ Add at least one product.', null);
+          const plan = [], seen = new Set();
+          for (const r of active) {
+            const n = rows.indexOf(r) + 1;
+            const name = r.nameEl.value.trim();
+            const pcs = r.pcsEl.value.trim(), price = r.priceEl.value.trim(), size = r.sizeEl.value.trim();
+            if (name === '') return fail(`⚠️ Row ${n}: product name is required.`, r.nameEl);
+            if (!pcs || isNaN(pcs) || parseInt(pcs) <= 0 || !Number.isInteger(Number(pcs))) return fail(`⚠️ Row ${n}: Pcs/Bag must be a whole number above 0.`, r.pcsEl);
+            if (size !== '' && (isNaN(size) || Number(size) < 0)) return fail(`⚠️ Row ${n}: Size must be 0 or more.`, r.sizeEl);
+            if (price === '' || isNaN(price) || parseFloat(price) < 0) return fail(`⚠️ Row ${n}: enter a valid price.`, r.priceEl);
+            const key = name.toLowerCase();
+            if (seen.has(key)) return fail(`⚠️ Row ${n}: "${name}" appears twice in this list.`, r.nameEl);
+            seen.add(key);
+            if (products.some(p => p.name.toLowerCase() === key && p.customer.toLowerCase() === customer.toLowerCase())) return fail(`⚠️ Row ${n}: "${name}" already exists for this customer.`, r.nameEl);
+            plan.push({ r, n, product: { name, customer, pcsPerBag: parseInt(pcs), price: parseFloat(price), unit: r.unitEl.value, size: size || '', sizeUnit: r.sizeUnitEl.value } });
+          }
+          saveBtn.disabled = true; saveBtn.textContent = '⏳ Saving…';
+          const savedList = [];
+          for (const step of plan) {
+            try {
+              savedList.push(await saveProduct(step.product));
+              rows.splice(rows.indexOf(step.r), 1); step.r.el.remove();   // saved rows leave the list so a retry never saves them twice
+            } catch (err) {
+              if (savedList.length) { products.unshift(...savedList.reverse()); filteredProducts = [...products]; renderCustomerFilter(); applyFilters(); }
+              saveBtn.disabled = false; saveBtn.textContent = '💾 Save All to Database';
+              return fail(`❌ Row ${step.n} failed (${err.message || 'Unknown error'}). ${savedList.length} product${savedList.length !== 1 ? 's' : ''} already saved and removed from this list; fix the rest and save again.`, null);
+            }
+          }
+          products.unshift(...savedList.reverse());   // first row ends up on top
+          filteredProducts = [...products];
+          renderCustomerFilter();
+          applyFilters();
+          return true;
+        });
+        overlay.querySelector('.window-modal').style.maxWidth = '820px';
+        body = overlay.querySelector('.modal-body');
+        overlay.querySelector('#bulkProdAddRow').addEventListener('click', () => addRow(true));
+        addRow(false); addRow(false); addRow(false); addRow(false); addRow(false);
+        setTimeout(() => overlay.querySelector('#bulkProdCustomer').focus(), 30);
+      }
+      document.getElementById('bulkProductBtn').addEventListener('click', openBulkProductModal);
 
       printProductsBtn.addEventListener('click', () => {
         if (filteredProducts.length === 0) return;
