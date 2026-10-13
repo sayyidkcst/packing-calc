@@ -5019,11 +5019,14 @@
         } finally { hideLoading('price'); }
       }
 
-      async function loadEmployees() {
+      let employeesLoadError = '';
+      let employeesLoading = false;
+      async function loadEmployees(attempt = 1) {
+        employeesLoading = true;
         try {
           const result = await withTimeout(
             supabase.from('employees').select('*').order('name', { ascending: true }),
-            2500
+            15000
           );
           if (!result) throw new Error('Timeout');
           const { data, error } = result;
@@ -5031,8 +5034,13 @@
           employeesList = (data || []).map(s => ({
             id: s.id, name: s.name || '', section: s.section || '', photo: s.photo || null
           })).filter(s => s.name);
+          employeesLoadError = '';
           renderStaffCombo();
-        } catch (err) { employeesList = []; renderStaffCombo(); }
+        } catch (err) {
+          if (attempt < 2) { employeesLoading = false; return loadEmployees(attempt + 1); }   // one automatic retry
+          employeesLoadError = err.message || 'Unknown error';
+          renderStaffCombo();
+        } finally { employeesLoading = false; }
       }
 
       async function saveEmployee(employee) {
@@ -5394,7 +5402,9 @@
       function renderStaffCombo(preserveValue) {
         const savedValue = (preserveValue !== undefined) ? preserveValue : staffCombo.value;
         isLoadingStaffRecord = true;
-        let html = '<option value="">👤 Select Employee</option>';
+        let html = (employeesLoadError && employeesList.length === 0)
+          ? `<option value="">⚠️ Could not load employees (${escapeHtml(employeesLoadError)}) — click to retry</option>`
+          : '<option value="">👤 Select Employee</option>';
         employeesList.forEach(s => { html += `<option value="${s.id}">${escapeHtml(s.name)} — ${escapeHtml(s.section)}</option>`; });
         staffCombo.innerHTML = html;
         if (savedValue && employeesList.some(s => s.id === savedValue)) staffCombo.value = savedValue;
@@ -5465,6 +5475,7 @@
       }
 
       staffCombo.addEventListener('change', handleStaffChange);
+      staffCombo.addEventListener('mousedown', () => { if (employeesLoadError && !employeesLoading) loadEmployees(); });   // retry after a failed load
 
       function renderPriceTable() {
         if (filteredProducts.length === 0) {
