@@ -2166,6 +2166,29 @@
       text-align: right; font-weight: 700; color: #0a2862;
       font-family: 'Tahoma', Consolas, monospace; white-space: nowrap;
     }
+    .window-stock .price-table tbody td.action-cell { width: 96px; white-space: nowrap; }
+    .window-stock .row-stock-btn {
+      border-radius: 2px; width: 22px; height: 22px;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 0.8rem; font-weight: 700; cursor: pointer; transition: 0.1s;
+      line-height: 1; padding: 0; margin: 0 2px;
+      border: 1px solid #2e7d32; color: #0b4d12;
+      background: linear-gradient(180deg, #d8f5da 0%, #8fd694 100%);
+      box-shadow: inset 0 1px 0 #ffffff;
+    }
+    .window-stock .row-stock-btn:hover { background: linear-gradient(180deg, #eafbea 0%, #a8e4ac 100%); }
+    .window-stock #stockSearchInput { text-transform: uppercase; }
+    .window-stock .stock-bulk-head, .window-stock .stock-bulk-row {
+      display: grid; grid-template-columns: minmax(150px, 1fr) 84px 62px 62px 24px; gap: 6px; align-items: center;
+    }
+    .window-stock .stock-bulk-head { font-size: 0.66rem; font-weight: 700; color: #15419c; padding: 0 2px 3px; }
+    .window-stock .stock-bulk-rows { max-height: 44vh; overflow-y: auto; padding-right: 2px; }
+    .window-stock .stock-bulk-row { margin-bottom: 6px; }
+    .window-stock .stock-bulk-row .input-wrap, .window-stock .stock-bulk-row .unit-select-wrap { width: 100%; min-width: 0; }
+    .window-stock .stock-bulk-row input, .window-stock .stock-bulk-row select { width: 100%; box-sizing: border-box; }
+    .window-stock .stock-bulk-row input[type=number] { text-align: center; padding-left: 4px; padding-right: 4px; }
+    .window-stock .stock-bulk-note { grid-column: 1 / -1; font-size: 0.64rem; color: #4a6a8a; min-height: 0; margin-top: -2px; }
+    .window-stock .stock-bulk-note.err { color: #c0392b; font-weight: 700; }
     .window-stock .stock-sub { font-size: 0.62rem; font-weight: 500; color: #4a6a8a; margin-top: 1px; }
     .window-stock .stock-kg-field .input-wrap { width: 120px; }
     .window-stock .stock-kg-field input { width: 100%; text-align: right; }
@@ -3195,6 +3218,12 @@
         <button class="aero-btn primary" id="addStockBtn" type="button">
           <span>📋</span> Add Stock
         </button>
+        <button class="aero-btn" id="updateStockBtn" type="button">
+          <span>🔄</span> Update Stock
+        </button>
+        <button class="aero-btn" id="bulkStockBtn" type="button">
+          <span>📦</span> Bulk Update
+        </button>
         <button class="aero-btn" id="printStockBtn" type="button">
           <span>🖨️</span> Print
         </button>
@@ -3221,7 +3250,7 @@
               <th style="text-align:center;">Bag</th>
               <th style="text-align:center;">Pcs</th>
               <th style="text-align:right;">Total kg</th>
-              <th style="width:64px;"></th>
+              <th style="width:96px;"></th>
             </tr>
           </thead>
           <tbody id="stockTableBody">
@@ -6854,7 +6883,7 @@
       // Requires Supabase table "stock_items":
       //   id uuid pk, name text, size numeric, size_unit text, pcs_per_bag int, bags int, pcs int, total_kg numeric, created_at timestamptz
       const mapStockRow = (r) => ({
-        id: r.id, name: r.name || '', size: r.size === null || r.size === undefined ? '' : String(r.size), sizeUnit: r.size_unit || 'kg',
+        id: r.id, name: (r.name || '').toUpperCase(), size: r.size === null || r.size === undefined ? '' : String(r.size), sizeUnit: r.size_unit || 'kg',
         pcsPerBag: Number(r.pcs_per_bag) || 0, bags: Number(r.bags) || 0,
         pcs: Number(r.pcs) || 0, totalKg: Number(r.total_kg) || 0
       });
@@ -6871,7 +6900,7 @@
       function sizeToKg(size, sizeUnit) {
         const v = parseFloat(size);
         if (!v || isNaN(v) || v < 0) return 0;
-        return sizeUnit === 'kg' ? v : v / 1000;
+        return (sizeUnit === 'kg' || sizeUnit === 'ltr') ? v : v / 1000;   // gm / ml -> /1000 (1 ml ~ 1 gm)
       }
 
       // weight of one full bag in kg = Size x Pcs/Bag ('' if unknown)
@@ -6880,13 +6909,13 @@
         return kg > 0 ? formatQty(parseFloat(kg.toFixed(3))) + ' kg' : '';
       }
 
-      async function loadStock() {
+      async function loadStock(attempt = 1) {
         showLoading('stock');
         stockStatusDot.className = 'status-dot syncing';
         try {
           const result = await withTimeout(
             supabase.from('stock_items').select('*').order('created_at', { ascending: false }),
-            3000
+            15000
           );
           if (!result) throw new Error('Timeout');
           const { data, error } = result;
@@ -6895,12 +6924,21 @@
           stockStatusDot.className = 'status-dot online';
           applyStockFilters();
         } catch (err) {
+          if (err.message === 'Timeout' && attempt < 2) return loadStock(attempt + 1);   // one automatic retry
           stockStatusDot.className = 'status-dot offline';
-          stockTableBody.innerHTML = `<tr><td colspan="7"><div class="no-results">⚠️ Database error<span class="small">${escapeHtml(err.message || 'Check that the "stock_items" table exists')}</span></div></td></tr>`;
+          const raw = err.message || '';
+          let msg;
+          if (raw === 'Timeout') msg = 'The database did not respond in time. Check your internet connection and press Retry.';
+          else if (err.code === 'PGRST205' || err.code === '42P01' || /stock_items/.test(raw) && /(not find|does not exist)/i.test(raw)) msg = 'The "stock_items" table was not found. Create it in Supabase (SQL editor), then press Retry.';
+          else msg = raw || 'Check that the "stock_items" table exists';
+          stockTableBody.innerHTML = `<tr><td colspan="7"><div class="no-results">⚠️ Database error<span class="small">${escapeHtml(msg)}</span><button class="aero-btn" id="stockRetryBtn" type="button" style="margin-top:10px;"><span>🔄</span> Retry</button></div></td></tr>`;
         } finally { hideLoading('stock'); }
       }
+      stockTableBody.addEventListener('click', (e) => {
+        if (e.target.closest('#stockRetryBtn')) { e.stopPropagation(); loadStock(); }
+      });
 
-      const stockPayload = (i) => ({ name: i.name, size: i.size === '' || i.size === undefined ? null : Number(i.size), size_unit: i.sizeUnit || 'kg', pcs_per_bag: i.pcsPerBag, bags: i.bags, pcs: i.pcs, total_kg: i.totalKg });
+      const stockPayload = (i) => ({ name: (i.name || '').toUpperCase(), size: i.size === '' || i.size === undefined ? null : Number(i.size), size_unit: i.sizeUnit || 'kg', pcs_per_bag: i.pcsPerBag, bags: i.bags, pcs: i.pcs, total_kg: i.totalKg });
 
       async function saveStock(item) {
         stockStatusDot.className = 'status-dot syncing';
@@ -6916,6 +6954,16 @@
         stockStatusDot.className = 'status-dot syncing';
         try {
           const { data, error } = await supabase.from('stock_items').update(stockPayload(item)).eq('id', id).select().single();
+          if (error) throw error;
+          stockStatusDot.className = 'status-dot online';
+          return mapStockRow(data);
+        } catch (err) { stockStatusDot.className = 'status-dot offline'; throw err; }
+      }
+
+      async function updateStockQty(id, bags, pcs, totalKg) {
+        stockStatusDot.className = 'status-dot syncing';
+        try {
+          const { data, error } = await supabase.from('stock_items').update({ bags, pcs, total_kg: totalKg }).eq('id', id).select().single();
           if (error) throw error;
           stockStatusDot.className = 'status-dot online';
           return mapStockRow(data);
@@ -6960,6 +7008,7 @@
             <td class="stock-num-cell">${s.pcs}</td>
             <td class="stock-kg-cell">${formatQty(s.totalKg)}</td>
             <td class="action-cell">
+              <button class="row-stock-btn" data-stock-id="${s.id}" title="Update Stock (add / remove)">±</button>
               <button class="row-edit-btn" data-edit-id="${s.id}" title="Edit">✎</button>
               <button class="row-delete-btn" data-delete-id="${s.id}" title="Delete">✕</button>
             </td>
@@ -7001,27 +7050,28 @@
         const item = e.target.closest('.product-suggest-item');
         if (!item || !stockSuggestCtx) return;
         e.preventDefault();
-        const prod = products.find(p => String(p.id) === item.dataset.productId);
         const ctx = stockSuggestCtx;
+        const prod = ctx.getSource().find(p => String(p.id) === item.dataset.productId);
         hideStockSuggest();
         if (prod) ctx.onPick(prod, true);
       });
 
-      function attachStockSuggest(input, onPick) {
-        const ctx = { input, onPick, hi: -1, matches: [] };
+      function attachStockSuggest(input, onPick, opts = {}) {
+        const getSource = opts.source || (() => products);
+        const ctx = { input, onPick, getSource, hi: -1, matches: [] };
         const filter = () => {
           const q = input.value.trim().toLowerCase();
-          return products.filter(p => !q || p.name.toLowerCase().includes(q) || (p.customer || '').toLowerCase().includes(q));
+          return getSource().filter(p => !q || p.name.toLowerCase().includes(q) || (p.customer || '').toLowerCase().includes(q));
         };
         const render = (matches) => {
           stockSuggestCtx = ctx;
           ctx.matches = matches.slice(0, 50);
           ctx.hi = ctx.matches.length ? 0 : -1;
           if (!ctx.matches.length) {
-            stockSuggestEl.innerHTML = `<div class="product-suggest-empty">${products.length === 0 ? 'No products available' : 'No products found'}</div>`;
+            stockSuggestEl.innerHTML = `<div class="product-suggest-empty">${getSource().length === 0 ? (opts.noneText || 'No products available') : (opts.notFoundText || 'No products found')}</div>`;
           } else {
             stockSuggestEl.innerHTML = ctx.matches.map((p, i) => `<div class="product-suggest-item${i === ctx.hi ? ' highlighted' : ''}" data-product-id="${escapeHtml(String(p.id))}">
-              <span class="ps-name">${escapeHtml(p.name)}</span>
+              <span class="ps-name">${escapeHtml(p.name.toUpperCase())}</span>
               <span class="ps-meta">
                 ${p.size ? `<span class="ps-unit">${escapeHtml(p.size + ' ' + p.sizeUnit)}</span>` : ''}
                 <span class="ps-pcs">${p.pcsPerBag || 0} pcs</span>
@@ -7063,16 +7113,280 @@
         });
       }
 
+      // ---- Update Stock: add (stock in) / remove (stock out) on an existing item ----
+      function openStockUpdateModal(preItem = null) {
+        hideStockSuggest();
+        let picked = preItem;
+        const html = `
+          <div class="modal-error" id="stockUpdError"></div>
+          <div class="modal-field"><label>📦 Item</label><div class="input-wrap"><input type="text" id="stockUpdItem" placeholder="Type item name…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" style="text-transform:uppercase;" value="${preItem ? escapeHtml(preItem.name.toUpperCase()) : ''}"></div><div class="stock-hint" id="stockUpdCurrent" style="min-height:1em;"></div></div>
+          <div class="modal-field"><label>🔄 Action</label>
+            <div class="unit-select-wrap">
+              <select id="stockUpdMode">
+                <option value="add">➕ Add stock (stock in)</option>
+                <option value="remove">➖ Remove stock (stock out)</option>
+              </select><span class="unit-arrow">▼</span>
+            </div>
+          </div>
+          <div class="stock-mini-row">
+            <div class="modal-field"><label>Bag</label><div class="input-wrap"><input type="number" id="stockUpdBags" min="0" step="1" placeholder="0"></div></div>
+            <div class="modal-field"><label>Pcs</label><div class="input-wrap"><input type="number" id="stockUpdPcs" min="0" step="1" placeholder="0"></div></div>
+          </div>
+          <div class="stock-hint" id="stockUpdPreview" style="min-height:1.2em; font-weight:700; color:#15419c;"></div>
+          <div class="modal-actions">
+            <button class="aero-btn" id="modalCancelBtn" type="button">Cancel</button>
+            <button class="aero-btn primary" id="modalSaveBtn" type="button">💾 Update Stock</button>
+          </div>`;
+
+        let body = null;
+        const intOf = (el) => { const v = el.value.trim(); return v === '' ? 0 : Number(v); };
+        // Work out the new Bag / Pcs / kg for the chosen item
+        const compute = () => {
+          if (!picked) return null;
+          const sign = body.querySelector('#stockUpdMode').value === 'add' ? 1 : -1;
+          const dBags = intOf(body.querySelector('#stockUpdBags')), dPcs = intOf(body.querySelector('#stockUpdPcs'));
+          if ([dBags, dPcs].some(v => isNaN(v) || v < 0 || !Number.isInteger(v))) return { error: '⚠️ Bag and Pcs must be whole numbers (0 or more).' };
+          const ppb = picked.pcsPerBag || 0;
+          let newBags, newPcs;
+          if (ppb > 0) {
+            const total = picked.bags * ppb + picked.pcs + sign * (dBags * ppb + dPcs);
+            if (total < 0) return { error: '⚠️ Not enough stock to remove that quantity.' };
+            newBags = Math.floor(total / ppb); newPcs = total % ppb;
+          } else {
+            newBags = picked.bags + sign * dBags; newPcs = picked.pcs + sign * dPcs;
+            if (newBags < 0 || newPcs < 0) return { error: '⚠️ Not enough stock to remove that quantity.' };
+          }
+          const oldTotal = picked.bags * ppb + picked.pcs, newTotal = newBags * ppb + newPcs;
+          const w = sizeToKg(picked.size, picked.sizeUnit);
+          let kg = picked.totalKg;
+          if (w > 0) kg = newTotal * w;
+          else if (oldTotal > 0) kg = picked.totalKg * newTotal / oldTotal;
+          kg = parseFloat(kg.toFixed(3));
+          return { dBags, dPcs, newBags, newPcs, kg };
+        };
+        const refresh = () => {
+          const cur = body.querySelector('#stockUpdCurrent'), prev = body.querySelector('#stockUpdPreview');
+          if (!picked) { cur.textContent = ''; prev.textContent = ''; return; }
+          cur.textContent = `Current: ${picked.bags} bag + ${picked.pcs} pcs · ${formatQty(picked.totalKg)} kg`;
+          const r = compute();
+          prev.textContent = (!r || r.error || (r.dBags === 0 && r.dPcs === 0)) ? '' : `New stock: ${r.newBags} bag + ${r.newPcs} pcs · ${formatQty(r.kg)} kg`;
+        };
+
+        const overlay = openModal(stockWindow, '🔄 Update Stock', html, async (content) => {
+          const errorEl = content.querySelector('#stockUpdError');
+          const saveBtn = content.querySelector('#modalSaveBtn');
+          const fail = (msg, el) => { errorEl.textContent = msg; errorEl.classList.add('show'); if (el) el.focus(); return false; };
+          errorEl.classList.remove('show'); errorEl.textContent = '';
+          const itemEl = content.querySelector('#stockUpdItem');
+          if (!picked) {
+            const typed = itemEl.value.trim().toLowerCase();
+            const exact = stockItems.filter(i => i.name.toLowerCase() === typed);
+            if (exact.length === 1) picked = exact[0];
+            else return fail(exact.length > 1 ? '⚠️ Several items share this name. Pick one from the list.' : '⚠️ Pick an item from the stock list.', itemEl);
+          }
+          const r = compute();
+          if (r && r.error) return fail(r.error, null);
+          if (!r || (r.dBags === 0 && r.dPcs === 0)) return fail('⚠️ Enter the Bag and/or Pcs to add or remove.', content.querySelector('#stockUpdBags'));
+          saveBtn.disabled = true; saveBtn.textContent = '⏳ Updating…';
+          try {
+            const updated = await updateStockQty(picked.id, r.newBags, r.newPcs, r.kg);
+            const idx = stockItems.findIndex(i => i.id === picked.id);
+            if (idx !== -1) stockItems[idx] = updated;
+            applyStockFilters();
+            return true;
+          } catch (err) {
+            errorEl.textContent = '❌ Failed to update: ' + (err.message || 'Unknown error');
+            errorEl.classList.add('show');
+            saveBtn.disabled = false; saveBtn.textContent = '💾 Update Stock';
+            return false;
+          }
+        });
+
+        body = overlay.querySelector('.modal-body');
+        const itemEl = body.querySelector('#stockUpdItem'), bagsEl = body.querySelector('#stockUpdBags'), pcsEl = body.querySelector('#stockUpdPcs');
+        if (preItem) { itemEl.readOnly = true; itemEl.style.background = '#eef3fa'; itemEl.style.cursor = 'default'; }
+        else attachStockSuggest(itemEl, (it, focusNext) => {
+          picked = it;
+          itemEl.value = it.name;
+          refresh();
+          if (focusNext) setTimeout(() => { bagsEl.focus(); bagsEl.select(); }, 30);
+        }, { source: () => stockItems, noneText: 'No stock items available', notFoundText: 'No stock items found' });
+        itemEl.addEventListener('input', () => {
+          const st = itemEl.selectionStart, en = itemEl.selectionEnd;
+          const up = itemEl.value.toUpperCase();
+          if (up !== itemEl.value) { itemEl.value = up; try { itemEl.setSelectionRange(st, en); } catch (err) {} }
+          if (picked && itemEl.value.trim().toLowerCase() !== picked.name.toLowerCase()) { picked = null; refresh(); }
+        });
+        [bagsEl, pcsEl, body.querySelector('#stockUpdMode')].forEach(el => el.addEventListener('input', refresh));
+        const order = [itemEl, bagsEl, pcsEl];
+        order.forEach((el, i) => el.addEventListener('keydown', (e) => {
+          if (e.key !== 'Enter') return;
+          e.preventDefault();
+          if (i < order.length - 1) { order[i + 1].focus(); order[i + 1].select(); }
+          else body.querySelector('#modalSaveBtn').click();
+        }));
+        if (preItem) refresh();
+        setTimeout(() => { if (preItem) { bagsEl.focus(); } else { itemEl.focus(); } }, 50);
+      }
+
+      // ---- Bulk Update: add / remove stock for many items in one go ----
+      function computeStockChange(item, sign, dBags, dPcs) {
+        if ([dBags, dPcs].some(v => isNaN(v) || v < 0 || !Number.isInteger(v))) return { error: 'Bag and Pcs must be whole numbers (0 or more).' };
+        const ppb = item.pcsPerBag || 0;
+        let newBags, newPcs;
+        if (ppb > 0) {
+          const total = item.bags * ppb + item.pcs + sign * (dBags * ppb + dPcs);
+          if (total < 0) return { error: 'not enough stock to remove that quantity.' };
+          newBags = Math.floor(total / ppb); newPcs = total % ppb;
+        } else {
+          newBags = item.bags + sign * dBags; newPcs = item.pcs + sign * dPcs;
+          if (newBags < 0 || newPcs < 0) return { error: 'not enough stock to remove that quantity.' };
+        }
+        const oldTotal = item.bags * ppb + item.pcs, newTotal = newBags * ppb + newPcs;
+        const w = sizeToKg(item.size, item.sizeUnit);
+        let kg = item.totalKg;
+        if (w > 0) kg = newTotal * w;
+        else if (oldTotal > 0) kg = item.totalKg * newTotal / oldTotal;
+        return { dBags, dPcs, newBags, newPcs, kg: parseFloat(kg.toFixed(3)) };
+      }
+
+      function openStockBulkModal() {
+        hideStockSuggest();
+        if (stockItems.length === 0) { return; }
+        const html = `
+          <div class="modal-error" id="stockBulkError"></div>
+          <div class="stock-hint" style="margin-bottom:6px;">Add or remove stock for several items at once. Press Enter on the last Pcs box to add a new row.</div>
+          <div class="stock-bulk-head"><span>Item</span><span>Action</span><span style="text-align:center;">Bag</span><span style="text-align:center;">Pcs</span><span></span></div>
+          <div class="stock-bulk-rows" id="stockBulkRows"></div>
+          <button class="aero-btn" id="stockBulkAddRow" type="button" style="margin:4px 0 6px;"><span>➕</span> Add Row</button>
+          <div class="modal-actions">
+            <button class="aero-btn" id="modalCancelBtn" type="button">Cancel</button>
+            <button class="aero-btn primary" id="modalSaveBtn" type="button">💾 Update All</button>
+          </div>`;
+        const rows = [];
+        let body = null;
+        const intOf = (el) => { const v = el.value.trim(); return v === '' ? 0 : Number(v); };
+
+        const refreshRow = (r) => {
+          r.noteEl.classList.remove('err');
+          if (!r.picked) { r.noteEl.textContent = ''; return; }
+          const dB = intOf(r.bagsEl), dP = intOf(r.pcsEl);
+          if (dB === 0 && dP === 0) { r.noteEl.textContent = `Now: ${r.picked.bags} bag + ${r.picked.pcs} pcs · ${formatQty(r.picked.totalKg)} kg`; return; }
+          const c = computeStockChange(r.picked, r.modeEl.value === 'add' ? 1 : -1, dB, dP);
+          if (c.error) { r.noteEl.textContent = '⚠️ ' + c.error.charAt(0).toUpperCase() + c.error.slice(1); r.noteEl.classList.add('err'); return; }
+          r.noteEl.textContent = `Now ${r.picked.bags} bag + ${r.picked.pcs} pcs → ${c.newBags} bag + ${c.newPcs} pcs · ${formatQty(c.kg)} kg`;
+        };
+
+        const addRow = (focus = true) => {
+          const el = document.createElement('div');
+          el.className = 'stock-bulk-row';
+          el.innerHTML = `
+            <div class="input-wrap"><input type="text" class="bk-item" placeholder="Type item…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" style="text-transform:uppercase;"></div>
+            <div class="unit-select-wrap"><select class="bk-mode"><option value="add">➕ Add</option><option value="remove">➖ Remove</option></select><span class="unit-arrow">▼</span></div>
+            <div class="input-wrap"><input type="number" class="bk-bags" min="0" step="1" placeholder="0"></div>
+            <div class="input-wrap"><input type="number" class="bk-pcs" min="0" step="1" placeholder="0"></div>
+            <button type="button" class="row-delete-btn bk-del" title="Remove row">✕</button>
+            <div class="stock-bulk-note"></div>`;
+          body.querySelector('#stockBulkRows').appendChild(el);
+          const r = { el, picked: null,
+            itemEl: el.querySelector('.bk-item'), modeEl: el.querySelector('.bk-mode'),
+            bagsEl: el.querySelector('.bk-bags'), pcsEl: el.querySelector('.bk-pcs'), noteEl: el.querySelector('.stock-bulk-note') };
+          rows.push(r);
+
+          attachStockSuggest(r.itemEl, (it, focusNext) => {
+            r.picked = it; r.itemEl.value = it.name; refreshRow(r);
+            if (focusNext) setTimeout(() => { r.bagsEl.focus(); r.bagsEl.select(); }, 30);
+          }, { source: () => stockItems, noneText: 'No stock items available', notFoundText: 'No stock items found' });
+          r.itemEl.addEventListener('input', () => {
+            const st = r.itemEl.selectionStart, en = r.itemEl.selectionEnd;
+            const up = r.itemEl.value.toUpperCase();
+            if (up !== r.itemEl.value) { r.itemEl.value = up; try { r.itemEl.setSelectionRange(st, en); } catch (err) {} }
+            if (r.picked && r.itemEl.value.trim().toLowerCase() !== r.picked.name.toLowerCase()) { r.picked = null; refreshRow(r); }
+          });
+          [r.bagsEl, r.pcsEl, r.modeEl].forEach(x => x.addEventListener('input', () => refreshRow(r)));
+          r.modeEl.addEventListener('change', () => refreshRow(r));
+
+          const order = [r.itemEl, r.bagsEl, r.pcsEl];
+          order.forEach((x, i) => x.addEventListener('keydown', (e) => {
+            if (e.key !== 'Enter') return;
+            e.preventDefault();
+            if (i < order.length - 1) { order[i + 1].focus(); order[i + 1].select(); return; }
+            const idx = rows.indexOf(r);
+            if (idx < rows.length - 1) { rows[idx + 1].itemEl.focus(); }
+            else addRow(true);
+          }));
+          el.querySelector('.bk-del').addEventListener('click', () => {
+            if (rows.length === 1) { r.picked = null; r.itemEl.value = ''; r.bagsEl.value = ''; r.pcsEl.value = ''; refreshRow(r); r.itemEl.focus(); return; }
+            hideStockSuggest();
+            rows.splice(rows.indexOf(r), 1);
+            el.remove();
+          });
+          if (focus) setTimeout(() => { r.itemEl.focus(); el.scrollIntoView({ block: 'nearest' }); }, 30);
+          return r;
+        };
+
+        const overlay = openModal(stockWindow, '📦 Bulk Update Stock', html, async (content) => {
+          const errorEl = content.querySelector('#stockBulkError');
+          const saveBtn = content.querySelector('#modalSaveBtn');
+          const fail = (msg, el) => { errorEl.textContent = msg; errorEl.classList.add('show'); if (el) el.focus(); return false; };
+          errorEl.classList.remove('show'); errorEl.textContent = '';
+          hideStockSuggest();
+          const active = rows.filter(r => r.itemEl.value.trim() || r.bagsEl.value.trim() || r.pcsEl.value.trim());
+          if (active.length === 0) return fail('⚠️ Add at least one item.', null);
+          const plan = [], seen = new Set();
+          for (const r of active) {
+            const n = rows.indexOf(r) + 1;
+            let it = r.picked;
+            if (!it) {
+              const typed = r.itemEl.value.trim().toLowerCase();
+              const exact = stockItems.filter(x => x.name.toLowerCase() === typed);
+              if (exact.length === 1) it = exact[0];
+              else return fail(`⚠️ Row ${n}: ` + (exact.length > 1 ? 'several items share this name — pick one from the list.' : 'pick an item from the stock list.'), r.itemEl);
+            }
+            if (seen.has(it.id)) return fail(`⚠️ Row ${n}: this item is already in another row.`, r.itemEl);
+            seen.add(it.id);
+            const c = computeStockChange(it, r.modeEl.value === 'add' ? 1 : -1, intOf(r.bagsEl), intOf(r.pcsEl));
+            if (c.error) return fail(`⚠️ Row ${n}: ${c.error}`, null);
+            if (c.dBags === 0 && c.dPcs === 0) return fail(`⚠️ Row ${n}: enter Bag and/or Pcs.`, r.bagsEl);
+            plan.push({ r, it, c, n });
+          }
+          saveBtn.disabled = true; saveBtn.textContent = '⏳ Updating…';
+          let done = 0;
+          for (const step of plan) {
+            try {
+              const updated = await updateStockQty(step.it.id, step.c.newBags, step.c.newPcs, step.c.kg);
+              const idx = stockItems.findIndex(i => i.id === step.it.id);
+              if (idx !== -1) stockItems[idx] = updated;
+              done++;
+              rows.splice(rows.indexOf(step.r), 1);   // saved rows leave the list so a retry never applies them twice
+              step.r.el.remove();
+            } catch (err) {
+              applyStockFilters();
+              saveBtn.disabled = false; saveBtn.textContent = '💾 Update All';
+              return fail(`❌ Row ${step.n} failed (${err.message || 'Unknown error'}). ${done} row${done !== 1 ? 's' : ''} already saved and removed from this list; fix and press Update All for the rest.`, null);
+            }
+          }
+          applyStockFilters();
+          return true;
+        });
+        body = overlay.querySelector('.modal-body');
+        overlay.querySelector('#stockBulkAddRow').addEventListener('click', () => addRow(true));
+        addRow(true); addRow(false); addRow(false);
+      }
+
+      document.getElementById('updateStockBtn').addEventListener('click', () => openStockUpdateModal());
+      document.getElementById('bulkStockBtn').addEventListener('click', openStockBulkModal);
+
       function openStockModal(existing = null) {
         const isEdit = !!existing;
         const s = existing || {};
         hideStockSuggest();
         const sameSize = (p) => String(Number(p.size) || '') === String(Number(s.size) || '') && (!p.size || p.sizeUnit === s.sizeUnit);
-        let stockPicked = isEdit ? (products.find(p => p.name === s.name && sameSize(p)) || products.find(p => p.name === s.name) || null) : null;
+        let stockPicked = isEdit ? (products.find(p => p.name.toUpperCase() === s.name && sameSize(p)) || products.find(p => p.name.toUpperCase() === s.name) || null) : null;
         const sizeUnitVal = s.sizeUnit || 'kg';
         const html = `
           <div class="modal-error" id="stockModalError"></div>
-          <div class="modal-field"><label>📦 Product</label><div class="input-wrap"><input type="text" id="stockName" placeholder="Type product name…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" value="${isEdit ? escapeHtml(s.name) : ''}"></div></div>
+          <div class="modal-field"><label>📦 Product</label><div class="input-wrap"><input type="text" id="stockName" placeholder="Type product name…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" style="text-transform:uppercase;" value="${isEdit ? escapeHtml(s.name) : ''}"></div></div>
           <div class="modal-field"><label>📐 Size</label>
             <div class="size-input-row">
               <div class="input-wrap size-value-input"><input type="number" id="stockSize" min="0" step="0.01" placeholder="e.g. 10" value="${isEdit ? s.size : ''}"></div>
@@ -7080,6 +7394,8 @@
                 <select id="stockSizeUnit">
                   <option value="gm" ${sizeUnitVal === 'gm' ? 'selected' : ''}>gm (grams)</option>
                   <option value="kg" ${sizeUnitVal === 'kg' ? 'selected' : ''}>kg (kilograms)</option>
+                  <option value="ml" ${sizeUnitVal === 'ml' ? 'selected' : ''}>ml (millilitres)</option>
+                  <option value="ltr" ${sizeUnitVal === 'ltr' ? 'selected' : ''}>ltr (litres)</option>
                 </select><span class="unit-arrow">▼</span>
               </div>
             </div>
@@ -7102,7 +7418,7 @@
           errorEl.classList.remove('show'); errorEl.textContent = '';
           const typed = nameEl.value.trim();
           const chosen = stockPicked || products.find(p => p.name.toLowerCase() === typed.toLowerCase()) || null;
-          const name = chosen ? chosen.name : typed;   // not in Products -> saved with the typed name
+          const name = (chosen ? chosen.name : typed).toUpperCase();   // not in Products -> saved with the typed name
           const sizeRaw = content.querySelector('#stockSize').value.trim();
           const sizeUnitSel = content.querySelector('#stockSizeUnit').value;
           const num = (id) => { const v = content.querySelector(id).value.trim(); return v === '' ? 0 : Number(v); };
@@ -7155,9 +7471,9 @@
         };
         const pickProduct = (p, focusNext) => {
           stockPicked = p;
-          nameEl.value = p.name;
+          nameEl.value = p.name.toUpperCase();
           sizeEl.value = p.size || '';
-          sizeUnitEl.value = (p.sizeUnit === 'gm' || p.sizeUnit === 'kg') ? p.sizeUnit : 'kg';
+          sizeUnitEl.value = ['gm', 'kg', 'ml', 'ltr'].includes(p.sizeUnit) ? p.sizeUnit : 'kg';
           ppbEl.value = p.pcsPerBag || '';
           kgManual = false;
           recalcKg();
@@ -7188,6 +7504,13 @@
       }
 
       stockTableBody.addEventListener('click', async (e) => {
+        const stockBtn = e.target.closest('.row-stock-btn');
+        if (stockBtn) {
+          e.stopPropagation();
+          const target = stockItems.find(i => i.id === stockBtn.dataset.stockId);
+          if (target) openStockUpdateModal(target);
+          return;
+        }
         const editBtn = e.target.closest('.row-edit-btn');
         if (editBtn) {
           e.stopPropagation();
@@ -7224,7 +7547,12 @@
       });
 
       addStockBtn.addEventListener('click', () => openStockModal(null));
-      stockSearchInput.addEventListener('input', applyStockFilters);
+      stockSearchInput.addEventListener('input', () => {
+        const st = stockSearchInput.selectionStart, en = stockSearchInput.selectionEnd;
+        const up = stockSearchInput.value.toUpperCase();
+        if (up !== stockSearchInput.value) { stockSearchInput.value = up; try { stockSearchInput.setSelectionRange(st, en); } catch (err) {} }
+        applyStockFilters();
+      });
       clearStockSearchBtn.addEventListener('click', () => { stockSearchInput.value = ''; applyStockFilters(); stockSearchInput.focus(); });
       stockSearchInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') e.preventDefault(); });
 
@@ -7374,6 +7702,8 @@
                 <select id="modalEditSizeUnit">
                   <option value="gm" ${currentSizeUnit === 'gm' ? 'selected' : ''}>gm (grams)</option>
                   <option value="kg" ${currentSizeUnit === 'kg' ? 'selected' : ''}>kg (kilograms)</option>
+                  <option value="ml" ${currentSizeUnit === 'ml' ? 'selected' : ''}>ml (millilitres)</option>
+                  <option value="ltr" ${currentSizeUnit === 'ltr' ? 'selected' : ''}>ltr (litres)</option>
                 </select><span class="unit-arrow">▼</span>
               </div>
             </div>
@@ -7442,6 +7772,8 @@
                 <select id="modalProductSizeUnit">
                   <option value="gm">gm (grams)</option>
                   <option value="kg">kg (kilograms)</option>
+                  <option value="ml">ml (millilitres)</option>
+                  <option value="ltr">ltr (litres)</option>
                 </select><span class="unit-arrow">▼</span>
               </div>
             </div>
