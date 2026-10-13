@@ -7106,6 +7106,8 @@
             e.preventDefault(); e.stopImmediatePropagation();
             const prod = ctx.matches[ctx.hi]; hideStockSuggest();
             if (prod) onPick(prod, true);
+          } else if (e.key === 'Enter') {
+            hideStockSuggest();   // nothing to pick: just close the list and let Enter move to the next box
           } else if (e.key === 'Tab' && n && input.value.trim()) {
             const prod = ctx.matches[ctx.hi]; hideStockSuggest();
             if (prod) onPick(prod, false);
@@ -7383,7 +7385,7 @@
         hideStockSuggest();
         const sameSize = (p) => String(Number(p.size) || '') === String(Number(s.size) || '') && (!p.size || p.sizeUnit === s.sizeUnit);
         let stockPicked = isEdit ? (products.find(p => p.name.toUpperCase() === s.name && sameSize(p)) || products.find(p => p.name.toUpperCase() === s.name) || null) : null;
-        const sizeUnitVal = s.sizeUnit || 'kg';
+        const sizeUnitVal = s.sizeUnit || 'gm';   // default size unit for a new stock entry: gram
         const html = `
           <div class="modal-error" id="stockModalError"></div>
           <div class="modal-field"><label>📦 Product</label><div class="input-wrap"><input type="text" id="stockName" placeholder="Type product name…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" style="text-transform:uppercase;" value="${isEdit ? escapeHtml(s.name) : ''}"></div></div>
@@ -7493,6 +7495,7 @@
         enterOrder.forEach((el, i) => el.addEventListener('keydown', (e) => {
           if (e.key !== 'Enter') return;
           e.preventDefault();
+          hideStockSuggest();
           if (i < enterOrder.length - 1) {
             const next = enterOrder[i + 1];
             next.focus();
