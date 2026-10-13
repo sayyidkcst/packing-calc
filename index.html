@@ -7730,7 +7730,13 @@
         const row = e.target.closest('tr');
         if (!row || !row.dataset.id) return;
         const product = products.find(p => p.id === row.dataset.id);
-        if (product) applyProduct(product);
+        if (product) {
+          const priceText = Number(product.price).toFixed(2);
+          copyToClipboard(priceText)   // copy the price (plain number, so it pastes into any box)
+            .then(() => showToast(`📋 Price ₹${priceText} copied`))
+            .catch(() => showToast('⚠️ Could not copy the price', 'warning'));
+          applyProduct(product);
+        }
       });
 
       function openEditProductModal(product) {
