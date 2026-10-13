@@ -6769,6 +6769,22 @@
         });
       }
 
+      // Duplicate-check key: ignores capitals and extra spaces ("Rice  Bag" == "rice bag")
+      function normKey(v) { return String(v || '').trim().replace(/\s+/g, ' ').toLowerCase(); }
+
+      // Shows the "already exists" error inside the Add / Edit Product dialog as soon as name + customer match an existing product
+      function wireProductDupCheck(overlay, nameSel, custSel, excludeId) {
+        const body = overlay.querySelector('.modal-body');
+        const nameEl = body.querySelector(nameSel), custEl = body.querySelector(custSel), errEl = body.querySelector('#modalProdError');
+        const check = () => {
+          const dup = nameEl.value.trim() && custEl.value.trim() &&
+            products.some(p => p.id !== excludeId && normKey(p.name) === normKey(nameEl.value) && normKey(p.customer) === normKey(custEl.value));
+          if (dup) { errEl.textContent = '⚠️ This product already exists for this customer.'; errEl.classList.add('show'); }
+          else { errEl.classList.remove('show'); errEl.textContent = ''; }
+        };
+        [nameEl, custEl].forEach(el => { el.addEventListener('input', check); el.addEventListener('change', check); });
+      }
+
       // ==================== SIMPLE TOAST ====================
       function showToast(text, type = '') {
         let toastEl = document.getElementById('globalToast');
@@ -7460,7 +7476,7 @@
           errorEl.classList.remove('show'); errorEl.textContent = '';
           const typed = nameEl.value.trim();
           const chosen = stockPicked || products.find(p => p.name.toLowerCase() === typed.toLowerCase()) || null;
-          const name = (chosen ? chosen.name : typed).toUpperCase();   // not in Products -> saved with the typed name
+          const name = (chosen ? chosen.name : typed).toUpperCase().replace(/\s+/g, ' ');   // not in Products -> saved with the typed name
           const sizeRaw = content.querySelector('#stockSize').value.trim();
           const sizeUnitSel = content.querySelector('#stockSizeUnit').value;
           const num = (id) => { const v = content.querySelector(id).value.trim(); return v === '' ? 0 : Number(v); };
@@ -7471,7 +7487,7 @@
           if (sizeRaw !== '' && (isNaN(sizeRaw) || Number(sizeRaw) < 0)) return fail('⚠️ Size must be 0 or more.', content.querySelector('#stockSize'));
           if (bags > 0 && ppb === 0) return fail('⚠️ Enter Pieces per Bag when bags are entered.', content.querySelector('#stockPpb'));
           const sizeKey = (sz, un) => sizeToKg(sz, un).toFixed(6);   // 500 gm and 0.5 kg count as the same size
-          const dup = stockItems.some(i => (!isEdit || i.id !== existing.id) && i.name.toLowerCase() === name.toLowerCase() && sizeKey(i.size, i.sizeUnit) === sizeKey(sizeRaw, sizeUnitSel));
+          const dup = stockItems.some(i => (!isEdit || i.id !== existing.id) && normKey(i.name) === normKey(name) && sizeKey(i.size, i.sizeUnit) === sizeKey(sizeRaw, sizeUnitSel));
           if (dup) return fail('⚠️ This item (same name and size) is already in the stock list. Use ± Update Stock to change its quantity.', nameEl);
           const payload = { name, size: sizeRaw, sizeUnit: sizeUnitSel, pcsPerBag: ppb, bags, pcs, totalKg: kg };
           saveBtn.disabled = true;
@@ -7533,6 +7549,7 @@
           ppbEl.value = p.pcsPerBag || '';
           kgManual = false;
           recalcKg();
+          showStockDup();
           if (focusNext) setTimeout(() => { bagsEl.focus(); bagsEl.select(); }, 30);
         };
         nameEl.addEventListener('input', () => {
@@ -7543,6 +7560,22 @@
         kgEl.addEventListener('input', () => { kgManual = true; });
         recalcKg();
 
+        const stockErrEl = body.querySelector('#stockModalError');
+        const showStockDup = () => {
+          const nm = nameEl.value.trim();
+          const skey = (sz, un) => sizeToKg(sz, un).toFixed(6);
+          const dupNow = nm && stockItems.some(i => (!isEdit || i.id !== existing.id) && normKey(i.name) === normKey(nm) && skey(i.size, i.sizeUnit) === skey(sizeEl.value, sizeUnitEl.value));
+          if (dupNow) {
+            stockErrEl.textContent = '⚠️ This item (same name and size) is already in the stock list. Use ± Update Stock to change its quantity.';
+            stockErrEl.classList.add('show'); stockErrEl.dataset.dup = '1';
+          } else if (stockErrEl.dataset.dup === '1') {
+            stockErrEl.classList.remove('show'); stockErrEl.textContent = ''; stockErrEl.dataset.dup = '';
+          }
+        };
+        nameEl.addEventListener('change', showStockDup);
+        nameEl.addEventListener('blur', showStockDup);
+        sizeEl.addEventListener('input', showStockDup);
+        sizeUnitEl.addEventListener('change', showStockDup);
         setTimeout(() => (isEdit ? sizeEl : nameEl).focus(), 50);   // product search ready for typing / arrow keys
         // Enter moves to the next box; Enter on the last box saves
         const enterOrder = [nameEl, sizeEl, ppbEl, bagsEl, pcsEl, kgEl];
@@ -7747,6 +7780,7 @@
         const currentSize = product.size || '';
         const currentSizeUnit = product.sizeUnit || 'gm';
         const html = `
+          <div class="modal-error" id="modalProdError"></div>
           <div class="modal-field"><label>📦 Product Name</label><div class="input-wrap"><input type="text" id="modalEditName" value="${escapeHtml(product.name)}" placeholder="Enter product name"></div></div>
           <div class="modal-field"><label>👤 Customer Name</label><div class="input-wrap"><input type="text" id="modalEditCustomer" list="editCustomerList" value="${escapeHtml(product.customer)}" placeholder="Enter customer name"></div><datalist id="editCustomerList">${datalistOptions}</datalist></div>
           <div class="modal-field"><label>🛍️ Pieces per Bag</label><div class="input-wrap"><input type="number" id="modalEditPcs" min="1" step="1" value="${product.pcsPerBag}" placeholder="e.g. 40"></div></div>
@@ -7777,9 +7811,9 @@
             <button class="aero-btn" id="modalCancelBtn" type="button">Cancel</button>
             <button class="aero-btn primary" id="modalSaveBtn" type="button">💾 Update Product</button>
           </div>`;
-        openModal(priceWindow, '✎ Edit Product', html, async (content) => {
-          const name = content.querySelector('#modalEditName').value.trim();
-          const customer = content.querySelector('#modalEditCustomer').value.trim();
+        const editProdOverlay = openModal(priceWindow, '✎ Edit Product', html, async (content) => {
+          const name = content.querySelector('#modalEditName').value.trim().replace(/\s+/g, ' ');
+          const customer = content.querySelector('#modalEditCustomer').value.trim().replace(/\s+/g, ' ');
           const pcs = content.querySelector('#modalEditPcs').value;
           const price = content.querySelector('#modalEditPrice').value;
           const unit = content.querySelector('#modalEditUnit').value;
@@ -7789,7 +7823,7 @@
           if (customer === '') return false;
           if (!pcs || isNaN(pcs) || parseInt(pcs) <= 0) return false;
           if (!price || isNaN(price) || parseFloat(price) < 0) return false;
-          if (products.some(p => p.id !== product.id && p.name.toLowerCase() === name.toLowerCase() && p.customer.toLowerCase() === customer.toLowerCase())) return false;
+          if (products.some(p => p.id !== product.id && normKey(p.name) === normKey(name) && normKey(p.customer) === normKey(customer))) { const pe = content.querySelector('#modalProdError'); pe.textContent = '⚠️ This product already exists for this customer.'; pe.classList.add('show'); content.querySelector('#modalEditName').focus(); return false; }
           const saveBtn = content.querySelector('#modalSaveBtn');
           saveBtn.disabled = true; saveBtn.textContent = '⏳ Updating…';
           try {
@@ -7810,6 +7844,7 @@
             return false;
           }
         });
+        wireProductDupCheck(editProdOverlay, '#modalEditName', '#modalEditCustomer', product.id);
       }
 
       addProductBtn.addEventListener('click', () => {
@@ -7817,6 +7852,7 @@
         let datalistOptions = '';
         uniqueCustomers.forEach(c => { datalistOptions += `<option value="${escapeHtml(c)}">`; });
         const html = `
+          <div class="modal-error" id="modalProdError"></div>
           <div class="modal-field"><label>📦 Product Name</label><div class="input-wrap"><input type="text" id="modalProductName" placeholder="Enter product name"></div></div>
           <div class="modal-field"><label>👤 Customer Name</label><div class="input-wrap"><input type="text" id="modalCustomerName" list="customerList" placeholder="Enter customer name"></div><datalist id="customerList">${datalistOptions}</datalist></div>
           <div class="modal-field"><label>🛍️ Pieces per Bag</label><div class="input-wrap"><input type="number" id="modalProductPcs" min="1" step="1" placeholder="e.g. 40"></div></div>
@@ -7847,9 +7883,9 @@
             <button class="aero-btn" id="modalCancelBtn" type="button">Cancel</button>
             <button class="aero-btn primary" id="modalSaveBtn" type="button">➕ Save to Database</button>
           </div>`;
-        openModal(priceWindow, '📦 Add Product', html, async (content) => {
-          const name = content.querySelector('#modalProductName').value.trim();
-          const customer = content.querySelector('#modalCustomerName').value.trim();
+        const addProdOverlay = openModal(priceWindow, '📦 Add Product', html, async (content) => {
+          const name = content.querySelector('#modalProductName').value.trim().replace(/\s+/g, ' ');
+          const customer = content.querySelector('#modalCustomerName').value.trim().replace(/\s+/g, ' ');
           const pcs = content.querySelector('#modalProductPcs').value;
           const price = content.querySelector('#modalProductPrice').value;
           const unit = content.querySelector('#modalProductUnit').value;
@@ -7859,7 +7895,7 @@
           if (customer === '') return false;
           if (!pcs || isNaN(pcs) || parseInt(pcs) <= 0) return false;
           if (!price || isNaN(price) || parseFloat(price) < 0) return false;
-          if (products.some(p => p.name.toLowerCase() === name.toLowerCase() && p.customer.toLowerCase() === customer.toLowerCase())) return false;
+          if (products.some(p => normKey(p.name) === normKey(name) && normKey(p.customer) === normKey(customer))) { const pe = content.querySelector('#modalProdError'); pe.textContent = '⚠️ This product already exists for this customer.'; pe.classList.add('show'); content.querySelector('#modalProductName').focus(); return false; }
           const saveBtn = content.querySelector('#modalSaveBtn');
           saveBtn.disabled = true; saveBtn.textContent = '⏳ Saving…';
           try {
@@ -7874,6 +7910,7 @@
             return false;
           }
         });
+        wireProductDupCheck(addProdOverlay, '#modalProductName', '#modalCustomerName', null);
       });
 
       // ---- Bulk Add Products: one customer, many products ----
@@ -7954,23 +7991,23 @@
           const fail = (msg, el) => { errorEl.textContent = msg; errorEl.classList.add('show'); if (el) el.focus(); return false; };
           errorEl.classList.remove('show'); errorEl.textContent = '';
           hideStockSuggest();
-          const customer = customerEl.value.trim();
+          const customer = customerEl.value.trim().replace(/\s+/g, ' ');
           if (customer === '') return fail('⚠️ Customer name is required.', customerEl);
           const active = rows.filter(r => r.nameEl.value.trim() || r.pcsEl.value.trim() || r.sizeEl.value.trim() || r.priceEl.value.trim());
           if (active.length === 0) return fail('⚠️ Add at least one product.', null);
           const plan = [], seen = new Set();
           for (const r of active) {
             const n = rows.indexOf(r) + 1;
-            const name = r.nameEl.value.trim();
+            const name = r.nameEl.value.trim().replace(/\s+/g, ' ');
             const pcs = r.pcsEl.value.trim(), price = r.priceEl.value.trim(), size = r.sizeEl.value.trim();
             if (name === '') return fail(`⚠️ Row ${n}: product name is required.`, r.nameEl);
             if (!pcs || isNaN(pcs) || parseInt(pcs) <= 0 || !Number.isInteger(Number(pcs))) return fail(`⚠️ Row ${n}: Pcs/Bag must be a whole number above 0.`, r.pcsEl);
             if (size !== '' && (isNaN(size) || Number(size) < 0)) return fail(`⚠️ Row ${n}: Size must be 0 or more.`, r.sizeEl);
             if (price === '' || isNaN(price) || parseFloat(price) < 0) return fail(`⚠️ Row ${n}: enter a valid price.`, r.priceEl);
-            const key = name.toLowerCase();
+            const key = normKey(name);
             if (seen.has(key)) return fail(`⚠️ Row ${n}: "${name}" appears twice in this list.`, r.nameEl);
             seen.add(key);
-            if (products.some(p => p.name.toLowerCase() === key && p.customer.toLowerCase() === customer.toLowerCase())) return fail(`⚠️ Row ${n}: "${name}" already exists for this customer.`, r.nameEl);
+            if (products.some(p => normKey(p.name) === key && normKey(p.customer) === normKey(customer))) return fail(`⚠️ Row ${n}: "${name}" already exists for this customer.`, r.nameEl);
             plan.push({ r, n, product: { name, customer, pcsPerBag: parseInt(pcs), price: parseFloat(price), unit: r.unitEl.value, size: size || '', sizeUnit: r.sizeUnitEl.value } });
           }
           saveBtn.disabled = true; saveBtn.textContent = '⏳ Saving…';
