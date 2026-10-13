@@ -7903,16 +7903,38 @@
           const r = { el, nameEl: el.querySelector('.bp-name'), pcsEl: el.querySelector('.bp-pcs'), unitEl: el.querySelector('.bp-unit'),
             sizeEl: el.querySelector('.bp-size'), sizeUnitEl: el.querySelector('.bp-sizeunit'), priceEl: el.querySelector('.bp-price') };
           rows.push(r);
+
+          // Arrow Up / Down in an empty name box (list hidden) moves to the previous / next row
+          r.nameEl.addEventListener('keydown', (e) => {
+            if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+            const listOpen = stockSuggestEl.classList.contains('open') && stockSuggestCtx && stockSuggestCtx.input === r.nameEl;
+            if (listOpen || r.nameEl.value.trim()) return;   // otherwise the list handles the arrows
+            const idx = rows.indexOf(r) + (e.key === 'ArrowDown' ? 1 : -1);
+            if (idx >= 0 && idx < rows.length) { e.preventDefault(); e.stopImmediatePropagation(); rows[idx].nameEl.focus(); }
+          });
+          // searchable list of existing products; picking one fills the whole row (customer stays as typed above)
+          attachStockSuggest(r.nameEl, (prod, focusNext) => {
+            r.nameEl.value = prod.name;
+            r.pcsEl.value = prod.pcsPerBag || '';
+            r.unitEl.value = ['Pcs', 'Kg', 'gm'].includes(prod.unit) ? prod.unit : 'Pcs';
+            r.sizeEl.value = prod.size || '';
+            r.sizeUnitEl.value = ['gm', 'kg', 'ml', 'ltr'].includes(prod.sizeUnit) ? prod.sizeUnit : 'gm';
+            r.priceEl.value = prod.price || '';
+            if (focusNext) setTimeout(() => { r.pcsEl.focus(); r.pcsEl.select(); }, 30);
+          }, { source: () => products, noneText: 'No products available', notFoundText: 'No products found' });
+
           const order = [r.nameEl, r.pcsEl, r.sizeEl, r.priceEl];
           order.forEach((x, i) => x.addEventListener('keydown', (e) => {
             if (e.key !== 'Enter') return;
             e.preventDefault();
+            hideStockSuggest();
             if (i < order.length - 1) { order[i + 1].focus(); order[i + 1].select(); return; }
             const idx = rows.indexOf(r);
             if (idx < rows.length - 1) rows[idx + 1].nameEl.focus(); else addRow(true);
           }));
           el.querySelector('.bp-del').addEventListener('click', () => {
             if (rows.length === 1) { [r.nameEl, r.pcsEl, r.sizeEl, r.priceEl].forEach(x => x.value = ''); r.nameEl.focus(); return; }
+            hideStockSuggest();
             rows.splice(rows.indexOf(r), 1); el.remove();
           });
           if (focus) setTimeout(() => { r.nameEl.focus(); el.scrollIntoView({ block: 'nearest' }); }, 30);
@@ -7925,6 +7947,7 @@
           const customerEl = content.querySelector('#bulkProdCustomer');
           const fail = (msg, el) => { errorEl.textContent = msg; errorEl.classList.add('show'); if (el) el.focus(); return false; };
           errorEl.classList.remove('show'); errorEl.textContent = '';
+          hideStockSuggest();
           const customer = customerEl.value.trim();
           if (customer === '') return fail('⚠️ Customer name is required.', customerEl);
           const active = rows.filter(r => r.nameEl.value.trim() || r.pcsEl.value.trim() || r.sizeEl.value.trim() || r.priceEl.value.trim());
