@@ -2179,13 +2179,14 @@
     .window-stock .row-stock-btn:hover { background: linear-gradient(180deg, #eafbea 0%, #a8e4ac 100%); }
     .window-stock #stockSearchInput { text-transform: uppercase; }
     .window-stock .stock-bulk-head, .window-stock .stock-bulk-row {
-      display: grid; grid-template-columns: minmax(150px, 1fr) 84px 62px 62px 24px; gap: 6px; align-items: center;
+      display: grid; grid-template-columns: minmax(300px, 1fr) 88px 64px 64px 24px; gap: 8px; align-items: center;
     }
     .window-stock .stock-bulk-head { font-size: 0.66rem; font-weight: 700; color: #15419c; padding: 0 2px 3px; }
     .window-stock .stock-bulk-rows { max-height: 44vh; overflow-y: auto; padding-right: 2px; }
     .window-stock .stock-bulk-row { margin-bottom: 6px; }
     .window-stock .stock-bulk-row .input-wrap, .window-stock .stock-bulk-row .unit-select-wrap { width: 100%; min-width: 0; }
     .window-stock .stock-bulk-row input, .window-stock .stock-bulk-row select { width: 100%; box-sizing: border-box; }
+    .window-stock .stock-bulk-row input.bk-item { font-size: 0.9rem; font-weight: 700; text-overflow: ellipsis; }
     .window-stock .stock-bulk-row input[type=number] { text-align: center; padding-left: 4px; padding-right: 4px; }
     .window-stock .stock-bulk-note { grid-column: 1 / -1; font-size: 0.64rem; color: #4a6a8a; min-height: 0; margin-top: -2px; }
     .window-stock .stock-bulk-note.err { color: #c0392b; font-weight: 700; }
@@ -3249,7 +3250,7 @@
               <th style="text-align:center;">Pcs/Bag</th>
               <th style="text-align:center;">Bag</th>
               <th style="text-align:center;">Pcs</th>
-              <th style="text-align:right;">Total kg</th>
+              <th style="text-align:right;">Total kg / Pcs</th>
               <th style="width:96px;"></th>
             </tr>
           </thead>
@@ -3432,7 +3433,7 @@
   <div class="wallpaper-mini-window" id="wallpaperMiniWindow">
     <div class="title-bar" id="wallpaperMiniTitleBar">
       <div class="title-text">
-        🖼️ Wallpaper
+        🖼️ <span id="wallpaperMiniTitleLabel">Wallpaper</span>
         <span class="sync-badge-mini" id="wallpaperSyncBadgeMini">●</span>
       </div>
       <div class="caption-buttons">
@@ -3442,7 +3443,7 @@
     </div>
     <div class="wallpaper-mini-content">
       <div style="font-size:0.72rem; color:#0a2862; font-weight:700; margin-bottom:6px; display:flex; justify-content:space-between;">
-        <span>Choose wallpaper</span>
+        <span id="wallpaperHeadingMini">Choose wallpaper</span>
         <span style="font-size:0.62rem; color:#4a6a8a; font-weight:500;" id="wallpaperStatusMini">Loading…</span>
       </div>
       <div class="wallpaper-scroll-container" id="wallpaperScrollContainer">
@@ -3927,6 +3928,7 @@
       const wpDeleteBtn = document.getElementById('wpDeleteBtn');
 
       let currentWallpaper = DEFAULT_WALLPAPER;
+      let wallpaperViewMode = 'all';   // 'all' = Personalize (every picture), 'mine' = My Wallpapers (uploaded only)
 
       function applyWallpaper(url) {
         currentWallpaper = url;
@@ -4094,7 +4096,14 @@
 
       function renderWallpaperGridMini() {
         let html = '';
-        allWallpapers.forEach(wp => {
+        const mineOnly = wallpaperViewMode === 'mine';
+        document.getElementById('wallpaperMiniTitleLabel').textContent = mineOnly ? 'My Wallpapers' : 'Wallpaper';
+        document.getElementById('wallpaperHeadingMini').textContent = mineOnly ? 'My uploaded pictures' : 'Choose wallpaper';
+        const list = mineOnly ? allWallpapers.filter(wp => uploadedWallpapers.some(u => u.id === wp.id)) : allWallpapers;
+        if (mineOnly && list.length === 0) {
+          html = '<div style="grid-column:1 / -1; text-align:center; padding:26px 8px; font-size:0.74rem; color:#4a6a8a;">📁 No uploaded pictures yet<br><span style="font-size:0.64rem;">Use "Upload custom image(s)" below to add your own.</span></div>';
+        }
+        list.forEach(wp => {
           const isSelected = currentWallpaper === wp.url;
           const isUploaded = uploadedWallpapers.some(u => u.id === wp.id);
           const bgStyle = wp.url.startsWith('linear-gradient') || wp.url.startsWith('radial-gradient')
@@ -4173,7 +4182,8 @@
         wpUploadInputMini.value = '';
       });
 
-      function openWallpaperMini() {
+      function openWallpaperMini(mode) {
+        wallpaperViewMode = (mode === 'mine') ? 'mine' : 'all';   // click events passed in as `mode` fall back to 'all'
         renderWallpaperGridMini();
         wallpaperMiniWindow.classList.add('active');
         const left = Math.max(10, (window.innerWidth - 420) / 2);
@@ -6909,6 +6919,11 @@
         return kg > 0 ? formatQty(parseFloat(kg.toFixed(3))) + ' kg' : '';
       }
 
+      // ml / ltr products show their total in pieces instead of kg
+      const isLiquidUnit = (u) => u === 'ml' || u === 'ltr';
+      const stockTotalPcs = (i) => (i.bags * (i.pcsPerBag || 0)) + i.pcs;
+      const stockTotalText = (i, kg) => isLiquidUnit(i.sizeUnit) ? `${stockTotalPcs(i)} pcs` : `${formatQty(kg === undefined ? i.totalKg : kg)} kg`;
+
       async function loadStock(attempt = 1) {
         showLoading('stock');
         stockStatusDot.className = 'status-dot syncing';
@@ -7006,7 +7021,7 @@
             <td class="stock-num-cell">${s.pcsPerBag || '—'}${bagKgText(s.size, s.sizeUnit, s.pcsPerBag) ? `<div class="stock-sub">${bagKgText(s.size, s.sizeUnit, s.pcsPerBag)}</div>` : ''}</td>
             <td class="stock-num-cell">${s.bags}</td>
             <td class="stock-num-cell">${s.pcs}</td>
-            <td class="stock-kg-cell">${formatQty(s.totalKg)}</td>
+            <td class="stock-kg-cell">${isLiquidUnit(s.sizeUnit) ? stockTotalPcs(s) + ' pcs' : formatQty(s.totalKg)}</td>
             <td class="action-cell">
               <button class="row-stock-btn" data-stock-id="${s.id}" title="Update Stock (add / remove)">±</button>
               <button class="row-edit-btn" data-edit-id="${s.id}" title="Edit">✎</button>
@@ -7169,9 +7184,9 @@
         const refresh = () => {
           const cur = body.querySelector('#stockUpdCurrent'), prev = body.querySelector('#stockUpdPreview');
           if (!picked) { cur.textContent = ''; prev.textContent = ''; return; }
-          cur.textContent = `Current: ${picked.bags} bag + ${picked.pcs} pcs · ${formatQty(picked.totalKg)} kg`;
+          cur.textContent = `Current: ${picked.bags} bag + ${picked.pcs} pcs · ${stockTotalText(picked)}`;
           const r = compute();
-          prev.textContent = (!r || r.error || (r.dBags === 0 && r.dPcs === 0)) ? '' : `New stock: ${r.newBags} bag + ${r.newPcs} pcs · ${formatQty(r.kg)} kg`;
+          prev.textContent = (!r || r.error || (r.dBags === 0 && r.dPcs === 0)) ? '' : `New stock: ${r.newBags} bag + ${r.newPcs} pcs · ${stockTotalText({ ...picked, bags: r.newBags, pcs: r.newPcs }, r.kg)}`;
         };
 
         const overlay = openModal(stockWindow, '🔄 Update Stock', html, async (content) => {
@@ -7273,10 +7288,10 @@
           r.noteEl.classList.remove('err');
           if (!r.picked) { r.noteEl.textContent = ''; return; }
           const dB = intOf(r.bagsEl), dP = intOf(r.pcsEl);
-          if (dB === 0 && dP === 0) { r.noteEl.textContent = `Now: ${r.picked.bags} bag + ${r.picked.pcs} pcs · ${formatQty(r.picked.totalKg)} kg`; return; }
+          if (dB === 0 && dP === 0) { r.noteEl.textContent = `Now: ${r.picked.bags} bag + ${r.picked.pcs} pcs · ${stockTotalText(r.picked)}`; return; }
           const c = computeStockChange(r.picked, r.modeEl.value === 'add' ? 1 : -1, dB, dP);
           if (c.error) { r.noteEl.textContent = '⚠️ ' + c.error.charAt(0).toUpperCase() + c.error.slice(1); r.noteEl.classList.add('err'); return; }
-          r.noteEl.textContent = `Now ${r.picked.bags} bag + ${r.picked.pcs} pcs → ${c.newBags} bag + ${c.newPcs} pcs · ${formatQty(c.kg)} kg`;
+          r.noteEl.textContent = `Now ${r.picked.bags} bag + ${r.picked.pcs} pcs → ${c.newBags} bag + ${c.newPcs} pcs · ${stockTotalText({ ...r.picked, bags: c.newBags, pcs: c.newPcs }, c.kg)}`;
         };
 
         const addRow = (focus = true) => {
@@ -7371,6 +7386,7 @@
           applyStockFilters();
           return true;
         });
+        overlay.querySelector('.window-modal').style.maxWidth = '740px';   // wider than the default 420px dialog
         body = overlay.querySelector('.modal-body');
         overlay.querySelector('#stockBulkAddRow').addEventListener('click', () => addRow(true));
         addRow(true); addRow(false); addRow(false);
@@ -7406,7 +7422,7 @@
             <div class="modal-field"><label>Pcs/Bag</label><div class="input-wrap"><input type="number" id="stockPpb" min="0" step="1" placeholder="40" value="${isEdit && s.pcsPerBag ? s.pcsPerBag : ''}"></div><div class="stock-hint" id="stockBagKg" style="text-align:center; min-height:1em;"></div></div>
             <div class="modal-field"><label>Bag</label><div class="input-wrap"><input type="number" id="stockBags" min="0" step="1" placeholder="0" value="${isEdit ? s.bags : ''}"></div></div>
             <div class="modal-field"><label>Pcs</label><div class="input-wrap"><input type="number" id="stockPcs" min="0" step="1" placeholder="0" value="${isEdit ? s.pcs : ''}"></div></div>
-            <div class="modal-field stock-kg-field"><label>Total kg</label><div class="input-wrap"><input type="number" id="stockKg" min="0" step="0.001" placeholder="0" value="${isEdit ? s.totalKg : ''}"></div></div>
+            <div class="modal-field stock-kg-field"><label id="stockKgLabel">Total kg</label><div class="input-wrap"><input type="number" id="stockKg" min="0" step="0.001" placeholder="0" value="${isEdit ? s.totalKg : ''}"></div></div>
           </div>
           <div class="modal-actions">
             <button class="aero-btn" id="modalCancelBtn" type="button">Cancel</button>
@@ -7424,14 +7440,15 @@
           const sizeRaw = content.querySelector('#stockSize').value.trim();
           const sizeUnitSel = content.querySelector('#stockSizeUnit').value;
           const num = (id) => { const v = content.querySelector(id).value.trim(); return v === '' ? 0 : Number(v); };
-          const ppb = num('#stockPpb'), bags = num('#stockBags'), pcs = num('#stockPcs'), kg = num('#stockKg');
+          const ppb = num('#stockPpb'), bags = num('#stockBags'), pcs = num('#stockPcs'), kg = isLiquidUnit(sizeUnitSel) ? parseFloat((((bags * ppb) + pcs) * sizeToKg(sizeRaw, sizeUnitSel)).toFixed(3)) : num('#stockKg');
           if (name === '') return fail('⚠️ Item name is required.', nameEl);
           if ([ppb, bags, pcs, kg].some(v => isNaN(v) || v < 0)) return fail('⚠️ Numbers must be 0 or more.', null);
           if (!Number.isInteger(ppb) || !Number.isInteger(bags) || !Number.isInteger(pcs)) return fail('⚠️ Pcs/Bag, Bag and Pcs must be whole numbers.', null);
           if (sizeRaw !== '' && (isNaN(sizeRaw) || Number(sizeRaw) < 0)) return fail('⚠️ Size must be 0 or more.', content.querySelector('#stockSize'));
           if (bags > 0 && ppb === 0) return fail('⚠️ Enter Pieces per Bag when bags are entered.', content.querySelector('#stockPpb'));
-          const dup = stockItems.some(i => (!isEdit || i.id !== existing.id) && i.name.toLowerCase() === name.toLowerCase() && String(Number(i.size) || '') === String(Number(sizeRaw) || '') && i.sizeUnit === sizeUnitSel && i.pcsPerBag === ppb);
-          if (dup) return fail('⚠️ This item already exists with the same size and Pcs/Bag. Edit that entry instead.', nameEl);
+          const sizeKey = (sz, un) => sizeToKg(sz, un).toFixed(6);   // 500 gm and 0.5 kg count as the same size
+          const dup = stockItems.some(i => (!isEdit || i.id !== existing.id) && i.name.toLowerCase() === name.toLowerCase() && sizeKey(i.size, i.sizeUnit) === sizeKey(sizeRaw, sizeUnitSel));
+          if (dup) return fail('⚠️ This item (same name and size) is already in the stock list. Use ± Update Stock to change its quantity.', nameEl);
           const payload = { name, size: sizeRaw, sizeUnit: sizeUnitSel, pcsPerBag: ppb, bags, pcs, totalKg: kg };
           saveBtn.disabled = true;
           saveBtn.textContent = isEdit ? '⏳ Updating…' : '⏳ Saving…';
@@ -7447,7 +7464,7 @@
             applyStockFilters();
             return true;
           } catch (err) {
-            errorEl.textContent = '❌ Failed to save: ' + (err.message || 'Unknown error');
+            errorEl.textContent = err.code === '23505' ? '⚠️ This item (same name and size) is already in the stock list.' : '❌ Failed to save: ' + (err.message || 'Unknown error');
             errorEl.classList.add('show');
             saveBtn.disabled = false;
             saveBtn.textContent = isEdit ? '💾 Update Stock' : '💾 Save Stock';
@@ -7463,12 +7480,25 @@
         const pcsEl = body.querySelector('#stockPcs'), kgEl = body.querySelector('#stockKg');
         let kgManual = isEdit;   // don't overwrite saved kg until the user changes bags/pcs
         const bagKgEl = body.querySelector('#stockBagKg');
+        const kgLabel = body.querySelector('#stockKgLabel');
+        let wasLiquid = false;
         const recalcKg = () => {
           bagKgEl.textContent = bagKgText(sizeEl.value, sizeUnitEl.value, ppbEl.value);
+          const pcsTotal = (parseInt(bagsEl.value) || 0) * (parseInt(ppbEl.value) || 0) + (parseInt(pcsEl.value) || 0);
+          if (isLiquidUnit(sizeUnitEl.value)) {
+            // ml / ltr: show the total number of pieces (read-only) instead of kg
+            kgLabel.textContent = 'Total Pcs';
+            kgEl.readOnly = true; kgEl.step = '1'; kgEl.style.background = '#eef3fa';
+            kgEl.value = pcsTotal || '';
+            wasLiquid = true;
+            return;
+          }
+          kgLabel.textContent = 'Total kg';
+          kgEl.readOnly = false; kgEl.step = '0.001'; kgEl.style.background = '';
+          if (wasLiquid) { wasLiquid = false; kgManual = false; kgEl.value = ''; }
           const w = sizeToKg(sizeEl.value, sizeUnitEl.value);
           if (!w) return;
           if (kgManual) return;
-          const pcsTotal = (parseInt(bagsEl.value) || 0) * (parseInt(ppbEl.value) || 0) + (parseInt(pcsEl.value) || 0);
           kgEl.value = pcsTotal ? parseFloat((pcsTotal * w).toFixed(3)) : '';
         };
         const pickProduct = (p, focusNext) => {
@@ -7581,16 +7611,17 @@
         const dateStr = formatDateTimeDDMMYYYY(new Date());
         const searchLabel = stockSearchInput.value.trim() || '—';
         let rows = '';
-        let totBags = 0, totPcs = 0, totKg = 0;
+        let totBags = 0, totPcs = 0, totKg = 0, totLiquidPcs = 0;
         filteredStock.forEach((s, i) => {
-          totBags += s.bags; totPcs += s.pcs; totKg += s.totalKg;
+          totBags += s.bags; totPcs += s.pcs;
+          if (isLiquidUnit(s.sizeUnit)) totLiquidPcs += stockTotalPcs(s); else totKg += s.totalKg;
           rows += `<tr>
             <td>${i + 1}</td><td>${escapeHtml(s.name)}</td>
             <td style="text-align:center;">${s.size ? escapeHtml(s.size + ' ' + s.sizeUnit) : '—'}</td>
             <td style="text-align:center;">${s.pcsPerBag || '—'}${bagKgText(s.size, s.sizeUnit, s.pcsPerBag) ? `<br><small style="color:#4a6a8a;">${bagKgText(s.size, s.sizeUnit, s.pcsPerBag)}</small>` : ''}</td>
             <td style="text-align:center;">${s.bags}</td>
             <td style="text-align:center;">${s.pcs}</td>
-            <td style="text-align:right;">${formatQty(s.totalKg)}</td>
+            <td style="text-align:right;">${isLiquidUnit(s.sizeUnit) ? stockTotalPcs(s) + ' pcs' : formatQty(s.totalKg)}</td>
           </tr>`;
         });
         const printWindow = window.open('', '_blank', 'width=900,height=700');
@@ -7622,12 +7653,12 @@
               <th style="width:50px;">#</th><th>Item Name</th><th style="text-align:center; width:90px;">Size</th>
               <th style="text-align:center; width:90px;">Pcs/Bag</th>
               <th style="text-align:center; width:80px;">Bag</th><th style="text-align:center; width:80px;">Pcs</th>
-              <th style="text-align:right; width:110px;">Total kg</th>
+              <th style="text-align:right; width:110px;">Total kg / Pcs</th>
             </tr></thead><tbody>
               ${rows}
               <tr class="total-row"><td colspan="4" style="text-align:right;">Total:</td>
                 <td style="text-align:center;">${totBags}</td><td style="text-align:center;">${totPcs}</td>
-                <td style="text-align:right;">${formatQty(parseFloat(totKg.toFixed(3)))}</td></tr>
+                <td style="text-align:right;">${totKg > 0 || totLiquidPcs === 0 ? formatQty(parseFloat(totKg.toFixed(3))) + ' kg' : ''}${totKg > 0 && totLiquidPcs > 0 ? '<br>' : ''}${totLiquidPcs > 0 ? totLiquidPcs + ' pcs' : ''}</td></tr>
             </tbody></table>
             <div class="footer">Generated by ${escapeHtml(companySettings.name || 'KCST Windows XP')} · ${dateStr}</div>
             <script>window.onload=function(){setTimeout(function(){window.print();},400);};<\/script>
@@ -8289,7 +8320,7 @@
         const rightItem = e.target.closest('.xp-right-item[data-xp-action]');
         if (rightItem) {
           const action = rightItem.dataset.xpAction;
-          if (action === 'startChangeWallpaper') { startMenu.classList.remove('open'); openWallpaperMini(); }
+          if (action === 'startChangeWallpaper') { startMenu.classList.remove('open'); openWallpaperMini('mine'); }
           else if (action === 'xpReload') { startMenu.classList.remove('open'); setTimeout(() => window.location.reload(), 300); }
           else if (action === 'xpPersonalize') { startMenu.classList.remove('open'); openWallpaperMini(); }
           else if (action === 'startSettings') { startMenu.classList.remove('open'); restoreWindowFromTaskbar('settingsWindow'); }
