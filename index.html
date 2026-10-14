@@ -7186,9 +7186,11 @@
             </div>
           </div>
           <div class="stock-mini-row">
+            <div class="modal-field"><label>Kg</label><div class="input-wrap" style="width:100px;"><input type="number" id="stockUpdKg" min="0" step="0.001" placeholder="0"></div></div>
             <div class="modal-field"><label>Bag</label><div class="input-wrap"><input type="number" id="stockUpdBags" min="0" step="1" placeholder="0"></div></div>
             <div class="modal-field"><label>Pcs</label><div class="input-wrap"><input type="number" id="stockUpdPcs" min="0" step="1" placeholder="0"></div></div>
           </div>
+          <div class="stock-hint" id="stockUpdKgHint" style="min-height:1em;"></div>
           <div class="stock-hint" id="stockUpdPreview" style="min-height:1.2em; font-weight:700; color:#15419c;"></div>
           <div class="modal-actions">
             <button class="aero-btn" id="modalCancelBtn" type="button">Cancel</button>
@@ -7261,10 +7263,39 @@
 
         body = overlay.querySelector('.modal-body');
         const itemEl = body.querySelector('#stockUpdItem'), bagsEl = body.querySelector('#stockUpdBags'), pcsEl = body.querySelector('#stockUpdPcs');
+        const kgEl = body.querySelector('#stockUpdKg'), kgHintEl = body.querySelector('#stockUpdKgHint');
+        const itemW = () => picked ? sizeToKg(picked.size, picked.sizeUnit) : 0;   // weight of one piece in kg
+        // Type kg -> Bag and Pcs are worked out from the item's Size and Pcs/Bag
+        kgEl.addEventListener('input', () => {
+          const v = kgEl.value.trim();
+          if (v === '') { kgHintEl.textContent = ''; return; }
+          const kg = Number(v);
+          if (isNaN(kg) || kg < 0) { kgHintEl.textContent = '⚠️ Enter a valid kg amount.'; return; }
+          if (!picked) { kgHintEl.textContent = '⚠️ Pick an item first.'; return; }
+          const w = itemW();
+          if (!w) { kgHintEl.textContent = '⚠️ This item has no Size set, so kg cannot be converted. Use ✎ Edit to set its Size.'; return; }
+          const totalPcs = Math.round(kg / w);
+          const ppb = picked.pcsPerBag || 0;
+          const b = ppb > 0 ? Math.floor(totalPcs / ppb) : 0, pc = ppb > 0 ? totalPcs % ppb : totalPcs;
+          bagsEl.value = String(b); pcsEl.value = String(pc);
+          const exactKg = totalPcs * w;
+          kgHintEl.textContent = `${formatQty(kg)} kg ÷ ${formatQty(parseFloat(w.toFixed(6)))} kg per pc = ${totalPcs} pcs → ${b} bag + ${pc} pcs` +
+            (Math.abs(exactKg - kg) > 0.0005 ? ` (rounded to ${formatQty(parseFloat(exactKg.toFixed(3)))} kg)` : '');
+          refresh();
+        });
+        // Typing Bag / Pcs by hand keeps the Kg box in step
+        [bagsEl, pcsEl].forEach(el => el.addEventListener('input', () => {
+          const w = itemW();
+          if (!picked || !w) return;
+          const t = intOf(bagsEl) * (picked.pcsPerBag || 0) + intOf(pcsEl);
+          kgEl.value = t ? parseFloat((t * w).toFixed(3)) : '';
+          kgHintEl.textContent = '';
+        }));
         if (preItem) { itemEl.readOnly = true; itemEl.style.background = '#eef3fa'; itemEl.style.cursor = 'default'; }
         else attachStockSuggest(itemEl, (it, focusNext) => {
           picked = it;
           itemEl.value = it.name;
+          kgEl.value = ''; kgHintEl.textContent = '';
           refresh();
           if (focusNext) setTimeout(() => { bagsEl.focus(); bagsEl.select(); }, 30);
         }, { source: () => stockItems, noneText: 'No stock items available', notFoundText: 'No stock items found' });
@@ -7275,15 +7306,16 @@
           if (picked && itemEl.value.trim().toLowerCase() !== picked.name.toLowerCase()) { picked = null; refresh(); }
         });
         [bagsEl, pcsEl, body.querySelector('#stockUpdMode')].forEach(el => el.addEventListener('input', refresh));
-        const order = [itemEl, bagsEl, pcsEl];
+        const order = [itemEl, kgEl, bagsEl, pcsEl];
         order.forEach((el, i) => el.addEventListener('keydown', (e) => {
           if (e.key !== 'Enter') return;
           e.preventDefault();
+          hideStockSuggest();
           if (i < order.length - 1) { order[i + 1].focus(); order[i + 1].select(); }
           else body.querySelector('#modalSaveBtn').click();
         }));
         if (preItem) refresh();
-        setTimeout(() => { if (preItem) { bagsEl.focus(); } else { itemEl.focus(); } }, 50);
+        setTimeout(() => { if (preItem) { kgEl.focus(); } else { itemEl.focus(); } }, 50);
       }
 
       // ---- Bulk Update: add / remove stock for many items in one go ----
