@@ -7801,6 +7801,9 @@
             .then(() => showToast(`📋 Price ₹${priceText} copied`))
             .catch(() => showToast('⚠️ Could not copy the price', 'warning'));
           applyProduct(product);
+          // put the cursor back in the search box with its text selected, ready for the next search
+          searchInput.focus();
+          searchInput.select();
         }
       });
 
