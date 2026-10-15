@@ -592,7 +592,7 @@
     .window-invoice { width: 840px; max-width: calc(100vw - 40px); z-index: 16; }
     .window-stock { width: 780px; max-width: calc(100vw - 40px); z-index: 19; }
     .window-settings { width: 560px; max-width: calc(100vw - 40px); z-index: 17; }
-    .window-number-word { width: 520px; max-width: calc(100vw - 40px); z-index: 18; }
+    .window-number-word { width: 660px; max-width: calc(100vw - 40px); z-index: 18; }
 
     .window.minimized, .window-price.minimized, .window-load.minimized, .window-cash.minimized, .window-notepad.minimized, .window-vehicle.minimized, .window-invoice.minimized, .window-stock.minimized, .window-settings.minimized, .window-number-word.minimized { display: none !important; }
 
@@ -2711,10 +2711,10 @@
     <div class="cal-grid" id="calGrid"></div>
   </div>
 
-  <!-- NUMBER TO WORD -->
+  <!-- RECEIPT VOUCHER (formerly Number to Word) -->
   <div class="window-number-word" id="numberWordWindow">
     <div class="title-bar" id="numberWordTitleBar">
-      <div class="title-text"><span>🔢</span> Receipt Voucher</div>
+      <div class="title-text"><span>🧾</span> Receipt Voucher</div>
       <div class="caption-buttons">
         <div class="caption-btn minimize" data-minimize="numberWordWindow" title="Minimize">_</div>
         <div class="caption-btn maximize" data-maximize="numberWordWindow" title="Maximize">□</div>
@@ -2723,28 +2723,24 @@
     </div>
 
     <div class="window-content">
-      <div class="aero-info">
-        <span class="badge">💡</span>
-        <span style="font-size:0.74rem; color:#0a2862;">Type a number and press <strong>Enter</strong> 
-      </div>
-
       <div class="n2w-input-row">
         <div class="input-group">
-          <label><span>🔢</span> Enter Number</label>
+          <label><span>👤</span> Received from</label>
           <div class="input-wrap">
-            <input type="text" id="n2wInput" placeholder="e.g. 1,000" autocomplete="off" inputmode="numeric">
-            <span class="unit">#</span>
+            <input type="text" id="rvFromInput" autocomplete="off" autocorrect="off" spellcheck="false">
           </div>
         </div>
+        <div class="input-group" style="flex:0 0 190px;">
+          <label><span>💰</span> Amount (₹)</label>
+          <div class="input-wrap">
+            <input type="text" id="rvAmountInput" autocomplete="off" inputmode="decimal">
+            <span class="unit">₹</span>
+          </div>
+        </div>
+        <button class="aero-btn primary" id="rvPrintBtn" type="button" style="align-self:flex-end;"><span>🖨️</span> Print</button>
       </div>
 
-      <div class="n2w-result-box" id="n2wResultBox">
-        <div class="n2w-placeholder">Result will appear here…</div>
-      </div>
-
-      <div class="n2w-help">
-        <kbd>KCST Media Technology</kbd> →  &nbsp;·&nbsp; <kbd>96 333 151 77</kbd>
-      </div>
+      <div class="rv-scroll" id="rvPreview"></div>
     </div>
   </div>
 
@@ -3002,8 +2998,8 @@
           <span class="combo-arrow">▼</span>
         </div>
         <div class="staff-action-buttons">
-          <button class="aero-btn primary" id="addStaffBtn" type="button" tabindex="11" title="Add new employee">
-            <span>➕</span>
+          <button class="aero-btn primary" id="addStaffBtn" type="button" tabindex="11" title="Add a new staff member">
+            <span>➕</span> New Staff
           </button>
           <button class="aero-btn" id="editStaffBtn" type="button" tabindex="12" title="Edit selected employee">
             <span>✎</span>
@@ -3515,8 +3511,8 @@
       <span class="tb-label">Packing Calculator</span>
     </div>
     <div class="taskbar-item" id="taskbarNumberWord" data-restore="numberWordWindow" style="display:none;">
-      <span class="tb-icon">🔢</span>
-      <span class="tb-label">Number to Word</span>
+      <span class="tb-icon">🧾</span>
+      <span class="tb-label">Receipt Voucher</span>
     </div>
     <div class="taskbar-item" id="taskbarPrice" data-restore="priceWindow" style="display:none;">
       <span class="tb-icon">💰</span>
@@ -3736,54 +3732,192 @@
         return result;
       }
 
-      // ==================== NUMBER TO WORD UI ====================
+      // ==================== RECEIPT VOUCHER UI ====================
       const numberWordWindow = document.getElementById('numberWordWindow');
       const numberWordTitleBar = document.getElementById('numberWordTitleBar');
-      const n2wInput = document.getElementById('n2wInput');
-      const n2wResultBox = document.getElementById('n2wResultBox');
+      const rvFromInput = document.getElementById('rvFromInput');
+      const rvAmountInput = document.getElementById('rvAmountInput');
+      const rvPreview = document.getElementById('rvPreview');
+      const rvPrintBtn = document.getElementById('rvPrintBtn');
 
-      function renderN2WResult(numberText, wordText, isError = false) {
-        if (isError) {
-          n2wResultBox.innerHTML = `<div class="n2w-error">${escapeHtml(wordText)}</div>`;
-          return;
-        }
-        if (!numberText) {
-          n2wResultBox.innerHTML = `<div class="n2w-placeholder">Result will appear here…</div>`;
-          return;
-        }
-        n2wResultBox.innerHTML = `
-          <div class="n2w-number-display">${escapeHtml(numberText)}</div>
-          <div class="n2w-word-display">${escapeHtml(wordText)}</div>
-        `;
+      // Indian numbering for rupees: Crore / Lakh / Thousand
+      function rupeesToWords(n) {
+        n = Math.floor(n);
+        if (n === 0) return 'Zero';
+        const crore = Math.floor(n / 10000000), lakh = Math.floor((n % 10000000) / 100000);
+        const thousand = Math.floor((n % 100000) / 1000), rest = n % 1000;
+        const parts = [];
+        if (crore) parts.push(numberToWords(String(crore)) + ' Crore');
+        if (lakh) parts.push(chunkToWords(lakh) + ' Lakh');
+        if (thousand) parts.push(chunkToWords(thousand) + ' Thousand');
+        if (rest) parts.push(chunkToWords(rest));
+        return parts.join(' ');
       }
 
-      function handleN2WSubmit() {
-        const raw = n2wInput.value.trim();
-        if (raw === '') { renderN2WResult('', '', false); return; }
-        const cleaned = raw.replace(/,/g, '').replace(/\s+/g, '');
-        if (!/^-?\d+$/.test(cleaned)) {
-          renderN2WResult('', '⚠️ Please enter a valid integer number.', true);
-          n2wInput.value = '';
-          return;
-        }
-        const words = numberToWords(cleaned);
-        if (words === null) {
-          renderN2WResult('', '⚠️ Number too large (max ~999 Trillion).', true);
-          n2wInput.value = '';
-          return;
-        }
-        renderN2WResult(cleaned, words, false);
-        n2wInput.value = '';
+      // amount text -> { rupees, paise, words, display } or { error }
+      function parseVoucherAmount(raw) {
+        const cleaned = raw.replace(/[,\s₹]/g, '').replace(/\/-?$/, '');
+        if (cleaned === '') return null;
+        if (!/^\d+(\.\d{1,2})?$/.test(cleaned)) return { error: '⚠️ Enter a valid amount (numbers only, up to 2 decimals).' };
+        const [r, pRaw] = cleaned.split('.');
+        const rupees = parseInt(r, 10);
+        if (rupees >= 1e12) return { error: '⚠️ Amount too large.' };
+        const paise = pRaw ? parseInt(pRaw.padEnd(2, '0'), 10) : 0;
+        let words = rupeesToWords(rupees);
+        if (paise) words += ' and ' + numberToWords(String(paise)) + ' Paise';
+        return { rupees, paise, words: words + ' Only', display: String(rupees) + (paise ? '.' + String(paise).padStart(2, '0') : '') + '/-' };
       }
 
-      if (n2wInput) {
-        n2wInput.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter') {
-            e.preventDefault();
-            handleN2WSubmit();
-          }
+      const RV_CSS = `
+        .rv-scroll { overflow-x: auto; margin-top: 10px; padding-bottom: 4px; }
+        .rv-card { min-width: 560px; background: #fdfdff; border: 1px solid #c9d3e6; border-radius: 4px; padding: 18px 24px 22px; box-sizing: border-box;
+          font-family: Georgia, 'Times New Roman', serif; color: #244a7c; box-shadow: 0 2px 8px rgba(15, 40, 90, 0.22); }
+        .rv-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 14px; }
+        .rv-name { font-size: 1.55rem; font-weight: 800; letter-spacing: 0.02em; color: #1f4e8c; line-height: 1.1; text-transform: uppercase; }
+        .rv-addr { font-size: 0.7rem; color: #3b5c8a; white-space: pre-line; line-height: 1.4; margin-top: 4px; }
+        .rv-badge { background: #1b6aa5; color: #ffffff; font: 700 0.8rem/1 Arial, sans-serif; letter-spacing: 0.04em; padding: 9px 14px; white-space: nowrap; margin-top: 4px; }
+        .rv-meta { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 14px; font-style: italic; font-size: 0.82rem; }
+        .rv-no { font-size: 0.95rem; }
+        .rv-serial { color: #d32f2f; font: 700 1.5rem Georgia, 'Times New Roman', serif; letter-spacing: 0.04em; margin-left: 8px; font-style: normal; }
+        .rv-line { display: flex; align-items: flex-end; gap: 10px; border-bottom: 1px dotted #5a6f90; min-height: 2.1em; margin-top: 10px; font-style: italic; font-size: 0.82rem; }
+        .rv-label { white-space: nowrap; padding-bottom: 2px; }
+        .rv-fill { flex: 1; font-family: 'Segoe Print', 'Bradley Hand', 'Lucida Handwriting', 'Comic Sans MS', cursive; font-style: normal; font-size: 1.05rem; color: #1b2a8a; line-height: 1.5; padding-left: 6px; word-break: break-word; }
+        .rv-meta .rv-fill { flex: none; padding-left: 4px; }
+        .rv-bottom { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 22px; gap: 14px; }
+        .rv-amount { display: inline-flex; align-items: stretch; border: 2px solid #1b6aa5; border-radius: 10px; overflow: hidden; min-width: 210px; }
+        .rv-rs { background: #1b6aa5; color: #ffffff; font: 700 1.6rem Arial, sans-serif; padding: 6px 15px; display: flex; align-items: center; }
+        .rv-amt { flex: 1; padding: 6px 16px; font-family: 'Segoe Print', 'Bradley Hand', 'Lucida Handwriting', 'Comic Sans MS', cursive; font-size: 1.4rem; color: #1b2a8a; display: flex; align-items: center; min-height: 1.6em; }
+        .rv-sign { font: 700 0.78rem Arial, sans-serif; color: #1b4f86; text-align: center; padding-top: 34px; }
+        .rv-error { color: #c0392b; font: 700 0.85rem Arial, sans-serif; margin-bottom: 8px; }
+      `;
+      const rvStyle = document.createElement('style');
+      rvStyle.textContent = RV_CSS;
+      document.head.appendChild(rvStyle);
+
+      function voucherHTML(fromText, amt, towards, serial) {
+        const c = companySettings;
+        const d = new Date();
+        const dateStr = String(d.getDate()).padStart(2, '0') + '/' + String(d.getMonth() + 1).padStart(2, '0') + '/' + d.getFullYear();
+        const words = amt && !amt.error ? amt.words : '';
+        const amount = amt && !amt.error ? amt.display : '';
+        return `
+          <div class="rv-card">
+            <div class="rv-top">
+              <div>
+                <div class="rv-name">${escapeHtml(c.name || 'Company')}</div>
+                ${c.address ? `<div class="rv-addr">${escapeHtml(c.address)}</div>` : ''}
+                ${c.phone ? `<div class="rv-addr" style="margin-top:0;">Ph: ${escapeHtml(c.phone)}</div>` : ''}
+              </div>
+              <div class="rv-badge">RECEIPT VOUCHER</div>
+            </div>
+            <div class="rv-meta">
+              <div class="rv-no">No. <span class="rv-serial">${escapeHtml(String(serial || ''))}</span></div>
+              <div>Date: <span class="rv-fill">${dateStr}</span></div>
+            </div>
+            <div class="rv-line"><span class="rv-label">Received thanks from</span><span class="rv-fill">${escapeHtml(fromText)}</span></div>
+            <div class="rv-line"><span class="rv-label">a sum of Rupees</span><span class="rv-fill">${escapeHtml(words)}</span></div>
+            <div class="rv-line"><span class="rv-label">towards</span><span class="rv-fill">${towards ? escapeHtml(towards) : '&nbsp;'}</span></div>
+            <div class="rv-bottom">
+              <div class="rv-amount"><span class="rv-rs">₹</span><span class="rv-amt">${escapeHtml(amount)}</span></div>
+              <div class="rv-sign">Authorised Signature</div>
+            </div>
+          </div>`;
+      }
+
+      // category of the staff member typed / picked in "Received from" (from the Cash Collection staff list)
+      let rvPicked = null;
+      function rvCategory() {
+        const typed = rvFromInput.value.trim();
+        if (!typed) return '';
+        if (rvPicked && normKey(rvPicked.name) === normKey(typed)) return rvPicked.section || '';
+        const match = employeesList.find(e => normKey(e.name) === normKey(typed));
+        return match ? (match.section || '') : '';
+      }
+
+      // Automatic serial number: NOT saved anywhere. The count starts at 0 every time the page loads,
+      // so the first voucher is No. 1, and the voucher shows the next number while you type.
+      let rvLastSerial = 0;
+      try { localStorage.removeItem('receipt_voucher_serial'); } catch (e) {}   // clear the number saved by the earlier version
+      function rvNextSerial() { return rvLastSerial + 1; }
+      let rvLastCommit = null;       // the voucher that was just completed with Enter
+      let rvShowingCommit = false;   // true while the completed voucher stays on screen and both boxes are empty
+
+      function renderReceiptVoucher() {
+        if (rvShowingCommit && !rvFromInput.value.trim() && !rvAmountInput.value.trim() && rvLastCommit) {
+          rvPreview.innerHTML = voucherHTML(rvLastCommit.from, rvLastCommit.amt, rvLastCommit.towards, rvLastCommit.serial);
+          return;
+        }
+        rvShowingCommit = false;
+        const amt = parseVoucherAmount(rvAmountInput.value.trim());
+        const err = amt && amt.error ? `<div class="rv-error">${escapeHtml(amt.error)}</div>` : '';
+        rvPreview.innerHTML = err + voucherHTML(rvFromInput.value.trim(), amt, rvCategory(), rvNextSerial());
+      }
+
+      rvFromInput.addEventListener('input', () => {
+        if (rvPicked && normKey(rvPicked.name) !== normKey(rvFromInput.value)) rvPicked = null;
+        rvShowingCommit = false;
+        renderReceiptVoucher();
+      });
+      rvAmountInput.addEventListener('input', () => { rvShowingCommit = false; renderReceiptVoucher(); });
+
+      // Enter in Amount: complete the voucher, use up its serial number, clear both boxes and go back to "Received from"
+      rvAmountInput.addEventListener('keydown', (e) => {
+        if (e.key !== 'Enter') return;
+        e.preventDefault();
+        const from = rvFromInput.value.trim();
+        const amt = parseVoucherAmount(rvAmountInput.value.trim());
+        if (!from) { rvFromInput.focus(); return; }
+        if (!amt || amt.error) { renderReceiptVoucher(); rvAmountInput.focus(); return; }
+        const serial = rvNextSerial();
+        rvLastSerial = serial;
+        rvLastCommit = { from, amt, towards: rvCategory(), serial };
+        rvShowingCommit = true;
+        rvPicked = null;
+        rvFromInput.value = '';
+        rvAmountInput.value = '';
+        renderReceiptVoucher();   // keeps showing the completed voucher until you start typing the next one
+        rvFromInput.focus();
+      });
+
+      // searchable staff list on "Received from" (set up on first open, after the staff list code has loaded)
+      let rvSuggestReady = false;
+      function initReceiptSuggest() {
+        if (rvSuggestReady) return;
+        rvSuggestReady = true;
+        attachStockSuggest(rvFromInput, (emp, focusNext) => {
+          rvPicked = emp;
+          rvFromInput.value = emp.name;
+          rvShowingCommit = false;
+          renderReceiptVoucher();
+          if (focusNext) setTimeout(() => { rvAmountInput.focus(); rvAmountInput.select(); }, 30);
+        }, {
+          source: () => employeesList,
+          match: (e) => (e.name + ' ' + (e.section || '')).toLowerCase(),
+          meta: (e) => e.section ? `<span class="ps-pcs">${escapeHtml(e.section)}</span>` : '',
+          noneText: 'No staff available', notFoundText: 'No matching staff'
         });
+        // registered after the list handler so Enter on a highlighted staff member picks it first
+        rvFromInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); hideStockSuggest(); rvAmountInput.focus(); rvAmountInput.select(); } });
       }
+
+      rvPrintBtn.addEventListener('click', () => {
+        const from = rvFromInput.value.trim();
+        const amt = parseVoucherAmount(rvAmountInput.value.trim());
+        let data;
+        if (from || amt) data = { from, amt, towards: rvCategory(), serial: rvNextSerial() };   // what is typed now
+        else if (rvLastCommit) data = rvLastCommit;                                                // boxes empty: print the one just completed
+        else return;
+        if (data.amt && data.amt.error) return;
+        const w = window.open('', '_blank', 'width=900,height=600');
+        w.document.write(`<!DOCTYPE html><html><head><title>Receipt Voucher</title><style>
+          body { margin: 0; padding: 30px; background: #ffffff; }
+          ${RV_CSS}
+          .rv-card { box-shadow: none; max-width: 760px; margin: 0 auto; }
+          @media print { body { padding: 10px; } }
+        </style></head><body>${voucherHTML(data.from, data.amt, data.towards, data.serial)}
+        <script>window.onload=function(){setTimeout(function(){window.print();},400);};<\/script></body></html>`);
+        w.document.close();
+      });
 
       // ==================== COMPANY SETTINGS ====================
       const COMPANY_SETTINGS_KEY = 'company_settings';
@@ -5831,20 +5965,21 @@
       // EMPLOYEE FORM MODAL
       function openEmployeeFormModal(existingEmployee = null) {
         const isEdit = !!existingEmployee;
-        const title = isEdit ? '✎ Edit Employee' : '👤 Add New Employee';
+        const title = isEdit ? '✎ Edit Staff' : '👤 New Staff';
+        const categories = [...new Set(employeesList.map(e => e.section).filter(Boolean))].sort();
         const html = `
           <div class="modal-error" id="modalError"></div>
-          <div class="modal-field"><label>👤 Employee Name</label><div class="input-wrap"><input type="text" id="modalEmployeeName" placeholder="Enter employee name" value="${isEdit ? escapeHtml(existingEmployee.name) : ''}"></div></div>
-          <div class="modal-field"><label>🏷️ Section</label><div class="input-wrap"><input type="text" id="modalEmployeeSection" placeholder="e.g. Packing" value="${isEdit ? escapeHtml(existingEmployee.section) : ''}"></div></div>
-          <div class="modal-field"><label>📷 Photo (optional)</label>
+          <div class="modal-field"><label>👤 Staff Name</label><div class="input-wrap"><input type="text" id="modalEmployeeName" placeholder="Enter staff name" autocomplete="off" value="${isEdit ? escapeHtml(existingEmployee.name) : ''}"></div></div>
+          <div class="modal-field"><label>🏷️ Category</label><div class="input-wrap"><input type="text" id="modalEmployeeSection" list="modalCategoryList" placeholder="e.g. Packing" autocomplete="off" value="${isEdit ? escapeHtml(existingEmployee.section) : ''}"></div><datalist id="modalCategoryList">${categories.map(c => `<option value="${escapeHtml(c)}">`).join('')}</datalist></div>
+          ${isEdit ? `<div class="modal-field"><label>📷 Photo (optional)</label>
             <div style="display:flex; gap:10px; align-items:center;">
               <div class="photo-preview" id="modalPhotoPreview">${isEdit && existingEmployee.photo ? `<img src="${existingEmployee.photo}">` : '📷'}</div>
               <div style="flex:1;"><input type="file" id="modalEmployeePhoto" accept="image/*" style="font-size:0.78rem;"><div style="font-size:0.62rem; color:#4a6a8a; margin-top:3px;">Max 2MB · optional</div></div>
             </div>
-          </div>
+          </div>` : ''}
           <div class="modal-actions">
             <button class="aero-btn" id="modalCancelBtn" type="button">Cancel</button>
-            <button class="aero-btn primary" id="modalSaveBtn" type="button">${isEdit ? '💾 Update Employee' : '💾 Save Employee'}</button>
+            <button class="aero-btn primary" id="modalSaveBtn" type="button">${isEdit ? '💾 Update Staff' : '💾 Save Staff'}</button>
           </div>`;
         openModal(cashWindow, title, html, async (content) => {
           const errorEl = content.querySelector('#modalError');
@@ -5855,10 +5990,11 @@
           errorEl.classList.remove('show'); errorEl.textContent = '';
           const name = nameEl.value.trim();
           const section = sectionEl.value.trim();
-          if (name === '') { errorEl.textContent = '⚠️ Employee name is required.'; errorEl.classList.add('show'); nameEl.focus(); return false; }
-          if (section === '') { errorEl.textContent = '⚠️ Section is required.'; errorEl.classList.add('show'); sectionEl.focus(); return false; }
+          if (name === '') { errorEl.textContent = '⚠️ Staff name is required.'; errorEl.classList.add('show'); nameEl.focus(); return false; }
+          if (section === '') { errorEl.textContent = '⚠️ Category is required.'; errorEl.classList.add('show'); sectionEl.focus(); return false; }
+          if (employeesList.some(e => (!isEdit || e.id !== existingEmployee.id) && normKey(e.name) === normKey(name))) { errorEl.textContent = '⚠️ A staff member with this name already exists.'; errorEl.classList.add('show'); nameEl.focus(); return false; }
           let photoData = isEdit ? (existingEmployee.photo || null) : null;
-          if (photoInput.files && photoInput.files[0]) {
+          if (photoInput && photoInput.files && photoInput.files[0]) {
             const file = photoInput.files[0];
             if (file.size > 2 * 1024 * 1024) { errorEl.textContent = '⚠️ Photo is too large (max 2MB). Continuing without photo.'; errorEl.classList.add('show'); }
             else { photoData = await new Promise((resolve) => { const reader = new FileReader(); reader.onload = (e) => resolve(e.target.result); reader.readAsDataURL(file); }); }
@@ -5882,10 +6018,18 @@
             errorEl.textContent = '❌ Failed to save: ' + (err.message || 'Unknown error');
             errorEl.classList.add('show');
             saveBtn.disabled = false;
-            saveBtn.textContent = isEdit ? '💾 Update Employee' : '💾 Save Employee';
+            saveBtn.textContent = isEdit ? '💾 Update Staff' : '💾 Save Staff';
             return false;
           }
         });
+        setTimeout(() => {
+          const nm = document.getElementById('modalEmployeeName'), cat = document.getElementById('modalEmployeeSection');
+          if (nm && cat) {
+            nm.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); cat.focus(); } });
+            cat.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); document.getElementById('modalSaveBtn').click(); } });
+            nm.focus();
+          }
+        }, 60);
         setTimeout(() => {
           const fileInp = document.getElementById('modalEmployeePhoto');
           const prev = document.getElementById('modalPhotoPreview');
@@ -7116,7 +7260,7 @@
         const ctx = { input, onPick, getSource, hi: -1, matches: [] };
         const filter = () => {
           const q = input.value.trim().toLowerCase();
-          return getSource().filter(p => !q || p.name.toLowerCase().includes(q) || (p.customer || '').toLowerCase().includes(q));
+          return getSource().filter(p => !q || (opts.match ? opts.match(p) : (p.name.toLowerCase() + ' ' + (p.customer || '').toLowerCase())).includes(q));
         };
         const render = (matches) => {
           stockSuggestCtx = ctx;
@@ -7127,10 +7271,10 @@
           } else {
             stockSuggestEl.innerHTML = ctx.matches.map((p, i) => `<div class="product-suggest-item${i === ctx.hi ? ' highlighted' : ''}" data-product-id="${escapeHtml(String(p.id))}">
               <span class="ps-name">${escapeHtml(p.name.toUpperCase())}</span>
-              <span class="ps-meta">
+              <span class="ps-meta">${opts.meta ? opts.meta(p) : `
                 ${p.size ? `<span class="ps-unit">${escapeHtml(p.size + ' ' + p.sizeUnit)}</span>` : ''}
                 <span class="ps-pcs">${p.pcsPerBag || 0} pcs</span>
-                ${p.customer ? `<span class="ps-pcs">${escapeHtml(p.customer)}</span>` : ''}
+                ${p.customer ? `<span class="ps-pcs">${escapeHtml(p.customer)}</span>` : ''}`}
               </span>
             </div>`).join('');
           }
@@ -8488,7 +8632,7 @@
       const XP_RIGHT_ITEMS = [
         { id: 'startSettings', icon: '⚙️', name: 'Settings' },
         { id: 'startChangeWallpaper', icon: '🖼️', name: 'My Wallpapers' },
-        { id: 'startNumberWord', icon: '🔢', name: 'Number to Word' },
+        { id: 'startNumberWord', icon: '🧾', name: 'Receipt Voucher' },
         { id: 'startNotepad', icon: '📝', name: 'Notepad' },
         { id: 'xpReload', icon: '🔄', name: 'Refresh Desktop' },
         { id: 'xpPersonalize', icon: '🎨', name: 'Personalize' }
@@ -8619,7 +8763,9 @@
         bringToFront(winEl);
         updateTaskbar();
         if (winId === 'numberWordWindow') {
-          setTimeout(() => { n2wInput && n2wInput.focus(); }, 50);
+          initReceiptSuggest();
+          renderReceiptVoucher();
+          setTimeout(() => { rvFromInput && rvFromInput.focus(); }, 50);
         }
       }
 
