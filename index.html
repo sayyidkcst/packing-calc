@@ -3791,13 +3791,18 @@
         .rv-error { color: #c0392b; font: 700 0.85rem Arial, sans-serif; margin-bottom: 8px; }
       `;
       const rvStyle = document.createElement('style');
-      rvStyle.textContent = RV_CSS;
+      rvStyle.textContent = RV_CSS + '.rv-date-click { cursor: pointer; border-bottom: 1px dashed #1b2a8a; }';   // screen only, not printed
       document.head.appendChild(rvStyle);
 
-      function voucherHTML(fromText, amt, towards, serial) {
+      // Date: today unless the user picks another one by clicking the date on the voucher
+      let rvDateManual = null;
+      const rvTodayISO = () => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
+      const rvCurrentDate = () => rvDateManual || rvTodayISO();
+      const rvDateText = (iso) => { const [y, m, d] = iso.split('-'); return d + '/' + m + '/' + y; };
+
+      function voucherHTML(fromText, amt, towards, serial, dateISO) {
         const c = companySettings;
-        const d = new Date();
-        const dateStr = String(d.getDate()).padStart(2, '0') + '/' + String(d.getMonth() + 1).padStart(2, '0') + '/' + d.getFullYear();
+        const dateStr = rvDateText(dateISO || rvCurrentDate());
         const words = amt && !amt.error ? amt.words : '';
         const amount = amt && !amt.error ? amt.display : '';
         return `
@@ -3812,7 +3817,7 @@
             </div>
             <div class="rv-meta">
               <div class="rv-no">No. <span class="rv-serial">${escapeHtml(String(serial || ''))}</span></div>
-              <div>Date: <span class="rv-fill">${dateStr}</span></div>
+              <div>Date: <span class="rv-fill rv-date-click" title="Click to change the date">${dateStr}</span></div>
             </div>
             <div class="rv-line"><span class="rv-label">Received thanks from</span><span class="rv-fill">${escapeHtml(fromText)}</span></div>
             <div class="rv-line"><span class="rv-label">a sum of Rupees</span><span class="rv-fill">${escapeHtml(words)}</span></div>
@@ -3844,13 +3849,13 @@
 
       function renderReceiptVoucher() {
         if (rvShowingCommit && !rvFromInput.value.trim() && !rvAmountInput.value.trim() && rvLastCommit) {
-          rvPreview.innerHTML = voucherHTML(rvLastCommit.from, rvLastCommit.amt, rvLastCommit.towards, rvLastCommit.serial);
+          rvPreview.innerHTML = voucherHTML(rvLastCommit.from, rvLastCommit.amt, rvLastCommit.towards, rvLastCommit.serial, rvLastCommit.date);
           return;
         }
         rvShowingCommit = false;
         const amt = parseVoucherAmount(rvAmountInput.value.trim());
         const err = amt && amt.error ? `<div class="rv-error">${escapeHtml(amt.error)}</div>` : '';
-        rvPreview.innerHTML = err + voucherHTML(rvFromInput.value.trim(), amt, rvCategory(), rvNextSerial());
+        rvPreview.innerHTML = err + voucherHTML(rvFromInput.value.trim(), amt, rvCategory(), rvNextSerial(), rvCurrentDate());
       }
 
       rvFromInput.addEventListener('input', () => {
@@ -3870,13 +3875,38 @@
         if (!amt || amt.error) { renderReceiptVoucher(); rvAmountInput.focus(); return; }
         const serial = rvNextSerial();
         rvLastSerial = serial;
-        rvLastCommit = { from, amt, towards: rvCategory(), serial };
+        rvLastCommit = { from, amt, towards: rvCategory(), serial, date: rvCurrentDate() };
         rvShowingCommit = true;
         rvPicked = null;
         rvFromInput.value = '';
         rvAmountInput.value = '';
         renderReceiptVoucher();   // keeps showing the completed voucher until you start typing the next one
         rvFromInput.focus();
+      });
+
+      // Click the date on the voucher to pick another one
+      rvPreview.addEventListener('click', (e) => {
+        const target = e.target.closest('.rv-date-click');
+        if (!target) return;
+        const current = (rvShowingCommit && rvLastCommit) ? rvLastCommit.date : rvCurrentDate();
+        const inp = document.createElement('input');
+        inp.type = 'date';
+        inp.value = current;
+        const r = target.getBoundingClientRect();
+        inp.style.cssText = `position:fixed; left:${r.left}px; top:${r.bottom}px; width:1px; height:1px; opacity:0; border:0; padding:0; z-index:10060;`;
+        document.body.appendChild(inp);
+        const done = () => inp.remove();
+        inp.addEventListener('change', () => {
+          if (inp.value) {
+            rvDateManual = inp.value;
+            if (rvShowingCommit && rvLastCommit) rvLastCommit.date = inp.value;
+            renderReceiptVoucher();
+          }
+          done();
+        });
+        inp.addEventListener('blur', () => setTimeout(done, 200));
+        inp.focus();
+        try { if (inp.showPicker) inp.showPicker(); else inp.click(); } catch (err) { inp.click(); }
       });
 
       // searchable staff list on "Received from" (set up on first open, after the staff list code has loaded)
@@ -3904,7 +3934,7 @@
         const from = rvFromInput.value.trim();
         const amt = parseVoucherAmount(rvAmountInput.value.trim());
         let data;
-        if (from || amt) data = { from, amt, towards: rvCategory(), serial: rvNextSerial() };   // what is typed now
+        if (from || amt) data = { from, amt, towards: rvCategory(), serial: rvNextSerial(), date: rvCurrentDate() };   // what is typed now
         else if (rvLastCommit) data = rvLastCommit;                                                // boxes empty: print the one just completed
         else return;
         if (data.amt && data.amt.error) return;
@@ -3914,7 +3944,7 @@
           ${RV_CSS}
           .rv-card { box-shadow: none; max-width: 760px; margin: 0 auto; }
           @media print { body { padding: 10px; } }
-        </style></head><body>${voucherHTML(data.from, data.amt, data.towards, data.serial)}
+        </style></head><body>${voucherHTML(data.from, data.amt, data.towards, data.serial, data.date)}
         <script>window.onload=function(){setTimeout(function(){window.print();},400);};<\/script></body></html>`);
         w.document.close();
       });
@@ -8757,9 +8787,12 @@
         const winEl = document.getElementById(winId);
         if (!winEl) return;
         const state = windowState[winId];
+        const tbItem = document.querySelector(`.taskbar-item[data-restore="${winId}"]`);
+        const wasClosed = !tbItem || tbItem.style.display === 'none';   // closed (or never opened) -> opens fresh; a minimized one keeps its place
         showTaskbarItem(winId);
         if (state.minimized) { winEl.classList.remove('minimized'); state.minimized = false; }
-        if (!winEl.style.left && !winEl.style.top) centerWindow(winEl);
+        if (wasClosed) winEl.classList.remove('snap-left', 'snap-right');
+        if (wasClosed || (!winEl.style.left && !winEl.style.top)) centerWindow(winEl);
         bringToFront(winEl);
         updateTaskbar();
         if (winId === 'numberWordWindow') {
