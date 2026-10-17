@@ -30,7 +30,8 @@
 
     .wallpaper-layer {
       position: fixed;
-      inset: 0;
+      top: 0; left: 0; right: 0;
+      bottom: var(--taskbar-height);   /* wallpaper stops at the taskbar */
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
@@ -1676,6 +1677,16 @@
     }
 
     /* ---------- WALLPAPER MINI WINDOW ---------- */
+    .wp-mode-row {
+      display: flex; align-items: center; gap: 8px; margin: 2px 0 6px 0;
+      font-size: 0.72rem; color: #0a2862; font-weight: 700;
+    }
+    .wp-mode-row label { white-space: nowrap; }
+    .wp-mode-row select {
+      flex: 1; min-width: 0; padding: 3px 6px; font-size: 0.72rem;
+      border: 1px solid #7f9db9; border-radius: 2px; background: #fff; color: #0a2862;
+      font-family: inherit; cursor: pointer;
+    }
     .wallpaper-mini-window {
       position: fixed;
       width: 400px; max-width: calc(100vw - 40px);
@@ -3466,6 +3477,17 @@
         <div class="wallpaper-grid-mini" id="wallpaperGridMini"></div>
       </div>
 
+      <div class="wp-mode-row">
+        <label for="wpModeSelect">🖼️ Picture position:</label>
+        <select id="wpModeSelect">
+          <option value="fill">Fill (cover the screen)</option>
+          <option value="fit">Fit (whole picture visible)</option>
+          <option value="stretch">Stretch (exact screen size)</option>
+          <option value="center">Center (original size)</option>
+          <option value="tile">Tile (repeat)</option>
+        </select>
+      </div>
+
       <div class="wp-delete-area hidden" id="wpDeleteArea">
         <span class="delete-label">🗑️ Custom wallpaper</span>
         <button class="wp-delete-btn" id="wpDeleteBtn" type="button">Delete Image</button>
@@ -4112,6 +4134,29 @@
       const wpDeleteBtn = document.getElementById('wpDeleteBtn');
 
       let currentWallpaper = DEFAULT_WALLPAPER;
+      const WALLPAPER_MODE_KEY = 'wallpaper_mode';
+      const WALLPAPER_MODES = {
+        fill:    { size: 'cover',     repeat: 'no-repeat', position: 'center' },
+        fit:     { size: 'contain',   repeat: 'no-repeat', position: 'center' },
+        stretch: { size: '100% 100%', repeat: 'no-repeat', position: 'center' },
+        center:  { size: 'auto',      repeat: 'no-repeat', position: 'center' },
+        tile:    { size: 'auto',      repeat: 'repeat',    position: 'top left' }
+      };
+      const wpModeSelect = document.getElementById('wpModeSelect');
+      let currentWallpaperMode = 'fill';
+
+      function applyWallpaperMode(mode) {
+        if (!WALLPAPER_MODES[mode]) mode = 'fill';
+        currentWallpaperMode = mode;
+        const m = WALLPAPER_MODES[mode];
+        [wallpaperLayer, document.body].forEach(el => {
+          el.style.backgroundSize = m.size;
+          el.style.backgroundRepeat = m.repeat;
+          el.style.backgroundPosition = m.position;
+        });
+        wallpaperLayer.style.backgroundColor = '#0a3a5c';   // shows around the picture in Fit / Center
+        if (wpModeSelect) wpModeSelect.value = mode;
+      }
       let wallpaperViewMode = 'all';   // 'all' = Personalize (every picture), 'mine' = My Wallpapers (uploaded only)
 
       function applyWallpaper(url) {
@@ -4191,6 +4236,7 @@
         let cached = null;
         try { cached = localStorage.getItem('wallpaper'); } catch (e) {}
         if (cached) applyWallpaper(cached);
+        try { applyWallpaperMode(localStorage.getItem('wallpaper_mode') || 'fill'); } catch (e) { applyWallpaperMode('fill'); }
 
         try {
           const result = await withTimeout(
@@ -4204,6 +4250,16 @@
           } else {
             wallpaperStatusMini.textContent = 'ℹ️ Using default';
           }
+          try {
+            const modeRes = await withTimeout(
+              supabase.from('app_settings').select('setting_value').eq('setting_key', WALLPAPER_MODE_KEY).maybeSingle(),
+              2000
+            );
+            if (modeRes && modeRes.data && WALLPAPER_MODES[modeRes.data.setting_value]) {
+              applyWallpaperMode(modeRes.data.setting_value);
+              try { localStorage.setItem('wallpaper_mode', modeRes.data.setting_value); } catch (e) {}
+            }
+          } catch (e) { /* keep the local mode */ }
         } catch (err) {
           wallpaperStatusMini.textContent = '⚠️ DB offline · using local';
         }
@@ -4364,6 +4420,20 @@
         setTimeout(() => { wpUploadProgress.classList.remove('show'); }, 2500);
         wpUploadAreaMini.style.pointerEvents = '';
         wpUploadInputMini.value = '';
+      });
+
+      wpModeSelect.addEventListener('change', async () => {
+        const mode = wpModeSelect.value;
+        applyWallpaperMode(mode);
+        try { localStorage.setItem('wallpaper_mode', mode); } catch (e) {}
+        try {
+          const { error } = await supabase.from('app_settings')
+            .upsert({ setting_key: WALLPAPER_MODE_KEY, setting_value: mode, updated_at: new Date().toISOString() }, { onConflict: 'setting_key' });
+          if (error) throw error;
+          wallpaperStatusMini.textContent = '✅ Position saved';
+        } catch (err) {
+          wallpaperStatusMini.textContent = '⚠️ Saved locally (DB offline)';
+        }
       });
 
       function openWallpaperMini(mode) {
