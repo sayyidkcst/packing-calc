@@ -749,6 +749,50 @@
     .gadget-hand.second { box-shadow: 0 1px 2px rgba(0,0,0,0.3); }
     .gadget-center-dot { box-shadow: 0 0 0 2px #ffffff, 0 1px 3px rgba(0,20,70,0.45); }
 
+    /* ---------- clock: no border, date printed inside the dial ---------- */
+    .gadget-analog {
+      box-shadow: 0 6px 14px rgba(0, 20, 60, 0.35);
+    }
+    .desktop-gadget .gadget-analog .gadget-date {
+      position: absolute; left: 50%; top: 66%; transform: translateX(-50%);
+      margin: 0; padding: 0 5px; z-index: 2; white-space: nowrap;
+      font-family: Tahoma, Verdana, sans-serif; font-size: 0.56rem; font-weight: 700; letter-spacing: 0.04em;
+      color: #0a2862; text-shadow: none;
+      background: rgba(30, 80, 173, 0.08); border-radius: 3px;
+    }
+    @media (max-width: 1200px) { .desktop-gadget .gadget-analog .gadget-date { font-size: 0.5rem; } }
+    @media (max-width: 600px)  { .desktop-gadget .gadget-analog .gadget-date { font-size: 0.44rem; top: 65%; } }
+
+    /* ---------- NO BOX: only the clock is shown; calendar pops up below it on click ---------- */
+    .desktop-gadget,
+    .desktop-gadget:hover,
+    .desktop-gadget.dragging {
+      width: auto; padding: 0; overflow: visible;
+      background: none; border: none; box-shadow: none; border-radius: 0;
+      -webkit-backdrop-filter: none; backdrop-filter: none;
+    }
+    .desktop-gadget::before { display: none; }
+    .desktop-gadget .gadget-analog { margin: 6px; }
+    .desktop-gadget.dragging .gadget-analog { box-shadow: 0 12px 24px rgba(0, 20, 60, 0.5); }
+
+    /* calendar popup (glass) under the clock */
+    .desktop-gadget > .gadget-calendar-panel {
+      position: absolute; top: 100%; left: 50%; margin-top: 4px;
+      transform: translateX(-50%) translateY(-6px);
+      width: 240px; max-width: 92vw; max-height: none; overflow: visible;
+      padding: 10px 12px 12px 12px; box-sizing: border-box;
+      border-radius: 14px; border: 1px solid rgba(255, 255, 255, 0.55);
+      background:
+        linear-gradient(145deg, rgba(255,255,255,0.34) 0%, rgba(255,255,255,0.10) 38%, rgba(255,255,255,0.06) 62%, rgba(255,255,255,0.20) 100%),
+        rgba(30, 100, 190, 0.38);
+      box-shadow: 0 1px 0 rgba(255,255,255,0.7) inset, 0 14px 34px rgba(0, 20, 60, 0.45);
+      -webkit-backdrop-filter: blur(18px) saturate(1.7); backdrop-filter: blur(18px) saturate(1.7);
+      transition: opacity 0.22s ease, transform 0.22s ease, visibility 0.22s;
+      cursor: default; z-index: 3;
+    }
+    .desktop-gadget:not(.cal-open) > .gadget-calendar-panel { opacity: 0; visibility: hidden; pointer-events: none; }
+    .desktop-gadget.cal-open > .gadget-calendar-panel { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); border-top-width: 1px; }
+
     /* ---------- CALENDAR GADGET (XP style) — legacy standalone styles ---------- */
     .desktop-calendar {
       position: fixed; top: 320px; right: 30px; z-index: 5; width: 240px;
@@ -837,6 +881,9 @@
     .window-stock { width: 780px; max-width: calc(100vw - 40px); z-index: 19; }
     .window-settings { width: 560px; max-width: calc(100vw - 40px); z-index: 17; }
     .window-number-word { width: 660px; max-width: calc(100vw - 40px); z-index: 18; }
+
+    /* Products + Stock windows keep a fixed height (the list scrolls inside) so searching never resizes them */
+    .window-price, .window-stock { height: min(560px, calc(100vh - var(--taskbar-height) - 20px)); }
 
     .window.minimized, .window-price.minimized, .window-load.minimized, .window-cash.minimized, .window-notepad.minimized, .window-vehicle.minimized, .window-invoice.minimized, .window-stock.minimized, .window-settings.minimized, .window-number-word.minimized { display: none !important; }
 
@@ -2911,7 +2958,7 @@
           <svg class="sky-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="Skylight Pro"><defs><linearGradient id="slp-bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5b97f0"/><stop offset="1" stop-color="#15419c"/></linearGradient><linearGradient id="slp-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e8f4ff"/><stop offset="1" stop-color="#8fc4f5"/></linearGradient><linearGradient id="slp-gold" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#e09a00"/><stop offset="0.6" stop-color="#ffd54a"/><stop offset="1" stop-color="#fff2a8"/></linearGradient><linearGradient id="slp-shine" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0.55"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient></defs><rect x="12" y="12" width="232" height="232" rx="54" fill="url(#slp-bg)" stroke="#0a2862" stroke-width="4"/><path d="M30 80 Q30 24 86 24 H170 Q226 24 226 80 Q128 112 30 80 Z" fill="url(#slp-shine)"/><rect x="52" y="52" width="152" height="152" rx="14" fill="#ffffff" stroke="#0a2862" stroke-width="3"/><rect x="62" y="62" width="62" height="62" rx="6" fill="url(#slp-sky)"/><rect x="132" y="62" width="62" height="62" rx="6" fill="url(#slp-sky)"/><rect x="62" y="132" width="62" height="62" rx="6" fill="url(#slp-sky)"/><rect x="132" y="132" width="62" height="62" rx="6" fill="url(#slp-sky)"/><ellipse cx="86" cy="84" rx="14" ry="6" fill="#fff" opacity="0.9"/><ellipse cx="164" cy="160" rx="16" ry="6" fill="#fff" opacity="0.9"/><g stroke="#0a2862" stroke-width="2.5" stroke-linejoin="round"><path d="M40 188 C86 180 152 138 214 56 C196 118 138 178 40 188 Z" fill="url(#slp-gold)"/><path d="M56 204 C98 198 150 168 198 118 C182 160 136 198 56 204 Z" fill="url(#slp-gold)"/><path d="M80 220 C112 216 150 196 184 160 C168 190 132 218 80 220 Z" fill="url(#slp-gold)"/></g></svg>
           <span class="xp-boot-logo-text">
             KCST Media Technology<br>
-            <strong>Skylight Pro<sup>™</sup></strong>
+            <strong>KCST Skylight Pro<sup>™</sup></strong>
           </span>
         </div>
 
@@ -2944,11 +2991,9 @@
       <div class="gadget-hand hour" id="gadgetHourHand"></div>
       <div class="gadget-hand minute" id="gadgetMinuteHand"></div>
       <div class="gadget-hand second" id="gadgetSecondHand"></div>
+      <div class="gadget-date" id="gadgetDate">--/--/----</div>
       <div class="gadget-center-dot"></div>
     </div>
-    <div class="gadget-date" id="gadgetDate">--/--/----</div>
-    <div class="gadget-day" id="gadgetDay">---</div>
-    <div class="gadget-caret" id="gadgetCaret">▾ Calendar</div>
     <div class="gadget-calendar-panel" id="desktopCalendar">
       <div class="cal-header" id="calHeader">
         <button class="cal-nav-btn" id="calPrevMonth" title="Previous month">◀</button>
@@ -5020,7 +5065,6 @@
       const gadgetMinuteHand = document.getElementById('gadgetMinuteHand');
       const gadgetSecondHand = document.getElementById('gadgetSecondHand');
       const gadgetDate = document.getElementById('gadgetDate');
-      const gadgetDay = document.getElementById('gadgetDay');
 
       (function generateClockFace() {
         // 60 minute ticks (every 5th is a longer hour tick)
@@ -5054,7 +5098,6 @@
         const pad = (n) => String(n).padStart(2, '0');
         gadgetDate.textContent = formatDateDDMMYYYY(now);
         const dayNames = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
-        gadgetDay.textContent = dayNames[now.getDay()];
         const secDeg = s * 6;
         const minDeg = m * 6 + s * 0.1;
         const hourDeg = (h % 12) * 30 + m * 0.5;
@@ -5066,19 +5109,23 @@
       setInterval(updateGadgetClock, 1000);
 
       let gadgetMoved = false;
-      const gadgetCaret = document.getElementById('gadgetCaret');
       function setCalendarOpen(open) {
         desktopGadget.classList.toggle('cal-open', open);
-        gadgetCaret.textContent = open ? '▴ Hide calendar' : '▾ Calendar';
         if (open) {
           calendarViewDate = new Date();
           renderCalendar();
           // keep the expanded gadget above the taskbar
           setTimeout(() => {
-            const r = desktopGadget.getBoundingClientRect();
+            const panel = document.getElementById('desktopCalendar');
+            const g = desktopGadget.getBoundingClientRect(), r = panel.getBoundingClientRect();
             const maxBottom = window.innerHeight - TASKBAR_HEIGHT - 5;
-            if (r.bottom > maxBottom) desktopGadget.style.top = Math.max(5, r.top - (r.bottom - maxBottom)) + 'px';
-          }, 320);
+            if (r.bottom > maxBottom) desktopGadget.style.top = Math.max(5, g.top - (r.bottom - maxBottom)) + 'px';
+            if (r.left < 5 || r.right > window.innerWidth - 5) {
+              const dx = r.left < 5 ? 5 - r.left : (window.innerWidth - 5) - r.right;
+              desktopGadget.style.left = (g.left + dx) + 'px';
+              desktopGadget.style.right = 'auto';
+            }
+          }, 40);
         }
       }
       desktopGadget.addEventListener('click', (e) => {
@@ -5465,12 +5512,28 @@
       }
 
       // ==================== DATABASE ====================
-      async function loadProducts() {
+      // friendly "database error" cell with a Retry button (used by Products / Vehicles / Invoices)
+      function dbErrorCell(err, table, colspan) {
+        const raw = (err && err.message) || '';
+        const msg = raw === 'Timeout'
+          ? 'The database did not respond in time. Check your internet connection and press Retry.'
+          : (raw || `Check that the "${table}" table exists`);
+        return `<tr><td colspan="${colspan}"><div class="no-results">⚠️ Database error<span class="small">${escapeHtml(msg)}</span><button class="aero-btn" data-db-retry="${table}" type="button" style="margin-top:10px;"><span>🔄</span> Retry</button></div></td></tr>`;
+      }
+      document.addEventListener('click', (e) => {
+        const b = e.target.closest('[data-db-retry]');
+        if (!b) return;
+        e.stopPropagation();
+        const fn = { products: loadProducts, vehicles: loadVehicles, invoices: loadInvoices }[b.dataset.dbRetry];
+        if (fn) fn();
+      });
+
+      async function loadProducts(attempt = 1) {
         showLoading('price'); setSyncing();
         try {
           const result = await withTimeout(
             supabase.from('products').select('*').order('created_at', { ascending: false }),
-            3000
+            15000
           );
           if (!result) throw new Error('Timeout');
           const { data, error } = result;
@@ -5485,8 +5548,9 @@
           renderCustomerFilter();
           applyFilters();
         } catch (err) {
+          if (err.message === 'Timeout' && attempt < 2) return await loadProducts(attempt + 1);   // one automatic retry
           setOnlineStatus(false);
-          priceTableBody.innerHTML = `<tr><td colspan="4"><div class="no-results">⚠️ Database error<span class="small">${err.message || 'Check that the "products" table exists'}</span></div></td></tr>`;
+          priceTableBody.innerHTML = dbErrorCell(err, 'products', 4);
         } finally { hideLoading('price'); }
       }
 
@@ -5620,12 +5684,12 @@
       }
 
       // VEHICLE
-      async function loadVehicles() {
+      async function loadVehicles(attempt = 1) {
         showLoading('vehicle'); setSyncing();
         try {
           const result = await withTimeout(
             supabase.from('vehicles').select('*').order('created_at', { ascending: false }),
-            3000
+            15000
           );
           if (!result) throw new Error('Timeout');
           const { data, error } = result;
@@ -5639,8 +5703,9 @@
           vehicleStatusDot.className = 'status-dot online';
           applyVehicleFilters();
         } catch (err) {
+          if (err.message === 'Timeout' && attempt < 2) return await loadVehicles(attempt + 1);   // one automatic retry
           vehicleStatusDot.className = 'status-dot offline';
-          vehicleTableBody.innerHTML = `<tr><td colspan="8"><div class="no-results">⚠️ Database error<span class="small">${err.message || 'Check that the "vehicles" table exists'}</span></div></td></tr>`;
+          vehicleTableBody.innerHTML = dbErrorCell(err, 'vehicles', 8);
         } finally { hideLoading('vehicle'); }
       }
 
@@ -5701,12 +5766,12 @@
       }
 
       // INVOICE
-      async function loadInvoices() {
+      async function loadInvoices(attempt = 1) {
         showLoading('invoice'); setSyncing();
         try {
           const result = await withTimeout(
             supabase.from('invoices').select('*').order('created_at', { ascending: false }),
-            3000
+            15000
           );
           if (!result) throw new Error('Timeout');
           const { data, error } = result;
@@ -5721,8 +5786,9 @@
           renderInvoiceCustomerFilter();
           applyInvoiceFilters();
         } catch (err) {
+          if (err.message === 'Timeout' && attempt < 2) return await loadInvoices(attempt + 1);   // one automatic retry
           invoiceStatusDot.className = 'status-dot offline';
-          invoiceTableBody.innerHTML = `<tr><td colspan="5"><div class="no-results">⚠️ Database error<span class="small">${err.message || 'Check that the "invoices" table exists'}</span></div></td></tr>`;
+          invoiceTableBody.innerHTML = dbErrorCell(err, 'invoices', 5);
         } finally { hideLoading('invoice'); }
       }
 
@@ -6750,9 +6816,19 @@
 
         function positionList() {
           const rect = anchorInput.getBoundingClientRect();
-          listContainer.style.left = rect.left + 'px';
-          listContainer.style.top = (rect.bottom + 2) + 'px';
-          listContainer.style.minWidth = Math.max(340, rect.width) + 'px';
+          const minW = Math.max(340, rect.width);
+          listContainer.style.minWidth = minW + 'px';
+          // sit directly under the product textbox, left edges aligned (keep on screen horizontally)
+          const left = Math.max(4, Math.min(rect.left, window.innerWidth - minW - 8));
+          listContainer.style.left = left + 'px';
+          // open upwards instead if there is no room below (above the taskbar)
+          const listH = Math.min(listContainer.scrollHeight || 220, 220);
+          const spaceBelow = window.innerHeight - TASKBAR_HEIGHT - rect.bottom - 6;
+          if (spaceBelow < listH && rect.top > spaceBelow) {
+            listContainer.style.top = Math.max(4, rect.top - listH - 2) + 'px';
+          } else {
+            listContainer.style.top = (rect.bottom + 2) + 'px';
+          }
         }
 
         function updateHighlight() {
@@ -6940,7 +7016,8 @@
 
         let suggestListEl = document.createElement('div');
         suggestListEl.className = 'product-suggest-list';
-        invoiceWindow.appendChild(suggestListEl);
+        suggestListEl.style.position = 'fixed';      // positioned from the textbox's screen coordinates
+        document.body.appendChild(suggestListEl);
 
         function destroySuggest() {
           if (suggestListEl) { suggestListEl.remove(); suggestListEl = null; }
