@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Skylight Pro</title>
+  <title>KCST Skylight Pro</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 256 256%22 width=%22256%22 height=%22256%22 role=%22img%22 aria-label=%22Skylight Pro icon%22%3E%3Cdefs%3E%3ClinearGradient id=%22bg%22 x1=%220%22 y1=%220%22 x2=%220%22 y2=%221%22%3E%3Cstop offset=%220%22 stop-color=%22%235b97f0%22/%3E%3Cstop offset=%221%22 stop-color=%22%2315419c%22/%3E%3C/linearGradient%3E%3ClinearGradient id=%22sky%22 x1=%220%22 y1=%220%22 x2=%220%22 y2=%221%22%3E%3Cstop offset=%220%22 stop-color=%22%23e8f4ff%22/%3E%3Cstop offset=%221%22 stop-color=%22%238fc4f5%22/%3E%3C/linearGradient%3E%3ClinearGradient id=%22gold%22 x1=%220%22 y1=%221%22 x2=%221%22 y2=%220%22%3E%3Cstop offset=%220%22 stop-color=%22%23e09a00%22/%3E%3Cstop offset=%220.6%22 stop-color=%22%23ffd54a%22/%3E%3Cstop offset=%221%22 stop-color=%22%23fff2a8%22/%3E%3C/linearGradient%3E%3ClinearGradient id=%22shine%22 x1=%220%22 y1=%220%22 x2=%220%22 y2=%221%22%3E%3Cstop offset=%220%22 stop-color=%22%23fff%22 stop-opacity=%220.55%22/%3E%3Cstop offset=%221%22 stop-color=%22%23fff%22 stop-opacity=%220%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x=%2212%22 y=%2212%22 width=%22232%22 height=%22232%22 rx=%2254%22 fill=%22url%28%23bg%29%22 stroke=%22%230a2862%22 stroke-width=%224%22/%3E%3Cpath d=%22M30 80 Q30 24 86 24 H170 Q226 24 226 80 Q128 112 30 80 Z%22 fill=%22url%28%23shine%29%22/%3E%3Crect x=%2252%22 y=%2252%22 width=%22152%22 height=%22152%22 rx=%2214%22 fill=%22%23ffffff%22 stroke=%22%230a2862%22 stroke-width=%223%22/%3E%3Crect x=%2262%22 y=%2262%22 width=%2262%22 height=%2262%22 rx=%226%22 fill=%22url%28%23sky%29%22/%3E%3Crect x=%22132%22 y=%2262%22 width=%2262%22 height=%2262%22 rx=%226%22 fill=%22url%28%23sky%29%22/%3E%3Crect x=%2262%22 y=%22132%22 width=%2262%22 height=%2262%22 rx=%226%22 fill=%22url%28%23sky%29%22/%3E%3Crect x=%22132%22 y=%22132%22 width=%2262%22 height=%2262%22 rx=%226%22 fill=%22url%28%23sky%29%22/%3E%3Cellipse cx=%2286%22 cy=%2284%22 rx=%2214%22 ry=%226%22 fill=%22%23fff%22 opacity=%220.9%22/%3E%3Cellipse cx=%22164%22 cy=%22160%22 rx=%2216%22 ry=%226%22 fill=%22%23fff%22 opacity=%220.9%22/%3E%3Cg stroke=%22%230a2862%22 stroke-width=%222.5%22 stroke-linejoin=%22round%22%3E%3Cpath d=%22M40 188 C86 180 152 138 214 56 C196 118 138 178 40 188 Z%22 fill=%22url%28%23gold%29%22/%3E%3Cpath d=%22M56 204 C98 198 150 168 198 118 C182 160 136 198 56 204 Z%22 fill=%22url%28%23gold%29%22/%3E%3Cpath d=%22M80 220 C112 216 150 196 184 160 C168 190 132 218 80 220 Z%22 fill=%22url%28%23gold%29%22/%3E%3C/g%3E%3C/svg%3E">
   <style>
     /* ---------- GLOBAL ---------- */
@@ -792,6 +792,28 @@
     }
     .desktop-gadget:not(.cal-open) > .gadget-calendar-panel { opacity: 0; visibility: hidden; pointer-events: none; }
     .desktop-gadget.cal-open > .gadget-calendar-panel { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); border-top-width: 1px; }
+
+    /* ---------- Cash Collection: compact layout (shorter window) ---------- */
+    .window-cash .window-content { padding: 8px 12px 10px 12px; }
+    .window-cash .staff-row { margin-bottom: 4px; }
+    .window-cash .cash-section { padding: 8px 8px 6px 8px; margin-bottom: 6px; }
+    .window-cash .cash-section-legend { margin-bottom: 4px; }
+    .window-cash .currency-table { margin-top: 3px; }
+    .window-cash .currency-table thead th { padding: 3px 8px; }
+    .window-cash .currency-table tbody td { padding: 2px 8px; }
+    .window-cash .currency-table tbody td.count-cell input { padding: 2px 6px; font-size: 0.76rem; }
+    .window-cash .currency-table tfoot td { padding-top: 3px; padding-bottom: 3px; }
+    .window-cash .compact-result-row { margin-top: 2px; margin-bottom: 4px; gap: 10px; }
+    .window-cash .compact-result-row .cash-result { padding: 8px 14px; min-width: 200px; }
+    .window-cash .compact-result-row .cash-result .result-value { font-size: 1.7rem; }
+    .window-cash .compact-result-row .cash-result .result-sub { margin-top: 3px; }
+    .window-cash .compact-result-row .cash-breakdown { margin-top: 4px; }
+    .window-cash .compact-result-row .employee-big-photo { width: 84px; height: 84px; font-size: 2.2rem; border-width: 3px; }
+    .window-cash .cash-big-btn { padding: 5px 12px; }
+    .window-cash .cash-big-btn .cb-value { font-size: 1.02rem; }
+    .window-cash .cash-actions { margin-top: 6px; }
+
+    .cash-result .result-sub:empty { display: none; }
 
     /* ---------- CALENDAR GADGET (XP style) — legacy standalone styles ---------- */
     .desktop-calendar {
@@ -2110,6 +2132,22 @@
     }
     .cash-top-row .input-group { flex: 1 1 140px; min-width: 120px; max-width: none; }
     .cash-top-row .input-group label { font-size: 0.68rem; }
+    .cash-big-btn {
+      flex: 1 1 140px; min-width: 120px; display: flex; flex-direction: column; align-items: flex-start; gap: 2px;
+      padding: 9px 14px; border-radius: 4px; cursor: pointer; font-family: inherit; text-align: left;
+      border: 1px solid #0a2862; color: #0a2862;
+      background: linear-gradient(180deg, #ffffff 0%, #e3f0ff 55%, #c8defa 100%);
+      box-shadow: 0 1px 0 rgba(255,255,255,0.9) inset, 0 2px 4px rgba(0,20,70,0.25);
+      transition: transform 0.08s, box-shadow 0.15s, filter 0.15s;
+    }
+    .cash-big-btn:hover { filter: brightness(1.05); box-shadow: 0 1px 0 rgba(255,255,255,0.9) inset, 0 3px 8px rgba(0,20,70,0.35); }
+    .cash-big-btn:active { transform: translateY(1px); }
+    .cash-big-btn:focus-visible { outline: 2px solid #ffd54a; outline-offset: 1px; }
+    .cash-big-btn .cb-label { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.02em; }
+    .cash-big-btn .cb-value { font-size: 1.15rem; font-weight: 800; font-variant-numeric: tabular-nums; }
+    .cash-big-btn.amount { border-color: #1d7a1d; background: linear-gradient(180deg, #f4fff0 0%, #d4f3c8 55%, #b4e6a2 100%); color: #0f5a0f; }
+    .cash-big-btn.expense { border-color: #a83a14; background: linear-gradient(180deg, #fff6ef 0%, #ffe0cc 55%, #ffc6a6 100%); color: #8a2a0a; }
+    .cash-big-btn.empty .cb-value { font-size: 0.8rem; font-weight: 600; opacity: 0.65; }
 
     .currency-table {
       width: 100%; border-collapse: separate; border-spacing: 0;
@@ -2458,7 +2496,7 @@
 
     /* ---------- BULK PRODUCT ADD ---------- */
     .bulk-prod-head, .bulk-prod-row {
-      display: grid; grid-template-columns: minmax(180px, 1fr) 110px 24px; gap: 6px; align-items: center;
+      display: grid; grid-template-columns: minmax(170px, 1fr) 80px 100px 24px; gap: 6px; align-items: center;
     }
     .bulk-prod-head { font-size: 0.66rem; font-weight: 700; color: #15419c; padding: 0 2px 3px; }
     .bulk-prod-rows { max-height: 42vh; overflow-y: auto; padding-right: 2px; }
@@ -2958,7 +2996,7 @@
           <svg class="sky-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="Skylight Pro"><defs><linearGradient id="slp-bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5b97f0"/><stop offset="1" stop-color="#15419c"/></linearGradient><linearGradient id="slp-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e8f4ff"/><stop offset="1" stop-color="#8fc4f5"/></linearGradient><linearGradient id="slp-gold" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#e09a00"/><stop offset="0.6" stop-color="#ffd54a"/><stop offset="1" stop-color="#fff2a8"/></linearGradient><linearGradient id="slp-shine" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0.55"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient></defs><rect x="12" y="12" width="232" height="232" rx="54" fill="url(#slp-bg)" stroke="#0a2862" stroke-width="4"/><path d="M30 80 Q30 24 86 24 H170 Q226 24 226 80 Q128 112 30 80 Z" fill="url(#slp-shine)"/><rect x="52" y="52" width="152" height="152" rx="14" fill="#ffffff" stroke="#0a2862" stroke-width="3"/><rect x="62" y="62" width="62" height="62" rx="6" fill="url(#slp-sky)"/><rect x="132" y="62" width="62" height="62" rx="6" fill="url(#slp-sky)"/><rect x="62" y="132" width="62" height="62" rx="6" fill="url(#slp-sky)"/><rect x="132" y="132" width="62" height="62" rx="6" fill="url(#slp-sky)"/><ellipse cx="86" cy="84" rx="14" ry="6" fill="#fff" opacity="0.9"/><ellipse cx="164" cy="160" rx="16" ry="6" fill="#fff" opacity="0.9"/><g stroke="#0a2862" stroke-width="2.5" stroke-linejoin="round"><path d="M40 188 C86 180 152 138 214 56 C196 118 138 178 40 188 Z" fill="url(#slp-gold)"/><path d="M56 204 C98 198 150 168 198 118 C182 160 136 198 56 204 Z" fill="url(#slp-gold)"/><path d="M80 220 C112 216 150 196 184 160 C168 190 132 218 80 220 Z" fill="url(#slp-gold)"/></g></svg>
           <span class="xp-boot-logo-text">
             KCST Media Technology<br>
-            <strong>Skylight Pro<sup>™</sup></strong>
+            <strong>KCST Skylight Pro<sup>™</sup></strong>
           </span>
         </div>
 
@@ -3140,7 +3178,7 @@
   <div class="window-price" id="priceWindow">
     <div class="title-bar" id="priceTitleBar">
       <div class="title-text">
-        <span>💰</span> Products
+        <span>💰</span> Price List
         <span class="badge" id="priceCount" style="background:linear-gradient(180deg,#3f7ae0 0%,#15419c 100%); color:white; border-radius:3px; padding:1px 8px; font-size:0.62rem; font-weight:700; border:1px solid #0a2862;">0</span>
         <span class="status-dot" id="priceStatusDot" title="Database status"></span>
       </div>
@@ -3162,7 +3200,7 @@
         <button class="aero-btn" id="printProductsBtn" type="button">
           <span>🖨️</span> Print
         </button>
-        <button class="aero-btn" id="exportProductsBtn" type="button" title="Export the listed products to an Excel file">
+        <button class="aero-btn" id="exportProductsBtn" type="button" title="Export the listed price list to an Excel file">
           <span>📊</span> Export Excel
         </button>
         <button class="aero-btn danger" id="clearAllBtn" type="button">
@@ -3191,12 +3229,13 @@
             <tr>
               <th>Product</th>
               <th>Customer</th>
+              <th style="text-align:center;">Pcs/Bag</th>
               <th>Price</th>
               <th style="width:64px;"></th>
             </tr>
           </thead>
           <tbody id="priceTableBody">
-            <tr><td colspan="4">
+            <tr><td colspan="5">
               <div class="no-results">📦 No products yet<span class="small">Click "Add Product" to create your first entry</span></div>
             </td></tr>
           </tbody>
@@ -3281,9 +3320,6 @@
 
     <div class="window-content">
       <div class="staff-row">
-        <div class="staff-photo-small" id="staffPhotoSmall" title="Employee photo">
-          <span>👤</span>
-        </div>
         <div class="combo-wrap staff-combo-medium">
           <select id="staffCombo" tabindex="10">
             <option value="">👤 Select Employee</option>
@@ -3307,7 +3343,6 @@
         <div class="cash-result" id="cashResult" style="flex:1 1 0; min-width:220px; margin-top:0;">
           <div class="result-value" id="cashResultValue">₹0.00</div>
           <div class="result-sub" id="cashResultSub">Enter values to calculate</div>
-          <div class="cash-breakdown" id="cashBreakdown"></div>
         </div>
         <div class="employee-big-photo-wrapper">
           <div class="employee-big-photo" id="employeeBigPhoto" title="Employee photo">
@@ -3339,20 +3374,16 @@
       <div class="cash-section">
         <div class="cash-section-legend">💰 Amount & Expenses</div>
         <div class="cash-top-row">
-          <div class="input-group">
-            <label><span>💵</span> Total Amount (₹)</label>
-            <div class="input-wrap">
-              <input type="number" id="cashAmount" min="0" max="9999999" step="0.01" placeholder="0.00" tabindex="12">
-              <span class="unit">₹</span>
-            </div>
-          </div>
-          <div class="input-group">
-            <label><span>💸</span> Expense (₹)</label>
-            <div class="input-wrap">
-              <input type="number" id="cashExpense" min="0" max="9999999" step="0.01" placeholder="0.00" tabindex="13">
-              <span class="unit">₹</span>
-            </div>
-          </div>
+          <button class="cash-big-btn amount" id="cashAmountBtn" type="button" tabindex="12" title="Click to enter the total amount">
+            <span class="cb-label">💵 Total Amount</span>
+            <span class="cb-value" id="cashAmountBtnValue">Tap to enter</span>
+          </button>
+          <button class="cash-big-btn expense" id="cashExpenseBtn" type="button" tabindex="13" title="Click to enter the expense">
+            <span class="cb-label">💸 Expense</span>
+            <span class="cb-value" id="cashExpenseBtnValue">Tap to enter</span>
+          </button>
+          <input type="hidden" id="cashAmount" value="">
+          <input type="hidden" id="cashExpense" value="">
         </div>
       </div>
 
@@ -3654,7 +3685,7 @@
     <div class="window-content">
       <div class="aero-info">
         <span class="badge" id="settingsSyncBadge">●</span>
-        <span style="font-size:0.72rem; color:#0a2862;">These details will appear on all printed documents (Invoices, Products, Vehicles)</span>
+        <span style="font-size:0.72rem; color:#0a2862;">These details will appear on all printed documents (Invoices, Price List, Vehicles)</span>
       </div>
 
       <div class="settings-section">
@@ -3823,7 +3854,7 @@
     </div>
     <div class="taskbar-item" id="taskbarPrice" data-restore="priceWindow" style="display:none;">
       <span class="tb-icon">💰</span>
-      <span class="tb-label">Products</span>
+      <span class="tb-label">Price List</span>
     </div>
     <div class="taskbar-item" id="taskbarLoad" data-restore="loadWindow" style="display:none;">
       <span class="tb-icon">🚚</span>
@@ -5266,7 +5297,6 @@
       const cashResult = document.getElementById('cashResult');
       const cashResultValue = document.getElementById('cashResultValue');
       const cashResultSub = document.getElementById('cashResultSub');
-      const cashBreakdown = document.getElementById('cashBreakdown');
       const cashResetBtn = document.getElementById('cashResetBtn');
       const cashClearCountsBtn = document.getElementById('cashClearCountsBtn');
       const cashSaveBtn = document.getElementById('cashSaveBtn');
@@ -5274,7 +5304,6 @@
       const addStaffBtn = document.getElementById('addStaffBtn');
       const editStaffBtn = document.getElementById('editStaffBtn');
       const deleteStaffBtn = document.getElementById('deleteStaffBtn');
-      const staffPhotoSmall = document.getElementById('staffPhotoSmall');
       const employeeBigPhoto = document.getElementById('employeeBigPhoto');
       const notepadTextarea = document.getElementById('notepadTextarea');
       const notepadNewBtn = document.getElementById('notepadNewBtn');
@@ -5550,7 +5579,7 @@
         } catch (err) {
           if (err.message === 'Timeout' && attempt < 2) return await loadProducts(attempt + 1);   // one automatic retry
           setOnlineStatus(false);
-          priceTableBody.innerHTML = dbErrorCell(err, 'products', 4);
+          priceTableBody.innerHTML = dbErrorCell(err, 'products', 5);
         } finally { hideLoading('price'); }
       }
 
@@ -5954,23 +5983,19 @@
         editStaffBtn.disabled = false;
         deleteStaffBtn.disabled = false;
         if (!empId) {
-          staffPhotoSmall.innerHTML = '<span>👤</span>';
           staffCombo.title = '';
           employeeBigPhoto.innerHTML = '<span>👤</span>';
           return;
         }
         const emp = employeesList.find(s => s.id === empId);
         if (!emp) {
-          staffPhotoSmall.innerHTML = '<span>👤</span>';
           staffCombo.title = '';
           employeeBigPhoto.innerHTML = '<span>👤</span>';
           return;
         }
         if (emp.photo) {
-          staffPhotoSmall.innerHTML = `<img src="${emp.photo}" alt="${escapeHtml(emp.name)}">`;
           employeeBigPhoto.innerHTML = `<img src="${emp.photo}" alt="${escapeHtml(emp.name)}">`;
         } else {
-          staffPhotoSmall.innerHTML = '<span>👤</span>';
           employeeBigPhoto.innerHTML = '<span>👤</span>';
         }
         staffCombo.title = `${emp.name} — ${emp.section}`;
@@ -6017,9 +6042,9 @@
       function renderPriceTable() {
         if (filteredProducts.length === 0) {
           if (products.length === 0) {
-            priceTableBody.innerHTML = `<tr><td colspan="4"><div class="no-results">📦 No products yet<span class="small">Click "Add Product" to create your first entry</span></div></td></tr>`;
+            priceTableBody.innerHTML = `<tr><td colspan="5"><div class="no-results">📦 No products yet<span class="small">Click "Add Product" to create your first entry</span></div></td></tr>`;
           } else {
-            priceTableBody.innerHTML = `<tr><td colspan="4"><div class="no-results">🔍 No products match your filter<span class="small">Try a different customer or product name</span></div></td></tr>`;
+            priceTableBody.innerHTML = `<tr><td colspan="5"><div class="no-results">🔍 No products match your filter<span class="small">Try a different customer or product name</span></div></td></tr>`;
           }
           priceCount.textContent = '0';
           return;
@@ -6030,6 +6055,7 @@
           html += `<tr class="${selected}" data-id="${p.id}">
             <td class="name-cell">${escapeHtml(p.name)}</td>
             <td class="customer-cell">👤 ${escapeHtml(p.customer)}</td>
+            <td class="pcs-cell">${p.pcsPerBag || '—'}</td>
             <td class="price-cell">${formatPrice(p.price)}</td>
             <td class="action-cell">
               <button class="row-edit-btn" data-edit-id="${p.id}" title="Edit">✎</button>
@@ -6328,11 +6354,8 @@
         if (netResult < 0) cashResultValue.textContent = '−' + formatCurrency(Math.abs(netResult));
         cashResult.classList.remove('positive', 'negative');
         if (Math.abs(netResult) < 0.005) cashResultSub.textContent = '✅ Balanced — perfectly matched';
-        else if (netResult > 0) { cashResult.classList.add('positive'); cashResultSub.textContent = '✅ Extra cash received (surplus)'; }
+        else if (netResult > 0) { cashResult.classList.add('positive'); cashResultSub.textContent = ''; }
         else { cashResult.classList.add('negative'); cashResultSub.textContent = '⚠️ Short by ' + formatCurrency(Math.abs(netResult)); }
-        let bdHtml = '';
-        if (breakdown.length > 0) bdHtml += `<span class="bd-item">📋 ${breakdown.length} denomination${breakdown.length > 1 ? 's' : ''}</span>`;
-        cashBreakdown.innerHTML = bdHtml;
         return { amount, expense, currencyTotal, netResult, breakdown };
       }
 
@@ -6346,6 +6369,66 @@
           }
         });
       });
+
+      // ---- Amount / Expense buttons: click opens a small popup to type the value ----
+      const cashAmountBtn = document.getElementById('cashAmountBtn');
+      const cashExpenseBtn = document.getElementById('cashExpenseBtn');
+      function syncCashButtons() {
+        [[cashAmount, cashAmountBtn, 'cashAmountBtnValue'], [cashExpense, cashExpenseBtn, 'cashExpenseBtnValue']].forEach(([inp, btn, valId]) => {
+          const raw = inp.value;
+          const has = raw !== '' && !isNaN(parseFloat(raw));
+          document.getElementById(valId).textContent = has
+            ? '₹' + parseFloat(raw).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+            : 'Tap to enter';
+          btn.classList.toggle('empty', !has);
+        });
+      }
+      // programmatic changes (Reset, Load record, ...) keep the buttons up to date
+      (function hookCashValues() {
+        const desc = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value');
+        [cashAmount, cashExpense].forEach(inp => {
+          Object.defineProperty(inp, 'value', {
+            configurable: true,
+            get() { return desc.get.call(this); },
+            set(v) { desc.set.call(this, v); syncCashButtons(); }
+          });
+        });
+      })();
+      function openCashValuePopup(kind) {
+        const isAmount = kind === 'amount';
+        const inp = isAmount ? cashAmount : cashExpense;
+        const title = isAmount ? '💵 Total Amount' : '💸 Expense';
+        const html = `
+          <div class="modal-error" id="modalCashError"></div>
+          <div class="modal-field"><label>${isAmount ? '💵 Total Amount (₹)' : '💸 Expense (₹)'}</label>
+            <div class="input-wrap"><input type="number" id="modalCashValue" min="0" max="9999999" step="0.01" placeholder="0.00" value="${inp.value === '' ? '' : String(inp.value).replace(/"/g, '')}"><span class="unit">₹</span></div>
+          </div>
+          <div class="modal-actions">
+            <button class="aero-btn" id="modalCancelBtn" type="button">Cancel</button>
+            <button class="aero-btn" id="modalCashClearBtn" type="button">🧹 Clear</button>
+            <button class="aero-btn primary" id="modalSaveBtn" type="button">✔ OK</button>
+          </div>`;
+        const overlay = openModal(document.getElementById('cashWindow'), title, html, (content) => {
+          const v = content.querySelector('#modalCashValue').value.trim();
+          const err = content.querySelector('#modalCashError');
+          if (v !== '' && (isNaN(v) || parseFloat(v) < 0 || parseFloat(v) > 9999999)) {
+            err.textContent = '⚠️ Enter an amount between 0 and 9999999.'; err.classList.add('show'); return false;
+          }
+          inp.value = v;
+          inp.dispatchEvent(new Event('input', { bubbles: true }));   // recalculates the result
+          return true;
+        });
+        const field = overlay.querySelector('#modalCashValue');
+        field.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); overlay.querySelector('#modalSaveBtn').click(); } });
+        overlay.querySelector('#modalCashClearBtn').addEventListener('click', () => { field.value = ''; field.focus(); });
+        setTimeout(() => { field.focus(); field.select(); }, 80);
+      }
+      cashAmountBtn.addEventListener('click', () => openCashValuePopup('amount'));
+      cashExpenseBtn.addEventListener('click', () => openCashValuePopup('expense'));
+      // "go to the amount box" (Enter on the last denomination) now opens the amount popup
+      cashAmount.focus = () => openCashValuePopup('amount');
+      cashExpense.focus = () => openCashValuePopup('expense');
+      syncCashButtons();
 
       // EMPLOYEE FORM MODAL
       function openEmployeeFormModal(existingEmployee = null) {
@@ -8347,14 +8430,14 @@
           (a.customer || '').localeCompare(b.customer || '', undefined, { sensitivity: 'base', numeric: true }) ||
           (a.name || '').localeCompare(b.name || '', undefined, { sensitivity: 'base', numeric: true }));
         const rows = sortedProducts.map(p => [
-          p.name, p.customer, Number(p.price) || 0
+          p.name, p.customer, Number(p.pcsPerBag) || 0, Number(p.price) || 0
         ]);
         exportTableToExcel({
-          fileBase: 'Products_List_' + exportDateStamp(),
-          sheetName: 'Products',
-          headers: ['Product', 'Customer', 'Price (₹)'],
+          fileBase: 'Price_List_' + exportDateStamp(),
+          sheetName: 'Price List',
+          headers: ['Product', 'Customer', 'Pcs/Bag', 'Price (₹)'],
           rows,
-          colWidths: [36, 28, 12]
+          colWidths: [36, 28, 10, 12]
         });
       });
 
@@ -8447,6 +8530,7 @@
           <div class="modal-error" id="modalProdError"></div>
           <div class="modal-field"><label>📦 Product Name</label><div class="input-wrap"><input type="text" id="modalEditName" value="${escapeHtml(product.name)}" placeholder="Enter product name"></div></div>
           <div class="modal-field"><label>👤 Customer Name</label><div class="input-wrap"><input type="text" id="modalEditCustomer" list="editCustomerList" value="${escapeHtml(product.customer)}" placeholder="Enter customer name"></div><datalist id="editCustomerList">${datalistOptions}</datalist></div>
+          <div class="modal-field"><label>🛍️ Pieces per Bag</label><div class="input-wrap"><input type="number" id="modalEditPcs" min="1" step="1" value="${product.pcsPerBag || ''}" placeholder="e.g. 40"></div></div>
           <div class="modal-field"><label>💰 Price (₹)</label><div class="input-wrap"><input type="number" id="modalEditPrice" min="0" step="0.01" value="${product.price}" placeholder="e.g. 25.00"></div></div>
           <div class="modal-actions">
             <button class="aero-btn" id="modalCancelBtn" type="button">Cancel</button>
@@ -8455,15 +8539,17 @@
         const editProdOverlay = openModal(priceWindow, '✎ Edit Product', html, async (content) => {
           const name = content.querySelector('#modalEditName').value.trim().replace(/\s+/g, ' ');
           const customer = content.querySelector('#modalEditCustomer').value.trim().replace(/\s+/g, ' ');
+          const pcs = content.querySelector('#modalEditPcs').value;
           const price = content.querySelector('#modalEditPrice').value;
           if (name === '') return false;
           if (customer === '') return false;
+          if (!pcs || isNaN(pcs) || parseInt(pcs) <= 0) return false;
           if (!price || isNaN(price) || parseFloat(price) < 0) return false;
           if (products.some(p => p.id !== product.id && normKey(p.name) === normKey(name) && normKey(p.customer) === normKey(customer))) { const pe = content.querySelector('#modalProdError'); pe.textContent = '⚠️ This product already exists for this customer.'; pe.classList.add('show'); content.querySelector('#modalEditName').focus(); return false; }
           const saveBtn = content.querySelector('#modalSaveBtn');
           saveBtn.disabled = true; saveBtn.textContent = '⏳ Updating…';
           try {
-            const updated = await updateProduct(product.id, { name, customer, pcsPerBag: product.pcsPerBag, price: parseFloat(price), unit: product.unit, size: product.size || '', sizeUnit: product.sizeUnit });
+            const updated = await updateProduct(product.id, { name, customer, pcsPerBag: parseInt(pcs), price: parseFloat(price), unit: product.unit, size: product.size || '', sizeUnit: product.sizeUnit });
             const idx = products.findIndex(p => p.id === product.id);
             if (idx !== -1) products[idx] = updated;
             filteredProducts = [...products];
@@ -8491,6 +8577,7 @@
           <div class="modal-error" id="modalProdError"></div>
           <div class="modal-field"><label>📦 Product Name</label><div class="input-wrap"><input type="text" id="modalProductName" placeholder="Enter product name"></div></div>
           <div class="modal-field"><label>👤 Customer Name</label><div class="input-wrap"><input type="text" id="modalCustomerName" list="customerList" placeholder="Enter customer name"></div><datalist id="customerList">${datalistOptions}</datalist></div>
+          <div class="modal-field"><label>🛍️ Pieces per Bag</label><div class="input-wrap"><input type="number" id="modalProductPcs" min="1" step="1" placeholder="e.g. 40"></div></div>
           <div class="modal-field"><label>💰 Price (₹)</label><div class="input-wrap"><input type="number" id="modalProductPrice" min="0" step="0.01" placeholder="e.g. 25.00"></div></div>
           <div class="modal-actions">
             <button class="aero-btn" id="modalCancelBtn" type="button">Cancel</button>
@@ -8499,15 +8586,17 @@
         const addProdOverlay = openModal(priceWindow, '📦 Add Product', html, async (content) => {
           const name = content.querySelector('#modalProductName').value.trim().replace(/\s+/g, ' ');
           const customer = content.querySelector('#modalCustomerName').value.trim().replace(/\s+/g, ' ');
+          const pcs = content.querySelector('#modalProductPcs').value;
           const price = content.querySelector('#modalProductPrice').value;
           if (name === '') return false;
           if (customer === '') return false;
+          if (!pcs || isNaN(pcs) || parseInt(pcs) <= 0) return false;
           if (!price || isNaN(price) || parseFloat(price) < 0) return false;
           if (products.some(p => normKey(p.name) === normKey(name) && normKey(p.customer) === normKey(customer))) { const pe = content.querySelector('#modalProdError'); pe.textContent = '⚠️ This product already exists for this customer.'; pe.classList.add('show'); content.querySelector('#modalProductName').focus(); return false; }
           const saveBtn = content.querySelector('#modalSaveBtn');
           saveBtn.disabled = true; saveBtn.textContent = '⏳ Saving…';
           try {
-            const saved = await saveProduct({ name, customer, pcsPerBag: 0, price: parseFloat(price), unit: 'Pcs', size: '', sizeUnit: 'gm' });
+            const saved = await saveProduct({ name, customer, pcsPerBag: parseInt(pcs), price: parseFloat(price), unit: 'Pcs', size: '', sizeUnit: 'gm' });
             products.unshift(saved);
             filteredProducts = [...products];
             renderCustomerFilter();
@@ -8528,7 +8617,7 @@
         const html = `
           <div class="modal-error" id="bulkProdError"></div>
           <div class="modal-field"><label>👤 Customer Name (for all rows)</label><div class="input-wrap"><input type="text" id="bulkProdCustomer" list="bulkCustomerList" placeholder="Enter customer name" autocomplete="off"></div><datalist id="bulkCustomerList">${datalistOptions}</datalist></div>
-          <div class="bulk-prod-head"><span>Product Name</span><span style="text-align:center;">Price (₹)</span><span></span></div>
+          <div class="bulk-prod-head"><span>Product Name</span><span style="text-align:center;">Pcs/Bag</span><span style="text-align:center;">Price (₹)</span><span></span></div>
           <div class="bulk-prod-rows" id="bulkProdRows"></div>
           <button class="aero-btn" id="bulkProdAddRow" type="button" style="margin:4px 0 6px;"><span>➕</span> Add Row</button>
           <div class="stock-hint" style="margin-bottom:4px; font-size:0.66rem; color:#4a6a8a;">Enter moves to the next box; Enter on the last Price box adds a new row. Empty rows are skipped.</div>
@@ -8544,10 +8633,11 @@
           el.className = 'bulk-prod-row';
           el.innerHTML = `
             <div class="input-wrap"><input type="text" class="bp-name" placeholder="Product name" autocomplete="off"></div>
+            <div class="input-wrap"><input type="number" class="bp-pcs" min="1" step="1" placeholder="40"></div>
             <div class="input-wrap"><input type="number" class="bp-price" min="0" step="0.01" placeholder="25.00"></div>
             <button type="button" class="row-delete-btn bp-del" title="Remove row">✕</button>`;
           body.querySelector('#bulkProdRows').appendChild(el);
-          const r = { el, nameEl: el.querySelector('.bp-name'), priceEl: el.querySelector('.bp-price') };
+          const r = { el, nameEl: el.querySelector('.bp-name'), pcsEl: el.querySelector('.bp-pcs'), priceEl: el.querySelector('.bp-price') };
           rows.push(r);
 
           // Arrow Up / Down in an empty name box (list hidden) moves to the previous / next row
@@ -8561,11 +8651,12 @@
           // searchable list of existing products; picking one fills the whole row (customer stays as typed above)
           attachStockSuggest(r.nameEl, (prod, focusNext) => {
             r.nameEl.value = prod.name;
+            r.pcsEl.value = prod.pcsPerBag || '';
             r.priceEl.value = prod.price || '';
-            if (focusNext) setTimeout(() => { r.priceEl.focus(); r.priceEl.select(); }, 30);
+            if (focusNext) setTimeout(() => { r.pcsEl.focus(); r.pcsEl.select(); }, 30);
           }, { source: () => products, noneText: 'No products available', notFoundText: 'No products found' });
 
-          const order = [r.nameEl, r.priceEl];
+          const order = [r.nameEl, r.pcsEl, r.priceEl];
           order.forEach((x, i) => x.addEventListener('keydown', (e) => {
             if (e.key !== 'Enter') return;
             e.preventDefault();
@@ -8575,7 +8666,7 @@
             if (idx < rows.length - 1) rows[idx + 1].nameEl.focus(); else addRow(true);
           }));
           el.querySelector('.bp-del').addEventListener('click', () => {
-            if (rows.length === 1) { [r.nameEl, r.priceEl].forEach(x => x.value = ''); r.nameEl.focus(); return; }
+            if (rows.length === 1) { [r.nameEl, r.pcsEl, r.priceEl].forEach(x => x.value = ''); r.nameEl.focus(); return; }
             hideStockSuggest();
             rows.splice(rows.indexOf(r), 1); el.remove();
           });
@@ -8592,20 +8683,21 @@
           hideStockSuggest();
           const customer = customerEl.value.trim().replace(/\s+/g, ' ');
           if (customer === '') return fail('⚠️ Customer name is required.', customerEl);
-          const active = rows.filter(r => r.nameEl.value.trim() || r.priceEl.value.trim());
+          const active = rows.filter(r => r.nameEl.value.trim() || r.pcsEl.value.trim() || r.priceEl.value.trim());
           if (active.length === 0) return fail('⚠️ Add at least one product.', null);
           const plan = [], seen = new Set();
           for (const r of active) {
             const n = rows.indexOf(r) + 1;
             const name = r.nameEl.value.trim().replace(/\s+/g, ' ');
-            const price = r.priceEl.value.trim();
+            const pcs = r.pcsEl.value.trim(), price = r.priceEl.value.trim();
             if (name === '') return fail(`⚠️ Row ${n}: product name is required.`, r.nameEl);
+            if (!pcs || isNaN(pcs) || parseInt(pcs) <= 0 || !Number.isInteger(Number(pcs))) return fail(`⚠️ Row ${n}: Pcs/Bag must be a whole number above 0.`, r.pcsEl);
             if (price === '' || isNaN(price) || parseFloat(price) < 0) return fail(`⚠️ Row ${n}: enter a valid price.`, r.priceEl);
             const key = normKey(name);
             if (seen.has(key)) return fail(`⚠️ Row ${n}: "${name}" appears twice in this list.`, r.nameEl);
             seen.add(key);
             if (products.some(p => normKey(p.name) === key && normKey(p.customer) === normKey(customer))) return fail(`⚠️ Row ${n}: "${name}" already exists for this customer.`, r.nameEl);
-            plan.push({ r, n, product: { name, customer, pcsPerBag: 0, price: parseFloat(price), unit: 'Pcs', size: '', sizeUnit: 'gm' } });
+            plan.push({ r, n, product: { name, customer, pcsPerBag: parseInt(pcs), price: parseFloat(price), unit: 'Pcs', size: '', sizeUnit: 'gm' } });
           }
           saveBtn.disabled = true; saveBtn.textContent = '⏳ Saving…';
           const savedList = [];
@@ -8643,12 +8735,13 @@
         filteredProducts.forEach((p, i) => {
           rows += `<tr>
             <td>${i + 1}</td><td>${escapeHtml(p.name)}</td><td>${escapeHtml(p.customer)}</td>
+            <td style="text-align:center;">${p.pcsPerBag || '—'}</td>
             <td style="text-align:right;">₹${Number(p.price).toFixed(2)}</td>
           </tr>`;
         });
         const printWindow = window.open('', '_blank', 'width=900,height=700');
         printWindow.document.write(`
-          <!DOCTYPE html><html><head><title>Products List</title>
+          <!DOCTYPE html><html><head><title>Price List</title>
             <style>
               * { margin: 0; padding: 0; box-sizing: border-box; }
               body { font-family: 'Tahoma', Arial, sans-serif; padding: 30px; color: #0a2862; }
@@ -8669,7 +8762,7 @@
             </style></head><body>
             <button class="print-btn no-print" onclick="window.print()">🖨️ Print</button>
             ${getCompanySettingsHeaderHTML(true)}
-            <div style="text-align:center; font-size:0.9rem; color:#15419c; font-weight:700; margin-bottom:12px;">📦 Products List</div>
+            <div style="text-align:center; font-size:0.9rem; color:#15419c; font-weight:700; margin-bottom:12px;">📦 Price List</div>
             <div class="meta">
               <span>👤 Customer: ${escapeHtml(customerLabel)}</span>
               <span>🔍 Search: ${escapeHtml(searchLabel)}</span>
@@ -8678,10 +8771,11 @@
             </div>
             <table><thead><tr>
               <th style="width:50px;">#</th><th>Product Name</th><th>Customer</th>
+              <th style="text-align:center; width:90px;">Pcs/Bag</th>
               <th style="text-align:right; width:110px;">Price</th>
             </tr></thead><tbody>
               ${rows}
-              <tr class="total-row"><td colspan="3" style="text-align:right;">Total Products:</td><td style="text-align:center;">${filteredProducts.length}</td></tr>
+              <tr class="total-row"><td colspan="4" style="text-align:right;">Total Products:</td><td style="text-align:center;">${filteredProducts.length}</td></tr>
             </tbody></table>
             <div class="footer">Generated by ${escapeHtml(companySettings.name || 'Skylight Pro')} · ${dateStr}</div>
             <script>window.onload=function(){setTimeout(function(){window.print();},400);};<\/script>
@@ -9033,7 +9127,7 @@
       // LEFT panel: main applications (Number to Word & Notepad live only in the RIGHT panel)
       const XP_PROGRAMS = [
         { id: 'calcWindow', icon: '📦', name: 'Packing Calculator', desc: 'Calculate packing quantities' },
-        { id: 'priceWindow', icon: '💰', name: 'Products', desc: 'Manage products & prices' },
+        { id: 'priceWindow', icon: '💰', name: 'Price List', desc: 'Manage products & prices' },
         { id: 'loadWindow', icon: '🚚', name: 'Load Calculator', desc: 'Calculate truck loads' },
         { id: 'cashWindow', icon: '💵', name: 'Cash Collection', desc: 'Record cash collections' },
         { id: 'vehicleWindow', icon: '🚛', name: 'Vehicle Manager', desc: 'Manage fleet & documents' },
@@ -9290,8 +9384,8 @@
       ['calcWindow', 'numberWordWindow', 'priceWindow', 'loadWindow', 'cashWindow', 'notepadWindow', 'vehicleWindow', 'invoiceWindow', 'stockWindow', 'settingsWindow'].forEach(id => {
         const winEl = document.getElementById(id);
         if (winEl) {
-          winEl.classList.add('minimized');
-          winEl.style.display = 'none';
+          winEl.classList.add('minimized');      // .minimized already hides the window; no inline display:none so it can open at any time
+          winEl.style.display = '';
           windowState[id].minimized = true;
           windowState[id].maximized = false;
         }
@@ -9300,7 +9394,8 @@
       updateTaskbar();
 
       // Load data in parallel (capped with timeouts so nothing hangs)
-      await Promise.allSettled([
+      // never let a slow database keep the desktop waiting: continue after 6 s, the lists fill in when the data arrives
+      await Promise.race([new Promise(r => setTimeout(r, 6000)), Promise.allSettled([
         loadCompanySettings(),
         loadUploadedWallpapers(),
         loadWallpaper(),
@@ -9310,7 +9405,7 @@
         loadVehicles(),
         loadInvoices(),
         loadStock()
-      ]);
+      ])]);
 
       loadNotepadDraft();
       resetAllFields();
