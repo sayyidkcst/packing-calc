@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Skylight Pro</title>
+  <title>KCST Skylight Pro</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 256 256%22 width=%22256%22 height=%22256%22 role=%22img%22 aria-label=%22Skylight Pro icon%22%3E%3Cdefs%3E%3ClinearGradient id=%22bg%22 x1=%220%22 y1=%220%22 x2=%220%22 y2=%221%22%3E%3Cstop offset=%220%22 stop-color=%22%235b97f0%22/%3E%3Cstop offset=%221%22 stop-color=%22%2315419c%22/%3E%3C/linearGradient%3E%3ClinearGradient id=%22sky%22 x1=%220%22 y1=%220%22 x2=%220%22 y2=%221%22%3E%3Cstop offset=%220%22 stop-color=%22%23e8f4ff%22/%3E%3Cstop offset=%221%22 stop-color=%22%238fc4f5%22/%3E%3C/linearGradient%3E%3ClinearGradient id=%22gold%22 x1=%220%22 y1=%221%22 x2=%221%22 y2=%220%22%3E%3Cstop offset=%220%22 stop-color=%22%23e09a00%22/%3E%3Cstop offset=%220.6%22 stop-color=%22%23ffd54a%22/%3E%3Cstop offset=%221%22 stop-color=%22%23fff2a8%22/%3E%3C/linearGradient%3E%3ClinearGradient id=%22shine%22 x1=%220%22 y1=%220%22 x2=%220%22 y2=%221%22%3E%3Cstop offset=%220%22 stop-color=%22%23fff%22 stop-opacity=%220.55%22/%3E%3Cstop offset=%221%22 stop-color=%22%23fff%22 stop-opacity=%220%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x=%2212%22 y=%2212%22 width=%22232%22 height=%22232%22 rx=%2254%22 fill=%22url%28%23bg%29%22 stroke=%22%230a2862%22 stroke-width=%224%22/%3E%3Cpath d=%22M30 80 Q30 24 86 24 H170 Q226 24 226 80 Q128 112 30 80 Z%22 fill=%22url%28%23shine%29%22/%3E%3Crect x=%2252%22 y=%2252%22 width=%22152%22 height=%22152%22 rx=%2214%22 fill=%22%23ffffff%22 stroke=%22%230a2862%22 stroke-width=%223%22/%3E%3Crect x=%2262%22 y=%2262%22 width=%2262%22 height=%2262%22 rx=%226%22 fill=%22url%28%23sky%29%22/%3E%3Crect x=%22132%22 y=%2262%22 width=%2262%22 height=%2262%22 rx=%226%22 fill=%22url%28%23sky%29%22/%3E%3Crect x=%2262%22 y=%22132%22 width=%2262%22 height=%2262%22 rx=%226%22 fill=%22url%28%23sky%29%22/%3E%3Crect x=%22132%22 y=%22132%22 width=%2262%22 height=%2262%22 rx=%226%22 fill=%22url%28%23sky%29%22/%3E%3Cellipse cx=%2286%22 cy=%2284%22 rx=%2214%22 ry=%226%22 fill=%22%23fff%22 opacity=%220.9%22/%3E%3Cellipse cx=%22164%22 cy=%22160%22 rx=%2216%22 ry=%226%22 fill=%22%23fff%22 opacity=%220.9%22/%3E%3Cg stroke=%22%230a2862%22 stroke-width=%222.5%22 stroke-linejoin=%22round%22%3E%3Cpath d=%22M40 188 C86 180 152 138 214 56 C196 118 138 178 40 188 Z%22 fill=%22url%28%23gold%29%22/%3E%3Cpath d=%22M56 204 C98 198 150 168 198 118 C182 160 136 198 56 204 Z%22 fill=%22url%28%23gold%29%22/%3E%3Cpath d=%22M80 220 C112 216 150 196 184 160 C168 190 132 218 80 220 Z%22 fill=%22url%28%23gold%29%22/%3E%3C/g%3E%3C/svg%3E">
   <style>
     /* ---------- GLOBAL ---------- */
@@ -814,6 +814,47 @@
     .window-cash .cash-actions { margin-top: 6px; }
 
     .cash-result .result-sub:empty { display: none; }
+
+    /* ---------- RATE CALCULATOR WINDOW ---------- */
+    .window-rate { width: 500px; max-width: calc(100vw - 40px); z-index: 21; }
+    .rate-content { padding: 14px 16px 16px 16px; display: flex; flex-direction: column; gap: 10px; }
+    .rate-quick { display: flex; gap: 6px; flex-wrap: wrap; }
+    .rate-quick .aero-btn { padding: 3px 10px; font-size: 0.72rem; }
+    .rate-result {
+      margin-top: 4px; padding: 12px 16px; border-radius: 4px; text-align: center;
+      border: 1px solid #1d7a1d; background: linear-gradient(180deg, #f4fff0 0%, #d4f3c8 55%, #b4e6a2 100%);
+      box-shadow: 0 1px 0 rgba(255,255,255,0.9) inset, 0 2px 4px rgba(0,20,70,0.2);
+    }
+    .rate-result-label { font-size: 0.78rem; font-weight: 700; color: #0f5a0f; }
+    .rate-result-value { font-size: 2.1rem; font-weight: 800; color: #0f5a0f; font-variant-numeric: tabular-nums; line-height: 1.2; }
+    .rate-result-sub { font-size: 0.72rem; color: #2f6a2f; margin-top: 2px; min-height: 1em; }
+    .rate-result.invalid { border-color: #a83a14; background: linear-gradient(180deg, #fff6ef 0%, #ffe0cc 100%); }
+    .rate-result.invalid .rate-result-value, .rate-result.invalid .rate-result-label { color: #8a2a0a; }
+    .rate-formula { font-size: 0.7rem; color: #4a6a8a; text-align: center; min-height: 1em; }
+
+    .rate-panel {
+      background: linear-gradient(180deg, #ffffff 0%, #f1f7ff 100%);
+      border: 1px solid #a8c8f0; border-radius: 8px; padding: 10px 14px 12px 14px;
+      box-shadow: 0 1px 0 rgba(255,255,255,0.9) inset, 0 2px 5px rgba(0, 40, 110, 0.12);
+    }
+    .rate-panel-title { display: flex; align-items: center; gap: 8px; font-size: 0.86rem; font-weight: 800; color: #0a2862; margin-bottom: 8px; }
+    .rate-step {
+      width: 20px; height: 20px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;
+      font-size: 0.7rem; color: #fff; background: radial-gradient(circle at 35% 30%, #6aa8f5 0%, #1d54b8 100%);
+      box-shadow: 0 1px 3px rgba(0, 20, 70, 0.4);
+    }
+    .rate-row { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 8px; }
+    .rate-row:last-child { margin-bottom: 0; }
+    .rate-field { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+    .rate-field-unit { flex: 0 0 112px; }
+    .rate-field label { font-size: 0.64rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #3a62a8; }
+    .rate-field .input-wrap, .rate-field .unit-select-wrap { width: 100%; }
+    .rate-field .input-wrap input { width: 100%; text-align: right; font-weight: 700; font-size: 1.05rem; padding-top: 7px; padding-bottom: 7px; }
+    .rate-field .unit-select-wrap select { font-size: 0.95rem; font-weight: 700; padding-top: 7px; padding-bottom: 7px; }
+    .rate-field .input-wrap input, .rate-field .unit-select-wrap select { height: 36px; box-sizing: border-box; padding-top: 0; padding-bottom: 0; }
+    .rate-panel .rate-quick { margin-top: 2px; }
+    .rate-actions { display: flex; justify-content: center; margin-top: 2px; }
+    .rate-actions .aero-btn { padding: 6px 26px; font-weight: 700; }
 
     /* ---------- CALENDAR GADGET (XP style) — legacy standalone styles ---------- */
     .desktop-calendar {
@@ -2996,7 +3037,7 @@
           <svg class="sky-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="Skylight Pro"><defs><linearGradient id="slp-bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5b97f0"/><stop offset="1" stop-color="#15419c"/></linearGradient><linearGradient id="slp-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e8f4ff"/><stop offset="1" stop-color="#8fc4f5"/></linearGradient><linearGradient id="slp-gold" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#e09a00"/><stop offset="0.6" stop-color="#ffd54a"/><stop offset="1" stop-color="#fff2a8"/></linearGradient><linearGradient id="slp-shine" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0.55"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient></defs><rect x="12" y="12" width="232" height="232" rx="54" fill="url(#slp-bg)" stroke="#0a2862" stroke-width="4"/><path d="M30 80 Q30 24 86 24 H170 Q226 24 226 80 Q128 112 30 80 Z" fill="url(#slp-shine)"/><rect x="52" y="52" width="152" height="152" rx="14" fill="#ffffff" stroke="#0a2862" stroke-width="3"/><rect x="62" y="62" width="62" height="62" rx="6" fill="url(#slp-sky)"/><rect x="132" y="62" width="62" height="62" rx="6" fill="url(#slp-sky)"/><rect x="62" y="132" width="62" height="62" rx="6" fill="url(#slp-sky)"/><rect x="132" y="132" width="62" height="62" rx="6" fill="url(#slp-sky)"/><ellipse cx="86" cy="84" rx="14" ry="6" fill="#fff" opacity="0.9"/><ellipse cx="164" cy="160" rx="16" ry="6" fill="#fff" opacity="0.9"/><g stroke="#0a2862" stroke-width="2.5" stroke-linejoin="round"><path d="M40 188 C86 180 152 138 214 56 C196 118 138 178 40 188 Z" fill="url(#slp-gold)"/><path d="M56 204 C98 198 150 168 198 118 C182 160 136 198 56 204 Z" fill="url(#slp-gold)"/><path d="M80 220 C112 216 150 196 184 160 C168 190 132 218 80 220 Z" fill="url(#slp-gold)"/></g></svg>
           <span class="xp-boot-logo-text">
             KCST Media Technology<br>
-            <strong>Skylight Pro<sup>™</sup></strong>
+            <strong>KCST aSkylight Pro<sup>™</sup></strong>
           </span>
         </div>
 
@@ -3398,6 +3439,68 @@
         <button class="aero-btn success" id="cashSaveBtn" type="button">
           <span>💾</span> Save Record
         </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- RATE CALCULATOR -->
+  <div class="window window-rate" id="rateWindow">
+    <div class="title-bar" id="rateTitleBar">
+      <div class="title-text"><span>🧮</span> Rate Calculator</div>
+      <div class="caption-buttons">
+        <div class="caption-btn minimize" data-minimize="rateWindow" title="Minimize">_</div>
+        <div class="caption-btn maximize" data-maximize="rateWindow" title="Maximize">□</div>
+        <div class="caption-btn close" data-close="rateWindow" title="Close (remove from taskbar)">✕</div>
+      </div>
+    </div>
+    <div class="window-content rate-content">
+      <div class="rate-panel">
+        <div class="rate-panel-title"><span class="rate-step">1</span> If</div>
+        <div class="rate-row">
+          <div class="rate-field">
+            <label for="rateQty">Quantity</label>
+            <div class="input-wrap"><input type="number" id="rateQty" min="0" step="any" placeholder="0" inputmode="decimal"></div>
+          </div>
+          <div class="rate-field rate-field-unit">
+            <label for="rateUnit">Unit</label>
+            <div class="unit-select-wrap"><select id="rateUnit">
+              <option value="gm" selected>gm</option><option value="kg">kg</option>
+              <option value="ml">ml</option><option value="ltr">ltr</option>
+              <option value="pcs">pcs</option>
+            </select><span class="unit-arrow">▼</span></div>
+          </div>
+        </div>
+        <div class="rate-row">
+          <div class="rate-field">
+            <label for="ratePrice">Costs (₹)</label>
+            <div class="input-wrap"><input type="number" id="ratePrice" min="0" step="any" placeholder="0" inputmode="decimal"><span class="unit">₹</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rate-panel">
+        <div class="rate-panel-title"><span class="rate-step">2</span> How much for</div>
+        <div class="rate-row">
+          <div class="rate-field">
+            <label for="rateTargetQty">Quantity</label>
+            <div class="input-wrap"><input type="number" id="rateTargetQty" min="0" step="any" placeholder="0" inputmode="decimal"></div>
+          </div>
+          <div class="rate-field rate-field-unit">
+            <label for="rateTargetUnit">Unit</label>
+            <div class="unit-select-wrap"><select id="rateTargetUnit"></select><span class="unit-arrow">▼</span></div>
+          </div>
+        </div>
+        <div class="rate-quick" id="rateQuick"></div>
+      </div>
+
+      <div class="rate-result" id="rateResult">
+        <div class="rate-result-label" id="rateResultLabel">Enter the quantity, price and target</div>
+        <div class="rate-result-value" id="rateResultValue">—</div>
+        <div class="rate-result-sub" id="rateResultSub"></div>
+      </div>
+      <div class="rate-formula" id="rateFormula"></div>
+      <div class="rate-actions">
+        <button class="aero-btn" id="rateClearBtn" type="button" title="Clear all boxes and start again"><span>🧹</span> Clear</button>
       </div>
     </div>
   </div>
@@ -3881,6 +3984,10 @@
       <span class="tb-icon">📋</span>
       <span class="tb-label">Stock List</span>
     </div>
+    <div class="taskbar-item" id="taskbarRate" data-restore="rateWindow" style="display:none;">
+      <span class="tb-icon">🧮</span>
+      <span class="tb-label">Rate Calculator</span>
+    </div>
     <div class="taskbar-item" id="taskbarSettings" data-restore="settingsWindow" style="display:none;">
       <span class="tb-icon">⚙️</span>
       <span class="tb-label">Settings</span>
@@ -4073,6 +4180,8 @@
 
       // ==================== RECEIPT VOUCHER UI ====================
       const numberWordWindow = document.getElementById('numberWordWindow');
+      const rateWindow = document.getElementById('rateWindow');
+      const rateTitleBar = document.getElementById('rateTitleBar');
       const numberWordTitleBar = document.getElementById('numberWordTitleBar');
       const rvFromInput = document.getElementById('rvFromInput');
       const rvAmountInput = document.getElementById('rvAmountInput');
@@ -5361,6 +5470,7 @@
 
       makeDraggable(calcWindow, calcTitleBar);
       makeDraggable(numberWordWindow, numberWordTitleBar);
+      makeDraggable(rateWindow, rateTitleBar);
       makeDraggable(priceWindow, priceTitleBar);
       makeDraggable(loadWindow, loadTitleBar);
       makeDraggable(cashWindow, cashTitleBar);
@@ -5370,10 +5480,11 @@
       makeDraggable(settingsWindow, settingsTitleBar);
       makeDraggable(stockWindow, stockTitleBar);
 
-      [calcWindow, numberWordWindow, priceWindow, loadWindow, cashWindow, notepadWindow, vehicleWindow, invoiceWindow, stockWindow, settingsWindow].forEach(addResizeHandles);
+      [calcWindow, numberWordWindow, priceWindow, loadWindow, cashWindow, notepadWindow, vehicleWindow, invoiceWindow, stockWindow, settingsWindow, rateWindow].forEach(addResizeHandles);
 
       calcWindow.addEventListener('mousedown', () => bringToFront(calcWindow));
       numberWordWindow.addEventListener('mousedown', () => bringToFront(numberWordWindow));
+      rateWindow.addEventListener('mousedown', () => bringToFront(rateWindow));
       priceWindow.addEventListener('mousedown', () => bringToFront(priceWindow));
       loadWindow.addEventListener('mousedown', () => bringToFront(loadWindow));
       cashWindow.addEventListener('mousedown', () => bringToFront(cashWindow));
@@ -5401,6 +5512,7 @@
       const windowState = {
         calcWindow: { minimized: false, maximized: false, origRect: null },
         numberWordWindow: { minimized: false, maximized: false, origRect: null },
+        rateWindow: { minimized: false, maximized: false, origRect: null },
         priceWindow: { minimized: false, maximized: false, origRect: null },
         loadWindow: { minimized: false, maximized: false, origRect: null },
         cashWindow: { minimized: false, maximized: false, origRect: null },
@@ -9166,6 +9278,7 @@
         { id: 'startChangeWallpaper', icon: '🖼️', name: 'My Wallpapers' },
         { id: 'startNumberWord', icon: '🧾', name: 'Receipt Voucher' },
         { id: 'startNotepad', icon: '📝', name: 'Notepad' },
+        { id: 'startRate', icon: '🧮', name: 'Rate Calculator' },
         { id: 'xpReload', icon: '🔄', name: 'Refresh Desktop' },
         { id: 'xpPersonalize', icon: '🎨', name: 'Personalize' }
       ];
@@ -9227,6 +9340,7 @@
           else if (action === 'startSettings') { startMenu.classList.remove('open'); restoreWindowFromTaskbar('settingsWindow'); }
           else if (action === 'startNumberWord') { startMenu.classList.remove('open'); restoreWindowFromTaskbar('numberWordWindow'); }
           else if (action === 'startNotepad') { startMenu.classList.remove('open'); restoreWindowFromTaskbar('notepadWindow'); }
+          else if (action === 'startRate') { startMenu.classList.remove('open'); restoreWindowFromTaskbar('rateWindow'); }
         }
       });
 
@@ -9250,6 +9364,87 @@
         });
       });
 
+      // ==================== RATE CALCULATOR ====================
+      (function initRateCalculator() {
+        const qtyEl = document.getElementById('rateQty'), unitEl = document.getElementById('rateUnit');
+        const priceEl = document.getElementById('ratePrice');
+        const tQtyEl = document.getElementById('rateTargetQty'), tUnitEl = document.getElementById('rateTargetUnit');
+        const quickEl = document.getElementById('rateQuick'), resultBox = document.getElementById('rateResult');
+        const labelEl = document.getElementById('rateResultLabel'), valueEl = document.getElementById('rateResultValue');
+        const subEl = document.getElementById('rateResultSub'), formulaEl = document.getElementById('rateFormula');
+
+        // factor to the smallest unit of each group (gm / ml / pcs)
+        const UNITS = { gm: { g: 'mass', f: 1 }, kg: { g: 'mass', f: 1000 }, ml: { g: 'vol', f: 1 }, ltr: { g: 'vol', f: 1000 }, pcs: { g: 'count', f: 1 } };
+        const GROUP_UNITS = { mass: ['kg', 'gm'], vol: ['ltr', 'ml'], count: ['pcs'] };
+        const QUICK = { mass: [[1, 'kg'], [500, 'gm'], [250, 'gm'], [100, 'gm'], [50, 'gm']], vol: [[1, 'ltr'], [500, 'ml'], [250, 'ml'], [100, 'ml']], count: [[1, 'pcs'], [10, 'pcs'], [12, 'pcs'], [100, 'pcs']] };
+        const money = (n) => '₹' + n.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        const trimNum = (n) => String(Math.round(n * 10000) / 10000);
+        const moneyP = (n) => '₹' + n.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: n < 1 ? 4 : 2 });   // small rates keep 4 decimals
+
+        function fillTargetUnits(keep) {
+          const grp = UNITS[unitEl.value].g;
+          const list = GROUP_UNITS[grp];
+          const cur = keep && list.includes(tUnitEl.value) ? tUnitEl.value : list[0];
+          tUnitEl.innerHTML = list.map(u => `<option value="${u}">${u}</option>`).join('');
+          tUnitEl.value = cur;
+          quickEl.innerHTML = QUICK[grp].map(([q, u]) => `<button class="aero-btn" type="button" data-q="${q}" data-u="${u}">${q} ${u}</button>`).join('');
+        }
+
+        function calc() {
+          const qty = parseFloat(qtyEl.value), price = parseFloat(priceEl.value), tQty = parseFloat(tQtyEl.value);
+          const su = UNITS[unitEl.value], tu = UNITS[tUnitEl.value];
+          const anyEmpty = qtyEl.value.trim() === '' || priceEl.value.trim() === '' || tQtyEl.value.trim() === '';
+          const ok = qty > 0 && price >= 0 && tQty > 0 && !isNaN(price) && su.g === tu.g;
+          resultBox.classList.toggle('invalid', !ok && !anyEmpty);
+          if (!ok) {
+            labelEl.textContent = anyEmpty ? 'Enter the quantity, price and target' : 'Quantity and target must be above 0';
+            valueEl.textContent = '—'; subEl.textContent = ''; formulaEl.textContent = '';
+            return;
+          }
+          const perBase = price / (qty * su.f);                 // price per gm / ml / pcs
+          const result = perBase * tQty * tu.f;
+          labelEl.textContent = `Price for ${trimNum(tQty)} ${tUnitEl.value}`;
+          valueEl.textContent = money(result);
+          const grp = su.g;
+          const perUnit = grp === 'mass' ? [['1 kg', perBase * 1000], ['100 gm', perBase * 100], ['1 gm', perBase]]
+                        : grp === 'vol'  ? [['1 ltr', perBase * 1000], ['100 ml', perBase * 100], ['1 ml', perBase]]
+                        : [['1 pcs', perBase], ['10 pcs', perBase * 10], ['100 pcs', perBase * 100]];
+          subEl.textContent = perUnit.map(([l, v]) => `${l} = ${moneyP(v)}`).join('   ·   ');
+          formulaEl.textContent = `${money(price)} ÷ ${trimNum(qty)} ${unitEl.value} × ${trimNum(tQty)} ${tUnitEl.value}`;
+        }
+
+        [qtyEl, priceEl, tQtyEl].forEach(el => el.addEventListener('input', calc));
+        [qtyEl, priceEl, tQtyEl].forEach(el => el.addEventListener('focus', () => el.select()));
+        const enterOrder = [qtyEl, priceEl, tQtyEl];
+        function clearBoxes(resetResult) {
+          enterOrder.forEach(x => { x.value = ''; });
+          if (resetResult) calc();                          // empty boxes -> neutral result
+          qtyEl.focus();                                    // cursor back to the first box
+        }
+        document.getElementById('rateClearBtn').addEventListener('click', () => clearBoxes(true));
+        enterOrder.forEach((el, i) => el.addEventListener('keydown', (e) => {
+          if (e.key !== 'Enter') return;
+          e.preventDefault();
+          const next = enterOrder[i + 1];
+          if (next) { next.focus(); next.select(); }       // Enter -> next text box
+          else clearBoxes(false);                           // Enter in the last box: clear all boxes (the last result stays on screen)
+        }));
+        let prevGroup = UNITS[unitEl.value].g;
+        unitEl.addEventListener('change', () => {
+          const g = UNITS[unitEl.value].g;
+          if (g !== prevGroup) { tQtyEl.value = '1'; prevGroup = g; }   // new kind of unit -> start again from 1
+          fillTargetUnits(true); calc();
+        });
+        tUnitEl.addEventListener('change', calc);
+        quickEl.addEventListener('click', (e) => {
+          const b = e.target.closest('[data-q]');
+          if (!b) return;
+          tQtyEl.value = b.dataset.q; tUnitEl.value = b.dataset.u; calc();
+        });
+        fillTargetUnits(false);
+        calc();
+      })();
+
       // ==================== MINIMIZE / MAXIMIZE / CLOSE ====================
       function updateTaskbar() {
         const tbCalc = document.getElementById('taskbarCalc');
@@ -9262,10 +9457,11 @@
         const tbInvoice = document.getElementById('taskbarInvoice');
         const tbSettings = document.getElementById('taskbarSettings');
         const tbStock = document.getElementById('taskbarStock');
+        const tbRate = document.getElementById('taskbarRate');
         [
           ['calcWindow', tbCalc], ['numberWordWindow', tbNumberWord], ['priceWindow', tbPrice],
           ['loadWindow', tbLoad], ['cashWindow', tbCash], ['notepadWindow', tbNotepad],
-          ['vehicleWindow', tbVehicle], ['invoiceWindow', tbInvoice], ['stockWindow', tbStock], ['settingsWindow', tbSettings]
+          ['vehicleWindow', tbVehicle], ['invoiceWindow', tbInvoice], ['stockWindow', tbStock], ['settingsWindow', tbSettings], ['rateWindow', tbRate]
         ].forEach(([id, tb]) => {
           const state = windowState[id];
           if (tb && tb.style.display !== 'none') {
@@ -9406,7 +9602,7 @@
 
       // ==================== INIT ====================
       // Hide all windows BEFORE anything loads — no auto-open
-      ['calcWindow', 'numberWordWindow', 'priceWindow', 'loadWindow', 'cashWindow', 'notepadWindow', 'vehicleWindow', 'invoiceWindow', 'stockWindow', 'settingsWindow'].forEach(id => {
+      ['calcWindow', 'numberWordWindow', 'priceWindow', 'loadWindow', 'cashWindow', 'notepadWindow', 'vehicleWindow', 'invoiceWindow', 'stockWindow', 'settingsWindow', 'rateWindow'].forEach(id => {
         const winEl = document.getElementById(id);
         if (winEl) {
           winEl.classList.add('minimized');      // .minimized already hides the window; no inline display:none so it can open at any time
@@ -9438,7 +9634,7 @@
       calculateCash();
 
       // Keep all windows closed after loading — user must open them via Start Menu
-      ['calcWindow', 'numberWordWindow', 'priceWindow', 'loadWindow', 'cashWindow', 'notepadWindow', 'vehicleWindow', 'invoiceWindow', 'stockWindow', 'settingsWindow'].forEach(id => {
+      ['calcWindow', 'numberWordWindow', 'priceWindow', 'loadWindow', 'cashWindow', 'notepadWindow', 'vehicleWindow', 'invoiceWindow', 'stockWindow', 'settingsWindow', 'rateWindow'].forEach(id => {
         const winEl = document.getElementById(id);
         if (winEl) {
           winEl.classList.add('minimized');
