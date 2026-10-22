@@ -856,6 +856,17 @@
     .rate-actions { display: flex; justify-content: center; margin-top: 2px; }
     .rate-actions .aero-btn { padding: 6px 26px; font-weight: 700; }
 
+    /* ---------- current day printed inside the dial (above the centre) ---------- */
+    .desktop-gadget .gadget-analog .gadget-day {
+      position: absolute; left: 50%; top: 32%; transform: translateX(-50%);
+      margin: 0; padding: 0; z-index: 2; white-space: nowrap;
+      background: none; border: none; border-radius: 0; box-shadow: none; text-shadow: none;
+      font-family: Tahoma, Verdana, sans-serif; font-size: 0.5rem; font-weight: 800; letter-spacing: 0.18em;
+      text-transform: uppercase; color: #b9801a;
+    }
+    @media (max-width: 1200px) { .desktop-gadget .gadget-analog .gadget-day { font-size: 0.46rem; } }
+    @media (max-width: 600px)  { .desktop-gadget .gadget-analog .gadget-day { font-size: 0.4rem; top: 31%; } }
+
     /* ---------- CALENDAR GADGET (XP style) — legacy standalone styles ---------- */
     .desktop-calendar {
       position: fixed; top: 320px; right: 30px; z-index: 5; width: 240px;
@@ -3070,6 +3081,7 @@
       <div class="gadget-hand hour" id="gadgetHourHand"></div>
       <div class="gadget-hand minute" id="gadgetMinuteHand"></div>
       <div class="gadget-hand second" id="gadgetSecondHand"></div>
+      <div class="gadget-day" id="gadgetDay">---</div>
       <div class="gadget-date" id="gadgetDate">--/--/----</div>
       <div class="gadget-center-dot"></div>
     </div>
@@ -5204,6 +5216,7 @@
       const gadgetMinuteHand = document.getElementById('gadgetMinuteHand');
       const gadgetSecondHand = document.getElementById('gadgetSecondHand');
       const gadgetDate = document.getElementById('gadgetDate');
+      const gadgetDay = document.getElementById('gadgetDay');
 
       (function generateClockFace() {
         // 60 minute ticks (every 5th is a longer hour tick)
@@ -5237,6 +5250,7 @@
         const pad = (n) => String(n).padStart(2, '0');
         gadgetDate.textContent = formatDateDDMMYYYY(now);
         const dayNames = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
+        gadgetDay.textContent = dayNames[now.getDay()];
         const secDeg = s * 6;
         const minDeg = m * 6 + s * 0.1;
         const hourDeg = (h % 12) * 30 + m * 0.5;
