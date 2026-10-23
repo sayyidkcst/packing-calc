@@ -2851,6 +2851,21 @@
       flex: 0 0 90px;
     }
 
+    /* ---------- USER PROFILE (settings) ---------- */
+    .profile-edit-row { display: flex; gap: 14px; align-items: center; }
+    .profile-pic-box { display: flex; flex-direction: column; align-items: center; gap: 6px; flex-shrink: 0; }
+    .profile-pic-preview {
+      width: 84px; height: 84px; border-radius: 8px; overflow: hidden;
+      border: 2px solid #ffce54; background: radial-gradient(circle at 35% 30%, #ffffff 0%, #b8dcff 25%, #4a9ae8 60%, #1c5a9a 100%);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.35);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem; font-weight: 700; color: #0a2a45;
+    }
+    .profile-pic-preview img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .profile-pic-actions { display: flex; gap: 4px; }
+    .profile-pic-actions .aero-btn { padding: 2px 8px; font-size: 0.68rem; }
+    .profile-fields { flex: 1; min-width: 0; }
+
     /* ---------- SETTINGS WINDOW ---------- */
     .settings-section {
       background: linear-gradient(180deg, #ffffff 0%, #f0f6ff 100%);
@@ -3048,7 +3063,7 @@
           <svg class="sky-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="Skylight Pro"><defs><linearGradient id="slp-bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5b97f0"/><stop offset="1" stop-color="#15419c"/></linearGradient><linearGradient id="slp-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e8f4ff"/><stop offset="1" stop-color="#8fc4f5"/></linearGradient><linearGradient id="slp-gold" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#e09a00"/><stop offset="0.6" stop-color="#ffd54a"/><stop offset="1" stop-color="#fff2a8"/></linearGradient><linearGradient id="slp-shine" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0.55"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient></defs><rect x="12" y="12" width="232" height="232" rx="54" fill="url(#slp-bg)" stroke="#0a2862" stroke-width="4"/><path d="M30 80 Q30 24 86 24 H170 Q226 24 226 80 Q128 112 30 80 Z" fill="url(#slp-shine)"/><rect x="52" y="52" width="152" height="152" rx="14" fill="#ffffff" stroke="#0a2862" stroke-width="3"/><rect x="62" y="62" width="62" height="62" rx="6" fill="url(#slp-sky)"/><rect x="132" y="62" width="62" height="62" rx="6" fill="url(#slp-sky)"/><rect x="62" y="132" width="62" height="62" rx="6" fill="url(#slp-sky)"/><rect x="132" y="132" width="62" height="62" rx="6" fill="url(#slp-sky)"/><ellipse cx="86" cy="84" rx="14" ry="6" fill="#fff" opacity="0.9"/><ellipse cx="164" cy="160" rx="16" ry="6" fill="#fff" opacity="0.9"/><g stroke="#0a2862" stroke-width="2.5" stroke-linejoin="round"><path d="M40 188 C86 180 152 138 214 56 C196 118 138 178 40 188 Z" fill="url(#slp-gold)"/><path d="M56 204 C98 198 150 168 198 118 C182 160 136 198 56 204 Z" fill="url(#slp-gold)"/><path d="M80 220 C112 216 150 196 184 160 C168 190 132 218 80 220 Z" fill="url(#slp-gold)"/></g></svg>
           <span class="xp-boot-logo-text">
             KCST Media Technology<br>
-            <strong>Skylight Pro<sup>™</sup></strong>
+            <strong>KCST Skylight Pro<sup>™</sup></strong>
           </span>
         </div>
 
@@ -3786,7 +3801,7 @@
   <div class="window-settings" id="settingsWindow">
     <div class="title-bar" id="settingsTitleBar">
       <div class="title-text">
-        <span>⚙️</span> Settings — Company Information
+        <span>⚙️</span> Settings — Profile &amp; Company
         <span class="status-dot" id="settingsStatusDot" title="Database status"></span>
       </div>
       <div class="caption-buttons">
@@ -3797,6 +3812,38 @@
     </div>
 
     <div class="window-content">
+      <div class="settings-section" id="profileSection">
+        <div class="settings-section-legend">👤 User Profile</div>
+        <div class="profile-edit-row">
+          <div class="profile-pic-box">
+            <div class="profile-pic-preview" id="profilePicPreview"></div>
+            <div class="profile-pic-actions">
+              <button class="aero-btn" id="profilePicChooseBtn" type="button"><span>📷</span> Change</button>
+              <button class="aero-btn" id="profilePicResetBtn" type="button" title="Use the default picture"><span>↩</span></button>
+            </div>
+            <input type="file" id="profilePicInput" accept="image/*" style="display:none;">
+          </div>
+          <div class="profile-fields">
+            <div class="modal-field">
+              <label>🧑 User Name</label>
+              <div class="input-wrap">
+                <input type="text" id="profileNameInput" maxlength="40" placeholder="e.g. SAYYID SHEREEF KC" style="text-align:left; font-size:0.85rem; user-select:text;">
+              </div>
+            </div>
+            <div class="modal-field">
+              <label>🏷️ Role / Title</label>
+              <div class="input-wrap">
+                <input type="text" id="profileRoleInput" maxlength="30" placeholder="e.g. Administrator" style="text-align:left; font-size:0.85rem; user-select:text;">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="cash-actions" style="margin-top:8px;">
+          <span class="badge" id="profileSyncBadge" style="align-self:center; margin-right:auto; border-radius:3px; padding:1px 8px; font-size:0.66rem; font-weight:700; color:#0a2862;"></span>
+          <button class="aero-btn success" id="profileSaveBtn" type="button"><span>💾</span> Save Profile</button>
+        </div>
+      </div>
+
       <div class="aero-info">
         <span class="badge" id="settingsSyncBadge">●</span>
         <span style="font-size:0.72rem; color:#0a2862;">These details will appear on all printed documents (Invoices, Price List, Vehicles)</span>
@@ -9248,6 +9295,203 @@
         renderCompanySettingsForm();
       });
 
+      // ==================== USER PROFILE (name + picture) ====================
+      const USER_PROFILE_KEY = 'user_profile';
+      const startUserNameEl = document.getElementById('userName');
+      const startUserRoleEl = document.getElementById('userRole');
+      const startUserAvatarEl = document.getElementById('userAvatar');
+      const DEFAULT_USER_PROFILE = {
+        name: (startUserNameEl && startUserNameEl.textContent.trim()) || 'User',
+        role: (startUserRoleEl && startUserRoleEl.textContent.trim()) || 'Administrator',
+        pic: (startUserAvatarEl && startUserAvatarEl.querySelector('img') ? startUserAvatarEl.querySelector('img').getAttribute('src') : '')
+      };
+      let userProfile = { ...DEFAULT_USER_PROFILE };
+      let profileDraftPic = null;   // picture chosen in the form but not saved yet
+
+      function applyUserProfile() {
+        if (startUserNameEl) startUserNameEl.textContent = userProfile.name || DEFAULT_USER_PROFILE.name;
+        if (startUserRoleEl) startUserRoleEl.textContent = userProfile.role || DEFAULT_USER_PROFILE.role;
+        if (startUserAvatarEl) {
+          const pic = userProfile.pic || DEFAULT_USER_PROFILE.pic;
+          startUserAvatarEl.innerHTML = '';
+          if (pic) {
+            const img = document.createElement('img');
+            img.src = pic; img.alt = 'User';
+            startUserAvatarEl.appendChild(img);
+          } else {
+            startUserAvatarEl.textContent = (userProfile.name || 'U').trim().charAt(0).toUpperCase();
+          }
+        }
+      }
+
+      function renderProfilePicPreview(pic) {
+        const box = document.getElementById('profilePicPreview');
+        if (!box) return;
+        box.innerHTML = '';
+        if (pic) {
+          const img = document.createElement('img');
+          img.src = pic; img.alt = 'Preview';
+          box.appendChild(img);
+        } else {
+          const nm = (document.getElementById('profileNameInput')?.value || userProfile.name || 'U').trim();
+          box.textContent = nm.charAt(0).toUpperCase();
+        }
+      }
+
+      function renderUserProfileForm() {
+        const n = document.getElementById('profileNameInput');
+        const r = document.getElementById('profileRoleInput');
+        if (n) n.value = userProfile.name || '';
+        if (r) r.value = userProfile.role || '';
+        profileDraftPic = userProfile.pic || DEFAULT_USER_PROFILE.pic;
+        renderProfilePicPreview(profileDraftPic);
+      }
+
+      async function loadUserProfile() {
+        try {
+          const cached = localStorage.getItem(USER_PROFILE_KEY);
+          if (cached) {
+            const parsed = JSON.parse(cached);
+            if (parsed && typeof parsed === 'object') userProfile = { ...DEFAULT_USER_PROFILE, ...parsed };
+          }
+        } catch (e) {}
+        applyUserProfile();
+        renderUserProfileForm();
+
+        try {
+          const result = await withTimeout(
+            supabase.from('app_settings').select('setting_value').eq('setting_key', USER_PROFILE_KEY).maybeSingle(),
+            2500
+          );
+          if (result && result.data && result.data.setting_value) {
+            const parsed = JSON.parse(result.data.setting_value);
+            if (parsed && typeof parsed === 'object') {
+              userProfile = { ...DEFAULT_USER_PROFILE, ...parsed };
+              try { localStorage.setItem(USER_PROFILE_KEY, JSON.stringify(userProfile)); } catch (e) {}
+            }
+          }
+        } catch (err) {
+          console.warn('Could not load user profile:', err.message);
+        }
+        applyUserProfile();
+        renderUserProfileForm();
+      }
+
+      // Writes to Supabase, then reads the row back to confirm it really landed.
+      // Returns { ok: true } or { ok: false, message }.
+      async function saveUserProfileToDB() {
+        try {
+          const payload = JSON.stringify(userProfile);
+          const { error } = await supabase
+            .from('app_settings')
+            .upsert({
+              setting_key: USER_PROFILE_KEY,
+              setting_value: payload,
+              updated_at: new Date().toISOString()
+            }, { onConflict: 'setting_key' });
+          if (error) throw error;
+
+          const check = await supabase.from('app_settings').select('setting_value').eq('setting_key', USER_PROFILE_KEY).maybeSingle();
+          if (check.error) throw check.error;
+          if (!check.data || check.data.setting_value !== payload) {
+            throw new Error('Row was not stored (check the table permissions / RLS policy on app_settings)');
+          }
+          return { ok: true };
+        } catch (err) {
+          console.warn('Could not save user profile:', err);
+          return { ok: false, message: (err && err.message) ? err.message : String(err) };
+        }
+      }
+
+      // Crop to a centred square and shrink so it stays small enough to store
+      function resizeImageToDataUrl(file, size = 200) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onerror = () => reject(new Error('Could not read file'));
+          reader.onload = () => {
+            const img = new Image();
+            img.onerror = () => reject(new Error('Not a valid image'));
+            img.onload = () => {
+              const side = Math.min(img.width, img.height);
+              const sx = (img.width - side) / 2, sy = (img.height - side) / 2;
+              const canvas = document.createElement('canvas');
+              canvas.width = size; canvas.height = size;
+              canvas.getContext('2d').drawImage(img, sx, sy, side, side, 0, 0, size, size);
+              resolve(canvas.toDataURL('image/jpeg', 0.85));
+            };
+            img.src = reader.result;
+          };
+          reader.readAsDataURL(file);
+        });
+      }
+
+      let profileSaving = false;
+      async function saveProfileNow() {
+        if (profileSaving) return;
+        profileSaving = true;
+        userProfile.name = document.getElementById('profileNameInput').value.trim() || DEFAULT_USER_PROFILE.name;
+        userProfile.role = document.getElementById('profileRoleInput').value.trim() || DEFAULT_USER_PROFILE.role;
+        userProfile.pic = (profileDraftPic && profileDraftPic !== DEFAULT_USER_PROFILE.pic) ? profileDraftPic : '';
+        try { localStorage.setItem(USER_PROFILE_KEY, JSON.stringify(userProfile)); } catch (e) {}
+        applyUserProfile();
+        renderUserProfileForm();
+
+        const btn = document.getElementById('profileSaveBtn');
+        const badge = document.getElementById('profileSyncBadge');
+        const original = btn.innerHTML;
+        btn.disabled = true; btn.innerHTML = '<span>⏳</span> Saving…';
+        badge.textContent = 'Saving to database…'; badge.style.background = '#e6eefb'; badge.style.color = '#0a2862';
+
+        const res = await saveUserProfileToDB();
+        btn.disabled = false; btn.innerHTML = original;
+        profileSaving = false;
+
+        if (res.ok) {
+          badge.textContent = '✓ Saved to database';
+          badge.title = '';
+          badge.style.background = '#1e6b3a'; badge.style.color = '#fff';
+        } else {
+          badge.textContent = '⚠ DB save failed: ' + res.message;
+          badge.title = res.message;
+          badge.style.background = '#8b2c2c'; badge.style.color = '#fff';
+          showToast('⚠️ Profile not saved to database: ' + res.message, 'warning');
+        }
+      }
+
+      document.getElementById('profilePicChooseBtn').addEventListener('click', () => {
+        document.getElementById('profilePicInput').click();
+      });
+      document.getElementById('profilePicInput').addEventListener('change', async (e) => {
+        const file = e.target.files && e.target.files[0];
+        e.target.value = '';
+        if (!file) return;
+        if (!file.type.startsWith('image/')) { showToast('⚠️ Please choose an image file', 'warning'); return; }
+        try {
+          profileDraftPic = await resizeImageToDataUrl(file);
+          renderProfilePicPreview(profileDraftPic);
+          saveProfileNow();                       // save to the database right away
+        } catch (err) {
+          showToast('⚠️ Could not use that image: ' + err.message, 'warning');
+        }
+      });
+      document.getElementById('profilePicResetBtn').addEventListener('click', () => {
+        profileDraftPic = DEFAULT_USER_PROFILE.pic;
+        renderProfilePicPreview(profileDraftPic);
+        saveProfileNow();
+      });
+      document.getElementById('profileNameInput').addEventListener('input', () => {
+        if (!profileDraftPic) renderProfilePicPreview(null);
+      });
+      // Save when leaving the name / role boxes, and when pressing Enter
+      ['profileNameInput', 'profileRoleInput'].forEach(id => {
+        const el = document.getElementById(id);
+        el.addEventListener('change', saveProfileNow);
+        el.addEventListener('keydown', (ev) => { if (ev.key === 'Enter') { ev.preventDefault(); el.blur(); } });
+      });
+      document.getElementById('profileSaveBtn').addEventListener('click', saveProfileNow);
+      // The main "Save Settings" button also saves the profile
+      document.getElementById('settingsSaveBtn').addEventListener('click', saveProfileNow);
+
       // ==================== START MENU BUILD ====================
       // LEFT panel: main applications (Number to Word & Notepad live only in the RIGHT panel)
       const XP_PROGRAMS = [
@@ -9606,6 +9850,7 @@
       // never let a slow database keep the desktop waiting: continue after 6 s, the lists fill in when the data arrives
       await Promise.race([new Promise(r => setTimeout(r, 6000)), Promise.allSettled([
         loadCompanySettings(),
+        loadUserProfile(),
         loadUploadedWallpapers(),
         loadWallpaper(),
         loadEmployees(),
