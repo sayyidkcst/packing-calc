@@ -3146,6 +3146,54 @@
     /* not part of the phone app */
     html.mobile-app #reminderWindow, html.mobile-app #reminderGadget { display: none !important; }
 
+    /* ==================== CONTACTS WINDOW ==================== */
+    .window-contact { width: 580px; max-width: calc(100vw - 40px); z-index: 23; height: min(620px, calc(100vh - var(--taskbar-height) - 20px)); }
+    .ct-content { display: flex; flex-direction: column; gap: 8px; padding: 10px 12px; min-height: 0; overflow: hidden; }
+    .ct-count { background: linear-gradient(180deg,#3f7ae0 0%,#15419c 100%); color: #fff; border-radius: 3px; padding: 1px 8px; font-size: 0.62rem; font-weight: 700; border: 1px solid #0a2862; margin-left: 6px; }
+    .ct-form { background: linear-gradient(180deg,#ffffff 0%,#f0f6ff 100%); border: 1px solid #a8c8f0; border-radius: 4px; padding: 8px; display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; }
+    .ct-form label { display: flex; flex-direction: column; gap: 2px; font-size: 0.68rem; font-weight: 700; color: #0a2a6a; flex: 1; min-width: 0; }
+    .ct-input { width: 100%; box-sizing: border-box; border: 1px solid #7f9db9; border-radius: 3px; padding: 5px 7px; font: inherit; font-size: 0.84rem; font-weight: 400; color: #000; background: #fff; user-select: text; }
+    .ct-input:focus { outline: none; border-color: #2f6fe0; box-shadow: 0 0 0 2px rgba(63,122,224,0.25); }
+    .ct-row { display: flex; gap: 6px; }
+    .ct-cc { max-width: 110px; }
+    .ct-actions-row { display: flex; gap: 6px; align-items: flex-end; }
+    .ct-status { margin-right: auto; align-self: center; font-size: 0.66rem; font-weight: 700; color: #0a2862; }
+    .ct-status.ok { color: #1e6b3a; } .ct-status.err { color: #a02020; }
+    .ct-bar { display: flex; gap: 6px; flex-shrink: 0; }
+    .ct-bar .ct-input { flex: 1; min-width: 0; }
+    .ct-bar select.ct-input { flex: 0 0 38%; }
+    .ct-toggle { display: none; }
+    .ct-list { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 5px; padding-right: 2px; }
+    .ct-empty { text-align: center; color: #4a6a90; padding: 24px 8px; border: 1px dashed #a8c8f0; border-radius: 4px; background: #f7fafe; font-size: 0.82rem; }
+    .ct-item { display: flex; gap: 9px; align-items: center; padding: 7px 8px; background: #fff; border: 1px solid #b8cce8; border-radius: 5px; }
+    .ct-item.editing { box-shadow: 0 0 0 2px #3f7ae0; }
+    .ct-avatar { width: 38px; height: 38px; border-radius: 50%; color: #fff; font-weight: 800; font-size: 1rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; text-shadow: 0 1px 2px rgba(0,0,0,0.35); }
+    .ct-main { flex: 1; min-width: 0; }
+    .ct-name { font-weight: 700; font-size: 0.9rem; color: #0a2a45; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; user-select: text; }
+    .ct-sub { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 2px; font-size: 0.74rem; color: #3a587d; }
+    .ct-sec { background: #e3ecf8; border: 1px solid #b8cce8; border-radius: 9px; padding: 0 8px; font-size: 0.66rem; font-weight: 700; color: #15419c; }
+    .ct-num { font-family: Consolas, 'Courier New', monospace; font-weight: 700; user-select: text; }
+    .ct-actions { display: flex; gap: 4px; align-items: center; flex-shrink: 0; }
+    .ct-btn { display: inline-flex; align-items: center; justify-content: center; gap: 4px; text-decoration: none; border-radius: 4px; padding: 5px 9px; font-size: 0.74rem; font-weight: 700; color: #fff; border: 1px solid rgba(0,0,0,0.25); cursor: pointer; white-space: nowrap; }
+    .ct-btn.call { background: linear-gradient(180deg,#4aa3f0 0%,#1b6fc7 100%); }
+    .ct-btn.wa { background: linear-gradient(180deg,#3ed26a 0%,#16963f 100%); }
+    .ct-btn:hover { filter: brightness(1.1); }
+    .ct-icon-btn { border: 1px solid #a8c8f0; background: #f0f6ff; border-radius: 4px; cursor: pointer; padding: 4px 6px; font-size: 0.85rem; }
+    .ct-icon-btn:hover { background: #dbe9ff; }
+
+    /* ---- Contacts on phones ---- */
+    html.mobile-app .ct-toggle { display: inline-flex; flex-shrink: 0; }
+    html.mobile-app #contactWindow .ct-form { display: none; }
+    html.mobile-app #contactWindow.show-form .ct-form { display: flex; }
+    html.mobile-app .ct-row { flex-wrap: wrap; }
+    html.mobile-app .ct-item { flex-wrap: wrap; padding: 10px; gap: 8px 10px; }
+    html.mobile-app .ct-actions { width: 100%; }
+    html.mobile-app .ct-btn { flex: 1; padding: 11px 6px; font-size: 0.9rem; }
+    html.mobile-app .ct-icon-btn { padding: 9px 12px; font-size: 1rem; }
+    html.mobile-app .ct-avatar { width: 44px; height: 44px; font-size: 1.15rem; }
+    html.mobile-app .ct-name { font-size: 1rem; }
+    html.mobile-app .ct-sub { font-size: 0.82rem; }
+
     /* ==================== MOBILE APP MODE (phones only) ==================== */
     #mobileNav { display: none; }
     html.mobile-app, html.mobile-app body { height: 100%; overflow: hidden; overscroll-behavior: none; -webkit-tap-highlight-color: transparent; }
@@ -3159,7 +3207,8 @@
     html.mobile-app .title-bar { pointer-events: none; cursor: default; border-radius: 0; padding-top: env(safe-area-inset-top, 0px); }
     /* the one visible app screen */
     html.mobile-app #priceWindow.mobile-active, html.mobile-app #stockWindow.mobile-active,
-    html.mobile-app #loadWindow.mobile-active,  html.mobile-app #calcWindow.mobile-active {
+    html.mobile-app #loadWindow.mobile-active,  html.mobile-app #calcWindow.mobile-active,
+    html.mobile-app #contactWindow.mobile-active {
       display: flex !important; flex-direction: column;
       position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important;
       bottom: calc(58px + env(safe-area-inset-bottom, 0px)) !important;
@@ -3180,7 +3229,7 @@
       box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.35);
     }
     html.mobile-app #mobileNav button {
-      flex: 1; border: none; background: transparent; color: #cfe2ff; font: inherit; font-size: 0.68rem; font-weight: 700;
+      flex: 1; min-width: 0; border: none; background: transparent; color: #cfe2ff; font: inherit; font-size: 0.62rem; font-weight: 700;
       display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; padding: 4px 0; cursor: pointer;
     }
     html.mobile-app #mobileNav button .mn-icon { font-size: 1.35rem; line-height: 1; }
@@ -4099,6 +4148,43 @@
     </div>
   </div>
 
+  <!-- CONTACTS -->
+  <div class="window window-contact" id="contactWindow">
+    <div class="title-bar" id="contactTitleBar">
+      <div class="title-text"><span>📇</span> Contacts <span class="ct-count" id="ctCount">0</span></div>
+      <div class="caption-buttons">
+        <div class="caption-btn minimize" data-minimize="contactWindow" title="Minimize">_</div>
+        <div class="caption-btn maximize" data-maximize="contactWindow" title="Maximize">□</div>
+        <div class="caption-btn close" data-close="contactWindow" title="Close (remove from taskbar)">✕</div>
+      </div>
+    </div>
+    <div class="window-content ct-content">
+      <div class="ct-bar">
+        <input type="search" id="ctSearch" class="ct-input" placeholder="🔍 Search…" title="Search by name, section or mobile" autocomplete="off">
+        <select id="ctSection" class="ct-input" title="Filter by section"><option value="">All sections</option></select>
+        <button class="aero-btn success ct-toggle" id="ctToggleForm" type="button"><span>➕</span> Add</button>
+      </div>
+      <div class="ct-form" id="ctForm">
+        <div class="ct-row">
+          <label>👤 Name <input type="text" id="ctName" class="ct-input" maxlength="60" placeholder="Full name" autocomplete="off"></label>
+        </div>
+        <div class="ct-row">
+          <label>🏷️ Section <input type="text" id="ctSectionInput" class="ct-input" maxlength="40" list="ctSectionList" placeholder="e.g. Sales" autocomplete="off"></label>
+          <label>📱 Mobile <input type="tel" id="ctMobile" class="ct-input" maxlength="20" placeholder="e.g. 98765 43210" inputmode="tel" autocomplete="off"></label>
+        </div>
+        <datalist id="ctSectionList"></datalist>
+        <div class="ct-actions-row">
+          <label class="ct-cc" title="Added to numbers typed without a + country code (needed for WhatsApp)">🌍 Country code
+            <input type="text" id="ctCC" class="ct-input" maxlength="4" inputmode="numeric" placeholder="91"></label>
+          <span class="ct-status" id="ctStatus"></span>
+          <button class="aero-btn" id="ctCancelBtn" type="button" style="display:none;">Cancel</button>
+          <button class="aero-btn success" id="ctAddBtn" type="button"><span>➕</span> Add Contact</button>
+        </div>
+      </div>
+      <div class="ct-list" id="ctList"></div>
+    </div>
+  </div>
+
   <template id="windowModalTemplate">
     <div class="window-modal-overlay">
       <div class="window-modal">
@@ -4236,6 +4322,10 @@
       <span class="tb-icon">🔔</span>
       <span class="tb-label">Reminders</span>
     </div>
+    <div class="taskbar-item" id="taskbarContact" data-restore="contactWindow" style="display:none;">
+      <span class="tb-icon">📇</span>
+      <span class="tb-label">Contacts</span>
+    </div>
     <div class="taskbar-item" id="taskbarSettings" data-restore="settingsWindow" style="display:none;">
       <span class="tb-icon">⚙️</span>
       <span class="tb-label">Settings</span>
@@ -4258,6 +4348,7 @@
     <button type="button" data-mtab="stockWindow"><span class="mn-icon">📋</span><span>Stock List</span></button>
     <button type="button" data-mtab="loadWindow"><span class="mn-icon">🚚</span><span>Load Calc</span></button>
     <button type="button" data-mtab="calcWindow"><span class="mn-icon">📦</span><span>Packing Calc</span></button>
+    <button type="button" data-mtab="contactWindow"><span class="mn-icon">📇</span><span>Contacts</span></button>
   </nav>
 
   <div class="desktop-context-menu" id="desktopContextMenu">
@@ -5729,8 +5820,10 @@
       makeDraggable(calcWindow, calcTitleBar);
       makeDraggable(numberWordWindow, numberWordTitleBar);
       const reminderWindow = document.getElementById('reminderWindow');
+      const contactWindow = document.getElementById('contactWindow');
       makeDraggable(rateWindow, rateTitleBar);
       makeDraggable(reminderWindow, document.getElementById('reminderTitleBar'));
+      makeDraggable(contactWindow, document.getElementById('contactTitleBar'));
       makeDraggable(priceWindow, priceTitleBar);
       makeDraggable(loadWindow, loadTitleBar);
       makeDraggable(cashWindow, cashTitleBar);
@@ -5740,12 +5833,13 @@
       makeDraggable(settingsWindow, settingsTitleBar);
       makeDraggable(stockWindow, stockTitleBar);
 
-      [calcWindow, numberWordWindow, priceWindow, loadWindow, cashWindow, notepadWindow, vehicleWindow, invoiceWindow, stockWindow, settingsWindow, rateWindow, reminderWindow].forEach(addResizeHandles);
+      [calcWindow, numberWordWindow, priceWindow, loadWindow, cashWindow, notepadWindow, vehicleWindow, invoiceWindow, stockWindow, settingsWindow, rateWindow, reminderWindow, contactWindow].forEach(addResizeHandles);
 
       calcWindow.addEventListener('mousedown', () => bringToFront(calcWindow));
       numberWordWindow.addEventListener('mousedown', () => bringToFront(numberWordWindow));
       rateWindow.addEventListener('mousedown', () => bringToFront(rateWindow));
       reminderWindow.addEventListener('mousedown', () => bringToFront(reminderWindow));
+      contactWindow.addEventListener('mousedown', () => bringToFront(contactWindow));
       priceWindow.addEventListener('mousedown', () => bringToFront(priceWindow));
       loadWindow.addEventListener('mousedown', () => bringToFront(loadWindow));
       cashWindow.addEventListener('mousedown', () => bringToFront(cashWindow));
@@ -5775,6 +5869,7 @@
         numberWordWindow: { minimized: false, maximized: false, origRect: null },
         rateWindow: { minimized: false, maximized: false, origRect: null },
         reminderWindow: { minimized: false, maximized: false, origRect: null },
+        contactWindow: { minimized: false, maximized: false, origRect: null },
         priceWindow: { minimized: false, maximized: false, origRect: null },
         loadWindow: { minimized: false, maximized: false, origRect: null },
         cashWindow: { minimized: false, maximized: false, origRect: null },
@@ -9704,7 +9799,8 @@
         { id: 'cashWindow', icon: '💵', name: 'Cash Collection', desc: 'Record cash collections' },
         { id: 'vehicleWindow', icon: '🚛', name: 'Vehicle Manager', desc: 'Manage fleet & documents' },
         { id: 'invoiceWindow', icon: '🧾', name: 'Invoice', desc: 'Create and manage invoices' },
-        { id: 'stockWindow', icon: '📋', name: 'Stock List', desc: 'Track stock levels' }
+        { id: 'stockWindow', icon: '📋', name: 'Stock List', desc: 'Track stock levels' },
+        { id: 'contactWindow', icon: '📇', name: 'Contacts', desc: 'Call & WhatsApp your contacts' }
       ];
 
       // RIGHT panel: quick links + Settings + utilities
@@ -9896,10 +9992,11 @@
         const tbStock = document.getElementById('taskbarStock');
         const tbRate = document.getElementById('taskbarRate');
         const tbReminder = document.getElementById('taskbarReminder');
+        const tbContact = document.getElementById('taskbarContact');
         [
           ['calcWindow', tbCalc], ['numberWordWindow', tbNumberWord], ['priceWindow', tbPrice],
           ['loadWindow', tbLoad], ['cashWindow', tbCash], ['notepadWindow', tbNotepad],
-          ['vehicleWindow', tbVehicle], ['invoiceWindow', tbInvoice], ['stockWindow', tbStock], ['settingsWindow', tbSettings], ['rateWindow', tbRate], ['reminderWindow', tbReminder]
+          ['vehicleWindow', tbVehicle], ['invoiceWindow', tbInvoice], ['stockWindow', tbStock], ['settingsWindow', tbSettings], ['rateWindow', tbRate], ['reminderWindow', tbReminder], ['contactWindow', tbContact]
         ].forEach(([id, tb]) => {
           const state = windowState[id];
           if (tb && tb.style.display !== 'none') {
@@ -9931,6 +10028,7 @@
         if (wasClosed || (!winEl.style.left && !winEl.style.top)) centerWindow(winEl);
         bringToFront(winEl);
         updateTaskbar();
+        if (winId === 'contactWindow') { renderContacts(); if (!document.documentElement.classList.contains('mobile-app')) setTimeout(() => { const t = document.getElementById('ctSearch'); if (t) t.focus(); }, 50); }
         if (winId === 'reminderWindow') { renderReminders(); setTimeout(() => { const t = document.getElementById('remTitle'); if (t) t.focus(); }, 50); }
         if (winId === 'numberWordWindow') {
           initReceiptSuggest();
@@ -10393,9 +10491,182 @@
       remResetForm();
       renderReminders();
 
+      // ==================== CONTACTS (name, section, mobile + Call / WhatsApp) ====================
+      const CONTACTS_KEY = 'contacts';
+      const CT_CACHE_KEY = 'contacts_cache';
+      let contacts = [];
+      let ctCC = '91';                       // default country code for numbers typed without "+"
+      let ctEditingId = null;
+      const ctEl = id => document.getElementById(id);
+      const ctIsPhoneUI = () => document.documentElement.classList.contains('mobile-app');
+
+      // number -> international digits (used for tel: and wa.me)
+      function ctDigits(mobile) {
+        const raw = String(mobile || '').trim();
+        let d = raw.replace(/\D/g, '');
+        if (!d) return '';
+        if (raw.startsWith('+')) return d;
+        if (d.startsWith('00')) return d.slice(2);
+        d = d.replace(/^0+/, '');
+        if (ctCC && d.length <= 10) d = ctCC + d;
+        return d;
+      }
+      function ctNormalize(arr) {
+        if (!Array.isArray(arr)) return [];
+        return arr.filter(c => c && c.id && c.name && c.mobile).map(c => ({
+          id: String(c.id), name: String(c.name), section: c.section ? String(c.section) : '', mobile: String(c.mobile)
+        }));
+      }
+      function setCtStatus(text, kind) {
+        const el = ctEl('ctStatus');
+        if (!el) return;
+        el.textContent = text || ''; el.className = 'ct-status' + (kind ? ' ' + kind : '');
+        el.title = kind === 'err' ? text : '';
+      }
+      async function ctPersist() {
+        const payload = JSON.stringify({ cc: ctCC, contacts });
+        try { localStorage.setItem(CT_CACHE_KEY, payload); } catch (e) {}
+        setCtStatus('Saving…');
+        try {
+          const { error } = await supabase.from('app_settings').upsert({
+            setting_key: CONTACTS_KEY, setting_value: payload, updated_at: new Date().toISOString()
+          }, { onConflict: 'setting_key' });
+          if (error) throw error;
+          setCtStatus('✓ Saved to database', 'ok');
+        } catch (err) {
+          console.warn('Could not save contacts:', err);
+          setCtStatus('⚠ Saved on this device only — DB error: ' + (err.message || err), 'err');
+        }
+      }
+      function ctApply(parsed) {
+        if (Array.isArray(parsed)) { contacts = ctNormalize(parsed); return; }
+        if (parsed && typeof parsed === 'object') {
+          if (typeof parsed.cc === 'string' && /^\d{1,4}$/.test(parsed.cc)) ctCC = parsed.cc;
+          contacts = ctNormalize(parsed.contacts);
+        }
+      }
+      async function loadContacts() {
+        try { const c = localStorage.getItem(CT_CACHE_KEY); if (c) ctApply(JSON.parse(c)); } catch (e) {}
+        renderContacts();
+        try {
+          const result = await withTimeout(
+            supabase.from('app_settings').select('setting_value').eq('setting_key', CONTACTS_KEY).maybeSingle(), 3000);
+          if (result && result.data && result.data.setting_value) {
+            ctApply(JSON.parse(result.data.setting_value));
+            try { localStorage.setItem(CT_CACHE_KEY, JSON.stringify({ cc: ctCC, contacts })); } catch (e) {}
+          }
+        } catch (err) { console.warn('Could not load contacts:', err.message); }
+        renderContacts();
+      }
+
+      function ctResetForm() {
+        ctEditingId = null;
+        ctEl('ctName').value = ''; ctEl('ctSectionInput').value = ''; ctEl('ctMobile').value = '';
+        ctEl('ctCC').value = ctCC;
+        ctEl('ctAddBtn').innerHTML = '<span>➕</span> Add Contact';
+        ctEl('ctCancelBtn').style.display = 'none';
+        ctEl('contactWindow').classList.remove('show-form');
+      }
+      function ctStartEdit(id) {
+        const c = contacts.find(x => x.id === id);
+        if (!c) return;
+        ctEditingId = id;
+        ctEl('ctName').value = c.name; ctEl('ctSectionInput').value = c.section; ctEl('ctMobile').value = c.mobile;
+        ctEl('ctAddBtn').innerHTML = '<span>💾</span> Update Contact';
+        ctEl('ctCancelBtn').style.display = '';
+        ctEl('contactWindow').classList.add('show-form');
+        renderContacts();
+        ctEl('ctName').focus();
+        const list = ctEl('ctList'); if (list) list.scrollTop = 0;
+      }
+      function ctSubmit() {
+        const name = ctEl('ctName').value.trim();
+        const section = ctEl('ctSectionInput').value.trim();
+        const mobile = ctEl('ctMobile').value.trim();
+        if (!name) { setCtStatus('⚠ Enter the name', 'err'); ctEl('ctName').focus(); return; }
+        if (mobile.replace(/\D/g, '').length < 7) { setCtStatus('⚠ Enter a valid mobile number', 'err'); ctEl('ctMobile').focus(); return; }
+        if (ctEditingId) {
+          const c = contacts.find(x => x.id === ctEditingId);
+          if (c) Object.assign(c, { name, section, mobile });
+        } else {
+          contacts.push({ id: 'c' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), name, section, mobile });
+        }
+        ctResetForm();
+        renderContacts();
+        ctPersist();
+      }
+      async function ctDelete(id) {
+        const c = contacts.find(x => x.id === id);
+        if (!c) return;
+        const ok = await showConfirm({ title: '🗑️ Delete Contact', message: `Delete "${c.name}"?`, parentWindow: ctEl('contactWindow') });
+        if (!ok) return;
+        contacts = contacts.filter(x => x.id !== id);
+        if (ctEditingId === id) ctResetForm();
+        renderContacts(); ctPersist();
+      }
+
+      function ctHue(name) { let h = 0; for (const ch of name) h = (h * 31 + ch.charCodeAt(0)) % 360; return h; }
+      function ctItemHtml(c) {
+        const digits = ctDigits(c.mobile);
+        const initial = escapeHtml(c.name.trim().charAt(0).toUpperCase() || '?');
+        return `<div class="ct-item${ctEditingId === c.id ? ' editing' : ''}" data-id="${escapeHtml(c.id)}">
+          <div class="ct-avatar" style="background:hsl(${ctHue(c.name)},55%,42%)">${initial}</div>
+          <div class="ct-main">
+            <div class="ct-name">${escapeHtml(c.name)}</div>
+            <div class="ct-sub">${c.section ? `<span class="ct-sec">${escapeHtml(c.section)}</span>` : ''}<span class="ct-num">📱 ${escapeHtml(c.mobile)}</span></div>
+          </div>
+          <div class="ct-actions">
+            <a class="ct-btn call" href="tel:+${digits}" title="Call ${escapeHtml(c.name)}">📞 Call</a>
+            <a class="ct-btn wa" href="https://wa.me/${digits}" target="_blank" rel="noopener" title="WhatsApp ${escapeHtml(c.name)}">💬 WhatsApp</a>
+            <button class="ct-icon-btn" type="button" data-act="edit" title="Edit">✏️</button>
+            <button class="ct-icon-btn" type="button" data-act="del" title="Delete">🗑️</button>
+          </div>
+        </div>`;
+      }
+      function renderContacts() {
+        const list = ctEl('ctList');
+        if (!list) return;
+        const sections = [...new Set(contacts.map(c => c.section).filter(Boolean))].sort((a, b) => a.localeCompare(b));
+        const sel = ctEl('ctSection'), cur = sel.value;
+        sel.innerHTML = '<option value="">All sections</option>' + sections.map(x => `<option value="${escapeHtml(x)}">${escapeHtml(x)}</option>`).join('');
+        sel.value = sections.includes(cur) ? cur : '';
+        ctEl('ctSectionList').innerHTML = sections.map(x => `<option value="${escapeHtml(x)}"></option>`).join('');
+        const q = ctEl('ctSearch').value.trim().toLowerCase(), qd = q.replace(/\D/g, '');
+        const sec = sel.value;
+        const shown = contacts
+          .filter(c => (!sec || c.section === sec) &&
+            (!q || c.name.toLowerCase().includes(q) || c.section.toLowerCase().includes(q) || (qd && c.mobile.replace(/\D/g, '').includes(qd))))
+          .sort((a, b) => a.name.localeCompare(b.name));
+        ctEl('ctCount').textContent = contacts.length;
+        list.innerHTML = shown.length ? shown.map(ctItemHtml).join('')
+          : `<div class="ct-empty">${contacts.length ? '🔎 No contact matches' : '📇 No contacts yet — add the first one'}</div>`;
+      }
+
+      // wiring
+      ctEl('ctAddBtn').addEventListener('click', ctSubmit);
+      ctEl('ctCancelBtn').addEventListener('click', () => { ctResetForm(); renderContacts(); setCtStatus(''); });
+      ctEl('ctToggleForm').addEventListener('click', () => ctEl('contactWindow').classList.toggle('show-form'));
+      ['ctName', 'ctSectionInput', 'ctMobile'].forEach(id => ctEl(id).addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); ctSubmit(); } }));
+      ctEl('ctSearch').addEventListener('input', renderContacts);
+      ctEl('ctSection').addEventListener('change', renderContacts);
+      ctEl('ctCC').addEventListener('change', () => {
+        const v = ctEl('ctCC').value.replace(/\D/g, '');
+        ctCC = v; ctEl('ctCC').value = v;
+        renderContacts(); ctPersist();
+      });
+      ctEl('ctList').addEventListener('click', e => {
+        const item = e.target.closest('.ct-item');
+        const act = e.target.closest('[data-act]');
+        if (!item || !act) return;
+        if (act.dataset.act === 'edit') ctStartEdit(item.dataset.id);
+        else if (act.dataset.act === 'del') ctDelete(item.dataset.id);
+      });
+      ctResetForm();
+      renderContacts();
+
       // ==================== MOBILE APP MODE ====================
       const IS_MOBILE_APP = document.documentElement.classList.contains('mobile-app');
-      const MOBILE_TABS = ['priceWindow', 'stockWindow', 'loadWindow', 'calcWindow'];
+      const MOBILE_TABS = ['priceWindow', 'stockWindow', 'loadWindow', 'calcWindow', 'contactWindow'];
       function mobileShowTab(winId) {
         if (!MOBILE_TABS.includes(winId)) winId = MOBILE_TABS[0];
         MOBILE_TABS.forEach(id => {
@@ -10419,7 +10690,7 @@
 
       // ==================== INIT ====================
       // Hide all windows BEFORE anything loads — no auto-open
-      ['calcWindow', 'numberWordWindow', 'priceWindow', 'loadWindow', 'cashWindow', 'notepadWindow', 'vehicleWindow', 'invoiceWindow', 'stockWindow', 'settingsWindow', 'rateWindow', 'reminderWindow'].forEach(id => {
+      ['calcWindow', 'numberWordWindow', 'priceWindow', 'loadWindow', 'cashWindow', 'notepadWindow', 'vehicleWindow', 'invoiceWindow', 'stockWindow', 'settingsWindow', 'rateWindow', 'reminderWindow', 'contactWindow'].forEach(id => {
         const winEl = document.getElementById(id);
         if (winEl) {
           winEl.classList.add('minimized');      // .minimized already hides the window; no inline display:none so it can open at any time
@@ -10437,6 +10708,7 @@
         loadCompanySettings(),
         loadUserProfile(),
         loadReminders(),
+        loadContacts(),
         loadUploadedWallpapers(),
         loadWallpaper(),
         loadEmployees(),
@@ -10453,7 +10725,7 @@
       calculateCash();
 
       // Keep all windows closed after loading — user must open them via Start Menu
-      ['calcWindow', 'numberWordWindow', 'priceWindow', 'loadWindow', 'cashWindow', 'notepadWindow', 'vehicleWindow', 'invoiceWindow', 'stockWindow', 'settingsWindow', 'rateWindow', 'reminderWindow'].forEach(id => {
+      ['calcWindow', 'numberWordWindow', 'priceWindow', 'loadWindow', 'cashWindow', 'notepadWindow', 'vehicleWindow', 'invoiceWindow', 'stockWindow', 'settingsWindow', 'rateWindow', 'reminderWindow', 'contactWindow'].forEach(id => {
         const winEl = document.getElementById(id);
         if (winEl) {
           winEl.classList.add('minimized');
