@@ -3069,6 +3069,83 @@
       .size-input-row .size-unit-select { flex: 1 1 auto; }
     }
 
+    /* ==================== REMINDERS (window + desktop gadget) ==================== */
+    .window-reminder { width: 480px; max-width: calc(100vw - 40px); z-index: 22; height: min(600px, calc(100vh - var(--taskbar-height) - 20px)); }
+    .rem-content { display: flex; flex-direction: column; gap: 8px; padding: 10px 12px 10px 12px; min-height: 0; overflow: hidden; }
+    .rem-count { background: linear-gradient(180deg,#3f7ae0 0%,#15419c 100%); color: #fff; border-radius: 3px; padding: 1px 8px; font-size: 0.62rem; font-weight: 700; border: 1px solid #0a2862; margin-left: 6px; }
+    .rem-form { background: linear-gradient(180deg,#ffffff 0%,#f0f6ff 100%); border: 1px solid #a8c8f0; border-radius: 4px; padding: 8px; display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; }
+    .rem-form label { display: flex; flex-direction: column; gap: 2px; font-size: 0.68rem; font-weight: 700; color: #0a2a6a; flex: 1; min-width: 0; }
+    .rem-input { width: 100%; box-sizing: border-box; border: 1px solid #7f9db9; border-radius: 3px; padding: 5px 7px; font: inherit; font-size: 0.82rem; font-weight: 400; color: #000; background: #fff; user-select: text; }
+    .rem-input:focus { outline: none; border-color: #2f6fe0; box-shadow: 0 0 0 2px rgba(63,122,224,0.25); }
+    textarea.rem-input { resize: none; }
+    .rem-row { display: flex; gap: 6px; }
+    .rem-actions { display: flex; gap: 6px; align-items: center; justify-content: flex-end; }
+    .rem-status { margin-right: auto; font-size: 0.66rem; font-weight: 700; color: #0a2862; }
+    .rem-status.ok { color: #1e6b3a; } .rem-status.err { color: #a02020; }
+    .rem-tabs { display: flex; gap: 4px; align-items: center; flex-shrink: 0; flex-wrap: wrap; }
+    .rem-tab { border: 1px solid #7f9db9; background: linear-gradient(180deg,#fff 0%,#e3ecf8 100%); border-radius: 3px; padding: 3px 9px; font: inherit; font-size: 0.7rem; font-weight: 700; color: #0a2a6a; cursor: pointer; }
+    .rem-tab.active { background: linear-gradient(180deg,#3f7ae0 0%,#15419c 100%); color: #fff; border-color: #0a2862; }
+    .rem-tab .n { opacity: 0.8; margin-left: 3px; }
+    .rem-tab.has-overdue .n { color: #ff8a8a; font-weight: 800; }
+    .rem-clear { margin-left: auto; padding: 3px 8px !important; font-size: 0.68rem !important; }
+    .rem-list { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 5px; padding-right: 2px; }
+    .rem-empty { text-align: center; color: #4a6a90; padding: 22px 8px; border: 1px dashed #a8c8f0; border-radius: 4px; background: #f7fafe; font-size: 0.8rem; }
+    .rem-item { display: flex; gap: 8px; align-items: flex-start; padding: 7px 8px; background: #fff; border: 1px solid #b8cce8; border-left: 4px solid #3f7ae0; border-radius: 4px; }
+    .rem-item.st-overdue { border-left-color: #d03030; background: #fff4f4; }
+    .rem-item.st-today { border-left-color: #f0a020; background: #fffaf0; }
+    .rem-item.st-done { border-left-color: #8aa; opacity: 0.65; }
+    .rem-item.st-done .rem-title { text-decoration: line-through; }
+    .rem-item.editing { box-shadow: 0 0 0 2px #3f7ae0; }
+    .rem-check { width: 17px; height: 17px; margin-top: 2px; cursor: pointer; flex-shrink: 0; }
+    .rem-main { flex: 1; min-width: 0; }
+    .rem-title { font-weight: 700; font-size: 0.86rem; color: #0a2a45; word-break: break-word; user-select: text; }
+    .rem-meta { font-size: 0.68rem; color: #3a587d; margin-top: 2px; }
+    .rem-rel { font-weight: 700; } .st-overdue .rem-rel { color: #b02020; } .st-today .rem-rel { color: #b36b00; }
+    .rem-note { font-size: 0.72rem; color: #45586f; margin-top: 3px; white-space: pre-wrap; word-break: break-word; user-select: text; }
+    .rem-btns { display: flex; gap: 3px; flex-shrink: 0; }
+    .rem-btns button { border: 1px solid #a8c8f0; background: #f0f6ff; border-radius: 3px; cursor: pointer; padding: 2px 5px; font-size: 0.8rem; }
+    .rem-btns button:hover { background: #dbe9ff; }
+
+    .reminder-gadget {
+      position: fixed; top: 30px; left: 30px; z-index: 5; width: 250px; border-radius: 14px; overflow: hidden;
+      background: linear-gradient(160deg, rgba(255,255,255,0.98) 0%, rgba(238,244,252,0.96) 45%, rgba(214,228,245,0.96) 100%);
+      border: 1px solid rgba(120,160,220,0.55);
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.7) inset, 0 12px 30px rgba(15,40,90,0.35), 0 2px 6px rgba(15,40,90,0.15);
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      font-family: 'Trebuchet MS', Tahoma, sans-serif; user-select: none;
+    }
+    .reminder-gadget.dragging { opacity: 0.9; box-shadow: 0 18px 44px rgba(15,40,90,0.5); }
+    .rg-head { display: flex; align-items: center; gap: 6px; padding: 7px 8px 7px 11px; cursor: grab; color: #fff; font-weight: 700; font-size: 0.8rem;
+      background: linear-gradient(180deg, #3f7ae0 0%, #15419c 100%); }
+    .rg-head:active { cursor: grabbing; }
+    .rg-title { flex: 1; }
+    .rg-badge { background: #fff; color: #15419c; border-radius: 9px; min-width: 18px; text-align: center; padding: 0 6px; font-size: 0.68rem; font-weight: 800; }
+    .rg-badge.alert { background: #ff5a5a; color: #fff; }
+    .rg-add { border: 1px solid rgba(255,255,255,0.7); background: rgba(255,255,255,0.18); color: #fff; width: 22px; height: 22px; border-radius: 50%; cursor: pointer; font-size: 0.95rem; line-height: 1; padding: 0; }
+    .rg-add:hover { background: rgba(255,255,255,0.35); }
+    .reminder-gadget.rg-hidden { display: none !important; }
+    .rg-summary { display: flex; flex-wrap: wrap; gap: 4px 8px; padding: 6px 11px 0 11px; font-size: 0.66rem; font-weight: 700; color: #3a587d; }
+    .rg-summary .s-over { color: #b02020; } .rg-summary .s-today { color: #b36b00; } .rg-summary .s-up { color: #15419c; }
+    .rg-body { padding: 6px 8px 8px 8px; display: flex; flex-direction: column; gap: 5px; max-height: 330px; overflow-y: auto; }
+    .rg-item-left { font-size: 0.7rem; font-weight: 800; color: #15419c; }
+    .st-today .rg-item-left { color: #b36b00; } .st-overdue .rg-item-left { color: #b02020; }
+    .rg-item-note { font-size: 0.66rem; color: #45586f; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; word-break: break-word; }
+    .rg-item-rep { font-size: 0.62rem; color: #3a587d; }
+    .rg-empty { text-align: center; font-size: 0.72rem; color: #4a6a90; padding: 10px 4px; }
+    .rg-item { display: flex; flex-direction: column; gap: 1px; padding: 5px 7px; border-radius: 5px; border-left: 3px solid #3f7ae0; background: rgba(255,255,255,0.85); cursor: pointer; }
+    .rg-item:hover { background: #fff; }
+    .rg-item.st-overdue { border-left-color: #d03030; background: rgba(255,236,236,0.95); }
+    .rg-item.st-today { border-left-color: #f0a020; background: rgba(255,247,230,0.95); }
+    .rg-item-title { font-size: 0.78rem; font-weight: 700; color: #0a2a45; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .rg-item-time { font-size: 0.66rem; color: #3a587d; }
+    .st-overdue .rg-item-time { color: #b02020; font-weight: 700; }
+    .rg-more { text-align: center; font-size: 0.66rem; color: #3a587d; cursor: pointer; padding: 2px; }
+    .reminder-gadget.ring { animation: remRing 0.6s ease-in-out 6; }
+    @keyframes remRing { 0%,100% { transform: rotate(0); } 20% { transform: rotate(-2.5deg); } 40% { transform: rotate(2.5deg); } 60% { transform: rotate(-1.5deg); } 80% { transform: rotate(1.5deg); } }
+    @media (max-width: 760px) { .reminder-gadget { display: none; } }
+    /* not part of the phone app */
+    html.mobile-app #reminderWindow, html.mobile-app #reminderGadget { display: none !important; }
+
     /* ==================== MOBILE APP MODE (phones only) ==================== */
     #mobileNav { display: none; }
     html.mobile-app, html.mobile-app body { height: 100%; overflow: hidden; overscroll-behavior: none; -webkit-tap-highlight-color: transparent; }
@@ -3169,6 +3246,17 @@
   </div>
 
   <!-- RECEIPT VOUCHER (formerly Number to Word) -->
+  <!-- REMINDER GADGET (desktop) -->
+  <div class="reminder-gadget" id="reminderGadget" title="Drag the header to move">
+    <div class="rg-head" id="rgHead">
+      <span class="rg-title">🔔 Reminders</span>
+      <span class="rg-badge" id="rgBadge">0</span>
+      <button class="rg-add" id="rgAdd" type="button" title="Add reminder">+</button>
+    </div>
+    <div class="rg-summary" id="rgSummary"></div>
+    <div class="rg-body" id="rgBody"></div>
+  </div>
+
   <div class="window-number-word" id="numberWordWindow">
     <div class="title-bar" id="numberWordTitleBar">
       <div class="title-text"><span>🧾</span> Receipt Voucher</div>
@@ -3970,6 +4058,47 @@
   </div>
 
   <!-- IN-WINDOW MODAL TEMPLATE -->
+  <!-- REMINDERS -->
+  <div class="window window-reminder" id="reminderWindow">
+    <div class="title-bar" id="reminderTitleBar">
+      <div class="title-text"><span>🔔</span> Reminders <span class="rem-count" id="remCount">0</span></div>
+      <div class="caption-buttons">
+        <div class="caption-btn minimize" data-minimize="reminderWindow" title="Minimize">_</div>
+        <div class="caption-btn maximize" data-maximize="reminderWindow" title="Maximize">□</div>
+        <div class="caption-btn close" data-close="reminderWindow" title="Close (remove from taskbar)">✕</div>
+      </div>
+    </div>
+    <div class="window-content rem-content">
+      <div class="rem-form">
+        <input type="text" id="remTitle" class="rem-input" maxlength="120" placeholder="What do you need to remember?" autocomplete="off">
+        <div class="rem-row">
+          <label>📅 Date <input type="date" id="remDate" class="rem-input"></label>
+          <label>⏰ Time <input type="time" id="remTime" class="rem-input"></label>
+          <label>🔁 Repeat
+            <select id="remRepeat" class="rem-input">
+              <option value="none">Never</option><option value="daily">Daily</option><option value="weekly">Weekly</option>
+              <option value="monthly">Monthly</option><option value="yearly">Yearly</option>
+            </select>
+          </label>
+        </div>
+        <textarea id="remNote" class="rem-input" rows="2" maxlength="300" placeholder="Note (optional)"></textarea>
+        <div class="rem-actions">
+          <span class="rem-status" id="remStatus"></span>
+          <button class="aero-btn" id="remCancelBtn" type="button" style="display:none;">Cancel</button>
+          <button class="aero-btn success" id="remAddBtn" type="button"><span>➕</span> Add Reminder</button>
+        </div>
+      </div>
+      <div class="rem-tabs" id="remTabs">
+        <button class="rem-tab active" type="button" data-f="active">Active<span class="n">0</span></button>
+        <button class="rem-tab" type="button" data-f="today">Today<span class="n">0</span></button>
+        <button class="rem-tab" type="button" data-f="overdue">Overdue<span class="n">0</span></button>
+        <button class="rem-tab" type="button" data-f="done">Done<span class="n">0</span></button>
+        <button class="aero-btn danger rem-clear" id="remClearDone" type="button" style="display:none;"><span>🧹</span> Clear done</button>
+      </div>
+      <div class="rem-list" id="remList"></div>
+    </div>
+  </div>
+
   <template id="windowModalTemplate">
     <div class="window-modal-overlay">
       <div class="window-modal">
@@ -4102,6 +4231,10 @@
     <div class="taskbar-item" id="taskbarRate" data-restore="rateWindow" style="display:none;">
       <span class="tb-icon">🧮</span>
       <span class="tb-label">Rate Calculator</span>
+    </div>
+    <div class="taskbar-item" id="taskbarReminder" data-restore="reminderWindow" style="display:none;">
+      <span class="tb-icon">🔔</span>
+      <span class="tb-label">Reminders</span>
     </div>
     <div class="taskbar-item" id="taskbarSettings" data-restore="settingsWindow" style="display:none;">
       <span class="tb-icon">⚙️</span>
@@ -5595,7 +5728,9 @@
 
       makeDraggable(calcWindow, calcTitleBar);
       makeDraggable(numberWordWindow, numberWordTitleBar);
+      const reminderWindow = document.getElementById('reminderWindow');
       makeDraggable(rateWindow, rateTitleBar);
+      makeDraggable(reminderWindow, document.getElementById('reminderTitleBar'));
       makeDraggable(priceWindow, priceTitleBar);
       makeDraggable(loadWindow, loadTitleBar);
       makeDraggable(cashWindow, cashTitleBar);
@@ -5605,11 +5740,12 @@
       makeDraggable(settingsWindow, settingsTitleBar);
       makeDraggable(stockWindow, stockTitleBar);
 
-      [calcWindow, numberWordWindow, priceWindow, loadWindow, cashWindow, notepadWindow, vehicleWindow, invoiceWindow, stockWindow, settingsWindow, rateWindow].forEach(addResizeHandles);
+      [calcWindow, numberWordWindow, priceWindow, loadWindow, cashWindow, notepadWindow, vehicleWindow, invoiceWindow, stockWindow, settingsWindow, rateWindow, reminderWindow].forEach(addResizeHandles);
 
       calcWindow.addEventListener('mousedown', () => bringToFront(calcWindow));
       numberWordWindow.addEventListener('mousedown', () => bringToFront(numberWordWindow));
       rateWindow.addEventListener('mousedown', () => bringToFront(rateWindow));
+      reminderWindow.addEventListener('mousedown', () => bringToFront(reminderWindow));
       priceWindow.addEventListener('mousedown', () => bringToFront(priceWindow));
       loadWindow.addEventListener('mousedown', () => bringToFront(loadWindow));
       cashWindow.addEventListener('mousedown', () => bringToFront(cashWindow));
@@ -5638,6 +5774,7 @@
         calcWindow: { minimized: false, maximized: false, origRect: null },
         numberWordWindow: { minimized: false, maximized: false, origRect: null },
         rateWindow: { minimized: false, maximized: false, origRect: null },
+        reminderWindow: { minimized: false, maximized: false, origRect: null },
         priceWindow: { minimized: false, maximized: false, origRect: null },
         loadWindow: { minimized: false, maximized: false, origRect: null },
         cashWindow: { minimized: false, maximized: false, origRect: null },
@@ -9577,6 +9714,7 @@
         { id: 'startNumberWord', icon: '🧾', name: 'Receipt Voucher' },
         { id: 'startNotepad', icon: '📝', name: 'Notepad' },
         { id: 'startRate', icon: '🧮', name: 'Rate Calculator' },
+        { id: 'startReminder', icon: '🔔', name: 'Reminders' },
         { id: 'xpReload', icon: '🔄', name: 'Refresh Desktop' },
         { id: 'xpPersonalize', icon: '🎨', name: 'Personalize' }
       ];
@@ -9639,6 +9777,7 @@
           else if (action === 'startNumberWord') { startMenu.classList.remove('open'); restoreWindowFromTaskbar('numberWordWindow'); }
           else if (action === 'startNotepad') { startMenu.classList.remove('open'); restoreWindowFromTaskbar('notepadWindow'); }
           else if (action === 'startRate') { startMenu.classList.remove('open'); restoreWindowFromTaskbar('rateWindow'); }
+          else if (action === 'startReminder') { startMenu.classList.remove('open'); restoreWindowFromTaskbar('reminderWindow'); }
         }
       });
 
@@ -9756,10 +9895,11 @@
         const tbSettings = document.getElementById('taskbarSettings');
         const tbStock = document.getElementById('taskbarStock');
         const tbRate = document.getElementById('taskbarRate');
+        const tbReminder = document.getElementById('taskbarReminder');
         [
           ['calcWindow', tbCalc], ['numberWordWindow', tbNumberWord], ['priceWindow', tbPrice],
           ['loadWindow', tbLoad], ['cashWindow', tbCash], ['notepadWindow', tbNotepad],
-          ['vehicleWindow', tbVehicle], ['invoiceWindow', tbInvoice], ['stockWindow', tbStock], ['settingsWindow', tbSettings], ['rateWindow', tbRate]
+          ['vehicleWindow', tbVehicle], ['invoiceWindow', tbInvoice], ['stockWindow', tbStock], ['settingsWindow', tbSettings], ['rateWindow', tbRate], ['reminderWindow', tbReminder]
         ].forEach(([id, tb]) => {
           const state = windowState[id];
           if (tb && tb.style.display !== 'none') {
@@ -9791,6 +9931,7 @@
         if (wasClosed || (!winEl.style.left && !winEl.style.top)) centerWindow(winEl);
         bringToFront(winEl);
         updateTaskbar();
+        if (winId === 'reminderWindow') { renderReminders(); setTimeout(() => { const t = document.getElementById('remTitle'); if (t) t.focus(); }, 50); }
         if (winId === 'numberWordWindow') {
           initReceiptSuggest();
           renderReceiptVoucher();
@@ -9898,6 +10039,360 @@
       updateClock();
       setInterval(updateClock, 1000);
 
+      // ==================== REMINDERS (window + desktop gadget) ====================
+      const REMINDERS_KEY = 'reminders';
+      const REM_CACHE_KEY = 'reminders_cache';
+      const REM_POS_KEY = 'reminder_gadget_pos';
+      let reminders = [];
+      let remFilter = 'active';
+      let remEditingId = null;
+      const remAlerted = new Set();
+      const remEl = id => document.getElementById(id);
+      const remPad = n => String(n).padStart(2, '0');
+      const remToInput = d => `${d.getFullYear()}-${remPad(d.getMonth() + 1)}-${remPad(d.getDate())}T${remPad(d.getHours())}:${remPad(d.getMinutes())}`;
+      const remFmtDate = d => `${remPad(d.getDate())}/${remPad(d.getMonth() + 1)}/${d.getFullYear()}`;
+      function remFmtTime(d) { let h = d.getHours(); const ap = h >= 12 ? 'PM' : 'AM'; h = h % 12 || 12; return `${remPad(h)}:${remPad(d.getMinutes())} ${ap}`; }
+      const remDue = r => new Date(r.due);
+
+      function remStatus(r) {
+        if (r.done) return 'done';
+        const d = remDue(r), now = new Date();
+        if (d < now) return 'overdue';
+        if (d.toDateString() === now.toDateString()) return 'today';
+        return 'upcoming';
+      }
+      function remRelative(r) {
+        const diff = remDue(r) - new Date();
+        const mins = Math.round(Math.abs(diff) / 60000);
+        let t;
+        if (mins < 1) return 'now';
+        if (mins < 60) t = `${mins} min`;
+        else if (mins < 48 * 60) t = `${Math.round(mins / 60)} h`;
+        else t = `${Math.round(mins / 1440)} days`;
+        return diff >= 0 ? `in ${t}` : `${t} ago`;
+      }
+      function remAdvance(r) {                                  // repeating reminder -> next future occurrence
+        const d = new Date(r.due), now = new Date();
+        let guard = 0;
+        do {
+          if (r.repeat === 'daily') d.setDate(d.getDate() + 1);
+          else if (r.repeat === 'weekly') d.setDate(d.getDate() + 7);
+          else if (r.repeat === 'monthly') d.setMonth(d.getMonth() + 1);
+          else if (r.repeat === 'yearly') d.setFullYear(d.getFullYear() + 1);
+          else break;
+          guard++;
+        } while (d <= now && guard < 1000);
+        r.due = remToInput(d);
+      }
+      function remNormalize(arr) {
+        if (!Array.isArray(arr)) return [];
+        return arr.filter(r => r && r.id && r.title && r.due && !isNaN(new Date(r.due))).map(r => ({
+          id: String(r.id), title: String(r.title), note: r.note ? String(r.note) : '', due: r.due,
+          repeat: ['daily', 'weekly', 'monthly', 'yearly'].includes(r.repeat) ? r.repeat : 'none',
+          done: !!r.done, doneAt: r.doneAt || null
+        }));
+      }
+
+      function setRemStatus(text, kind) {
+        const el = remEl('remStatus');
+        if (!el) return;
+        el.textContent = text || ''; el.className = 'rem-status' + (kind ? ' ' + kind : '');
+        el.title = kind === 'err' ? text : '';
+      }
+
+      async function remPersist() {
+        try { localStorage.setItem(REM_CACHE_KEY, JSON.stringify(reminders)); } catch (e) {}
+        setRemStatus('Saving…');
+        try {
+          const { error } = await supabase.from('app_settings').upsert({
+            setting_key: REMINDERS_KEY, setting_value: JSON.stringify(reminders), updated_at: new Date().toISOString()
+          }, { onConflict: 'setting_key' });
+          if (error) throw error;
+          setRemStatus('✓ Saved to database', 'ok');
+        } catch (err) {
+          console.warn('Could not save reminders:', err);
+          setRemStatus('⚠ Saved on this device only — DB error: ' + (err.message || err), 'err');
+        }
+      }
+
+      async function loadReminders() {
+        try {
+          const cached = localStorage.getItem(REM_CACHE_KEY);
+          if (cached) reminders = remNormalize(JSON.parse(cached));
+        } catch (e) {}
+        renderReminders();
+        try {
+          const result = await withTimeout(
+            supabase.from('app_settings').select('setting_value').eq('setting_key', REMINDERS_KEY).maybeSingle(), 3000);
+          if (result && result.data && result.data.setting_value) {
+            reminders = remNormalize(JSON.parse(result.data.setting_value));
+            try { localStorage.setItem(REM_CACHE_KEY, JSON.stringify(reminders)); } catch (e) {}
+          }
+        } catch (err) { console.warn('Could not load reminders:', err.message); }
+        renderReminders();
+        remCheckDue(true);
+      }
+
+      // ----- window UI -----
+      function remResetForm() {
+        remEditingId = null;
+        const now = new Date(); now.setHours(now.getHours() + 1, 0, 0, 0);
+        remEl('remTitle').value = ''; remEl('remNote').value = ''; remEl('remRepeat').value = 'none';
+        remEl('remDate').value = remToInput(now).slice(0, 10); remEl('remTime').value = remToInput(now).slice(11);
+        remEl('remAddBtn').innerHTML = '<span>➕</span> Add Reminder';
+        remEl('remCancelBtn').style.display = 'none';
+      }
+      function remStartEdit(id) {
+        const r = reminders.find(x => x.id === id);
+        if (!r) return;
+        remEditingId = id;
+        remEl('remTitle').value = r.title; remEl('remNote').value = r.note || ''; remEl('remRepeat').value = r.repeat;
+        remEl('remDate').value = r.due.slice(0, 10); remEl('remTime').value = r.due.slice(11, 16);
+        remEl('remAddBtn').innerHTML = '<span>💾</span> Update Reminder';
+        remEl('remCancelBtn').style.display = '';
+        renderReminders();
+        remEl('remTitle').focus();
+      }
+      function remSubmit() {
+        const title = remEl('remTitle').value.trim();
+        const date = remEl('remDate').value;
+        const time = remEl('remTime').value || '09:00';
+        if (!title) { setRemStatus('⚠ Type what to remember', 'err'); remEl('remTitle').focus(); return; }
+        if (!date) { setRemStatus('⚠ Choose a date', 'err'); remEl('remDate').focus(); return; }
+        const data = { title, note: remEl('remNote').value.trim(), due: `${date}T${time}`, repeat: remEl('remRepeat').value };
+        if (remEditingId) {
+          const r = reminders.find(x => x.id === remEditingId);
+          if (r) { Object.assign(r, data); r.done = false; r.doneAt = null; remAlerted.delete(r.id + '|' + r.due); }
+        } else {
+          reminders.push({ id: 'r' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), ...data, done: false, doneAt: null });
+        }
+        // a reminder created for a time already passed must not ring straight away
+        reminders.forEach(r => { if (!r.done && remDue(r) <= new Date()) remAlerted.add(r.id + '|' + r.due); });
+        remResetForm();
+        renderReminders();
+        remPersist();
+      }
+      function remToggleDone(id) {
+        const r = reminders.find(x => x.id === id);
+        if (!r) return;
+        if (r.repeat !== 'none' && !r.done) {
+          remAdvance(r);
+          showToast(`🔁 Next: ${remFmtDate(remDue(r))} ${remFmtTime(remDue(r))}`);
+        } else {
+          r.done = !r.done; r.doneAt = r.done ? Date.now() : null;
+        }
+        renderReminders(); remPersist();
+      }
+      async function remDelete(id) {
+        const r = reminders.find(x => x.id === id);
+        if (!r) return;
+        const ok = await showConfirm({ title: '🗑️ Delete Reminder', message: `Delete "${r.title}"?`, parentWindow: remEl('reminderWindow') });
+        if (!ok) return;
+        reminders = reminders.filter(x => x.id !== id);
+        if (remEditingId === id) remResetForm();
+        renderReminders(); remPersist();
+      }
+
+      function remItemHtml(r) {
+        const d = remDue(r), st = remStatus(r);
+        const rep = r.repeat !== 'none' ? ` · <span class="rem-rep">🔁 ${r.repeat.charAt(0).toUpperCase() + r.repeat.slice(1)}</span>` : '';
+        return `<div class="rem-item st-${st}${remEditingId === r.id ? ' editing' : ''}" data-id="${escapeHtml(r.id)}">
+          <input type="checkbox" class="rem-check" ${r.done ? 'checked' : ''} title="${r.repeat !== 'none' ? 'Done — go to next repeat' : 'Mark done'}">
+          <div class="rem-main">
+            <div class="rem-title">${escapeHtml(r.title)}</div>
+            <div class="rem-meta">📅 ${remFmtDate(d)} · ⏰ ${remFmtTime(d)}${r.done ? '' : ` · <span class="rem-rel">${remRelative(r)}</span>`}${rep}</div>
+            ${r.note ? `<div class="rem-note">${escapeHtml(r.note)}</div>` : ''}
+          </div>
+          <div class="rem-btns"><button type="button" data-act="edit" title="Edit">✏️</button><button type="button" data-act="del" title="Delete">🗑️</button></div>
+        </div>`;
+      }
+
+      function renderReminders() {
+        const list = remEl('remList');
+        if (!list) return;
+        const today = new Date().toDateString();
+        const active = reminders.filter(r => !r.done).sort((a, b) => remDue(a) - remDue(b));
+        const sets = {
+          active: active,
+          today: active.filter(r => remDue(r).toDateString() === today),
+          overdue: active.filter(r => remStatus(r) === 'overdue'),
+          done: reminders.filter(r => r.done).sort((a, b) => (b.doneAt || 0) - (a.doneAt || 0))
+        };
+        document.querySelectorAll('#remTabs .rem-tab').forEach(t => {
+          const f = t.dataset.f;
+          t.classList.toggle('active', f === remFilter);
+          t.querySelector('.n').textContent = sets[f].length;
+          t.classList.toggle('has-overdue', f === 'overdue' && sets.overdue.length > 0);
+        });
+        remEl('remCount').textContent = active.length;
+        remEl('remClearDone').style.display = (remFilter === 'done' && sets.done.length) ? '' : 'none';
+        const shown = sets[remFilter];
+        const emptyMsg = { active: '🎉 Nothing to remember — add a reminder above', today: 'Nothing due today', overdue: '✅ No overdue reminders', done: 'No completed reminders yet' }[remFilter];
+        list.innerHTML = shown.length ? shown.map(remItemHtml).join('') : `<div class="rem-empty">${emptyMsg}</div>`;
+        renderReminderGadget(active);
+      }
+
+      function remRemaining(r) {                               // "2 d 3 h left" / "1 h 30 min left" / "Overdue by 45 min"
+        const diff = remDue(r) - new Date();
+        let mins = Math.floor(Math.abs(diff) / 60000);
+        const d = Math.floor(mins / 1440); mins -= d * 1440;
+        const h = Math.floor(mins / 60); const m = mins - h * 60;
+        let t;
+        if (d > 0) t = `${d} d${h ? ' ' + h + ' h' : ''}`;
+        else if (h > 0) t = `${h} h${m ? ' ' + m + ' min' : ''}`;
+        else t = m > 0 ? `${m} min` : '';
+        if (diff >= 0) return t ? `⏳ ${t} left` : '⏳ Less than a minute left';
+        return t ? `⚠ Overdue by ${t}` : '⚠ Just now';
+      }
+
+      function renderReminderGadget(active) {
+        const g = remEl('reminderGadget'), body = remEl('rgBody'), badge = remEl('rgBadge'), sum = remEl('rgSummary');
+        if (!g) return;
+        active = active || reminders.filter(r => !r.done).sort((a, b) => remDue(a) - remDue(b));
+        // no reminders -> the gadget is not shown at all
+        const wasHidden = g.classList.contains('rg-hidden');
+        g.classList.toggle('rg-hidden', active.length === 0);
+        if (active.length === 0) return;
+        if (wasHidden) window.dispatchEvent(new Event('resize'));          // re-clamp the position now that it is visible
+
+        const counts = { overdue: 0, today: 0, upcoming: 0 };
+        active.forEach(r => { counts[remStatus(r)]++; });
+        badge.textContent = active.length;
+        badge.classList.toggle('alert', counts.overdue > 0);
+        const bits = [];
+        if (counts.overdue) bits.push(`<span class="s-over">⚠ ${counts.overdue} overdue</span>`);
+        if (counts.today) bits.push(`<span class="s-today">📌 ${counts.today} today</span>`);
+        if (counts.upcoming) bits.push(`<span class="s-up">🗓 ${counts.upcoming} upcoming</span>`);
+        sum.innerHTML = bits.join('');
+
+        const MAX = 4;
+        let html = active.slice(0, MAX).map(r => {
+          const d = remDue(r), st = remStatus(r);
+          const rep = r.repeat !== 'none' ? `<div class="rg-item-rep">🔁 ${r.repeat.charAt(0).toUpperCase() + r.repeat.slice(1)}</div>` : '';
+          return `<div class="rg-item st-${st}" data-id="${escapeHtml(r.id)}">
+            <div class="rg-item-title">${escapeHtml(r.title)}</div>
+            <div class="rg-item-time">📅 ${remFmtDate(d)} · ⏰ ${remFmtTime(d)}</div>
+            <div class="rg-item-left">${remRemaining(r)}</div>
+            ${r.note ? `<div class="rg-item-note">📝 ${escapeHtml(r.note)}</div>` : ''}${rep}
+          </div>`;
+        }).join('');
+        if (active.length > MAX) html += `<div class="rg-more" data-more="1">+ ${active.length - MAX} more…</div>`;
+        body.innerHTML = html;
+      }
+
+      // ----- alarm -----
+      function remBeep() {
+        try {
+          const AC = window.AudioContext || window.webkitAudioContext;
+          const ctx = new AC();
+          [0, 0.25, 0.5].forEach(t => {
+            const o = ctx.createOscillator(), g = ctx.createGain();
+            o.frequency.value = 880; o.connect(g); g.connect(ctx.destination);
+            const t0 = ctx.currentTime + t;
+            g.gain.setValueAtTime(0.0001, t0);
+            g.gain.exponentialRampToValueAtTime(0.25, t0 + 0.02);
+            g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.2);
+            o.start(t0); o.stop(t0 + 0.22);
+          });
+          setTimeout(() => { try { ctx.close(); } catch (e) {} }, 1200);
+        } catch (e) {}
+      }
+      function remCheckDue(initial) {
+        const now = new Date(), fresh = [];
+        reminders.forEach(r => {
+          if (r.done) return;
+          const key = r.id + '|' + r.due;
+          if (remDue(r) <= now && !remAlerted.has(key)) { remAlerted.add(key); fresh.push(r); }
+        });
+        if (!fresh.length) return;
+        if (initial) { showToast(`⏰ ${fresh.length} overdue reminder${fresh.length > 1 ? 's' : ''}`, 'warning'); return; }
+        showToast('🔔 Reminder: ' + fresh.map(r => r.title).join(' · '), 'warning');
+        remBeep();
+        const g = remEl('reminderGadget');
+        g.classList.remove('ring'); void g.offsetWidth; g.classList.add('ring');
+        setTimeout(() => g.classList.remove('ring'), 4000);
+        renderReminders();
+      }
+      if (!document.documentElement.classList.contains('mobile-app')) {
+        setInterval(() => { remCheckDue(false); renderReminders(); }, 15000);   // also refreshes "in 5 min" texts
+      }
+
+      // ----- wiring -----
+      remEl('remAddBtn').addEventListener('click', remSubmit);
+      remEl('remCancelBtn').addEventListener('click', () => { remResetForm(); renderReminders(); setRemStatus(''); });
+      ['remTitle', 'remDate', 'remTime'].forEach(id => remEl(id).addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); remSubmit(); } }));
+      remEl('remTabs').addEventListener('click', e => {
+        const t = e.target.closest('.rem-tab');
+        if (!t) return;
+        remFilter = t.dataset.f; renderReminders();
+      });
+      remEl('remClearDone').addEventListener('click', async () => {
+        const ok = await showConfirm({ title: '🧹 Clear Done', message: 'Remove all completed reminders?', confirmLabel: 'Clear', parentWindow: remEl('reminderWindow') });
+        if (!ok) return;
+        reminders = reminders.filter(r => !r.done); renderReminders(); remPersist();
+      });
+      remEl('remList').addEventListener('click', e => {
+        const item = e.target.closest('.rem-item');
+        if (!item) return;
+        const id = item.dataset.id;
+        if (e.target.closest('.rem-check')) { remToggleDone(id); return; }
+        const act = e.target.closest('[data-act]');
+        if (act && act.dataset.act === 'edit') remStartEdit(id);
+        else if (act && act.dataset.act === 'del') remDelete(id);
+      });
+
+      // gadget: open window / edit item / drag
+      (function initReminderGadget() {
+        const g = remEl('reminderGadget'), head = remEl('rgHead');
+        function openWin(editId) {
+          restoreWindowFromTaskbar('reminderWindow');
+          if (editId) { remFilter = 'active'; setTimeout(() => remStartEdit(editId), 60); }
+        }
+        remEl('rgAdd').addEventListener('click', e => { e.stopPropagation(); openWin(); });
+        remEl('rgBody').addEventListener('click', e => {
+          const it = e.target.closest('.rg-item');
+          if (it) openWin(it.dataset.id);
+          else if (e.target.closest('[data-more]')) openWin();
+        });
+        try {
+          const pos = JSON.parse(localStorage.getItem(REM_POS_KEY) || 'null');
+          if (pos && isFinite(pos.left) && isFinite(pos.top)) { g.style.left = pos.left + 'px'; g.style.top = pos.top + 'px'; }
+        } catch (e) {}
+        function clamp() {
+          if (g.classList.contains('rg-hidden') || !g.offsetWidth) return;
+          const r = g.getBoundingClientRect();
+          const l = Math.min(Math.max(0, r.left), Math.max(0, window.innerWidth - r.width));
+          const t = Math.min(Math.max(0, r.top), Math.max(0, window.innerHeight - 60));
+          g.style.left = l + 'px'; g.style.top = t + 'px';
+        }
+        clamp(); window.addEventListener('resize', clamp);
+        let drag = null;
+        head.addEventListener('pointerdown', e => {
+          if (e.target.closest('.rg-add') || e.button > 0) return;
+          const r = g.getBoundingClientRect();
+          drag = { dx: e.clientX - r.left, dy: e.clientY - r.top, moved: false, sx: e.clientX, sy: e.clientY };
+          head.setPointerCapture(e.pointerId);
+        });
+        head.addEventListener('pointermove', e => {
+          if (!drag) return;
+          if (!drag.moved && Math.hypot(e.clientX - drag.sx, e.clientY - drag.sy) < 4) return;
+          drag.moved = true; g.classList.add('dragging');
+          g.style.left = Math.min(Math.max(0, e.clientX - drag.dx), window.innerWidth - g.offsetWidth) + 'px';
+          g.style.top = Math.min(Math.max(0, e.clientY - drag.dy), window.innerHeight - 60) + 'px';
+        });
+        function end() {
+          if (!drag) return;
+          const moved = drag.moved; drag = null; g.classList.remove('dragging');
+          if (moved) { try { localStorage.setItem(REM_POS_KEY, JSON.stringify({ left: parseInt(g.style.left), top: parseInt(g.style.top) })); } catch (e) {} }
+          else openWin();                       // a plain click on the header opens the window
+        }
+        head.addEventListener('pointerup', end);
+        head.addEventListener('pointercancel', () => { drag = null; g.classList.remove('dragging'); });
+      })();
+
+      remResetForm();
+      renderReminders();
+
       // ==================== MOBILE APP MODE ====================
       const IS_MOBILE_APP = document.documentElement.classList.contains('mobile-app');
       const MOBILE_TABS = ['priceWindow', 'stockWindow', 'loadWindow', 'calcWindow'];
@@ -9924,7 +10419,7 @@
 
       // ==================== INIT ====================
       // Hide all windows BEFORE anything loads — no auto-open
-      ['calcWindow', 'numberWordWindow', 'priceWindow', 'loadWindow', 'cashWindow', 'notepadWindow', 'vehicleWindow', 'invoiceWindow', 'stockWindow', 'settingsWindow', 'rateWindow'].forEach(id => {
+      ['calcWindow', 'numberWordWindow', 'priceWindow', 'loadWindow', 'cashWindow', 'notepadWindow', 'vehicleWindow', 'invoiceWindow', 'stockWindow', 'settingsWindow', 'rateWindow', 'reminderWindow'].forEach(id => {
         const winEl = document.getElementById(id);
         if (winEl) {
           winEl.classList.add('minimized');      // .minimized already hides the window; no inline display:none so it can open at any time
@@ -9941,6 +10436,7 @@
       await Promise.race([new Promise(r => setTimeout(r, 6000)), Promise.allSettled([
         loadCompanySettings(),
         loadUserProfile(),
+        loadReminders(),
         loadUploadedWallpapers(),
         loadWallpaper(),
         loadEmployees(),
@@ -9957,7 +10453,7 @@
       calculateCash();
 
       // Keep all windows closed after loading — user must open them via Start Menu
-      ['calcWindow', 'numberWordWindow', 'priceWindow', 'loadWindow', 'cashWindow', 'notepadWindow', 'vehicleWindow', 'invoiceWindow', 'stockWindow', 'settingsWindow', 'rateWindow'].forEach(id => {
+      ['calcWindow', 'numberWordWindow', 'priceWindow', 'loadWindow', 'cashWindow', 'notepadWindow', 'vehicleWindow', 'invoiceWindow', 'stockWindow', 'settingsWindow', 'rateWindow', 'reminderWindow'].forEach(id => {
         const winEl = document.getElementById(id);
         if (winEl) {
           winEl.classList.add('minimized');
