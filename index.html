@@ -3162,7 +3162,17 @@
     .ct-bar { display: flex; gap: 6px; flex-shrink: 0; }
     .ct-bar .ct-input { flex: 1; min-width: 0; }
     .ct-bar select.ct-input { flex: 0 0 38%; }
-    .ct-toggle { display: none; }
+    .ct-banner { display: flex; gap: 8px; align-items: center; justify-content: space-between; flex-shrink: 0; background: #fff4d6; border: 1px solid #e0b040; border-radius: 4px; padding: 6px 8px; font-size: 0.72rem; color: #6a4a00; }
+    .ct-banner .aero-btn { flex-shrink: 0; }
+    .ct-banner-btns { display: flex; gap: 4px; flex-shrink: 0; flex-wrap: wrap; justify-content: flex-end; }
+    .ct-toggle { display: inline-flex; flex-shrink: 0; white-space: nowrap; }
+    .ct-modal-overlay { display: none; position: absolute; inset: 0; z-index: 60; background: rgba(10, 40, 98, 0.45); align-items: center; justify-content: center; padding: 12px; box-sizing: border-box; }
+    .ct-modal-overlay.open { display: flex; }
+    .ct-modal { width: min(440px, 100%); background: #ece9d8; border: 1px solid #0831a0; border-radius: 6px; box-shadow: 0 10px 34px rgba(0,0,0,0.5); overflow: hidden; }
+    .ct-modal-head { display: flex; align-items: center; justify-content: space-between; padding: 7px 10px; color: #fff; font-weight: 700; font-size: 0.9rem; background: linear-gradient(180deg,#3f7ae0 0%,#15419c 100%); }
+    .ct-modal-head button { border: 1px solid rgba(255,255,255,0.7); background: rgba(255,255,255,0.18); color: #fff; width: 24px; height: 24px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; line-height: 1; padding: 0; }
+    .ct-modal-head button:hover { background: #d9442f; }
+    .ct-modal .ct-form { border: none; background: transparent; padding: 12px; gap: 8px; }
     .ct-list { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 5px; padding-right: 2px; }
     .ct-empty { text-align: center; color: #4a6a90; padding: 24px 8px; border: 1px dashed #a8c8f0; border-radius: 4px; background: #f7fafe; font-size: 0.82rem; }
     .ct-item { display: flex; gap: 9px; align-items: center; padding: 7px 8px; background: #fff; border: 1px solid #b8cce8; border-radius: 5px; }
@@ -3182,9 +3192,8 @@
     .ct-icon-btn:hover { background: #dbe9ff; }
 
     /* ---- Contacts on phones ---- */
-    html.mobile-app .ct-toggle { display: inline-flex; flex-shrink: 0; }
-    html.mobile-app #contactWindow .ct-form { display: none; }
-    html.mobile-app #contactWindow.show-form .ct-form { display: flex; }
+    html.mobile-app .ct-modal-overlay { align-items: flex-start; overflow-y: auto; }
+    html.mobile-app .ct-modal { margin-top: 4px; }
     html.mobile-app .ct-row { flex-wrap: wrap; }
     html.mobile-app .ct-item { flex-wrap: wrap; padding: 10px; gap: 8px 10px; }
     html.mobile-app .ct-actions { width: 100%; }
@@ -4162,8 +4171,20 @@
       <div class="ct-bar">
         <input type="search" id="ctSearch" class="ct-input" placeholder="🔍 Search…" title="Search by name, section or mobile" autocomplete="off">
         <select id="ctSection" class="ct-input" title="Filter by section"><option value="">All sections</option></select>
-        <button class="aero-btn success ct-toggle" id="ctToggleForm" type="button"><span>➕</span> Add</button>
+        <button class="aero-btn success ct-toggle" id="ctToggleForm" type="button"><span>➕</span> New</button>
       </div>
+      <div class="ct-banner" id="ctBanner" style="display:none;">
+        <span id="ctBannerMsg"></span>
+        <span class="ct-banner-btns">
+          <button class="aero-btn" id="ctRetry" type="button"><span>🔄</span> Retry</button>
+          <button class="aero-btn" id="ctCopySql" type="button"><span>📋</span> Copy SQL</button>
+        </span>
+      </div>
+      <div class="ct-list" id="ctList"></div>
+    </div>
+    <div class="ct-modal-overlay" id="ctModal">
+      <div class="ct-modal" role="dialog" aria-modal="true" aria-labelledby="ctModalTitle">
+        <div class="ct-modal-head"><span id="ctModalTitle">➕ New Contact</span><button type="button" id="ctModalClose" title="Close">✕</button></div>
       <div class="ct-form" id="ctForm">
         <div class="ct-row">
           <label>👤 Name <input type="text" id="ctName" class="ct-input" maxlength="60" placeholder="Full name" autocomplete="off"></label>
@@ -4177,11 +4198,11 @@
           <label class="ct-cc" title="Added to numbers typed without a + country code (needed for WhatsApp)">🌍 Country code
             <input type="text" id="ctCC" class="ct-input" maxlength="4" inputmode="numeric" placeholder="91"></label>
           <span class="ct-status" id="ctStatus"></span>
-          <button class="aero-btn" id="ctCancelBtn" type="button" style="display:none;">Cancel</button>
+          <button class="aero-btn" id="ctCancelBtn" type="button">Cancel</button>
           <button class="aero-btn success" id="ctAddBtn" type="button"><span>➕</span> Add Contact</button>
         </div>
       </div>
-      <div class="ct-list" id="ctList"></div>
+      </div>
     </div>
   </div>
 
@@ -10492,11 +10513,26 @@
       renderReminders();
 
       // ==================== CONTACTS (name, section, mobile + Call / WhatsApp) ====================
-      const CONTACTS_KEY = 'contacts';
-      const CT_CACHE_KEY = 'contacts_cache';
+      const CT_TABLE = 'contacts';                 // real Supabase table: id, name, section, mobile, created_at
+      const CT_CACHE_KEY = 'contacts_cache_v2';     // device copy (array of contacts)
+      const CT_LEGACY_KEY = 'contacts_cache';       // older versions kept everything in one JSON value
+      const CT_LEGACY_DB_KEY = 'contacts';          // ... in app_settings under this key
+      const CT_CC_KEY = 'contact_country_code';
+      const CT_SQL = `create table if not exists public.contacts (
+  id uuid primary key default gen_random_uuid(),
+  name text not null,
+  section text,
+  mobile text not null,
+  created_at timestamptz not null default now()
+);
+alter table public.contacts enable row level security;
+drop policy if exists "contacts_open_access" on public.contacts;
+create policy "contacts_open_access" on public.contacts
+  for all to anon, authenticated using (true) with check (true);`;
       let contacts = [];
       let ctCC = '91';                       // default country code for numbers typed without "+"
       let ctEditingId = null;
+      let ctDbOk = false;                    // true once the contacts table answered
       const ctEl = id => document.getElementById(id);
       const ctIsPhoneUI = () => document.documentElement.classList.contains('mobile-app');
 
@@ -10517,46 +10553,112 @@
           id: String(c.id), name: String(c.name), section: c.section ? String(c.section) : '', mobile: String(c.mobile)
         }));
       }
+      const ctIsLocalId = id => String(id).startsWith('local-');
+      const ctKey = c => c.name.trim().toLowerCase() + '|' + c.mobile.replace(/\D/g, '');
       function setCtStatus(text, kind) {
         const el = ctEl('ctStatus');
         if (!el) return;
         el.textContent = text || ''; el.className = 'ct-status' + (kind ? ' ' + kind : '');
         el.title = kind === 'err' ? text : '';
       }
-      async function ctPersist() {
-        const payload = JSON.stringify({ cc: ctCC, contacts });
-        try { localStorage.setItem(CT_CACHE_KEY, payload); } catch (e) {}
-        setCtStatus('Saving…');
-        try {
-          const { error } = await supabase.from('app_settings').upsert({
-            setting_key: CONTACTS_KEY, setting_value: payload, updated_at: new Date().toISOString()
-          }, { onConflict: 'setting_key' });
-          if (error) throw error;
-          setCtStatus('✓ Saved to database', 'ok');
-        } catch (err) {
-          console.warn('Could not save contacts:', err);
-          setCtStatus('⚠ Saved on this device only — DB error: ' + (err.message || err), 'err');
-        }
+      // kind: null (hide) | 'missing' | 'policy' | 'offline' | 'error'
+      function ctShowBanner(kind, msg) {
+        const box = ctEl('ctBanner');
+        if (!kind) { box.style.display = 'none'; return; }
+        const text = {
+          missing: '⚠ The "contacts" table does not exist in the database yet. Run the SQL once in Supabase (SQL Editor). Until then contacts stay on this device only.',
+          policy: '⚠ The database refused access to the "contacts" table. Run the SQL once in Supabase (SQL Editor) — it also adds the access policy. Until then contacts stay on this device only.',
+          offline: '⚠ Could not reach the database (slow or offline). Contacts shown are from this device — press Retry.',
+          error: '⚠ Database problem: ' + (msg || 'unknown error') + ' — contacts stay on this device until it works.'
+        }[kind];
+        ctEl('ctBannerMsg').textContent = text;
+        ctEl('ctCopySql').style.display = (kind === 'missing' || kind === 'policy') ? '' : 'none';
+        box.style.display = '';
       }
-      function ctApply(parsed) {
-        if (Array.isArray(parsed)) { contacts = ctNormalize(parsed); return; }
-        if (parsed && typeof parsed === 'object') {
-          if (typeof parsed.cc === 'string' && /^\d{1,4}$/.test(parsed.cc)) ctCC = parsed.cc;
-          contacts = ctNormalize(parsed.contacts);
+      function ctCache() {
+        try { localStorage.setItem(CT_CACHE_KEY, JSON.stringify(contacts)); } catch (e) {}
+        try {
+          if (ctDbOk) localStorage.removeItem(CT_LEGACY_KEY);                       // everything is in the database now
+          else localStorage.setItem(CT_LEGACY_KEY, JSON.stringify({ cc: ctCC, contacts }));   // keep for later import
+        } catch (e) {}
+      }
+      async function ctLegacyContacts() {              // contacts saved by earlier versions (device copy + app_settings blob)
+        let out = [];
+        try {
+          const c = JSON.parse(localStorage.getItem(CT_LEGACY_KEY) || 'null');
+          if (c) out = out.concat(ctNormalize(Array.isArray(c) ? c : c.contacts));
+        } catch (e) {}
+        try {
+          const r = await withTimeout(supabase.from('app_settings').select('setting_value').eq('setting_key', CT_LEGACY_DB_KEY).maybeSingle(), 3000);
+          if (r && r.data && r.data.setting_value) {
+            const v = JSON.parse(r.data.setting_value);
+            out = out.concat(ctNormalize(Array.isArray(v) ? v : v.contacts));
+          }
+        } catch (e) {}
+        return out;
+      }
+      async function ctImportLegacy(existing) {        // copy old contacts into the table (skipping ones already there)
+        const have = new Set(existing.map(ctKey));
+        const todo = [];
+        (await ctLegacyContacts()).forEach(c => { const k = ctKey(c); if (!have.has(k)) { have.add(k); todo.push(c); } });
+        if (todo.length) {
+          const { data, error } = await supabase.from(CT_TABLE)
+            .insert(todo.map(c => ({ name: c.name, section: c.section || null, mobile: c.mobile }))).select();
+          if (error) throw error;
+          existing = existing.concat(ctNormalize(data));
+          showToast(`📇 ${todo.length} contact${todo.length > 1 ? 's' : ''} moved to the database`);
         }
+        try { localStorage.removeItem(CT_LEGACY_KEY); } catch (e) {}
+        try { await supabase.from('app_settings').delete().eq('setting_key', CT_LEGACY_DB_KEY); } catch (e) {}
+        return existing;
+      }
+      const ctMissingTable = e => e && (e.code === '42P01' || e.code === 'PGRST205' || /does not exist|schema cache|could not find the table/i.test(e.message || ''));
+      const ctPolicyError = e => e && (e.code === '42501' || /permission denied|row-level security|rls/i.test(e.message || ''));
+      let ctSyncing = false;
+      // Reads the table, imports old contacts, shows the right banner. Returns true when the database is usable.
+      async function ctSyncFromDb() {
+        if (ctSyncing) return ctDbOk;
+        ctSyncing = true;
+        try {
+          const ask = async () => {
+            try { return await withTimeout(supabase.from(CT_TABLE).select('*').order('name', { ascending: true }), 12000); }
+            catch (e) { return null; }
+          };
+          let res = await ask();                       // withTimeout gives null when the server is too slow
+          if (!res) res = await ask();
+          if (!res) { ctDbOk = false; ctShowBanner('offline'); return false; }
+          if (res.error) {
+            console.warn('Contacts table problem:', res.error);
+            ctDbOk = false;
+            ctShowBanner(ctMissingTable(res.error) ? 'missing' : ctPolicyError(res.error) ? 'policy' : 'error', res.error.message);
+            return false;
+          }
+          ctDbOk = true;
+          let rows = ctNormalize(res.data);
+          try { rows = await ctImportLegacy(rows); }
+          catch (err) { console.warn('Could not import old contacts:', err); showToast('⚠️ Could not move old contacts to the database: ' + (err.message || err), 'warning'); }
+          contacts = rows;
+          ctShowBanner(null);
+          ctCache();
+          renderContacts();
+          return true;
+        } finally { ctSyncing = false; }
       }
       async function loadContacts() {
-        try { const c = localStorage.getItem(CT_CACHE_KEY); if (c) ctApply(JSON.parse(c)); } catch (e) {}
+        try { const c = JSON.parse(localStorage.getItem(CT_CACHE_KEY) || 'null'); if (Array.isArray(c)) contacts = ctNormalize(c); } catch (e) {}
+        try { const cc = localStorage.getItem(CT_CC_KEY); if (cc && /^\d{1,4}$/.test(cc)) ctCC = cc; } catch (e) {}
+        ctEl('ctCC').value = ctCC;
         renderContacts();
-        try {
-          const result = await withTimeout(
-            supabase.from('app_settings').select('setting_value').eq('setting_key', CONTACTS_KEY).maybeSingle(), 3000);
-          if (result && result.data && result.data.setting_value) {
-            ctApply(JSON.parse(result.data.setting_value));
-            try { localStorage.setItem(CT_CACHE_KEY, JSON.stringify({ cc: ctCC, contacts })); } catch (e) {}
-          }
-        } catch (err) { console.warn('Could not load contacts:', err.message); }
-        renderContacts();
+        // country code is shared through app_settings (best effort), then the contacts table is read in the background
+        (async () => {
+          try {
+            const r = await withTimeout(supabase.from('app_settings').select('setting_value').eq('setting_key', CT_CC_KEY).maybeSingle(), 5000);
+            const v = r && r.data && r.data.setting_value;
+            if (v && /^\d{1,4}$/.test(String(v))) { ctCC = String(v); try { localStorage.setItem(CT_CC_KEY, ctCC); } catch (e) {} ctEl('ctCC').value = ctCC; renderContacts(); }
+          } catch (e) {}
+          const ok = await ctSyncFromDb();
+          if (!ok && ctEl('ctBanner').style.display === '' && /Could not reach/.test(ctEl('ctBannerMsg').textContent)) setTimeout(ctSyncFromDb, 20000);
+        })();
       }
 
       function ctResetForm() {
@@ -10564,45 +10666,82 @@
         ctEl('ctName').value = ''; ctEl('ctSectionInput').value = ''; ctEl('ctMobile').value = '';
         ctEl('ctCC').value = ctCC;
         ctEl('ctAddBtn').innerHTML = '<span>➕</span> Add Contact';
-        ctEl('ctCancelBtn').style.display = 'none';
-        ctEl('contactWindow').classList.remove('show-form');
+        ctEl('ctModalTitle').textContent = '➕ New Contact';
+        ctCloseModal();
       }
+      function ctOpenModal() {
+        ctEl('ctModal').classList.add('open');
+        setTimeout(() => ctEl('ctName').focus(), 30);
+      }
+      function ctCloseModal() { ctEl('ctModal').classList.remove('open'); setCtStatus(''); }
       function ctStartEdit(id) {
         const c = contacts.find(x => x.id === id);
         if (!c) return;
         ctEditingId = id;
         ctEl('ctName').value = c.name; ctEl('ctSectionInput').value = c.section; ctEl('ctMobile').value = c.mobile;
         ctEl('ctAddBtn').innerHTML = '<span>💾</span> Update Contact';
-        ctEl('ctCancelBtn').style.display = '';
-        ctEl('contactWindow').classList.add('show-form');
+        ctEl('ctModalTitle').textContent = '✏️ Edit Contact';
         renderContacts();
-        ctEl('ctName').focus();
-        const list = ctEl('ctList'); if (list) list.scrollTop = 0;
+        ctOpenModal();
       }
-      function ctSubmit() {
+      let ctBusy = false;
+      async function ctSubmit() {
+        if (ctBusy) return;
         const name = ctEl('ctName').value.trim();
         const section = ctEl('ctSectionInput').value.trim();
         const mobile = ctEl('ctMobile').value.trim();
         if (!name) { setCtStatus('⚠ Enter the name', 'err'); ctEl('ctName').focus(); return; }
         if (mobile.replace(/\D/g, '').length < 7) { setCtStatus('⚠ Enter a valid mobile number', 'err'); ctEl('ctMobile').focus(); return; }
-        if (ctEditingId) {
-          const c = contacts.find(x => x.id === ctEditingId);
-          if (c) Object.assign(c, { name, section, mobile });
-        } else {
-          contacts.push({ id: 'c' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), name, section, mobile });
+        ctBusy = true;
+        const btn = ctEl('ctAddBtn'), original = btn.innerHTML;
+        btn.disabled = true; btn.innerHTML = '<span>⏳</span> Saving…';
+        setCtStatus('Saving to database…');
+        if (!ctDbOk && !ctEditingId) await ctSyncFromDb();           // maybe the database is reachable now
+        const row = { name, section: section || null, mobile };
+        try {
+          if (ctEditingId) {
+            const c = contacts.find(x => x.id === ctEditingId);
+            if (ctDbOk && !ctIsLocalId(ctEditingId)) {
+              const { error } = await supabase.from(CT_TABLE).update(row).eq('id', ctEditingId);
+              if (error) throw error;
+            }
+            if (c) Object.assign(c, { name, section, mobile });
+          } else if (ctDbOk) {
+            const { data, error } = await supabase.from(CT_TABLE).insert([row]).select().single();
+            if (error) throw error;
+            contacts.push({ id: String(data.id), name, section, mobile });
+          } else {
+            contacts.push({ id: 'local-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), name, section, mobile });
+          }
+        } catch (err) {
+          console.warn('Could not save contact:', err);
+          setCtStatus('⚠ Not saved: ' + (err.message || err), 'err');
+          showToast('⚠️ Contact not saved to database: ' + (err.message || err), 'warning');
+          btn.disabled = false; btn.innerHTML = original; ctBusy = false;
+          return;                                          // popup stays open, nothing typed is lost
         }
+        btn.disabled = false; btn.innerHTML = original; ctBusy = false;
+        ctCache();
         ctResetForm();
         renderContacts();
-        ctPersist();
+        if (ctDbOk) showToast('✅ Contact saved to database');
+        else showToast('⚠️ Saved on this device only — the contacts table is missing in the database', 'warning');
       }
       async function ctDelete(id) {
         const c = contacts.find(x => x.id === id);
         if (!c) return;
         const ok = await showConfirm({ title: '🗑️ Delete Contact', message: `Delete "${c.name}"?`, parentWindow: ctEl('contactWindow') });
         if (!ok) return;
+        if (ctDbOk && !ctIsLocalId(id)) {
+          try {
+            const { error } = await supabase.from(CT_TABLE).delete().eq('id', id);
+            if (error) throw error;
+          } catch (err) { showToast('⚠️ Could not delete from database: ' + (err.message || err), 'warning'); return; }
+        }
         contacts = contacts.filter(x => x.id !== id);
         if (ctEditingId === id) ctResetForm();
-        renderContacts(); ctPersist();
+        ctCache(); renderContacts();
+        showToast('🗑️ Contact deleted');
       }
 
       function ctHue(name) { let h = 0; for (const ch of name) h = (h * 31 + ch.charCodeAt(0)) % 360; return h; }
@@ -10644,15 +10783,32 @@
 
       // wiring
       ctEl('ctAddBtn').addEventListener('click', ctSubmit);
-      ctEl('ctCancelBtn').addEventListener('click', () => { ctResetForm(); renderContacts(); setCtStatus(''); });
-      ctEl('ctToggleForm').addEventListener('click', () => ctEl('contactWindow').classList.toggle('show-form'));
+      ctEl('ctCancelBtn').addEventListener('click', () => { ctResetForm(); renderContacts(); });
+      ctEl('ctModalClose').addEventListener('click', () => { ctResetForm(); renderContacts(); });
+      ctEl('ctToggleForm').addEventListener('click', () => { ctResetForm(); ctOpenModal(); });
+      ctEl('ctModal').addEventListener('keydown', e => {
+        if (e.key === 'Escape') { e.stopPropagation(); ctResetForm(); renderContacts(); }
+      });
       ['ctName', 'ctSectionInput', 'ctMobile'].forEach(id => ctEl(id).addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); ctSubmit(); } }));
       ctEl('ctSearch').addEventListener('input', renderContacts);
       ctEl('ctSection').addEventListener('change', renderContacts);
       ctEl('ctCC').addEventListener('change', () => {
         const v = ctEl('ctCC').value.replace(/\D/g, '');
         ctCC = v; ctEl('ctCC').value = v;
-        renderContacts(); ctPersist();
+        try { localStorage.setItem(CT_CC_KEY, v); } catch (e) {}
+        renderContacts();
+        supabase.from('app_settings').upsert({ setting_key: CT_CC_KEY, setting_value: v, updated_at: new Date().toISOString() }, { onConflict: 'setting_key' })
+          .then(r => { if (r && r.error) console.warn('Could not save country code:', r.error.message); });
+      });
+      ctEl('ctRetry').addEventListener('click', async () => {
+        const b = ctEl('ctRetry'); b.disabled = true;
+        const ok = await ctSyncFromDb();
+        b.disabled = false;
+        showToast(ok ? '✅ Connected — contacts are saved in the database' : '⚠️ Still not connected to the contacts table', ok ? undefined : 'warning');
+      });
+      ctEl('ctCopySql').addEventListener('click', async () => {
+        try { await navigator.clipboard.writeText(CT_SQL); showToast('📋 SQL copied — paste it in the Supabase SQL Editor and run it'); }
+        catch (e) { window.prompt('Copy this SQL and run it in the Supabase SQL Editor:', CT_SQL); }
       });
       ctEl('ctList').addEventListener('click', e => {
         const item = e.target.closest('.ct-item');
