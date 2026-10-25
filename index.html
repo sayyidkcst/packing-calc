@@ -3073,6 +3073,10 @@
     .window-reminder { width: 480px; max-width: calc(100vw - 40px); z-index: 22; height: min(600px, calc(100vh - var(--taskbar-height) - 20px)); }
     .rem-content { display: flex; flex-direction: column; gap: 8px; padding: 10px 12px 10px 12px; min-height: 0; overflow: hidden; }
     .rem-count { background: linear-gradient(180deg,#3f7ae0 0%,#15419c 100%); color: #fff; border-radius: 3px; padding: 1px 8px; font-size: 0.62rem; font-weight: 700; border: 1px solid #0a2862; margin-left: 6px; }
+    .rem-bar { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+    .rem-bar .rem-status { margin: 0; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .rem-modal-row { display: flex; gap: 8px; flex-wrap: wrap; }
+    .rem-modal-row .modal-field { flex: 1 1 120px; min-width: 0; }
     .rem-form { background: linear-gradient(180deg,#ffffff 0%,#f0f6ff 100%); border: 1px solid #a8c8f0; border-radius: 4px; padding: 8px; display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; }
     .rem-form label { display: flex; flex-direction: column; gap: 2px; font-size: 0.68rem; font-weight: 700; color: #0a2a6a; flex: 1; min-width: 0; }
     .rem-input { width: 100%; box-sizing: border-box; border: 1px solid #7f9db9; border-radius: 3px; padding: 5px 7px; font: inherit; font-size: 0.82rem; font-weight: 400; color: #000; background: #fff; user-select: text; }
@@ -4127,24 +4131,9 @@
       </div>
     </div>
     <div class="window-content rem-content">
-      <div class="rem-form">
-        <input type="text" id="remTitle" class="rem-input" maxlength="120" placeholder="What do you need to remember?" autocomplete="off">
-        <div class="rem-row">
-          <label>📅 Date <input type="date" id="remDate" class="rem-input"></label>
-          <label>⏰ Time <input type="time" id="remTime" class="rem-input"></label>
-          <label>🔁 Repeat
-            <select id="remRepeat" class="rem-input">
-              <option value="none">Never</option><option value="daily">Daily</option><option value="weekly">Weekly</option>
-              <option value="monthly">Monthly</option><option value="yearly">Yearly</option>
-            </select>
-          </label>
-        </div>
-        <textarea id="remNote" class="rem-input" rows="2" maxlength="300" placeholder="Note (optional)"></textarea>
-        <div class="rem-actions">
-          <span class="rem-status" id="remStatus"></span>
-          <button class="aero-btn" id="remCancelBtn" type="button" style="display:none;">Cancel</button>
-          <button class="aero-btn success" id="remAddBtn" type="button"><span>➕</span> Add Reminder</button>
-        </div>
+      <div class="rem-bar">
+        <button class="aero-btn success" id="remNewBtn" type="button"><span>➕</span> New Reminder</button>
+        <span class="rem-status" id="remStatus"></span>
       </div>
       <div class="rem-tabs" id="remTabs">
         <button class="rem-tab active" type="button" data-f="active">Active<span class="n">0</span></button>
@@ -10050,7 +10039,7 @@
         bringToFront(winEl);
         updateTaskbar();
         if (winId === 'contactWindow') { renderContacts(); if (!document.documentElement.classList.contains('mobile-app')) setTimeout(() => { const t = document.getElementById('ctSearch'); if (t) t.focus(); }, 50); }
-        if (winId === 'reminderWindow') { renderReminders(); setTimeout(() => { const t = document.getElementById('remTitle'); if (t) t.focus(); }, 50); }
+        if (winId === 'reminderWindow') { renderReminders(); }
         if (winId === 'numberWordWindow') {
           initReceiptSuggest();
           renderReceiptVoucher();
@@ -10252,45 +10241,60 @@
         remCheckDue(true);
       }
 
-      // ----- window UI -----
-      function remResetForm() {
-        remEditingId = null;
-        const now = new Date(); now.setHours(now.getHours() + 1, 0, 0, 0);
-        remEl('remTitle').value = ''; remEl('remNote').value = ''; remEl('remRepeat').value = 'none';
-        remEl('remDate').value = remToInput(now).slice(0, 10); remEl('remTime').value = remToInput(now).slice(11);
-        remEl('remAddBtn').innerHTML = '<span>➕</span> Add Reminder';
-        remEl('remCancelBtn').style.display = 'none';
+      // ----- window UI (New / Edit open in a popup) -----
+      function remOpenForm(id) {
+        const existing = id ? reminders.find(x => x.id === id) : null;
+        const isEdit = !!existing;
+        let dDate, dTime;
+        if (isEdit) { dDate = existing.due.slice(0, 10); dTime = existing.due.slice(11, 16); }
+        else { const n = new Date(); n.setHours(n.getHours() + 1, 0, 0, 0); dDate = remToInput(n).slice(0, 10); dTime = remToInput(n).slice(11); }
+        const rep = isEdit ? existing.repeat : 'none';
+        const opt = (v, t) => `<option value="${v}"${rep === v ? ' selected' : ''}>${t}</option>`;
+        const html = `
+          <div class="modal-error" id="remModalError"></div>
+          <div class="modal-field"><label>🔔 What do you need to remember?</label>
+            <div class="input-wrap"><input type="text" id="remTitle" maxlength="120" placeholder="e.g. Pay electricity bill" autocomplete="off" value="${isEdit ? escapeHtml(existing.title) : ''}"></div></div>
+          <div class="rem-modal-row">
+            <div class="modal-field"><label>📅 Date</label><div class="input-wrap"><input type="date" id="remDate" value="${dDate}"></div></div>
+            <div class="modal-field"><label>⏰ Time</label><div class="input-wrap"><input type="time" id="remTime" value="${dTime}"></div></div>
+            <div class="modal-field"><label>🔁 Repeat</label><div class="input-wrap"><select id="remRepeat" style="width:100%;">
+              ${opt('none', 'Never')}${opt('daily', 'Daily')}${opt('weekly', 'Weekly')}${opt('monthly', 'Monthly')}${opt('yearly', 'Yearly')}
+            </select></div></div>
+          </div>
+          <div class="modal-field"><label>📝 Note (optional)</label>
+            <div class="input-wrap"><textarea id="remNote" rows="3" maxlength="300" placeholder="Note (optional)" style="width:100%;box-sizing:border-box;resize:none;font:inherit;">${isEdit ? escapeHtml(existing.note || '') : ''}</textarea></div></div>
+          <div class="modal-actions">
+            <button class="aero-btn" id="modalCancelBtn" type="button">Cancel</button>
+            <button class="aero-btn primary" id="modalSaveBtn" type="button">${isEdit ? '💾 Update Reminder' : '💾 Save Reminder'}</button>
+          </div>`;
+        const overlay = openModal(remEl('reminderWindow'), isEdit ? '✏️ Edit Reminder' : '🔔 New Reminder', html, (content) => {
+          const errEl = content.querySelector('#remModalError');
+          const showErr = (msg, el) => { errEl.textContent = msg; errEl.classList.add('show'); if (el) el.focus(); return false; };
+          errEl.classList.remove('show'); errEl.textContent = '';
+          const titleEl = content.querySelector('#remTitle'), dateEl = content.querySelector('#remDate');
+          const title = titleEl.value.trim(), date = dateEl.value;
+          const time = content.querySelector('#remTime').value || '09:00';
+          if (!title) return showErr('⚠️ Type what to remember.', titleEl);
+          if (!date) return showErr('⚠️ Choose a date.', dateEl);
+          const data = { title, note: content.querySelector('#remNote').value.trim(), due: `${date}T${time}`, repeat: content.querySelector('#remRepeat').value };
+          if (isEdit) {
+            const r = reminders.find(x => x.id === id);
+            if (r) { Object.assign(r, data); r.done = false; r.doneAt = null; remAlerted.delete(r.id + '|' + r.due); }
+          } else {
+            reminders.push({ id: 'r' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), ...data, done: false, doneAt: null });
+          }
+          // a reminder created for a time already passed must not ring straight away
+          reminders.forEach(r => { if (!r.done && remDue(r) <= new Date()) remAlerted.add(r.id + '|' + r.due); });
+          renderReminders();
+          remPersist();
+          return true;
+        });
+        // Enter in a field saves
+        overlay.querySelectorAll('#remTitle, #remDate, #remTime').forEach(inp => inp.addEventListener('keydown', e => {
+          if (e.key === 'Enter') { e.preventDefault(); const sb = overlay.querySelector('#modalSaveBtn'); if (sb) sb.click(); }
+        }));
       }
-      function remStartEdit(id) {
-        const r = reminders.find(x => x.id === id);
-        if (!r) return;
-        remEditingId = id;
-        remEl('remTitle').value = r.title; remEl('remNote').value = r.note || ''; remEl('remRepeat').value = r.repeat;
-        remEl('remDate').value = r.due.slice(0, 10); remEl('remTime').value = r.due.slice(11, 16);
-        remEl('remAddBtn').innerHTML = '<span>💾</span> Update Reminder';
-        remEl('remCancelBtn').style.display = '';
-        renderReminders();
-        remEl('remTitle').focus();
-      }
-      function remSubmit() {
-        const title = remEl('remTitle').value.trim();
-        const date = remEl('remDate').value;
-        const time = remEl('remTime').value || '09:00';
-        if (!title) { setRemStatus('⚠ Type what to remember', 'err'); remEl('remTitle').focus(); return; }
-        if (!date) { setRemStatus('⚠ Choose a date', 'err'); remEl('remDate').focus(); return; }
-        const data = { title, note: remEl('remNote').value.trim(), due: `${date}T${time}`, repeat: remEl('remRepeat').value };
-        if (remEditingId) {
-          const r = reminders.find(x => x.id === remEditingId);
-          if (r) { Object.assign(r, data); r.done = false; r.doneAt = null; remAlerted.delete(r.id + '|' + r.due); }
-        } else {
-          reminders.push({ id: 'r' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), ...data, done: false, doneAt: null });
-        }
-        // a reminder created for a time already passed must not ring straight away
-        reminders.forEach(r => { if (!r.done && remDue(r) <= new Date()) remAlerted.add(r.id + '|' + r.due); });
-        remResetForm();
-        renderReminders();
-        remPersist();
-      }
+      const remStartEdit = id => remOpenForm(id);
       function remToggleDone(id) {
         const r = reminders.find(x => x.id === id);
         if (!r) return;
@@ -10308,14 +10312,13 @@
         const ok = await showConfirm({ title: '🗑️ Delete Reminder', message: `Delete "${r.title}"?`, parentWindow: remEl('reminderWindow') });
         if (!ok) return;
         reminders = reminders.filter(x => x.id !== id);
-        if (remEditingId === id) remResetForm();
         renderReminders(); remPersist();
       }
 
       function remItemHtml(r) {
         const d = remDue(r), st = remStatus(r);
         const rep = r.repeat !== 'none' ? ` · <span class="rem-rep">🔁 ${r.repeat.charAt(0).toUpperCase() + r.repeat.slice(1)}</span>` : '';
-        return `<div class="rem-item st-${st}${remEditingId === r.id ? ' editing' : ''}" data-id="${escapeHtml(r.id)}">
+        return `<div class="rem-item st-${st}" data-id="${escapeHtml(r.id)}">
           <input type="checkbox" class="rem-check" ${r.done ? 'checked' : ''} title="${r.repeat !== 'none' ? 'Done — go to next repeat' : 'Mark done'}">
           <div class="rem-main">
             <div class="rem-title">${escapeHtml(r.title)}</div>
@@ -10346,7 +10349,7 @@
         remEl('remCount').textContent = active.length;
         remEl('remClearDone').style.display = (remFilter === 'done' && sets.done.length) ? '' : 'none';
         const shown = sets[remFilter];
-        const emptyMsg = { active: '🎉 Nothing to remember — add a reminder above', today: 'Nothing due today', overdue: '✅ No overdue reminders', done: 'No completed reminders yet' }[remFilter];
+        const emptyMsg = { active: '🎉 Nothing to remember — tap “New Reminder” to add one', today: 'Nothing due today', overdue: '✅ No overdue reminders', done: 'No completed reminders yet' }[remFilter];
         list.innerHTML = shown.length ? shown.map(remItemHtml).join('') : `<div class="rem-empty">${emptyMsg}</div>`;
         renderReminderGadget(active);
       }
@@ -10437,9 +10440,7 @@
       }
 
       // ----- wiring -----
-      remEl('remAddBtn').addEventListener('click', remSubmit);
-      remEl('remCancelBtn').addEventListener('click', () => { remResetForm(); renderReminders(); setRemStatus(''); });
-      ['remTitle', 'remDate', 'remTime'].forEach(id => remEl(id).addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); remSubmit(); } }));
+      remEl('remNewBtn').addEventListener('click', () => remOpenForm());
       remEl('remTabs').addEventListener('click', e => {
         const t = e.target.closest('.rem-tab');
         if (!t) return;
@@ -10465,7 +10466,7 @@
         const g = remEl('reminderGadget'), head = remEl('rgHead');
         function openWin(editId) {
           restoreWindowFromTaskbar('reminderWindow');
-          if (editId) { remFilter = 'active'; setTimeout(() => remStartEdit(editId), 60); }
+          if (editId) { remFilter = 'active'; setTimeout(() => remOpenForm(editId), 60); } else { setTimeout(() => remOpenForm(), 60); }
         }
         remEl('rgAdd').addEventListener('click', e => { e.stopPropagation(); openWin(); });
         remEl('rgBody').addEventListener('click', e => {
@@ -10509,7 +10510,6 @@
         head.addEventListener('pointercancel', () => { drag = null; g.classList.remove('dragging'); });
       })();
 
-      remResetForm();
       renderReminders();
 
       // ==================== CONTACTS (name, section, mobile + Call / WhatsApp) ====================
