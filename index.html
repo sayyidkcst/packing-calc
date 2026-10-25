@@ -3765,6 +3765,50 @@
       background: #c0c0c0; box-shadow: inset -1px -1px #ffffff, inset 1px 1px #0a0a0a, inset -2px -2px #dfdfdf, inset 2px 2px #808080;
     }
 
+    /* ---------- Windows 98: classic Start menu (navy side banner, flat grey menu, navy hover) ---------- */
+    html[data-theme="win98"] .start-menu { width: 470px; max-width: 98vw; }
+    html[data-theme="win98"] .start-menu.open {
+      display: grid; grid-template-columns: 28px 1fr 150px; grid-template-rows: auto 1fr auto; animation: none;
+    }
+    html[data-theme="win98"] .start-menu::before {
+      content: 'KCST  Windows 98'; grid-column: 1; grid-row: 1 / 4; display: flex; align-items: flex-start; justify-content: flex-start;
+      writing-mode: vertical-rl; transform: rotate(180deg); padding: 8px 4px; margin-right: 2px;
+      background: linear-gradient(0deg, #000080 0%, #1084d0 100%); color: #fff; font-family: 'MS Sans Serif', 'Microsoft Sans Serif', Tahoma, Arial, sans-serif; font-size: 1.15rem; font-weight: 700; letter-spacing: 0.04em; white-space: nowrap;
+    }
+    html[data-theme="win98"] .xp-body { display: contents; }
+    html[data-theme="win98"] .xp-header {
+      grid-column: 2 / 4; grid-row: 1; flex-direction: row; align-items: center; gap: 8px; padding: 5px 6px; background: #c0c0c0;
+      border-bottom: 1px solid #808080; box-shadow: 0 1px 0 #fff; text-align: left;
+    }
+    html[data-theme="win98"] .xp-avatar { width: 32px; height: 32px; border: 1px solid #808080; border-radius: 0; box-shadow: inset 1px 1px 0 #0a0a0a, 1px 1px 0 #fff; font-size: 0.9rem; }
+    html[data-theme="win98"] .xp-user-info { flex: 1; min-width: 0; }
+    html[data-theme="win98"] .xp-user-name { color: #000; font-family: 'MS Sans Serif', 'Microsoft Sans Serif', Tahoma, Arial, sans-serif; font-size: 0.8rem; font-weight: 700; text-shadow: none; }
+    html[data-theme="win98"] .xp-user-role { color: #444; font-family: 'MS Sans Serif', 'Microsoft Sans Serif', Tahoma, Arial, sans-serif; font-size: 0.68rem; text-shadow: none; }
+    html[data-theme="win98"] .xp-left-panel {
+      grid-column: 2; grid-row: 2; min-height: 0; padding: 2px 0; gap: 0; background: #c0c0c0; border: none; border-right: 1px solid #808080; box-shadow: 1px 0 0 #fff;
+    }
+    html[data-theme="win98"] .xp-right-panel { grid-column: 3; grid-row: 2; width: auto; min-height: 0; padding: 2px 0; gap: 0; background: #c0c0c0; }
+    html[data-theme="win98"] .xp-app-item, html[data-theme="win98"] .xp-right-item {
+      padding: 4px 8px; gap: 8px; border: none; border-radius: 0; background: transparent; color: #000; font-family: 'MS Sans Serif', 'Microsoft Sans Serif', Tahoma, Arial, sans-serif; font-size: 0.8rem; font-weight: 400; text-shadow: none;
+    }
+    html[data-theme="win98"] .xp-right-item { font-size: 0.76rem; padding: 4px 8px; }
+    html[data-theme="win98"] .xp-app-item:hover, html[data-theme="win98"] .xp-right-item:hover { background: #000080; color: #fff; border: none; text-shadow: none; }
+    html[data-theme="win98"] .xp-app-item:hover .xp-app-icon { transform: none; }
+    html[data-theme="win98"] .xp-app-icon { width: 28px; height: 28px; font-size: 1.25rem; filter: none; }
+    html[data-theme="win98"] .xp-app-name { font-weight: 400; }
+    html[data-theme="win98"] .xp-app-desc { display: none; }
+    html[data-theme="win98"] .xp-left-separator { height: 0; margin: 3px 2px; background: none; border-top: 1px solid #808080; border-bottom: 1px solid #fff; }
+    html[data-theme="win98"] .xp-footer {
+      grid-column: 2 / 4; grid-row: 3; justify-content: flex-start; gap: 0; padding: 2px 0 0 0; background: #c0c0c0;
+      border-top: 1px solid #808080; box-shadow: 0 -1px 0 #fff; flex-direction: column;
+    }
+    html[data-theme="win98"] .xp-footer-btn {
+      width: 100%; justify-content: flex-start; gap: 10px; padding: 5px 10px; background: transparent; border: none; border-radius: 0; box-shadow: none;
+      color: #000; font-family: 'MS Sans Serif', 'Microsoft Sans Serif', Tahoma, Arial, sans-serif; font-size: 0.8rem; font-weight: 400; text-shadow: none;
+    }
+    html[data-theme="win98"] .xp-footer-btn:hover, html[data-theme="win98"] .xp-footer-btn:active { background: #000080; color: #fff; box-shadow: none; }
+    @media (max-width: 520px) { html[data-theme="win98"] .start-menu.open { grid-template-columns: 24px 1fr 120px; } }
+
     /* ---------- theme picker (Settings) ---------- */
     .theme-grid { display: flex; gap: 8px; flex-wrap: wrap; }
     .theme-card { flex: 1 1 120px; min-width: 110px; border: 2px solid #a8c8f0; background: #fff; border-radius: 4px; padding: 6px; cursor: pointer;
