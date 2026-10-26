@@ -3249,6 +3249,42 @@
     html.mobile-app #mobileNav button .mn-icon { font-size: 1.35rem; line-height: 1; }
     html.mobile-app #mobileNav button.active { color: #fff; background: rgba(255, 255, 255, 0.18); box-shadow: inset 0 3px 0 #ffce54; }
   
+    /* ==================== CLOCK FLYOUT (taskbar calendar) ==================== */
+    .system-tray .clock { cursor: pointer; border-radius: 3px; padding: 0 4px; }
+    .system-tray .clock:hover { background: rgba(255,255,255,0.18); }
+    #clockFlyout { position: fixed; right: 6px; bottom: 44px; width: 300px; max-width: 96vw; z-index: 100000; display: none; flex-direction: column;
+      background: #ece9d8; color: #111; border: 2px solid #0831a0; border-radius: 6px 6px 0 0; box-shadow: 0 -4px 22px rgba(0,0,0,0.5);
+      font-family: 'Segoe UI', Tahoma, Arial, sans-serif; user-select: none; overflow: hidden; }
+    #clockFlyout.open { display: flex; animation: cfRise 0.14s ease-out; }
+    @keyframes cfRise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+    #clockFlyout .cf-head { display: flex; align-items: center; gap: 12px; padding: 10px 12px; color: #fff;
+      background: linear-gradient(180deg, #3f7ae0 0%, #15419c 100%); }
+    #clockFlyout .cf-analog { width: 84px; height: 84px; flex: 0 0 auto; }
+    #clockFlyout .cf-face { fill: #fff; stroke: #0a2a7a; stroke-width: 3; }
+    #clockFlyout .cf-ticks line { stroke: #0a2a7a; stroke-width: 2; }
+    #clockFlyout .cf-h, #clockFlyout .cf-m { stroke: #0a2a7a; stroke-width: 5; stroke-linecap: round; transform-origin: 50px 50px; }
+    #clockFlyout .cf-m { stroke-width: 3.5; }
+    #clockFlyout .cf-s { stroke: #d02010; stroke-width: 1.8; stroke-linecap: round; transform-origin: 50px 50px; }
+    #clockFlyout .cf-pin { fill: #0a2a7a; }
+    #clockFlyout .cf-time { font-size: 1.45rem; font-weight: 600; line-height: 1.1; font-variant-numeric: tabular-nums; }
+    #clockFlyout .cf-date { font-size: 0.74rem; margin-top: 3px; opacity: 0.95; }
+    #clockFlyout .cf-nav { display: flex; align-items: center; gap: 4px; padding: 8px 8px 2px; }
+    #clockFlyout .cf-title { flex: 1; background: none; border: none; font: inherit; font-size: 0.92rem; font-weight: 700; color: #0a2862; cursor: pointer; padding: 5px; border-radius: 3px; }
+    #clockFlyout .cf-title:hover, #clockFlyout .cf-arrow:hover { background: rgba(63,122,224,0.18); }
+    #clockFlyout .cf-arrow { background: none; border: none; width: 30px; height: 28px; cursor: pointer; font-size: 0.7rem; color: #0a2862; border-radius: 3px; }
+    #clockFlyout .cf-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; padding: 4px 8px 8px; }
+    #clockFlyout .cf-dow { text-align: center; font-size: 0.68rem; font-weight: 700; color: #5a6b85; padding: 4px 0; }
+    #clockFlyout .cf-day { aspect-ratio: 1.15; display: flex; align-items: center; justify-content: center; font: inherit; font-size: 0.8rem; color: #111;
+      background: none; border: 1px solid transparent; border-radius: 3px; cursor: pointer; }
+    #clockFlyout .cf-day.other { color: #9aa3b2; }
+    #clockFlyout .cf-day.sun:not(.other) { color: #b02020; }
+    #clockFlyout .cf-day:hover { background: #dbe8ff; border-color: #8fb2ee; }
+    #clockFlyout .cf-day.sel { background: #cfe0ff; border-color: #3f7ae0; }
+    #clockFlyout .cf-day.today { background: #2a63c8; border-color: #0a2a7a; color: #fff; font-weight: 700; }
+    #clockFlyout .cf-foot { border-top: 1px solid #c4c1b0; padding: 6px 10px; }
+    #clockFlyout .cf-foot button { background: none; border: none; font: inherit; font-size: 0.78rem; color: #0a4fc4; cursor: pointer; padding: 2px 0; }
+    #clockFlyout .cf-foot button:hover { text-decoration: underline; }
+
     /* ==================== DESKTOP THEMES ====================
        default (no attribute / "xp") = Windows XP Luna, the look above.
        html[data-theme="win7"]  = Windows 7 Aero glass
@@ -3808,6 +3844,49 @@
     }
     html[data-theme="win98"] .xp-footer-btn:hover, html[data-theme="win98"] .xp-footer-btn:active { background: #000080; color: #fff; box-shadow: none; }
     @media (max-width: 520px) { html[data-theme="win98"] .start-menu.open { grid-template-columns: 24px 1fr 120px; } }
+
+    /* ---------- clock flyout: Windows 7 glass ---------- */
+    html[data-theme="win7"] #clockFlyout { background: linear-gradient(180deg, rgba(120,170,225,0.55) 0%, rgba(26,52,92,0.72) 100%); -webkit-backdrop-filter: blur(16px) saturate(1.6); backdrop-filter: blur(16px) saturate(1.6);
+      border: 1px solid rgba(255,255,255,0.7); border-radius: 8px 8px 0 0; color: #fff; box-shadow: 0 -6px 26px rgba(0,0,0,0.55), inset 0 0 0 1px rgba(255,255,255,0.3); }
+    html[data-theme="win7"] #clockFlyout .cf-head { background: rgba(255,255,255,0.12); border-bottom: 1px solid rgba(255,255,255,0.25); }
+    html[data-theme="win7"] #clockFlyout .cf-face { fill: rgba(255,255,255,0.92); stroke: rgba(255,255,255,0.9); }
+    html[data-theme="win7"] #clockFlyout .cf-time, html[data-theme="win7"] #clockFlyout .cf-date { text-shadow: 0 0 6px rgba(0,0,0,0.8); }
+    html[data-theme="win7"] #clockFlyout .cf-title, html[data-theme="win7"] #clockFlyout .cf-arrow, html[data-theme="win7"] #clockFlyout .cf-foot button { color: #fff; text-shadow: 0 0 4px rgba(0,0,0,0.7); }
+    html[data-theme="win7"] #clockFlyout .cf-title:hover, html[data-theme="win7"] #clockFlyout .cf-arrow:hover { background: rgba(255,255,255,0.22); }
+    html[data-theme="win7"] #clockFlyout .cf-dow { color: #cfe3ff; }
+    html[data-theme="win7"] #clockFlyout .cf-day { color: #fff; text-shadow: 0 0 3px rgba(0,0,0,0.6); border-radius: 2px; }
+    html[data-theme="win7"] #clockFlyout .cf-day.other { color: rgba(255,255,255,0.45); }
+    html[data-theme="win7"] #clockFlyout .cf-day.sun:not(.other) { color: #ffb3a6; }
+    html[data-theme="win7"] #clockFlyout .cf-day:hover { background: linear-gradient(180deg, rgba(255,255,255,0.4), rgba(255,255,255,0.15)); border-color: rgba(255,255,255,0.7); }
+    html[data-theme="win7"] #clockFlyout .cf-day.sel { background: rgba(255,255,255,0.22); border-color: rgba(255,255,255,0.6); }
+    html[data-theme="win7"] #clockFlyout .cf-day.today { background: linear-gradient(180deg, #7fc6f5 0%, #2f86e0 50%, #1a5cb8 52%, #3f9aea 100%); border-color: #bfe4ff; color: #fff; box-shadow: 0 0 8px rgba(110,195,255,0.8); }
+    html[data-theme="win7"] #clockFlyout .cf-foot { border-top: 1px solid rgba(255,255,255,0.3); background: rgba(8,18,38,0.35); }
+
+    /* ---------- clock flyout: Windows 98 classic ---------- */
+    html[data-theme="win98"] #clockFlyout { background: #c0c0c0; color: #000; border: none; border-radius: 0; font-family: 'MS Sans Serif', 'Microsoft Sans Serif', Tahoma, Arial, sans-serif;
+      box-shadow: inset -1px -1px #0a0a0a, inset 1px 1px #fff, inset -2px -2px #808080, inset 2px 2px #dfdfdf, 2px -2px 8px rgba(0,0,0,0.4); padding: 3px; }
+    html[data-theme="win98"] #clockFlyout .cf-head { background: #c0c0c0; color: #000; padding: 6px 8px; border-bottom: 1px solid #808080; box-shadow: 0 1px 0 #fff; }
+    html[data-theme="win98"] #clockFlyout .cf-face { fill: #fff; stroke: #000; stroke-width: 2; }
+    html[data-theme="win98"] #clockFlyout .cf-ticks line, html[data-theme="win98"] #clockFlyout .cf-h, html[data-theme="win98"] #clockFlyout .cf-m { stroke: #000; }
+    html[data-theme="win98"] #clockFlyout .cf-s { stroke: #000; }
+    html[data-theme="win98"] #clockFlyout .cf-pin { fill: #000; }
+    html[data-theme="win98"] #clockFlyout .cf-time { font-size: 1.2rem; font-weight: 700; }
+    html[data-theme="win98"] #clockFlyout .cf-date { font-size: 0.72rem; }
+    html[data-theme="win98"] #clockFlyout .cf-nav { padding: 6px 4px 2px; }
+    html[data-theme="win98"] #clockFlyout .cf-title { color: #000; border-radius: 0; font-size: 0.82rem; }
+    html[data-theme="win98"] #clockFlyout .cf-arrow { color: #000; border-radius: 0; background: #c0c0c0; box-shadow: inset -1px -1px #0a0a0a, inset 1px 1px #fff, inset -2px -2px #808080, inset 2px 2px #dfdfdf; }
+    html[data-theme="win98"] #clockFlyout .cf-arrow:hover, html[data-theme="win98"] #clockFlyout .cf-title:hover { background: #c0c0c0; }
+    html[data-theme="win98"] #clockFlyout .cf-arrow:active { box-shadow: inset -1px -1px #fff, inset 1px 1px #0a0a0a, inset -2px -2px #dfdfdf, inset 2px 2px #808080; }
+    html[data-theme="win98"] #clockFlyout .cf-grid { margin: 4px; padding: 4px; gap: 0; background: #fff; box-shadow: inset -1px -1px #fff, inset 1px 1px #808080, inset -2px -2px #dfdfdf, inset 2px 2px #0a0a0a; }
+    html[data-theme="win98"] #clockFlyout .cf-dow { color: #000; border-bottom: 1px solid #808080; }
+    html[data-theme="win98"] #clockFlyout .cf-day { border-radius: 0; color: #000; font-size: 0.76rem; }
+    html[data-theme="win98"] #clockFlyout .cf-day.other { color: #808080; }
+    html[data-theme="win98"] #clockFlyout .cf-day.sun:not(.other) { color: #a00000; }
+    html[data-theme="win98"] #clockFlyout .cf-day:hover { background: #fff; border: 1px dotted #000; }
+    html[data-theme="win98"] #clockFlyout .cf-day.sel { background: #fff; border: 1px dotted #000; }
+    html[data-theme="win98"] #clockFlyout .cf-day.today { background: #000080; border-color: #000080; color: #fff; }
+    html[data-theme="win98"] #clockFlyout .cf-foot { border-top: 1px solid #808080; box-shadow: 0 -1px 0 #fff; }
+    html[data-theme="win98"] #clockFlyout .cf-foot button { color: #000; }
 
     /* ---------- theme picker (Settings) ---------- */
     .theme-grid { display: flex; gap: 8px; flex-wrap: wrap; }
@@ -4943,6 +5022,31 @@
         <span class="date" id="clockDate">--/--/----</span>
       </div>
     </div>
+  </div>
+
+  <!-- CLOCK FLYOUT (calendar popup from taskbar clock — not a window) -->
+  <div id="clockFlyout" role="dialog" aria-label="Calendar">
+    <div class="cf-head">
+      <svg class="cf-analog" viewBox="0 0 100 100" aria-hidden="true">
+        <circle class="cf-face" cx="50" cy="50" r="46"/>
+        <g class="cf-ticks"></g>
+        <line class="cf-h" id="cfHour" x1="50" y1="50" x2="50" y2="28"/>
+        <line class="cf-m" id="cfMin" x1="50" y1="50" x2="50" y2="16"/>
+        <line class="cf-s" id="cfSec" x1="50" y1="56" x2="50" y2="12"/>
+        <circle class="cf-pin" cx="50" cy="50" r="3"/>
+      </svg>
+      <div class="cf-digital">
+        <div class="cf-time" id="cfTime">--:--:--</div>
+        <div class="cf-date" id="cfDate">&nbsp;</div>
+      </div>
+    </div>
+    <div class="cf-nav">
+      <button type="button" class="cf-arrow" id="cfPrev" title="Previous month">◀</button>
+      <button type="button" class="cf-title" id="cfTitle" title="Go to today">Month Year</button>
+      <button type="button" class="cf-arrow" id="cfNext" title="Next month">▶</button>
+    </div>
+    <div class="cf-grid" id="cfGrid"></div>
+    <div class="cf-foot"><button type="button" id="cfToday">Today: <span id="cfTodayText"></span></button></div>
   </div>
 
   <!-- MOBILE APP TAB BAR (shown on phones only) -->
@@ -11155,6 +11259,86 @@
         saveTheme(t);
       });
       loadTheme();
+
+      // ==================== CLOCK FLYOUT (calendar popup from the taskbar clock) ====================
+      (function () {
+        const fly = document.getElementById('clockFlyout');
+        const clk = document.querySelector('.system-tray .clock');
+        if (!fly || !clk) return;
+        const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+        const DOW = ['Su','Mo','Tu','We','Th','Fr','Sa'];
+        const pad = n => String(n).padStart(2, '0');
+        let view = new Date(); view.setDate(1); view.setHours(0, 0, 0, 0);
+        let selected = null, timer = null;
+
+        // analog clock ticks
+        const ticks = fly.querySelector('.cf-ticks');
+        for (let i = 0; i < 12; i++) {
+          const a = i * 30 * Math.PI / 180, r1 = i % 3 === 0 ? 36 : 40, r2 = 44;
+          const ln = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+          ln.setAttribute('x1', 50 + r1 * Math.sin(a)); ln.setAttribute('y1', 50 - r1 * Math.cos(a));
+          ln.setAttribute('x2', 50 + r2 * Math.sin(a)); ln.setAttribute('y2', 50 - r2 * Math.cos(a));
+          ticks.appendChild(ln);
+        }
+        const sameDay = (a, b) => a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+
+        function renderCal() {
+          const today = new Date();
+          document.getElementById('cfTitle').textContent = MONTHS[view.getMonth()] + ' ' + view.getFullYear();
+          let h = DOW.map(d => `<div class="cf-dow">${d}</div>`).join('');
+          const first = new Date(view.getFullYear(), view.getMonth(), 1 - view.getDay());
+          for (let i = 0; i < 42; i++) {
+            const d = new Date(first.getFullYear(), first.getMonth(), first.getDate() + i);
+            const cls = ['cf-day'];
+            if (d.getMonth() !== view.getMonth()) cls.push('other');
+            if (d.getDay() === 0) cls.push('sun');
+            if (sameDay(d, today)) cls.push('today');
+            if (selected && sameDay(d, selected)) cls.push('sel');
+            h += `<button type="button" class="${cls.join(' ')}" data-t="${d.getTime()}">${d.getDate()}</button>`;
+          }
+          document.getElementById('cfGrid').innerHTML = h;
+          document.getElementById('cfTodayText').textContent = formatDateDDMMYYYY(today);
+        }
+        function tick() {
+          const n = new Date();
+          const h12 = n.getHours() % 12 || 12, ap = n.getHours() >= 12 ? 'PM' : 'AM';
+          document.getElementById('cfTime').textContent = `${pad(h12)}:${pad(n.getMinutes())}:${pad(n.getSeconds())} ${ap}`;
+          document.getElementById('cfDate').textContent = n.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+          const sec = n.getSeconds(), min = n.getMinutes() + sec / 60, hr = (n.getHours() % 12) + min / 60;
+          document.getElementById('cfSec').style.transform = `rotate(${sec * 6}deg)`;
+          document.getElementById('cfMin').style.transform = `rotate(${min * 6}deg)`;
+          document.getElementById('cfHour').style.transform = `rotate(${hr * 30}deg)`;
+        }
+        function place() {
+          const bar = document.querySelector('.startbar');
+          const top = bar ? bar.getBoundingClientRect().top : window.innerHeight - 40;
+          fly.style.bottom = Math.max(0, window.innerHeight - top) + 'px';
+        }
+        function open() {
+          view = new Date(); view.setDate(1); view.setHours(0, 0, 0, 0);
+          place(); renderCal(); tick();
+          fly.classList.add('open');
+          clearInterval(timer); timer = setInterval(tick, 1000);
+        }
+        function close() { fly.classList.remove('open'); clearInterval(timer); timer = null; }
+        const isOpen = () => fly.classList.contains('open');
+
+        clk.addEventListener('click', e => { e.stopPropagation(); isOpen() ? close() : open(); });
+        document.getElementById('cfPrev').addEventListener('click', () => { view.setMonth(view.getMonth() - 1); renderCal(); });
+        document.getElementById('cfNext').addEventListener('click', () => { view.setMonth(view.getMonth() + 1); renderCal(); });
+        const goToday = () => { view = new Date(); view.setDate(1); view.setHours(0, 0, 0, 0); selected = null; renderCal(); };
+        document.getElementById('cfTitle').addEventListener('click', goToday);
+        document.getElementById('cfToday').addEventListener('click', goToday);
+        document.getElementById('cfGrid').addEventListener('click', e => {
+          const b = e.target.closest('.cf-day'); if (!b) return;
+          selected = new Date(Number(b.dataset.t));
+          if (selected.getMonth() !== view.getMonth()) { view = new Date(selected.getFullYear(), selected.getMonth(), 1); }
+          renderCal();
+        });
+        document.addEventListener('mousedown', e => { if (isOpen() && !fly.contains(e.target) && !clk.contains(e.target)) close(); });
+        document.addEventListener('keydown', e => { if (e.key === 'Escape' && isOpen()) close(); });
+        window.addEventListener('resize', () => { if (isOpen()) place(); });
+      })();
 
       // ==================== CONTACTS (name, section, mobile + Call / WhatsApp) ====================
       const CT_TABLE = 'contacts';                 // real Supabase table: id, name, section, mobile, created_at
