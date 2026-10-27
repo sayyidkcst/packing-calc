@@ -3178,17 +3178,35 @@
     .ct-modal-head button { border: 1px solid rgba(255,255,255,0.7); background: rgba(255,255,255,0.18); color: #fff; width: 24px; height: 24px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; line-height: 1; padding: 0; }
     .ct-modal-head button:hover { background: #d9442f; }
     .ct-modal .ct-form { border: none; background: transparent; padding: 12px; gap: 8px; }
-    .ct-list { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 5px; padding-right: 2px; }
-    .ct-empty { text-align: center; color: #4a6a90; padding: 24px 8px; border: 1px dashed #a8c8f0; border-radius: 4px; background: #f7fafe; font-size: 0.82rem; }
-    .ct-item { display: flex; gap: 9px; align-items: center; padding: 7px 8px; background: #fff; border: 1px solid #b8cce8; border-radius: 5px; }
+    .ct-list { flex: 1; min-height: 0; overflow-y: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(165px, 1fr)); grid-auto-rows: min-content; align-content: start; gap: 8px; padding: 2px 3px 4px 2px; }
+    .ct-empty { grid-column: 1 / -1; text-align: center; color: #4a6a90; padding: 24px 8px; border: 1px dashed #a8c8f0; border-radius: 4px; background: #f7fafe; font-size: 0.82rem; }
+    .ct-item { position: relative; display: flex; flex-direction: column; gap: 6px; align-items: stretch; text-align: center; padding: 12px 8px 8px; background: linear-gradient(180deg,#ffffff 0%,#f3f8ff 100%); border: 1px solid #b8cce8; border-radius: 6px; transition: box-shadow 0.12s, transform 0.12s; }
+    .ct-item:hover { box-shadow: 0 3px 10px rgba(21,65,156,0.25); transform: translateY(-1px); }
     .ct-item.editing { box-shadow: 0 0 0 2px #3f7ae0; }
-    .ct-avatar { width: 38px; height: 38px; border-radius: 50%; color: #fff; font-weight: 800; font-size: 1rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; text-shadow: 0 1px 2px rgba(0,0,0,0.35); }
-    .ct-main { flex: 1; min-width: 0; }
+    .ct-avatar { width: 100%; aspect-ratio: 4 / 3; height: auto; border-radius: 6px; margin: 0 auto; color: #fff; font-weight: 800; font-size: 2rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; text-shadow: 0 1px 2px rgba(0,0,0,0.35); overflow: hidden; border: 2px solid #fff; box-shadow: 0 0 0 1px #8fb0e0, 0 2px 6px rgba(0,0,0,0.25); }
+    .ct-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .ct-avatar.has-photo { cursor: zoom-in; }
+    #ctLightbox { position: fixed; inset: 0; z-index: 100001; display: none; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 20px; box-sizing: border-box; background: rgba(0,0,0,0.82); cursor: zoom-out; }
+    #ctLightbox.open { display: flex; animation: ctLbIn 0.15s ease-out; }
+    @keyframes ctLbIn { from { opacity: 0; } to { opacity: 1; } }
+    #ctLightbox img { max-width: min(92vw, 720px); max-height: 80vh; object-fit: contain; border: 4px solid #fff; border-radius: 6px; box-shadow: 0 10px 40px rgba(0,0,0,0.7); background: #222; }
+    #ctLightbox .ct-lb-name { color: #fff; font-weight: 700; font-size: 1rem; text-shadow: 0 1px 4px #000; }
+    #ctLightbox .ct-lb-close { position: absolute; top: 14px; right: 18px; width: 34px; height: 34px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.7); background: rgba(255,255,255,0.15); color: #fff; font-size: 1.1rem; cursor: pointer; }
+    #ctLightbox .ct-lb-close:hover { background: #d9442f; }
+    .ct-corner { position: absolute; top: 4px; right: 4px; display: flex; gap: 2px; opacity: 0.35; transition: opacity 0.12s; }
+    .ct-item:hover .ct-corner, .ct-item:focus-within .ct-corner { opacity: 1; }
+    .ct-corner .ct-icon-btn { padding: 2px 5px; font-size: 0.74rem; }
+    .ct-photo-row { display: flex; align-items: center; gap: 12px; }
+    .ct-photo-preview { width: 104px; height: 78px; border-radius: 6px; flex: 0 0 auto; display: flex; align-items: center; justify-content: center; font-size: 2rem; background: #dbe6f6; border: 3px solid #fff; box-shadow: 0 0 0 1px #8fb0e0; overflow: hidden; cursor: pointer; }
+    .ct-photo-preview img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .ct-photo-btns { display: flex; flex-direction: column; gap: 5px; align-items: flex-start; }
+    .ct-main { min-width: 0; }
     .ct-name { font-weight: 700; font-size: 0.9rem; color: #0a2a45; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; user-select: text; }
-    .ct-sub { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 2px; font-size: 0.74rem; color: #3a587d; }
+    .ct-sub { display: flex; gap: 4px 8px; align-items: center; justify-content: center; flex-wrap: wrap; margin-top: 3px; font-size: 0.74rem; color: #3a587d; }
     .ct-sec { background: #e3ecf8; border: 1px solid #b8cce8; border-radius: 9px; padding: 0 8px; font-size: 0.66rem; font-weight: 700; color: #15419c; }
     .ct-num { font-family: Consolas, 'Courier New', monospace; font-weight: 700; user-select: text; }
-    .ct-actions { display: flex; gap: 4px; align-items: center; flex-shrink: 0; }
+    .ct-actions { display: flex; gap: 4px; align-items: stretch; }
+    .ct-actions .ct-btn { flex: 1; padding: 6px 4px; font-size: 0.68rem; }
     .ct-btn { display: inline-flex; align-items: center; justify-content: center; gap: 4px; text-decoration: none; border-radius: 4px; padding: 5px 9px; font-size: 0.74rem; font-weight: 700; color: #fff; border: 1px solid rgba(0,0,0,0.25); cursor: pointer; white-space: nowrap; }
     .ct-btn.call { background: linear-gradient(180deg,#4aa3f0 0%,#1b6fc7 100%); }
     .ct-btn.wa { background: linear-gradient(180deg,#3ed26a 0%,#16963f 100%); }
@@ -3200,13 +3218,14 @@
     html.mobile-app .ct-modal-overlay { align-items: flex-start; overflow-y: auto; }
     html.mobile-app .ct-modal { margin-top: 4px; }
     html.mobile-app .ct-row { flex-wrap: wrap; }
-    html.mobile-app .ct-item { flex-wrap: wrap; padding: 10px; gap: 8px 10px; }
-    html.mobile-app .ct-actions { width: 100%; }
-    html.mobile-app .ct-btn { flex: 1; padding: 11px 6px; font-size: 0.9rem; }
-    html.mobile-app .ct-icon-btn { padding: 9px 12px; font-size: 1rem; }
-    html.mobile-app .ct-avatar { width: 44px; height: 44px; font-size: 1.15rem; }
-    html.mobile-app .ct-name { font-size: 1rem; }
-    html.mobile-app .ct-sub { font-size: 0.82rem; }
+    html.mobile-app .ct-list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+    html.mobile-app .ct-item { padding: 12px 6px 8px; }
+    html.mobile-app .ct-btn { padding: 10px 2px; font-size: 0.78rem; }
+    html.mobile-app .ct-corner { opacity: 1; }
+    html.mobile-app .ct-corner .ct-icon-btn { padding: 6px 8px; font-size: 0.9rem; }
+    html.mobile-app .ct-avatar { font-size: 1.8rem; }
+    html.mobile-app .ct-name { font-size: 0.92rem; }
+    html.mobile-app .ct-sub { font-size: 0.74rem; }
 
     /* ==================== MOBILE APP MODE (phones only) ==================== */
     #mobileNav { display: none; }
@@ -4847,6 +4866,14 @@
       <div class="ct-modal" role="dialog" aria-modal="true" aria-labelledby="ctModalTitle">
         <div class="ct-modal-head"><span id="ctModalTitle">➕ New Contact</span><button type="button" id="ctModalClose" title="Close">✕</button></div>
       <div class="ct-form" id="ctForm">
+        <div class="ct-photo-row">
+          <div class="ct-photo-preview" id="ctPhotoPreview" title="Choose photo">👤</div>
+          <div class="ct-photo-btns">
+            <button class="aero-btn" type="button" id="ctPhotoPick"><span>📷</span> Choose Photo</button>
+            <button class="aero-btn danger" type="button" id="ctPhotoRemove" style="display:none;"><span>✖</span> Remove</button>
+          </div>
+          <input type="file" id="ctPhotoFile" accept="image/*" style="display:none;">
+        </div>
         <div class="ct-row">
           <label>👤 Name <input type="text" id="ctName" class="ct-input" maxlength="60" placeholder="Full name" autocomplete="off"></label>
         </div>
@@ -11351,8 +11378,10 @@
   name text not null,
   section text,
   mobile text not null,
+  photo text,
   created_at timestamptz not null default now()
 );
+alter table public.contacts add column if not exists photo text;
 alter table public.contacts enable row level security;
 drop policy if exists "contacts_open_access" on public.contacts;
 create policy "contacts_open_access" on public.contacts
@@ -11360,6 +11389,9 @@ create policy "contacts_open_access" on public.contacts
       let contacts = [];
       let ctCC = '91';                       // default country code for numbers typed without "+"
       let ctEditingId = null;
+      let ctPhoto = '';                      // photo of the contact being edited (small JPEG data URL)
+      let ctPhotoDirty = false;              // true when the photo was changed in the open form
+      let ctPhotoColMissing = false;         // database table has no "photo" column yet
       let ctDbOk = false;                    // true once the contacts table answered
       const ctEl = id => document.getElementById(id);
       const ctIsPhoneUI = () => document.documentElement.classList.contains('mobile-app');
@@ -11378,7 +11410,8 @@ create policy "contacts_open_access" on public.contacts
       function ctNormalize(arr) {
         if (!Array.isArray(arr)) return [];
         return arr.filter(c => c && c.id && c.name && c.mobile).map(c => ({
-          id: String(c.id), name: String(c.name), section: c.section ? String(c.section) : '', mobile: String(c.mobile)
+          id: String(c.id), name: String(c.name), section: c.section ? String(c.section) : '', mobile: String(c.mobile),
+          photo: c.photo ? String(c.photo) : ''
         }));
       }
       const ctIsLocalId = id => String(id).startsWith('local-');
@@ -11396,11 +11429,12 @@ create policy "contacts_open_access" on public.contacts
         const text = {
           missing: '⚠ The "contacts" table does not exist in the database yet. Run the SQL once in Supabase (SQL Editor). Until then contacts stay on this device only.',
           policy: '⚠ The database refused access to the "contacts" table. Run the SQL once in Supabase (SQL Editor) — it also adds the access policy. Until then contacts stay on this device only.',
+          photocol: '⚠ Contact photos need one extra column in the database. Run the SQL once in Supabase (SQL Editor). Until then photos stay on this device only.',
           offline: '⚠ Could not reach the database (slow or offline). Contacts shown are from this device — press Retry.',
           error: '⚠ Database problem: ' + (msg || 'unknown error') + ' — contacts stay on this device until it works.'
         }[kind];
         ctEl('ctBannerMsg').textContent = text;
-        ctEl('ctCopySql').style.display = (kind === 'missing' || kind === 'policy') ? '' : 'none';
+        ctEl('ctCopySql').style.display = (kind === 'missing' || kind === 'policy' || kind === 'photocol') ? '' : 'none';
         box.style.display = '';
       }
       function ctCache() {
@@ -11465,8 +11499,10 @@ create policy "contacts_open_access" on public.contacts
           let rows = ctNormalize(res.data);
           try { rows = await ctImportLegacy(rows); }
           catch (err) { console.warn('Could not import old contacts:', err); showToast('⚠️ Could not move old contacts to the database: ' + (err.message || err), 'warning'); }
+          ctPhotoColMissing = !!(res.data && res.data.length && !('photo' in res.data[0]));
+          if (ctPhotoColMissing) rows.forEach(r => { if (!r.photo) { const o = contacts.find(c => c.id === r.id); if (o && o.photo) r.photo = o.photo; } });
           contacts = rows;
-          ctShowBanner(null);
+          ctShowBanner(ctPhotoColMissing && contacts.some(c => c.photo) ? 'photocol' : null);
           ctCache();
           renderContacts();
           return true;
@@ -11492,11 +11528,20 @@ create policy "contacts_open_access" on public.contacts
       function ctResetForm() {
         ctEditingId = null;
         ctEl('ctName').value = ''; ctEl('ctSectionInput').value = ''; ctEl('ctMobile').value = '';
+        ctSetPhoto('', false);
         ctEl('ctCC').value = ctCC;
         ctEl('ctAddBtn').innerHTML = '<span>➕</span> Add Contact';
         ctEl('ctModalTitle').textContent = '➕ New Contact';
         ctCloseModal();
       }
+      function ctSetPhoto(v, dirty) {
+        ctPhoto = v || ''; ctPhotoDirty = !!dirty;
+        const pv = ctEl('ctPhotoPreview');
+        pv.innerHTML = ctPhoto ? `<img src="${escapeHtml(ctPhoto)}" alt="">` : '👤';
+        ctEl('ctPhotoRemove').style.display = ctPhoto ? '' : 'none';
+        ctEl('ctPhotoPick').innerHTML = ctPhoto ? '<span>📷</span> Change Photo' : '<span>📷</span> Choose Photo';
+      }
+      const ctPhotoColError = e => e && (e.code === 'PGRST204' || (/photo/i.test(e.message || '') && /column|schema cache/i.test(e.message || '')));
       function ctOpenModal() {
         ctEl('ctModal').classList.add('open');
         setTimeout(() => ctEl('ctName').focus(), 30);
@@ -11507,6 +11552,7 @@ create policy "contacts_open_access" on public.contacts
         if (!c) return;
         ctEditingId = id;
         ctEl('ctName').value = c.name; ctEl('ctSectionInput').value = c.section; ctEl('ctMobile').value = c.mobile;
+        ctSetPhoto(c.photo || '', false);
         ctEl('ctAddBtn').innerHTML = '<span>💾</span> Update Contact';
         ctEl('ctModalTitle').textContent = '✏️ Edit Contact';
         renderContacts();
@@ -11526,20 +11572,32 @@ create policy "contacts_open_access" on public.contacts
         setCtStatus('Saving to database…');
         if (!ctDbOk && !ctEditingId) await ctSyncFromDb();           // maybe the database is reachable now
         const row = { name, section: section || null, mobile };
+        const photoInRow = ctEditingId ? ctPhotoDirty : !!ctPhoto;
+        if (photoInRow) row.photo = ctPhoto || null;
+        let photoLocalOnly = false;
+        // write the row; if the table has no photo column yet, save everything else and keep the photo on this device
+        const ctWrite = async (op) => {
+          let r = await op(row);
+          if (r.error && photoInRow && ctPhotoColError(r.error)) {
+            const r2 = { ...row }; delete r2.photo;
+            r = await op(r2); photoLocalOnly = true; ctPhotoColMissing = true;
+          }
+          return r;
+        };
         try {
           if (ctEditingId) {
             const c = contacts.find(x => x.id === ctEditingId);
             if (ctDbOk && !ctIsLocalId(ctEditingId)) {
-              const { error } = await supabase.from(CT_TABLE).update(row).eq('id', ctEditingId);
+              const { error } = await ctWrite(r => supabase.from(CT_TABLE).update(r).eq('id', ctEditingId));
               if (error) throw error;
             }
-            if (c) Object.assign(c, { name, section, mobile });
+            if (c) Object.assign(c, { name, section, mobile, photo: ctPhotoDirty ? ctPhoto : (c.photo || '') });
           } else if (ctDbOk) {
-            const { data, error } = await supabase.from(CT_TABLE).insert([row]).select().single();
+            const { data, error } = await ctWrite(r => supabase.from(CT_TABLE).insert([r]).select().single());
             if (error) throw error;
-            contacts.push({ id: String(data.id), name, section, mobile });
+            contacts.push({ id: String(data.id), name, section, mobile, photo: ctPhoto });
           } else {
-            contacts.push({ id: 'local-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), name, section, mobile });
+            contacts.push({ id: 'local-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), name, section, mobile, photo: ctPhoto });
           }
         } catch (err) {
           console.warn('Could not save contact:', err);
@@ -11552,7 +11610,8 @@ create policy "contacts_open_access" on public.contacts
         ctCache();
         ctResetForm();
         renderContacts();
-        if (ctDbOk) showToast('✅ Contact saved to database');
+        if (photoLocalOnly) { ctShowBanner('photocol'); showToast('⚠️ Contact saved — the photo is on this device only until you add the "photo" column (Copy SQL)', 'warning'); }
+        else if (ctDbOk) showToast('✅ Contact saved to database');
         else showToast('⚠️ Saved on this device only — the contacts table is missing in the database', 'warning');
       }
       async function ctDelete(id) {
@@ -11576,17 +11635,22 @@ create policy "contacts_open_access" on public.contacts
       function ctItemHtml(c) {
         const digits = ctDigits(c.mobile);
         const initial = escapeHtml(c.name.trim().charAt(0).toUpperCase() || '?');
+        const avatar = c.photo
+          ? `<div class="ct-avatar has-photo"><img src="${escapeHtml(c.photo)}" alt="${escapeHtml(c.name)}" loading="lazy"></div>`
+          : `<div class="ct-avatar" style="background:hsl(${ctHue(c.name)},55%,42%)">${initial}</div>`;
         return `<div class="ct-item${ctEditingId === c.id ? ' editing' : ''}" data-id="${escapeHtml(c.id)}">
-          <div class="ct-avatar" style="background:hsl(${ctHue(c.name)},55%,42%)">${initial}</div>
+          <div class="ct-corner">
+            <button class="ct-icon-btn" type="button" data-act="edit" title="Edit">✏️</button>
+            <button class="ct-icon-btn" type="button" data-act="del" title="Delete">🗑️</button>
+          </div>
+          ${avatar}
           <div class="ct-main">
-            <div class="ct-name">${escapeHtml(c.name)}</div>
+            <div class="ct-name" title="${escapeHtml(c.name)}">${escapeHtml(c.name)}</div>
             <div class="ct-sub">${c.section ? `<span class="ct-sec">${escapeHtml(c.section)}</span>` : ''}<span class="ct-num">📱 ${escapeHtml(c.mobile)}</span></div>
           </div>
           <div class="ct-actions">
             <a class="ct-btn call" href="tel:+${digits}" title="Call ${escapeHtml(c.name)}">📞 Call</a>
             <a class="ct-btn wa" href="https://wa.me/${digits}" target="_blank" rel="noopener" title="WhatsApp ${escapeHtml(c.name)}">💬 WhatsApp</a>
-            <button class="ct-icon-btn" type="button" data-act="edit" title="Edit">✏️</button>
-            <button class="ct-icon-btn" type="button" data-act="del" title="Delete">🗑️</button>
           </div>
         </div>`;
       }
@@ -11618,6 +11682,16 @@ create policy "contacts_open_access" on public.contacts
         if (e.key === 'Escape') { e.stopPropagation(); ctResetForm(); renderContacts(); }
       });
       ['ctName', 'ctSectionInput', 'ctMobile'].forEach(id => ctEl(id).addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); ctSubmit(); } }));
+      ctEl('ctPhotoPick').addEventListener('click', () => ctEl('ctPhotoFile').click());
+      ctEl('ctPhotoPreview').addEventListener('click', () => ctEl('ctPhotoFile').click());
+      ctEl('ctPhotoRemove').addEventListener('click', () => ctSetPhoto('', true));
+      ctEl('ctPhotoFile').addEventListener('change', async e => {
+        const f = e.target.files && e.target.files[0];
+        e.target.value = '';
+        if (!f) return;
+        try { ctSetPhoto(await resizeImageToDataUrl(f, 400), true); setCtStatus(''); }
+        catch (err) { setCtStatus('⚠ ' + (err.message || 'Could not use that image'), 'err'); }
+      });
       ctEl('ctSearch').addEventListener('input', renderContacts);
       ctEl('ctSection').addEventListener('change', renderContacts);
       ctEl('ctCC').addEventListener('change', () => {
@@ -11638,7 +11712,27 @@ create policy "contacts_open_access" on public.contacts
         try { await navigator.clipboard.writeText(CT_SQL); showToast('📋 SQL copied — paste it in the Supabase SQL Editor and run it'); }
         catch (e) { window.prompt('Copy this SQL and run it in the Supabase SQL Editor:', CT_SQL); }
       });
+      // click a contact photo -> enlarge
+      function ctShowPhoto(src, name) {
+        let lb = document.getElementById('ctLightbox');
+        if (!lb) {
+          lb = document.createElement('div');
+          lb.id = 'ctLightbox';
+          lb.innerHTML = '<button type="button" class="ct-lb-close" title="Close">✕</button><img alt=""><div class="ct-lb-name"></div>';
+          lb.addEventListener('click', () => lb.classList.remove('open'));
+          document.body.appendChild(lb);
+          document.addEventListener('keydown', ev => { if (ev.key === 'Escape' && lb.classList.contains('open')) { ev.stopPropagation(); lb.classList.remove('open'); } }, true);
+        }
+        lb.querySelector('img').src = src;
+        lb.querySelector('.ct-lb-name').textContent = name || '';
+        lb.classList.add('open');
+      }
       ctEl('ctList').addEventListener('click', e => {
+        const pic = e.target.closest('.ct-avatar.has-photo');
+        if (pic) {
+          const it = pic.closest('.ct-item'), c = it && contacts.find(x => x.id === it.dataset.id);
+          if (c && c.photo) { ctShowPhoto(c.photo, c.name); return; }
+        }
         const item = e.target.closest('.ct-item');
         const act = e.target.closest('[data-act]');
         if (!item || !act) return;
