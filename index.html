@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <script>try{var _t=localStorage.getItem("ui_theme_cache");if(_t==="win7"||_t==="win98"||_t==="xp")document.documentElement.setAttribute("data-theme",_t);}catch(e){}</script>
+  <script>try{if(sessionStorage.getItem("kcst_auth_token")||localStorage.getItem("kcst_auth_token"))document.documentElement.classList.add("authed");}catch(e){}try{var _t=localStorage.getItem("ui_theme_cache");if(_t==="win7"||_t==="win98"||_t==="xp")document.documentElement.setAttribute("data-theme",_t);}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#0a3a9c">
@@ -22,7 +22,7 @@
       } catch (e) {}
     })();
   </script>
-  <title>Skylight Pro</title>
+  <title>KCST Skylight Pro</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 256 256%22 width=%22256%22 height=%22256%22 role=%22img%22 aria-label=%22Skylight Pro icon%22%3E%3Cdefs%3E%3ClinearGradient id=%22bg%22 x1=%220%22 y1=%220%22 x2=%220%22 y2=%221%22%3E%3Cstop offset=%220%22 stop-color=%22%235b97f0%22/%3E%3Cstop offset=%221%22 stop-color=%22%2315419c%22/%3E%3C/linearGradient%3E%3ClinearGradient id=%22sky%22 x1=%220%22 y1=%220%22 x2=%220%22 y2=%221%22%3E%3Cstop offset=%220%22 stop-color=%22%23e8f4ff%22/%3E%3Cstop offset=%221%22 stop-color=%22%238fc4f5%22/%3E%3C/linearGradient%3E%3ClinearGradient id=%22gold%22 x1=%220%22 y1=%221%22 x2=%221%22 y2=%220%22%3E%3Cstop offset=%220%22 stop-color=%22%23e09a00%22/%3E%3Cstop offset=%220.6%22 stop-color=%22%23ffd54a%22/%3E%3Cstop offset=%221%22 stop-color=%22%23fff2a8%22/%3E%3C/linearGradient%3E%3ClinearGradient id=%22shine%22 x1=%220%22 y1=%220%22 x2=%220%22 y2=%221%22%3E%3Cstop offset=%220%22 stop-color=%22%23fff%22 stop-opacity=%220.55%22/%3E%3Cstop offset=%221%22 stop-color=%22%23fff%22 stop-opacity=%220%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x=%2212%22 y=%2212%22 width=%22232%22 height=%22232%22 rx=%2254%22 fill=%22url%28%23bg%29%22 stroke=%22%230a2862%22 stroke-width=%224%22/%3E%3Cpath d=%22M30 80 Q30 24 86 24 H170 Q226 24 226 80 Q128 112 30 80 Z%22 fill=%22url%28%23shine%29%22/%3E%3Crect x=%2252%22 y=%2252%22 width=%22152%22 height=%22152%22 rx=%2214%22 fill=%22%23ffffff%22 stroke=%22%230a2862%22 stroke-width=%223%22/%3E%3Crect x=%2262%22 y=%2262%22 width=%2262%22 height=%2262%22 rx=%226%22 fill=%22url%28%23sky%29%22/%3E%3Crect x=%22132%22 y=%2262%22 width=%2262%22 height=%2262%22 rx=%226%22 fill=%22url%28%23sky%29%22/%3E%3Crect x=%2262%22 y=%22132%22 width=%2262%22 height=%2262%22 rx=%226%22 fill=%22url%28%23sky%29%22/%3E%3Crect x=%22132%22 y=%22132%22 width=%2262%22 height=%2262%22 rx=%226%22 fill=%22url%28%23sky%29%22/%3E%3Cellipse cx=%2286%22 cy=%2284%22 rx=%2214%22 ry=%226%22 fill=%22%23fff%22 opacity=%220.9%22/%3E%3Cellipse cx=%22164%22 cy=%22160%22 rx=%2216%22 ry=%226%22 fill=%22%23fff%22 opacity=%220.9%22/%3E%3Cg stroke=%22%230a2862%22 stroke-width=%222.5%22 stroke-linejoin=%22round%22%3E%3Cpath d=%22M40 188 C86 180 152 138 214 56 C196 118 138 178 40 188 Z%22 fill=%22url%28%23gold%29%22/%3E%3Cpath d=%22M56 204 C98 198 150 168 198 118 C182 160 136 198 56 204 Z%22 fill=%22url%28%23gold%29%22/%3E%3Cpath d=%22M80 220 C112 216 150 196 184 160 C168 190 132 218 80 220 Z%22 fill=%22url%28%23gold%29%22/%3E%3C/g%3E%3C/svg%3E">
   <style>
     /* ---------- GLOBAL ---------- */
@@ -3268,6 +3268,84 @@
     html.mobile-app #mobileNav button .mn-icon { font-size: 1.35rem; line-height: 1; }
     html.mobile-app #mobileNav button.active { color: #fff; background: rgba(255, 255, 255, 0.18); box-shadow: inset 0 3px 0 #ffce54; }
   
+    /* ==================== LOGIN / REGISTER PAGE ==================== */
+    #loginGate { position: fixed; inset: 0; z-index: 200000; display: flex; align-items: center; justify-content: center; padding: 18px; box-sizing: border-box; overflow: auto;
+      font-family: 'Segoe UI', system-ui, -apple-system, Tahoma, Arial, sans-serif;
+      background: linear-gradient(135deg, #07163a 0%, #123d86 45%, #1b78c9 100%); background-size: 200% 200%; animation: lgBg 18s ease-in-out infinite alternate; }
+    @keyframes lgBg { from { background-position: 0% 30%; } to { background-position: 100% 70%; } }
+    html.authed #loginGate { display: none; }
+    #loginGate .lg-bg { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+    #loginGate .lg-bg i { position: absolute; border-radius: 50%; filter: blur(50px); opacity: 0.55; animation: lgFloat 14s ease-in-out infinite alternate; }
+    #loginGate .lg-bg .o1 { width: 380px; height: 380px; left: -90px; top: -80px; background: #3fb6ff; }
+    #loginGate .lg-bg .o2 { width: 320px; height: 320px; right: -60px; bottom: -70px; background: #7a5cff; animation-delay: -5s; }
+    #loginGate .lg-bg .o3 { width: 220px; height: 220px; left: 55%; top: 12%; background: #19d3c5; opacity: 0.35; animation-delay: -9s; }
+    @keyframes lgFloat { from { transform: translate(0,0) scale(1); } to { transform: translate(40px,30px) scale(1.15); } }
+    #loginGate .lg-shell { position: relative; display: flex; width: 860px; max-width: 100%; min-height: 520px; border-radius: 22px; overflow: hidden;
+      background: #fff; box-shadow: 0 30px 80px rgba(0,10,40,0.6), 0 0 0 1px rgba(255,255,255,0.25); animation: lgRise 0.5s cubic-bezier(.2,.8,.2,1); }
+    @keyframes lgRise { from { opacity: 0; transform: translateY(24px) scale(0.98); } to { opacity: 1; transform: none; } }
+    #loginGate .lg-brand { flex: 0 0 42%; position: relative; padding: 40px 34px; color: #fff; display: flex; flex-direction: column; justify-content: center;
+      background: radial-gradient(circle at 20% 15%, rgba(255,255,255,0.22) 0%, transparent 45%), linear-gradient(160deg, #1456b8 0%, #0b2f73 100%); }
+    #loginGate .lg-brand::after { content: ''; position: absolute; right: -60px; bottom: -60px; width: 220px; height: 220px; border-radius: 50%; background: rgba(255,255,255,0.08); }
+    #loginGate .lg-brand-logo { width: 68px; height: 68px; border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 2.1rem;
+      background: rgba(255,255,255,0.16); border: 1px solid rgba(255,255,255,0.4); box-shadow: 0 8px 24px rgba(0,0,0,0.25); backdrop-filter: blur(4px); }
+    #loginGate .lg-brand h1 { margin: 18px 0 4px; font-size: 1.85rem; font-weight: 800; letter-spacing: -0.02em; }
+    #loginGate .lg-brand p { margin: 0 0 22px; opacity: 0.85; font-size: 0.92rem; }
+    #loginGate .lg-brand ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 11px; font-size: 0.88rem; position: relative; z-index: 1; }
+    #loginGate .lg-brand li { display: flex; align-items: center; gap: 10px; }
+    #loginGate .lg-brand li span { width: 30px; height: 30px; border-radius: 9px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.16); }
+    #loginGate .lg-panel { flex: 1; padding: 34px 40px 28px; display: flex; flex-direction: column; justify-content: center; min-width: 0; background: linear-gradient(180deg, #fff 0%, #f6f9ff 100%); }
+    #loginGate .lg-tabs { position: relative; display: flex; background: #e8eefb; border-radius: 12px; padding: 4px; margin-bottom: 22px; }
+    #loginGate .lg-tabs button { position: relative; z-index: 1; flex: 1; border: none; background: none; font: inherit; font-weight: 700; font-size: 0.88rem; color: #4a5d85; padding: 9px 0; cursor: pointer; border-radius: 9px; transition: color 0.2s; }
+    #loginGate .lg-tabs button.active { color: #0d3a8c; }
+    #loginGate .lg-ink { position: absolute; top: 4px; bottom: 4px; left: 4px; width: calc(50% - 4px); border-radius: 9px; background: #fff; box-shadow: 0 2px 8px rgba(20,60,140,0.2); transition: transform 0.25s cubic-bezier(.3,.8,.3,1); }
+    #loginGate .lg-tabs.reg .lg-ink { transform: translateX(100%); }
+    #loginGate .lg-tabs.hidden { display: none; }
+    #loginGate h2 { margin: 0; font-size: 1.55rem; font-weight: 800; color: #0b1f4a; letter-spacing: -0.02em; }
+    #loginGate .lg-sub { margin: 4px 0 18px; font-size: 0.86rem; color: #6a7898; }
+    #loginGate #lgBody { display: flex; flex-direction: column; gap: 13px; }
+    #loginGate .lg-field { position: relative; }
+    #loginGate .lg-ico { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 1.05rem; pointer-events: none; opacity: 0.75; }
+    #loginGate .lg-field input { width: 100%; box-sizing: border-box; height: 50px; padding: 18px 44px 0 44px; font: inherit; font-size: 0.95rem; color: #0b1f4a; background: #fff;
+      border: 1.5px solid #d2dcf0; border-radius: 12px; outline: none; transition: border-color 0.15s, box-shadow 0.15s; }
+    #loginGate .lg-field input:focus { border-color: #2a6fe0; box-shadow: 0 0 0 4px rgba(42,111,224,0.18); }
+    #loginGate .lg-field label { position: absolute; left: 44px; top: 50%; transform: translateY(-50%); font-size: 0.92rem; color: #8090b0; pointer-events: none; transition: all 0.15s; }
+    #loginGate .lg-field input:focus + label, #loginGate .lg-field input:not(:placeholder-shown) + label { top: 14px; font-size: 0.68rem; font-weight: 700; color: #2a6fe0; }
+    #loginGate .lg-eye { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); width: 38px; height: 38px; border: none; background: none; font-size: 1.05rem; cursor: pointer; opacity: 0.6; border-radius: 8px; }
+    #loginGate .lg-eye:hover { opacity: 1; background: #eef3fd; }
+    #loginGate .lg-row { display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; color: #4a5d85; }
+    #loginGate .lg-check { display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 0.82rem; color: #3b4d73; }
+    #loginGate .lg-check input { width: 16px; height: 16px; accent-color: #2a6fe0; }
+    #loginGate .lg-btn { position: relative; margin-top: 4px; height: 50px; border: none; border-radius: 12px; font: inherit; font-size: 1rem; font-weight: 700; color: #fff; cursor: pointer; overflow: hidden;
+      background: linear-gradient(135deg, #2a7bf0 0%, #1b4fc4 100%); box-shadow: 0 8px 22px rgba(30,90,220,0.4); transition: transform 0.12s, box-shadow 0.12s, filter 0.12s; }
+    #loginGate .lg-btn:hover { transform: translateY(-1px); box-shadow: 0 12px 28px rgba(30,90,220,0.5); filter: brightness(1.06); }
+    #loginGate .lg-btn:active { transform: translateY(1px); }
+    #loginGate .lg-btn:disabled { opacity: 0.7; cursor: wait; transform: none; }
+    #loginGate .lg-btn.ghost { background: #eef3fd; color: #1b4fc4; box-shadow: none; }
+    #loginGate .lg-strength { display: flex; align-items: center; gap: 8px; margin-top: -4px; font-size: 0.72rem; color: #6a7898; }
+    #loginGate .lg-strength .bar { flex: 1; height: 5px; border-radius: 3px; background: #e3e9f6; overflow: hidden; }
+    #loginGate .lg-strength .bar i { display: block; height: 100%; width: 0; border-radius: 3px; transition: width 0.2s, background 0.2s; }
+    #loginGate .lg-msg { min-height: 1.3em; margin-top: 12px; font-size: 0.84rem; font-weight: 600; color: #c02a2a; text-align: center; }
+    #loginGate .lg-msg.ok { color: #14803f; }
+    #loginGate .lg-msg.info { color: #3b5fa8; }
+    #loginGate .lg-shell.shake { animation: lgShake 0.35s; }
+    @keyframes lgShake { 20%,60% { transform: translateX(-9px); } 40%,80% { transform: translateX(9px); } }
+    @media (max-width: 720px) {
+      #loginGate .lg-brand { display: none; }
+      #loginGate .lg-shell { min-height: 0; border-radius: 18px; width: 440px; }
+      #loginGate .lg-panel { padding: 26px 22px 22px; }
+    }
+    @media (prefers-reduced-motion: reduce) { #loginGate, #loginGate .lg-bg i, #loginGate .lg-shell { animation: none !important; } }
+    /* users manager (Settings) */
+    .lg-users { display: flex; flex-direction: column; gap: 4px; max-height: 190px; overflow-y: auto; }
+    .lg-urow { display: flex; align-items: center; gap: 6px; padding: 5px 7px; background: #fff; border: 1px solid #b8cce8; border-radius: 4px; font-size: 0.74rem; }
+    .lg-urow .nm { flex: 1; min-width: 0; font-weight: 700; color: #0a2862; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .lg-urow .bd { font-size: 0.62rem; font-weight: 800; padding: 1px 6px; border-radius: 8px; color: #fff; }
+    .lg-urow .bd.admin { background: #6a3fc8; } .lg-urow .bd.active { background: #1f9a4d; } .lg-urow .bd.pending { background: #e08a00; } .lg-urow .bd.disabled { background: #8a8a8a; }
+    .lg-urow button { padding: 2px 7px; font-size: 0.68rem; cursor: pointer; border: 1px solid #7f9db9; border-radius: 3px; background: linear-gradient(180deg,#fff,#dfe8f6); }
+    .lg-urow button.del { color: #a02020; }
+    #lgPendingBadge { display: inline-block; margin-left: 4px; padding: 0 7px; border-radius: 9px; background: #e08a00; color: #fff; font-size: 0.65rem; font-weight: 800; }
+    #lgPendingBadge:empty { display: none; }
+
     /* ==================== CLOCK FLYOUT (taskbar calendar) ==================== */
     .system-tray .clock { cursor: pointer; border-radius: 3px; padding: 0 4px; }
     .system-tray .clock:hover { background: rgba(255,255,255,0.18); }
@@ -3303,6 +3381,67 @@
     #clockFlyout .cf-foot { border-top: 1px solid #c4c1b0; padding: 6px 10px; }
     #clockFlyout .cf-foot button { background: none; border: none; font: inherit; font-size: 0.78rem; color: #0a4fc4; cursor: pointer; padding: 2px 0; }
     #clockFlyout .cf-foot button:hover { text-decoration: underline; }
+
+    /* ==================== SETTINGS WINDOW — sidebar layout ==================== */
+    .window-settings { width: 780px; max-width: calc(100vw - 40px); height: min(600px, calc(100vh - var(--taskbar-height) - 20px)); }
+    @media (max-width: 1200px) { .window-settings { max-width: 780px; } }
+    .st-content { display: flex; flex-direction: row; padding: 0; overflow: hidden; min-height: 0; background: #eef3fb; }
+    .st-nav { flex: 0 0 188px; display: flex; flex-direction: column; gap: 4px; padding: 14px 10px 12px; color: #fff; overflow-y: auto;
+      background: radial-gradient(circle at 20% 0%, rgba(255,255,255,0.18) 0%, transparent 45%), linear-gradient(180deg, #1b57b8 0%, #0d2d6b 100%); }
+    .st-brand { display: flex; align-items: center; gap: 8px; font-size: 1.05rem; font-weight: 800; letter-spacing: -0.01em; padding: 2px 8px 14px; }
+    .st-nav button { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; padding: 8px 10px; border: none; border-radius: 10px; background: transparent;
+      color: #d6e5ff; font: inherit; font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: background 0.15s, color 0.15s; }
+    .st-nav button .ic { width: 28px; height: 28px; flex: 0 0 auto; display: flex; align-items: center; justify-content: center; border-radius: 8px; background: rgba(255,255,255,0.14); font-size: 0.95rem; }
+    .st-nav button:hover { background: rgba(255,255,255,0.12); color: #fff; }
+    .st-nav button.active { background: #fff; color: #0d3a8c; box-shadow: 0 4px 12px rgba(0,10,50,0.3); }
+    .st-nav button.active .ic { background: #e4eeff; }
+    .st-badge { margin-left: auto; background: #e08a00; color: #fff; border-radius: 9px; padding: 0 7px; font-size: 0.62rem; font-weight: 800; }
+    .st-badge:empty { display: none; }
+    .st-who { margin-top: auto; display: flex; align-items: center; gap: 9px; padding: 9px; border-radius: 12px; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); }
+    .st-who .av { width: 34px; height: 34px; flex: 0 0 auto; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; background: linear-gradient(135deg, #5bb0ff, #2a63c8); border: 2px solid rgba(255,255,255,0.8); }
+    .st-who .tx { min-width: 0; }
+    .st-who .nm { font-size: 0.8rem; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .st-who .rl { font-size: 0.66rem; opacity: 0.8; text-transform: capitalize; }
+    .st-main { flex: 1; min-width: 0; overflow-y: auto; padding: 16px 18px 18px; }
+    .st-pane { display: none; }
+    .st-pane.active { display: block; animation: stFade 0.2s ease-out; }
+    @keyframes stFade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+    .st-pane .settings-section { background: #fff; border: 1px solid #dbe5f5; border-radius: 14px; padding: 16px 16px 12px; margin-bottom: 14px; box-shadow: 0 2px 10px rgba(30,70,150,0.08); }
+    .st-pane .settings-section-legend { position: static; display: block; top: auto; margin: 0 0 12px; padding: 0; background: none; border: none; border-radius: 0; font-size: 0.98rem; font-weight: 800; color: #0b2a66; }
+    .st-pane .modal-field { margin-bottom: 11px; }
+    .st-pane .modal-field label { font-size: 0.72rem; font-weight: 700; color: #4a5d85; }
+    .st-pane .input-wrap { background: #f6f9ff; border: 1.5px solid #d3def2; border-radius: 10px; padding: 3px 11px; min-height: 36px; box-shadow: none; transition: border-color 0.15s, box-shadow 0.15s, background 0.15s; }
+    .st-pane .input-wrap:focus-within { background: #fff; border-color: #2a6fe0; box-shadow: 0 0 0 3px rgba(42,111,224,0.16); }
+    .st-pane .aero-btn { border-radius: 10px; padding: 8px 16px; font-weight: 700; font-size: 0.78rem; }
+    .st-pane .aero-info { background: linear-gradient(135deg, #eaf2ff 0%, #f5f9ff 100%); border: 1px solid #cfe0fa; border-radius: 12px; padding: 9px 14px; margin-bottom: 14px; }
+    .st-pane .cash-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 4px; }
+    .st-pane .settings-preview { background: #fff; border: 2px dashed #bcd0ee; border-radius: 12px; padding: 16px 18px; margin-top: 0; box-shadow: inset 0 0 0 4px #f3f7ff; }
+    .st-pane .profile-edit-row { gap: 18px; }
+    .st-pane .profile-pic-preview { width: 96px; height: 96px; border-radius: 18px; border: 3px solid #fff; box-shadow: 0 0 0 1px #8fb0e0, 0 6px 16px rgba(20,60,140,0.3); }
+    .st-pane .profile-pic-actions .aero-btn { padding: 4px 10px; font-size: 0.7rem; }
+    .st-pane .theme-grid { gap: 12px; }
+    .st-pane .theme-card { border-radius: 14px; padding: 9px; border: 2px solid #d3def2; font-size: 0.8rem; transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s; }
+    .st-pane .theme-card:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(30,70,150,0.2); }
+    .st-pane .theme-prev { height: 78px; border-radius: 8px; }
+    .st-pane .lg-users { max-height: 320px; gap: 6px; }
+    .st-pane .lg-urow { border-radius: 10px; padding: 8px 10px; border-color: #dbe5f5; background: #f8fbff; }
+    .st-pane .lg-urow button { border-radius: 7px; padding: 3px 9px; }
+    @media (max-width: 640px) {
+      .st-content { flex-direction: column; }
+      .st-nav { flex: 0 0 auto; flex-direction: row; flex-wrap: wrap; padding: 8px; }
+      .st-brand, .st-who { display: none; }
+      .st-nav button { width: auto; flex: 1 1 auto; }
+    }
+    html[data-theme="win98"] .st-content { background: #c0c0c0; }
+    html[data-theme="win98"] .st-nav { background: #000080; }
+    html[data-theme="win98"] .st-nav button { border-radius: 0; color: #fff; }
+    html[data-theme="win98"] .st-nav button .ic { border-radius: 0; background: transparent; }
+    html[data-theme="win98"] .st-nav button.active { background: #c0c0c0; color: #000; box-shadow: none; }
+    html[data-theme="win98"] .st-who { border-radius: 0; background: transparent; border: 1px solid #c0c0c0; }
+    html[data-theme="win98"] .st-pane .settings-section, html[data-theme="win98"] .st-pane .input-wrap, html[data-theme="win98"] .st-pane .aero-btn, html[data-theme="win98"] .st-pane .aero-info, html[data-theme="win98"] .st-pane .settings-preview, html[data-theme="win98"] .st-pane .theme-card, html[data-theme="win98"] .st-pane .lg-urow { border-radius: 0; }
+    html[data-theme="win98"] .st-pane .settings-section-legend { color: #000; }
+    html[data-theme="win7"] .st-nav { background: linear-gradient(180deg, rgba(88,130,190,0.95) 0%, rgba(24,46,86,0.97) 100%); }
+    html[data-theme="win7"] .st-content { background: #e6eef9; }
 
     /* ==================== DESKTOP THEMES ====================
        default (no attribute / "xp") = Windows XP Luna, the look above.
@@ -3599,10 +3738,6 @@
       background: linear-gradient(180deg, rgba(255,255,255,0.5) 0%, rgba(150,220,255,0.28) 48%, rgba(60,170,255,0.3) 52%, rgba(160,225,255,0.35) 100%);
       border-color: rgba(200,235,255,0.95); box-shadow: 0 0 8px rgba(120,210,255,0.7), inset 0 0 0 1px rgba(255,255,255,0.35);
     }
-    html[data-theme="win7"] #xpShutDownBtn:hover {
-      background: linear-gradient(180deg, rgba(255,190,170,0.6) 0%, rgba(230,90,60,0.5) 48%, rgba(200,40,20,0.6) 52%, rgba(240,110,80,0.55) 100%);
-      border-color: rgba(255,210,200,0.95); box-shadow: 0 0 8px rgba(255,110,80,0.7), inset 0 0 0 1px rgba(255,255,255,0.35);
-    }
     html[data-theme="win7"] .xp-app-item { padding: 6px 8px; border-radius: 3px; color: #1b1b1b; font-family: 'Segoe UI', Tahoma, sans-serif; }
     html[data-theme="win7"] .xp-app-item:hover {
       background: linear-gradient(180deg, #f1f9ff 0%, #d9eefc 48%, #c4e4f9 52%, #d6ecfb 100%); border-color: #8ec9ec; color: #000;
@@ -3826,7 +3961,7 @@
       display: grid; grid-template-columns: 28px 1fr 150px; grid-template-rows: auto 1fr auto; animation: none;
     }
     html[data-theme="win98"] .start-menu::before {
-      content: 'KCST  Windows 98'; grid-column: 1; grid-row: 1 / 4; display: flex; align-items: flex-start; justify-content: flex-start;
+      content: 'KCST  Skylight Pro'; grid-column: 1; grid-row: 1 / 4; display: flex; align-items: flex-start; justify-content: flex-start;
       writing-mode: vertical-rl; transform: rotate(180deg); padding: 8px 4px; margin-right: 2px;
       background: linear-gradient(0deg, #000080 0%, #1084d0 100%); color: #fff; font-family: 'MS Sans Serif', 'Microsoft Sans Serif', Tahoma, Arial, sans-serif; font-size: 1.15rem; font-weight: 700; letter-spacing: 0.04em; white-space: nowrap;
     }
@@ -3941,7 +4076,7 @@
           <svg class="sky-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="Skylight Pro"><defs><linearGradient id="slp-bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5b97f0"/><stop offset="1" stop-color="#15419c"/></linearGradient><linearGradient id="slp-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e8f4ff"/><stop offset="1" stop-color="#8fc4f5"/></linearGradient><linearGradient id="slp-gold" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#e09a00"/><stop offset="0.6" stop-color="#ffd54a"/><stop offset="1" stop-color="#fff2a8"/></linearGradient><linearGradient id="slp-shine" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0.55"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient></defs><rect x="12" y="12" width="232" height="232" rx="54" fill="url(#slp-bg)" stroke="#0a2862" stroke-width="4"/><path d="M30 80 Q30 24 86 24 H170 Q226 24 226 80 Q128 112 30 80 Z" fill="url(#slp-shine)"/><rect x="52" y="52" width="152" height="152" rx="14" fill="#ffffff" stroke="#0a2862" stroke-width="3"/><rect x="62" y="62" width="62" height="62" rx="6" fill="url(#slp-sky)"/><rect x="132" y="62" width="62" height="62" rx="6" fill="url(#slp-sky)"/><rect x="62" y="132" width="62" height="62" rx="6" fill="url(#slp-sky)"/><rect x="132" y="132" width="62" height="62" rx="6" fill="url(#slp-sky)"/><ellipse cx="86" cy="84" rx="14" ry="6" fill="#fff" opacity="0.9"/><ellipse cx="164" cy="160" rx="16" ry="6" fill="#fff" opacity="0.9"/><g stroke="#0a2862" stroke-width="2.5" stroke-linejoin="round"><path d="M40 188 C86 180 152 138 214 56 C196 118 138 178 40 188 Z" fill="url(#slp-gold)"/><path d="M56 204 C98 198 150 168 198 118 C182 160 136 198 56 204 Z" fill="url(#slp-gold)"/><path d="M80 220 C112 216 150 196 184 160 C168 190 132 218 80 220 Z" fill="url(#slp-gold)"/></g></svg>
           <span class="xp-boot-logo-text">
             KCST Media Technology<br>
-            <strong>Skylight Pro<sup>™</sup></strong>
+            <strong>KCST Skylight Pro<sup>™</sup></strong>
           </span>
         </div>
 
@@ -4690,7 +4825,7 @@
   <div class="window-settings" id="settingsWindow">
     <div class="title-bar" id="settingsTitleBar">
       <div class="title-text">
-        <span>⚙️</span> Settings — Profile &amp; Company
+        <span>⚙️</span> Settings
         <span class="status-dot" id="settingsStatusDot" title="Database status"></span>
       </div>
       <div class="caption-buttons">
@@ -4700,17 +4835,18 @@
       </div>
     </div>
 
-    <div class="window-content">
-      <div class="settings-section" id="themeSection">
-        <div class="settings-section-legend">🎨 Desktop Theme</div>
-        <div class="theme-grid" id="themeGrid">
-          <button class="theme-card" type="button" data-theme="xp"><div class="theme-prev p-xp"><div class="tp-win"></div><div class="tp-task"></div></div>Windows XP</button>
-          <button class="theme-card" type="button" data-theme="win7"><div class="theme-prev p-win7"><div class="tp-win"></div><div class="tp-task"></div></div>Windows 7</button>
-          <button class="theme-card" type="button" data-theme="win98"><div class="theme-prev p-win98"><div class="tp-win"></div><div class="tp-task"></div></div>Windows 98</button>
-        </div>
-        <div style="margin-top:8px;font-size:0.68rem;font-weight:700;color:#0a2862;" id="themeStatus">Click a theme to apply it — it is saved automatically.</div>
-      </div>
-
+    <div class="window-content st-content">
+      <nav class="st-nav" id="stNav">
+        <div class="st-brand"><span>⚙️</span> Settings</div>
+        <button type="button" data-pane="profile" class="active"><span class="ic">👤</span>Profile</button>
+        <button type="button" data-pane="company"><span class="ic">🏢</span>Company</button>
+        <button type="button" data-pane="appearance"><span class="ic">🎨</span>Appearance</button>
+        <button type="button" data-pane="security"><span class="ic">🔐</span>Security</button>
+        <button type="button" data-pane="users" id="stNavUsers" style="display:none;"><span class="ic">👥</span>Users<b class="st-badge" id="stNavBadge"></b></button>
+        <div class="st-who" id="stWho"><div class="av" id="stWhoAv">?</div><div class="tx"><div class="nm" id="stWhoName">Not signed in</div><div class="rl" id="stWhoRole"></div></div></div>
+      </nav>
+      <div class="st-main">
+        <section class="st-pane active" data-pane="profile">
       <div class="settings-section" id="profileSection">
         <div class="settings-section-legend">👤 User Profile</div>
         <div class="profile-edit-row">
@@ -4743,6 +4879,8 @@
         </div>
       </div>
 
+        </section>
+        <section class="st-pane" data-pane="company">
       <div class="aero-info">
         <span class="badge" id="settingsSyncBadge">●</span>
         <span style="font-size:0.72rem; color:#0a2862;">These details will appear on all printed documents (Invoices, Price List, Vehicles)</span>
@@ -4806,6 +4944,45 @@
         <button class="aero-btn success" id="settingsSaveBtn" type="button">
           <span>💾</span> Save Settings
         </button>
+      </div>
+        </section>
+        <section class="st-pane" data-pane="appearance">
+      <div class="settings-section" id="themeSection">
+        <div class="settings-section-legend">🎨 Desktop Theme</div>
+        <div class="theme-grid" id="themeGrid">
+          <button class="theme-card" type="button" data-theme="xp"><div class="theme-prev p-xp"><div class="tp-win"></div><div class="tp-task"></div></div>Windows XP</button>
+          <button class="theme-card" type="button" data-theme="win7"><div class="theme-prev p-win7"><div class="tp-win"></div><div class="tp-task"></div></div>Windows 7</button>
+          <button class="theme-card" type="button" data-theme="win98"><div class="theme-prev p-win98"><div class="tp-win"></div><div class="tp-task"></div></div>Windows 98</button>
+        </div>
+        <div style="margin-top:8px;font-size:0.68rem;font-weight:700;color:#0a2862;" id="themeStatus">Click a theme to apply it — it is saved automatically.</div>
+      </div>
+
+        </section>
+        <section class="st-pane" data-pane="security">
+      <div class="settings-section" id="loginSection">
+        <div class="settings-section-legend">🔐 My Login</div>
+        <div class="modal-field"><label>Current password</label><div class="input-wrap"><input type="password" id="lgCurPw" autocomplete="current-password"></div></div>
+        <div class="modal-field"><label>User name</label><div class="input-wrap"><input type="text" id="lgNewUser" autocomplete="username"></div></div>
+        <div class="modal-field"><label>New password (leave empty to keep the current one)</label><div class="input-wrap"><input type="password" id="lgNewPw" autocomplete="new-password"></div></div>
+        <div class="modal-field"><label>Confirm new password</label><div class="input-wrap"><input type="password" id="lgNewPw2" autocomplete="new-password"></div></div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+          <button class="aero-btn primary" type="button" id="lgChangeBtn"><span>💾</span> Update Login</button>
+          <span id="lgChangeStatus" style="font-size:0.68rem;font-weight:700;color:#0a2862;"></span>
+        </div>
+      </div>
+
+        </section>
+        <section class="st-pane" data-pane="users">
+      <div class="settings-section" id="usersSection" style="display:none;">
+        <div class="settings-section-legend">👥 Users <span id="lgPendingBadge"></span></div>
+        <div id="lgUsersList" class="lg-users"></div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:6px;">
+          <button class="aero-btn" type="button" id="lgUsersRefresh"><span>🔄</span> Refresh</button>
+          <span id="lgUsersStatus" style="font-size:0.68rem;font-weight:700;color:#0a2862;"></span>
+        </div>
+      </div>
+
+        </section>
       </div>
     </div>
   </div>
@@ -4969,11 +5146,11 @@
     </div>
 
     <div class="xp-footer">
+      <button class="xp-footer-btn" id="xpSignOutBtn" type="button">
+        <span>🔒</span> Log Off
+      </button>
       <button class="xp-footer-btn" id="xpLogOffBtn" type="button">
         <span>🔄</span> Restart
-      </button>
-      <button class="xp-footer-btn" id="xpShutDownBtn" type="button">
-        <span>⏻</span> Shut Down
       </button>
     </div>
   </div>
@@ -5048,6 +5225,35 @@
         <span class="time" id="clockTime">--:--:-- --</span>
         <span class="date" id="clockDate">--/--/----</span>
       </div>
+    </div>
+  </div>
+
+  <!-- LOGIN GATE (user name + password sign in / register; no Supabase Auth) -->
+  <div id="loginGate">
+    <div class="lg-bg"><i class="o1"></i><i class="o2"></i><i class="o3"></i></div>
+    <div class="lg-shell">
+      <aside class="lg-brand">
+        <div class="lg-brand-logo">🖥️</div>
+        <h1>KCST Skylight Pro</h1>
+        <p>Your whole business desk in one place.</p>
+        <ul>
+          <li><span>🔔</span> Reminders &amp; alarms</li>
+          <li><span>👥</span> Contacts with photos</li>
+          <li><span>🧮</span> Calculators &amp; business tools</li>
+          <li><span>☁️</span> Saved safely in your database</li>
+        </ul>
+      </aside>
+      <main class="lg-panel">
+        <div class="lg-tabs" id="lgTabs">
+          <button type="button" data-tab="login" class="active">Sign in</button>
+          <button type="button" data-tab="register">Register</button>
+          <span class="lg-ink"></span>
+        </div>
+        <h2 id="lgTitle">Welcome</h2>
+        <p class="lg-sub" id="lgSub">Loading…</p>
+        <div id="lgBody"></div>
+        <div class="lg-msg" id="lgMsg"></div>
+      </main>
     </div>
   </div>
 
@@ -10619,18 +10825,6 @@
         }).then(ok => { if (ok) window.location.reload(); });
       });
 
-      document.getElementById('xpShutDownBtn').addEventListener('click', () => {
-        // Start menu stays open; the confirm dialog appears inside it
-        showConfirm({
-          title: '⏻ Shut Down', message: 'Are you sure you want to shut down? Unsaved work may be lost.',
-          confirmLabel: 'Shut Down', type: 'danger', icon: '⏻', parentWindow: startMenu
-        }).then(ok => {
-          if (ok) {
-            document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#000;color:#fff;font-size:1.2rem;">It is now safe to turn off your computer.</div>';
-          }
-        });
-      });
-
       // ==================== RATE CALCULATOR ====================
       (function initRateCalculator() {
         const qtyEl = document.getElementById('rateQty'), unitEl = document.getElementById('rateUnit');
@@ -11365,6 +11559,262 @@
         document.addEventListener('mousedown', e => { if (isOpen() && !fly.contains(e.target) && !clk.contains(e.target)) close(); });
         document.addEventListener('keydown', e => { if (e.key === 'Escape' && isOpen()) close(); });
         window.addEventListener('resize', () => { if (isOpen()) place(); });
+      })();
+
+      // ==================== LOGIN / REGISTER (user name + password; users kept hashed in app_settings; first user = admin, others need approval) ====================
+      (function () {
+        const gate = document.getElementById('loginGate');
+        if (!gate) return;
+        const $ = id => document.getElementById(id);
+        const USERS_KEY = 'login_users', LEGACY_KEY = 'login_credentials', TOKEN_KEY = 'kcst_auth_token', CACHE_KEY = 'kcst_users_cache';
+        let users = [], me = null, fails = 0, lockedUntil = 0, mode = 'login';
+
+        // ----- hashing -----
+        function sha256Fallback(str) {
+          const K = [0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2];
+          const bytes = Array.from(unescape(encodeURIComponent(str)), c => c.charCodeAt(0));
+          const l = bytes.length * 8; bytes.push(0x80);
+          while (bytes.length % 64 !== 56) bytes.push(0);
+          for (let i = 7; i >= 0; i--) bytes.push(i >= 4 ? 0 : (l >>> (i * 8)) & 255);
+          let H = [0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19];
+          const rr = (x, n) => (x >>> n) | (x << (32 - n));
+          for (let o = 0; o < bytes.length; o += 64) {
+            const w = new Array(64);
+            for (let i = 0; i < 16; i++) w[i] = (bytes[o+4*i] << 24) | (bytes[o+4*i+1] << 16) | (bytes[o+4*i+2] << 8) | bytes[o+4*i+3];
+            for (let i = 16; i < 64; i++) {
+              const s0 = rr(w[i-15],7) ^ rr(w[i-15],18) ^ (w[i-15] >>> 3), s1 = rr(w[i-2],17) ^ rr(w[i-2],19) ^ (w[i-2] >>> 10);
+              w[i] = (w[i-16] + s0 + w[i-7] + s1) | 0;
+            }
+            let [a,b,c,d,e,f,g,h] = H;
+            for (let i = 0; i < 64; i++) {
+              const S1 = rr(e,6) ^ rr(e,11) ^ rr(e,25), ch = (e & f) ^ (~e & g), t1 = (h + S1 + ch + K[i] + w[i]) | 0;
+              const S0 = rr(a,2) ^ rr(a,13) ^ rr(a,22), mj = (a & b) ^ (a & c) ^ (b & c), t2 = (S0 + mj) | 0;
+              h = g; g = f; f = e; e = (d + t1) | 0; d = c; c = b; b = a; a = (t1 + t2) | 0;
+            }
+            H = [H[0]+a|0,H[1]+b|0,H[2]+c|0,H[3]+d|0,H[4]+e|0,H[5]+f|0,H[6]+g|0,H[7]+h|0];
+          }
+          return H.map(x => (x >>> 0).toString(16).padStart(8, '0')).join('');
+        }
+        async function sha256(str) {
+          try { if (window.crypto && crypto.subtle) { const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str)); return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join(''); } } catch (e) {}
+          return sha256Fallback(str);
+        }
+        const randomSalt = () => Array.from((window.crypto && crypto.getRandomValues) ? crypto.getRandomValues(new Uint8Array(16)) : Array.from({ length: 16 }, () => Math.floor(Math.random() * 256)), b => b.toString(16).padStart(2, '0')).join('');
+        async function makeUser(u, pw, role, status) { const salt = randomSalt(); return { u, s: salt, h: await sha256(salt + ':' + pw), role, status, at: new Date().toISOString() }; }
+        const findUser = (list, name) => list.find(x => String(x.u).toLowerCase() === String(name).toLowerCase());
+
+        // ----- token / storage -----
+        const tokenOf = u => u.u.toLowerCase() + '|' + u.h;
+        const getToken = () => { try { return sessionStorage.getItem(TOKEN_KEY) || localStorage.getItem(TOKEN_KEY); } catch (e) { return null; } };
+        function setToken(t, keep) { try { sessionStorage.removeItem(TOKEN_KEY); localStorage.removeItem(TOKEN_KEY); (keep ? localStorage : sessionStorage).setItem(TOKEN_KEY, t); } catch (e) {} }
+        const clearToken = () => { try { sessionStorage.removeItem(TOKEN_KEY); localStorage.removeItem(TOKEN_KEY); } catch (e) {} };
+        const keepSigned = () => { try { return !!localStorage.getItem(TOKEN_KEY); } catch (e) { return false; } };
+
+        async function fetchUsers() {
+          const get = async key => {
+            const res = await withTimeout(supabase.from('app_settings').select('setting_value').eq('setting_key', key).maybeSingle(), 6000);
+            if (!res || res.error) throw (res && res.error) || new Error('Timed out');
+            return res.data && res.data.setting_value ? res.data.setting_value : null;
+          };
+          let raw = await get(USERS_KEY);
+          if (raw) return (JSON.parse(raw).users) || [];
+          const old = await get(LEGACY_KEY);                       // earlier single login -> becomes the admin
+          if (old) { const c = JSON.parse(old); const list = [{ u: c.u, s: c.s, h: c.h, role: 'admin', status: 'active', at: new Date().toISOString() }]; try { await writeUsers(list); } catch (e) {} return list; }
+          return [];
+        }
+        async function writeUsers(list) {
+          const { error } = await supabase.from('app_settings').upsert({ setting_key: USERS_KEY, setting_value: JSON.stringify({ users: list }), updated_at: new Date().toISOString() }, { onConflict: 'setting_key' });
+          if (error) throw error;
+          users = list; try { localStorage.setItem(CACHE_KEY, JSON.stringify(list)); } catch (e) {}
+        }
+        async function loadUsers() {
+          try { users = await fetchUsers(); try { localStorage.setItem(CACHE_KEY, JSON.stringify(users)); } catch (e) {} return true; }
+          catch (err) {
+            console.warn('Login: database not reachable', err && err.message);
+            try { const c = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null'); if (Array.isArray(c) && c.length) { users = c; return true; } } catch (e) {}
+            return false;
+          }
+        }
+        // read the latest list, change it, save it (avoids overwriting someone else's change)
+        async function mutate(fn) { const list = await fetchUsers(); const out = (await fn(list)) || list; await writeUsers(out); return out; }
+
+        // ----- UI helpers -----
+        const msg = (t, kind) => { const m = $('lgMsg'); m.textContent = t || ''; m.className = 'lg-msg' + (kind ? ' ' + kind : ''); };
+        const shake = () => { const c = gate.querySelector('.lg-shell'); c.classList.remove('shake'); void c.offsetWidth; c.classList.add('shake'); };
+        function setTabs(active, hidden) { const t = $('lgTabs'); t.classList.toggle('hidden', !!hidden); t.classList.toggle('reg', active === 'register'); t.querySelectorAll('button').forEach(b => b.classList.toggle('active', b.dataset.tab === active)); }
+        const field = (id, type, label, ico, ac) => `<div class="lg-field"><span class="lg-ico">${ico}</span><input id="${id}" type="${type}" placeholder=" " autocomplete="${ac}" autocapitalize="off" spellcheck="false"><label for="${id}">${label}</label>${type === 'password' ? `<button type="button" class="lg-eye" data-for="${id}" tabindex="-1" title="Show / hide password">👁</button>` : ''}</div>`;
+        function bindEnter(fn) { gate.querySelectorAll('#lgBody input').forEach(i => i.addEventListener('keydown', e => { if (e.key === 'Enter') fn(); })); }
+        $('lgBody').addEventListener('click', e => { const b = e.target.closest('.lg-eye'); if (b) { const i = $(b.dataset.for); i.type = i.type === 'password' ? 'text' : 'password'; } });
+        $('lgTabs').addEventListener('click', e => { const b = e.target.closest('button[data-tab]'); if (!b || b.classList.contains('active')) return; b.dataset.tab === 'register' ? showRegister() : showLogin(); });
+
+        function openApp(user) {
+          me = user; window.kcstUser = { name: user.u, role: user.role };
+          document.documentElement.classList.add('authed'); $('lgBody').innerHTML = ''; msg('');
+          const nu = $('lgNewUser'); if (nu) nu.value = user.u;
+          const us = $('usersSection'); if (us) us.style.display = user.role === 'admin' ? '' : 'none';
+          const nv = $('stNavUsers'); if (nv) nv.style.display = user.role === 'admin' ? '' : 'none';
+          if ($('stWhoName')) { $('stWhoName').textContent = user.u; $('stWhoRole').textContent = user.role; $('stWhoAv').textContent = user.u.charAt(0).toUpperCase(); }
+          if (user.role === 'admin') renderUsers();
+        }
+
+        function showError() {
+          setTabs('login', true); $('lgTitle').textContent = 'Can’t connect'; $('lgSub').textContent = 'The login is kept in the database.';
+          $('lgBody').innerHTML = '<button class="lg-btn" id="lgRetry" type="button">🔄 Try again</button>';
+          msg('Check your internet connection and try again.'); $('lgRetry').addEventListener('click', start);
+        }
+
+        function showLogin(note, kind) {
+          mode = 'login'; setTabs('login', false);
+          $('lgTitle').textContent = 'Welcome back'; $('lgSub').textContent = 'Sign in to open your desk.';
+          $('lgBody').innerHTML = field('lgUser', 'text', 'User name', '👤', 'username') + field('lgPw', 'password', 'Password', '🔒', 'current-password') +
+            `<div class="lg-row"><label class="lg-check"><input type="checkbox" id="lgKeep"> Keep me signed in</label></div><button class="lg-btn" id="lgGo" type="button">Sign in</button>`;
+          msg(note || '', kind);
+          const go = async () => {
+            const wait = Math.ceil((lockedUntil - Date.now()) / 1000);
+            if (wait > 0) return (msg(`Too many attempts — wait ${wait}s.`), shake());
+            const name = $('lgUser').value.trim(), pw = $('lgPw').value;
+            if (!name || !pw) return (msg('Enter your user name and password.'), shake());
+            $('lgGo').disabled = true; $('lgGo').textContent = 'Signing in…';
+            await loadUsers();                                           // always check the latest list
+            const u = findUser(users, name), h = u ? await sha256(u.s + ':' + pw) : null;
+            const reset = () => { $('lgGo').disabled = false; $('lgGo').textContent = 'Sign in'; };
+            if (!u || h !== u.h) {
+              reset(); $('lgPw').value = ''; fails++;
+              if (fails >= 5) { lockedUntil = Date.now() + 15000; fails = 0; msg('Too many wrong attempts — wait 15 seconds.'); } else msg('Wrong user name or password.');
+              shake(); return $('lgPw').focus();
+            }
+            if (u.status === 'pending') { reset(); msg('Your account is waiting for admin approval.', 'info'); return shake(); }
+            if (u.status === 'disabled') { reset(); msg('This account has been disabled.'); return shake(); }
+            fails = 0; setToken(tokenOf(u), $('lgKeep').checked); openApp(u);
+          };
+          $('lgGo').addEventListener('click', go); bindEnter(go);
+          setTimeout(() => $('lgUser') && $('lgUser').focus(), 60);
+        }
+
+        function strengthOf(p) { let n = 0; if (p.length >= 8) n++; if (/[a-z]/.test(p) && /[A-Z]/.test(p)) n++; if (/\d/.test(p)) n++; if (/[^A-Za-z0-9]/.test(p)) n++; return p.length ? Math.max(1, n) : 0; }
+        function showRegister() {
+          mode = 'register'; const first = users.length === 0;
+          setTabs('register', first);
+          $('lgTitle').textContent = first ? 'Create admin account' : 'Create account';
+          $('lgSub').textContent = first ? 'First time here — you will be the administrator.' : 'An admin must approve new accounts before they can sign in.';
+          $('lgBody').innerHTML = field('lgUser', 'text', 'Choose a user name', '👤', 'username') + field('lgPw', 'password', 'Password', '🔒', 'new-password') +
+            `<div class="lg-strength"><div class="bar"><i id="lgBar"></i></div><span id="lgStrTxt">Use 8+ characters</span></div>` +
+            field('lgPw2', 'password', 'Confirm password', '✅', 'new-password') +
+            (first ? `<label class="lg-check"><input type="checkbox" id="lgKeep" checked> Keep me signed in</label>` : '') +
+            `<button class="lg-btn" id="lgGo" type="button">${first ? 'Create &amp; sign in' : 'Register'}</button>`;
+          msg('');
+          $('lgPw').addEventListener('input', () => {
+            const n = strengthOf($('lgPw').value), cols = ['#e3e9f6', '#e04a3a', '#e8a21c', '#9ac52e', '#1f9a4d'], names = ['Use 8+ characters', 'Weak', 'Fair', 'Good', 'Strong'];
+            $('lgBar').style.width = (n * 25) + '%'; $('lgBar').style.background = cols[n]; $('lgStrTxt').textContent = names[n];
+          });
+          const go = async () => {
+            const name = $('lgUser').value.trim(), p = $('lgPw').value, p2 = $('lgPw2').value;
+            if (!/^[A-Za-z0-9_.-]{3,30}$/.test(name)) return (msg('User name: 3–30 letters, numbers, dot, dash or underscore.'), shake());
+            if (p.length < 4) return (msg('Password needs at least 4 characters.'), shake());
+            if (p !== p2) return (msg('Passwords do not match.'), shake());
+            $('lgGo').disabled = true; $('lgGo').textContent = 'Please wait…'; msg('');
+            try {
+              let created = null, wasFirst = false;
+              await mutate(async list => {
+                if (findUser(list, name)) throw new Error('That user name is already taken.');
+                wasFirst = list.length === 0;
+                created = await makeUser(name, p, wasFirst ? 'admin' : 'user', wasFirst ? 'active' : 'pending');
+                return [...list, created];
+              });
+              if (wasFirst) { setToken(tokenOf(created), $('lgKeep') ? $('lgKeep').checked : false); openApp(created); }
+              else showLogin('✓ Account created. Wait for an admin to approve it, then sign in.', 'ok');
+            } catch (err) { $('lgGo').disabled = false; $('lgGo').textContent = users.length ? 'Register' : 'Create & sign in'; msg(err.message || String(err)); shake(); }
+          };
+          $('lgGo').addEventListener('click', go); bindEnter(go);
+          setTimeout(() => $('lgUser') && $('lgUser').focus(), 60);
+        }
+
+        async function start() {
+          setTabs('login', true); $('lgTitle').textContent = 'KCST Skylight Pro'; $('lgSub').textContent = 'Loading…'; $('lgBody').innerHTML = ''; msg('');
+          const ok = await loadUsers();
+          if (!ok) { document.documentElement.classList.remove('authed'); return showError(); }
+          if (!users.length) { clearToken(); document.documentElement.classList.remove('authed'); return showRegister(); }
+          const t = getToken(), u = t && users.find(x => tokenOf(x) === t);
+          if (u && u.status === 'active') return openApp(u);          // still signed in
+          clearToken(); document.documentElement.classList.remove('authed'); showLogin();
+        }
+
+        // ----- Log Off -----
+        $('xpSignOutBtn').addEventListener('click', () => { clearToken(); window.location.reload(); });
+
+        // ----- Settings: my login -----
+        $('lgChangeBtn').addEventListener('click', async () => {
+          const st = $('lgChangeStatus'), say = (t, ok) => { st.textContent = t; st.style.color = ok ? '#1e6b3a' : '#a02020'; };
+          if (!me) return say('Not signed in.');
+          const cur = $('lgCurPw').value, nu = $('lgNewUser').value.trim(), np = $('lgNewPw').value, np2 = $('lgNewPw2').value;
+          if (!cur) return say('Enter your current password.');
+          if ((await sha256(me.s + ':' + cur)) !== me.h) return say('Current password is wrong.');
+          if (!/^[A-Za-z0-9_.-]{3,30}$/.test(nu)) return say('User name: 3–30 letters, numbers, . - _');
+          if (np && np.length < 4) return say('New password needs at least 4 characters.');
+          if (np !== np2) return say('New passwords do not match.');
+          say('Saving…', true);
+          try {
+            let updated = null;
+            await mutate(async list => {
+              const other = findUser(list, nu); if (other && other.u.toLowerCase() !== me.u.toLowerCase()) throw new Error('That user name is taken.');
+              const i = list.findIndex(x => x.u.toLowerCase() === me.u.toLowerCase()); if (i < 0) throw new Error('Account not found.');
+              const base = np ? await makeUser(nu, np, list[i].role, list[i].status) : { ...list[i], u: nu };
+              updated = { ...list[i], u: base.u, s: base.s, h: base.h }; list[i] = updated; return list;
+            });
+            me = updated; window.kcstUser = { name: me.u, role: me.role }; setToken(tokenOf(me), keepSigned());
+            $('lgCurPw').value = $('lgNewPw').value = $('lgNewPw2').value = ''; say('✓ Login updated and saved to database', true);
+            if (me.role === 'admin') renderUsers();
+          } catch (err) { say(err.message || String(err)); }
+        });
+
+        // ----- Settings: users (admin) -----
+        function drawUsers() {
+          const pend = users.filter(u => u.status === 'pending').length; $('lgPendingBadge').textContent = pend ? pend + ' pending' : ''; if ($('stNavBadge')) $('stNavBadge').textContent = pend ? String(pend) : '';
+          $('lgUsersList').innerHTML = users.map(u => {
+            const self = me && u.u.toLowerCase() === me.u.toLowerCase();
+            const esc = escapeHtml(u.u);
+            return `<div class="lg-urow" data-u="${esc}"><span class="nm" title="${esc}">${esc}${self ? ' (you)' : ''}</span>` +
+              `<span class="bd ${u.role === 'admin' ? 'admin' : u.status}">${u.role === 'admin' ? 'admin' : u.status}</span>` +
+              (self ? '' : (u.status === 'pending' ? '<button data-a="approve">Approve</button>' : u.status === 'active' ? '<button data-a="disable">Disable</button>' : '<button data-a="approve">Enable</button>') +
+                (u.role === 'admin' ? '<button data-a="demote">Make user</button>' : '<button data-a="promote">Make admin</button>') + '<button class="del" data-a="del">Delete</button>') + '</div>';
+          }).join('') || '<div style="font-size:0.72rem;color:#556;">No users yet.</div>';
+        }
+        async function renderUsers() { try { users = await fetchUsers(); } catch (e) {} drawUsers(); }
+        $('lgUsersRefresh').addEventListener('click', renderUsers);
+        $('lgUsersList').addEventListener('click', async e => {
+          const b = e.target.closest('button[data-a]'); if (!b) return;
+          const name = b.closest('.lg-urow').dataset.u, st = $('lgUsersStatus'), act = b.dataset.a;
+          if (act === 'del' && !confirm('Delete user "' + name + '"?')) return;
+          st.textContent = 'Saving…'; st.style.color = '#0a2862';
+          try {
+            await mutate(async list => {
+              const i = list.findIndex(x => x.u.toLowerCase() === name.toLowerCase()); if (i < 0) return list;
+              if (me && name.toLowerCase() === me.u.toLowerCase()) throw new Error('You cannot change your own account here.');
+              if (act === 'approve') list[i] = { ...list[i], status: 'active' };
+              else if (act === 'disable') list[i] = { ...list[i], status: 'disabled' };
+              else if (act === 'promote') list[i] = { ...list[i], role: 'admin', status: 'active' };
+              else if (act === 'demote') { if (list.filter(x => x.role === 'admin' && x.status === 'active').length < 2) throw new Error('Keep at least one admin.'); list[i] = { ...list[i], role: 'user' }; }
+              else if (act === 'del') list.splice(i, 1);
+              return list;
+            });
+            st.textContent = '✓ Saved'; st.style.color = '#1e6b3a'; drawUsers();
+          } catch (err) { st.textContent = err.message || String(err); st.style.color = '#a02020'; }
+        });
+
+        start();
+      })();
+
+      // ==================== SETTINGS: sidebar tabs ====================
+      (function () {
+        const nav = document.getElementById('stNav');
+        if (!nav) return;
+        const show = pane => {
+          nav.querySelectorAll('button[data-pane]').forEach(b => b.classList.toggle('active', b.dataset.pane === pane));
+          document.querySelectorAll('#settingsWindow .st-pane').forEach(p => p.classList.toggle('active', p.dataset.pane === pane));
+          const m = document.querySelector('#settingsWindow .st-main'); if (m) m.scrollTop = 0;
+        };
+        nav.addEventListener('click', e => { const b = e.target.closest('button[data-pane]'); if (b) show(b.dataset.pane); });
+        window.stShowPane = show;
       })();
 
       // ==================== CONTACTS (name, section, mobile + Call / WhatsApp) ====================
