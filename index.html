@@ -3443,6 +3443,74 @@
     html[data-theme="win7"] .st-nav { background: linear-gradient(180deg, rgba(88,130,190,0.95) 0%, rgba(24,46,86,0.97) 100%); }
     html[data-theme="win7"] .st-content { background: #e6eef9; }
 
+    /* ==================== ADMIN PANEL ==================== */
+    #adminPanel { position: fixed; inset: 0; z-index: 150000; display: none; align-items: center; justify-content: center; padding: 16px; box-sizing: border-box;
+      background: rgba(5,15,40,0.58); -webkit-backdrop-filter: blur(5px); backdrop-filter: blur(5px); font-family: 'Segoe UI', system-ui, Tahoma, Arial, sans-serif; }
+    #adminPanel.open { display: flex; animation: stFade 0.2s ease-out; }
+    #adminPanel .ap-shell { position: relative; display: flex; width: min(1140px, 100%); height: min(740px, 100%); background: #eef3fb; border-radius: 18px; overflow: hidden; box-shadow: 0 30px 90px rgba(0,10,40,0.65), 0 0 0 1px rgba(255,255,255,0.2); }
+    #adminPanel .ap-nav { flex: 0 0 200px; display: flex; flex-direction: column; gap: 4px; padding: 16px 10px 12px; color: #fff;
+      background: radial-gradient(circle at 20% 0%, rgba(255,255,255,0.18) 0%, transparent 45%), linear-gradient(180deg, #5b2fc8 0%, #1b2f86 100%); }
+    #adminPanel .ap-brand { display: flex; align-items: center; gap: 9px; font-size: 1.1rem; font-weight: 800; padding: 2px 8px 16px; }
+    #adminPanel .ap-brand small { display: block; font-size: 0.64rem; font-weight: 600; opacity: 0.75; }
+    #adminPanel .ap-nav button { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; padding: 9px 10px; border: none; border-radius: 10px; background: transparent; color: #e3dcff; font: inherit; font-size: 0.84rem; font-weight: 600; cursor: pointer; transition: background 0.15s; }
+    #adminPanel .ap-nav button .ic { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 8px; background: rgba(255,255,255,0.14); }
+    #adminPanel .ap-nav button:hover { background: rgba(255,255,255,0.14); color: #fff; }
+    #adminPanel .ap-nav button.active { background: #fff; color: #3b1fa0; box-shadow: 0 4px 12px rgba(0,0,40,0.3); }
+    #adminPanel .ap-nav button.active .ic { background: #efe9ff; }
+    #adminPanel .ap-who { margin-top: auto; padding: 10px; border-radius: 12px; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); font-size: 0.74rem; }
+    #adminPanel .ap-who b { display: block; font-size: 0.82rem; overflow: hidden; text-overflow: ellipsis; }
+    #adminPanel .ap-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+    #adminPanel .ap-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 14px 20px; background: #fff; border-bottom: 1px solid #dbe5f5; }
+    #adminPanel .ap-top h2 { margin: 0; font-size: 1.2rem; font-weight: 800; color: #1b1f4a; }
+    #adminPanel .ap-x { width: 34px; height: 34px; border-radius: 50%; border: none; background: #eef1fa; color: #36406a; font-size: 1rem; cursor: pointer; }
+    #adminPanel .ap-x:hover { background: #e5484d; color: #fff; }
+    #adminPanel .ap-body { flex: 1; min-height: 0; overflow: auto; padding: 18px 20px 22px; }
+    #adminPanel .ap-load, #adminPanel .ap-empty { text-align: center; color: #6a7898; padding: 40px 10px; font-size: 0.9rem; }
+    #adminPanel .ap-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; margin-bottom: 20px; }
+    #adminPanel .ap-stat { background: #fff; border: 1px solid #dbe5f5; border-radius: 14px; padding: 14px 16px; box-shadow: 0 2px 10px rgba(30,70,150,0.07); text-align: left; font: inherit; }
+    #adminPanel button.ap-stat { cursor: pointer; transition: transform 0.12s, box-shadow 0.12s; }
+    #adminPanel button.ap-stat:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(30,70,150,0.18); }
+    #adminPanel .ap-stat .n { font-size: 1.7rem; font-weight: 800; color: #3b1fa0; line-height: 1.1; }
+    #adminPanel .ap-stat .l { font-size: 0.76rem; color: #5a6a8c; margin-top: 3px; font-weight: 600; }
+    #adminPanel h3.ap-h { margin: 6px 0 10px; font-size: 0.95rem; color: #1b1f4a; }
+    #adminPanel .ap-tools { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 12px; }
+    #adminPanel .ap-tools .sp { flex: 1; }
+    #adminPanel .ap-input, #adminPanel .ap-select, #adminPanel .ap-text { height: 36px; box-sizing: border-box; border: 1.5px solid #d3def2; border-radius: 10px; padding: 0 12px; font: inherit; font-size: 0.84rem; background: #fff; color: #1b1f4a; outline: none; }
+    #adminPanel .ap-input:focus, #adminPanel .ap-select:focus, #adminPanel .ap-text:focus { border-color: #6a3fe0; box-shadow: 0 0 0 3px rgba(106,63,224,0.16); }
+    #adminPanel .ap-text { height: auto; padding: 10px 12px; width: 100%; font-family: Consolas, monospace; font-size: 0.78rem; resize: vertical; }
+    #adminPanel .ap-btn { height: 36px; padding: 0 14px; border-radius: 10px; border: 1px solid #c8d4ee; background: #fff; color: #2a3a6a; font: inherit; font-size: 0.8rem; font-weight: 700; cursor: pointer; transition: filter 0.12s, transform 0.12s; white-space: nowrap; }
+    #adminPanel .ap-btn:hover { filter: brightness(0.96); transform: translateY(-1px); }
+    #adminPanel .ap-btn.pri { background: linear-gradient(135deg, #7a4cf0, #4a2bc8); color: #fff; border-color: #4a2bc8; }
+    #adminPanel .ap-btn.dng { background: linear-gradient(135deg, #ee5a5a, #c0302f); color: #fff; border-color: #a82424; }
+    #adminPanel .ap-btn.sm { height: 28px; padding: 0 10px; font-size: 0.72rem; border-radius: 8px; }
+    #adminPanel .ap-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    #adminPanel .ap-tw { overflow: auto; border: 1px solid #dbe5f5; border-radius: 12px; background: #fff; box-shadow: 0 2px 10px rgba(30,70,150,0.06); }
+    #adminPanel table.ap-t { width: 100%; border-collapse: collapse; }
+    #adminPanel .ap-t th { position: sticky; top: 0; z-index: 1; background: #f1f4ff; text-align: left; font-size: 0.7rem; letter-spacing: 0.03em; text-transform: uppercase; padding: 10px 12px; color: #4a5788; white-space: nowrap; }
+    #adminPanel .ap-t td { padding: 9px 12px; border-top: 1px solid #edf1fb; font-size: 0.8rem; color: #1b1f4a; max-width: 240px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    #adminPanel .ap-t tr:hover td { background: #faf8ff; }
+    #adminPanel .ap-t td.act { white-space: nowrap; text-align: right; width: 1%; }
+    #adminPanel .ap-null { color: #aab; }
+    #adminPanel .ap-bd { display: inline-block; padding: 2px 9px; border-radius: 10px; font-size: 0.68rem; font-weight: 800; color: #fff; }
+    #adminPanel .ap-bd.admin { background: #6a3fc8; } #adminPanel .ap-bd.user { background: #4a78d0; } #adminPanel .ap-bd.active { background: #1f9a4d; } #adminPanel .ap-bd.disabled { background: #8a8a8a; }
+    #adminPanel .ap-note { font-size: 0.74rem; color: #6a7898; margin: 8px 2px 0; }
+    #adminPanel .ap-dw { position: absolute; inset: 0; z-index: 5; display: none; align-items: center; justify-content: center; padding: 16px; background: rgba(10,15,40,0.5); }
+    #adminPanel .ap-dw.open { display: flex; animation: stFade 0.15s; }
+    #adminPanel .ap-dlg { width: min(460px, 100%); max-height: 92%; overflow: auto; background: #fff; border-radius: 16px; padding: 20px 20px 16px; box-shadow: 0 20px 60px rgba(0,0,30,0.5); }
+    #adminPanel .ap-dlg.wide { width: min(640px, 100%); }
+    #adminPanel .ap-dlg h4 { margin: 0 0 12px; font-size: 1.05rem; color: #1b1f4a; }
+    #adminPanel .ap-dlg label { display: block; margin: 10px 0 4px; font-size: 0.72rem; font-weight: 700; color: #4a5788; }
+    #adminPanel .ap-dlg .ap-input, #adminPanel .ap-dlg .ap-select { width: 100%; }
+    #adminPanel .ap-dlg .ap-err { min-height: 1.2em; margin-top: 10px; font-size: 0.78rem; font-weight: 600; color: #c02a2a; }
+    #adminPanel .ap-dlg .ap-foot { display: flex; justify-content: flex-end; gap: 8px; margin-top: 12px; }
+    @media (max-width: 760px) {
+      #adminPanel { padding: 0; }
+      #adminPanel .ap-shell { border-radius: 0; flex-direction: column; height: 100%; }
+      #adminPanel .ap-nav { flex: 0 0 auto; flex-direction: row; flex-wrap: wrap; padding: 8px; }
+      #adminPanel .ap-brand, #adminPanel .ap-who { display: none; }
+      #adminPanel .ap-nav button { width: auto; flex: 1 1 auto; }
+    }
+
     /* ==================== DESKTOP THEMES ====================
        default (no attribute / "xp") = Windows XP Luna, the look above.
        html[data-theme="win7"]  = Windows 7 Aero glass
@@ -4076,7 +4144,7 @@
           <svg class="sky-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="Skylight Pro"><defs><linearGradient id="slp-bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5b97f0"/><stop offset="1" stop-color="#15419c"/></linearGradient><linearGradient id="slp-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e8f4ff"/><stop offset="1" stop-color="#8fc4f5"/></linearGradient><linearGradient id="slp-gold" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#e09a00"/><stop offset="0.6" stop-color="#ffd54a"/><stop offset="1" stop-color="#fff2a8"/></linearGradient><linearGradient id="slp-shine" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0.55"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient></defs><rect x="12" y="12" width="232" height="232" rx="54" fill="url(#slp-bg)" stroke="#0a2862" stroke-width="4"/><path d="M30 80 Q30 24 86 24 H170 Q226 24 226 80 Q128 112 30 80 Z" fill="url(#slp-shine)"/><rect x="52" y="52" width="152" height="152" rx="14" fill="#ffffff" stroke="#0a2862" stroke-width="3"/><rect x="62" y="62" width="62" height="62" rx="6" fill="url(#slp-sky)"/><rect x="132" y="62" width="62" height="62" rx="6" fill="url(#slp-sky)"/><rect x="62" y="132" width="62" height="62" rx="6" fill="url(#slp-sky)"/><rect x="132" y="132" width="62" height="62" rx="6" fill="url(#slp-sky)"/><ellipse cx="86" cy="84" rx="14" ry="6" fill="#fff" opacity="0.9"/><ellipse cx="164" cy="160" rx="16" ry="6" fill="#fff" opacity="0.9"/><g stroke="#0a2862" stroke-width="2.5" stroke-linejoin="round"><path d="M40 188 C86 180 152 138 214 56 C196 118 138 178 40 188 Z" fill="url(#slp-gold)"/><path d="M56 204 C98 198 150 168 198 118 C182 160 136 198 56 204 Z" fill="url(#slp-gold)"/><path d="M80 220 C112 216 150 196 184 160 C168 190 132 218 80 220 Z" fill="url(#slp-gold)"/></g></svg>
           <span class="xp-boot-logo-text">
             KCST Media Technology<br>
-            <strong>KCST Skylight Pro<sup>™</sup></strong>
+            <strong>Skylight Pro<sup>™</sup></strong>
           </span>
         </div>
 
@@ -4962,7 +5030,7 @@
       <div class="settings-section" id="loginSection">
         <div class="settings-section-legend">🔐 My Login</div>
         <div class="modal-field"><label>Current password</label><div class="input-wrap"><input type="password" id="lgCurPw" autocomplete="current-password"></div></div>
-        <div class="modal-field"><label>User name</label><div class="input-wrap"><input type="text" id="lgNewUser" autocomplete="username"></div></div>
+        <div class="modal-field"><label>📱 Mobile number (used to sign in)</label><div class="input-wrap"><input type="text" id="lgNewUser" inputmode="tel" autocomplete="username" placeholder="e.g. 9876543210"></div></div>
         <div class="modal-field"><label>New password (leave empty to keep the current one)</label><div class="input-wrap"><input type="password" id="lgNewPw" autocomplete="new-password"></div></div>
         <div class="modal-field"><label>Confirm new password</label><div class="input-wrap"><input type="password" id="lgNewPw2" autocomplete="new-password"></div></div>
         <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
@@ -4977,6 +5045,7 @@
         <div class="settings-section-legend">👥 Users <span id="lgPendingBadge"></span></div>
         <div id="lgUsersList" class="lg-users"></div>
         <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:6px;">
+          <button class="aero-btn primary" type="button" id="lgOpenAdmin"><span>🛡️</span> Open Admin Panel</button>
           <button class="aero-btn" type="button" id="lgUsersRefresh"><span>🔄</span> Refresh</button>
           <span id="lgUsersStatus" style="font-size:0.68rem;font-weight:700;color:#0a2862;"></span>
         </div>
@@ -5146,6 +5215,9 @@
     </div>
 
     <div class="xp-footer">
+      <button class="xp-footer-btn" id="xpAdminBtn" type="button" style="display:none;">
+        <span>🛡️</span> Admin Panel
+      </button>
       <button class="xp-footer-btn" id="xpSignOutBtn" type="button">
         <span>🔒</span> Log Off
       </button>
@@ -5228,7 +5300,7 @@
     </div>
   </div>
 
-  <!-- LOGIN GATE (user name + password sign in / register; no Supabase Auth) -->
+  <!-- LOGIN GATE (mobile number + password sign in / register; no Supabase Auth) -->
   <div id="loginGate">
     <div class="lg-bg"><i class="o1"></i><i class="o2"></i><i class="o3"></i></div>
     <div class="lg-shell">
@@ -5281,6 +5353,9 @@
     <div class="cf-grid" id="cfGrid"></div>
     <div class="cf-foot"><button type="button" id="cfToday">Today: <span id="cfTodayText"></span></button></div>
   </div>
+
+  <!-- ADMIN PANEL (admins only; built by script) -->
+  <div id="adminPanel" role="dialog" aria-label="Admin panel"></div>
 
   <!-- MOBILE APP TAB BAR (shown on phones only) -->
   <nav id="mobileNav" aria-label="App sections">
@@ -11561,7 +11636,7 @@
         window.addEventListener('resize', () => { if (isOpen()) place(); });
       })();
 
-      // ==================== LOGIN / REGISTER (user name + password; users kept hashed in app_settings; first user = admin, others need approval) ====================
+      // ==================== LOGIN / REGISTER (mobile number + password; users kept hashed in app_settings; first user = admin, others sign up freely) ====================
       (function () {
         const gate = document.getElementById('loginGate');
         if (!gate) return;
@@ -11601,7 +11676,11 @@
         }
         const randomSalt = () => Array.from((window.crypto && crypto.getRandomValues) ? crypto.getRandomValues(new Uint8Array(16)) : Array.from({ length: 16 }, () => Math.floor(Math.random() * 256)), b => b.toString(16).padStart(2, '0')).join('');
         async function makeUser(u, pw, role, status) { const salt = randomSalt(); return { u, s: salt, h: await sha256(salt + ':' + pw), role, status, at: new Date().toISOString() }; }
-        const findUser = (list, name) => list.find(x => String(x.u).toLowerCase() === String(name).toLowerCase());
+        // login id = mobile number (digits only; matched on the last 10 digits). Older text user names still work until changed.
+        const idOf = raw => { const t = String(raw).trim(), d = t.replace(/[\s()+-]/g, ''); return /^\d+$/.test(d) ? d : t; };
+        const keyOf = v => { const t = idOf(v); return /^\d{10,}$/.test(t) ? t.slice(-10) : t.toLowerCase(); };
+        const validMobile = v => /^\d{10,15}$/.test(idOf(v));
+        const findUser = (list, name) => list.find(x => keyOf(x.u) === keyOf(name));
 
         // ----- token / storage -----
         const tokenOf = u => u.u.toLowerCase() + '|' + u.h;
@@ -11652,8 +11731,9 @@
           document.documentElement.classList.add('authed'); $('lgBody').innerHTML = ''; msg('');
           const nu = $('lgNewUser'); if (nu) nu.value = user.u;
           const us = $('usersSection'); if (us) us.style.display = user.role === 'admin' ? '' : 'none';
+          const ab = $('xpAdminBtn'); if (ab) ab.style.display = user.role === 'admin' ? '' : 'none';
           const nv = $('stNavUsers'); if (nv) nv.style.display = user.role === 'admin' ? '' : 'none';
-          if ($('stWhoName')) { $('stWhoName').textContent = user.u; $('stWhoRole').textContent = user.role; $('stWhoAv').textContent = user.u.charAt(0).toUpperCase(); }
+          if ($('stWhoName')) { $('stWhoName').textContent = user.u; $('stWhoRole').textContent = user.role; $('stWhoAv').textContent = /^\d+$/.test(user.u) ? '📱' : user.u.charAt(0).toUpperCase(); }
           if (user.role === 'admin') renderUsers();
         }
 
@@ -11666,29 +11746,28 @@
         function showLogin(note, kind) {
           mode = 'login'; setTabs('login', false);
           $('lgTitle').textContent = 'Welcome back'; $('lgSub').textContent = 'Sign in to open your desk.';
-          $('lgBody').innerHTML = field('lgUser', 'text', 'User name', '👤', 'username') + field('lgPw', 'password', 'Password', '🔒', 'current-password') +
+          $('lgBody').innerHTML = field('lgUser', 'text', 'Mobile number', '📱', 'username') + field('lgPw', 'password', 'Password', '🔒', 'current-password') +
             `<div class="lg-row"><label class="lg-check"><input type="checkbox" id="lgKeep"> Keep me signed in</label></div><button class="lg-btn" id="lgGo" type="button">Sign in</button>`;
           msg(note || '', kind);
           const go = async () => {
             const wait = Math.ceil((lockedUntil - Date.now()) / 1000);
             if (wait > 0) return (msg(`Too many attempts — wait ${wait}s.`), shake());
-            const name = $('lgUser').value.trim(), pw = $('lgPw').value;
-            if (!name || !pw) return (msg('Enter your user name and password.'), shake());
+            const name = idOf($('lgUser').value), pw = $('lgPw').value;
+            if (!name || !pw) return (msg('Enter your mobile number and password.'), shake());
             $('lgGo').disabled = true; $('lgGo').textContent = 'Signing in…';
             await loadUsers();                                           // always check the latest list
             const u = findUser(users, name), h = u ? await sha256(u.s + ':' + pw) : null;
             const reset = () => { $('lgGo').disabled = false; $('lgGo').textContent = 'Sign in'; };
             if (!u || h !== u.h) {
               reset(); $('lgPw').value = ''; fails++;
-              if (fails >= 5) { lockedUntil = Date.now() + 15000; fails = 0; msg('Too many wrong attempts — wait 15 seconds.'); } else msg('Wrong user name or password.');
+              if (fails >= 5) { lockedUntil = Date.now() + 15000; fails = 0; msg('Too many wrong attempts — wait 15 seconds.'); } else msg('Wrong mobile number or password.');
               shake(); return $('lgPw').focus();
             }
-            if (u.status === 'pending') { reset(); msg('Your account is waiting for admin approval.', 'info'); return shake(); }
             if (u.status === 'disabled') { reset(); msg('This account has been disabled.'); return shake(); }
             fails = 0; setToken(tokenOf(u), $('lgKeep').checked); openApp(u);
           };
           $('lgGo').addEventListener('click', go); bindEnter(go);
-          setTimeout(() => $('lgUser') && $('lgUser').focus(), 60);
+          $('lgUser').setAttribute('inputmode', 'tel'); setTimeout(() => $('lgUser') && $('lgUser').focus(), 60);
         }
 
         function strengthOf(p) { let n = 0; if (p.length >= 8) n++; if (/[a-z]/.test(p) && /[A-Z]/.test(p)) n++; if (/\d/.test(p)) n++; if (/[^A-Za-z0-9]/.test(p)) n++; return p.length ? Math.max(1, n) : 0; }
@@ -11696,11 +11775,11 @@
           mode = 'register'; const first = users.length === 0;
           setTabs('register', first);
           $('lgTitle').textContent = first ? 'Create admin account' : 'Create account';
-          $('lgSub').textContent = first ? 'First time here — you will be the administrator.' : 'An admin must approve new accounts before they can sign in.';
-          $('lgBody').innerHTML = field('lgUser', 'text', 'Choose a user name', '👤', 'username') + field('lgPw', 'password', 'Password', '🔒', 'new-password') +
+          $('lgSub').textContent = first ? 'First time here — you will be the administrator.' : 'Sign up with your mobile number and a password.';
+          $('lgBody').innerHTML = field('lgUser', 'text', 'Mobile number', '📱', 'username') + field('lgPw', 'password', 'Password', '🔒', 'new-password') +
             `<div class="lg-strength"><div class="bar"><i id="lgBar"></i></div><span id="lgStrTxt">Use 8+ characters</span></div>` +
             field('lgPw2', 'password', 'Confirm password', '✅', 'new-password') +
-            (first ? `<label class="lg-check"><input type="checkbox" id="lgKeep" checked> Keep me signed in</label>` : '') +
+            `<label class="lg-check"><input type="checkbox" id="lgKeep" checked> Keep me signed in</label>` +
             `<button class="lg-btn" id="lgGo" type="button">${first ? 'Create &amp; sign in' : 'Register'}</button>`;
           msg('');
           $('lgPw').addEventListener('input', () => {
@@ -11708,25 +11787,24 @@
             $('lgBar').style.width = (n * 25) + '%'; $('lgBar').style.background = cols[n]; $('lgStrTxt').textContent = names[n];
           });
           const go = async () => {
-            const name = $('lgUser').value.trim(), p = $('lgPw').value, p2 = $('lgPw2').value;
-            if (!/^[A-Za-z0-9_.-]{3,30}$/.test(name)) return (msg('User name: 3–30 letters, numbers, dot, dash or underscore.'), shake());
+            const name = idOf($('lgUser').value), p = $('lgPw').value, p2 = $('lgPw2').value;
+            if (!validMobile(name)) return (msg('Enter a valid mobile number (10–15 digits).'), shake());
             if (p.length < 4) return (msg('Password needs at least 4 characters.'), shake());
             if (p !== p2) return (msg('Passwords do not match.'), shake());
             $('lgGo').disabled = true; $('lgGo').textContent = 'Please wait…'; msg('');
             try {
               let created = null, wasFirst = false;
               await mutate(async list => {
-                if (findUser(list, name)) throw new Error('That user name is already taken.');
+                if (findUser(list, name)) throw new Error('That mobile number is already registered.');
                 wasFirst = list.length === 0;
-                created = await makeUser(name, p, wasFirst ? 'admin' : 'user', wasFirst ? 'active' : 'pending');
+                created = await makeUser(name, p, wasFirst ? 'admin' : 'user', 'active');
                 return [...list, created];
               });
-              if (wasFirst) { setToken(tokenOf(created), $('lgKeep') ? $('lgKeep').checked : false); openApp(created); }
-              else showLogin('✓ Account created. Wait for an admin to approve it, then sign in.', 'ok');
+              setToken(tokenOf(created), $('lgKeep') ? $('lgKeep').checked : false); openApp(created);
             } catch (err) { $('lgGo').disabled = false; $('lgGo').textContent = users.length ? 'Register' : 'Create & sign in'; msg(err.message || String(err)); shake(); }
           };
           $('lgGo').addEventListener('click', go); bindEnter(go);
-          setTimeout(() => $('lgUser') && $('lgUser').focus(), 60);
+          $('lgUser').setAttribute('inputmode', 'tel'); setTimeout(() => $('lgUser') && $('lgUser').focus(), 60);
         }
 
         async function start() {
@@ -11735,7 +11813,7 @@
           if (!ok) { document.documentElement.classList.remove('authed'); return showError(); }
           if (!users.length) { clearToken(); document.documentElement.classList.remove('authed'); return showRegister(); }
           const t = getToken(), u = t && users.find(x => tokenOf(x) === t);
-          if (u && u.status === 'active') return openApp(u);          // still signed in
+          if (u && u.status !== 'disabled') return openApp(u);          // still signed in
           clearToken(); document.documentElement.classList.remove('authed'); showLogin();
         }
 
@@ -11746,17 +11824,17 @@
         $('lgChangeBtn').addEventListener('click', async () => {
           const st = $('lgChangeStatus'), say = (t, ok) => { st.textContent = t; st.style.color = ok ? '#1e6b3a' : '#a02020'; };
           if (!me) return say('Not signed in.');
-          const cur = $('lgCurPw').value, nu = $('lgNewUser').value.trim(), np = $('lgNewPw').value, np2 = $('lgNewPw2').value;
+          const cur = $('lgCurPw').value, nu = idOf($('lgNewUser').value), np = $('lgNewPw').value, np2 = $('lgNewPw2').value;
           if (!cur) return say('Enter your current password.');
           if ((await sha256(me.s + ':' + cur)) !== me.h) return say('Current password is wrong.');
-          if (!/^[A-Za-z0-9_.-]{3,30}$/.test(nu)) return say('User name: 3–30 letters, numbers, . - _');
+          if (!validMobile(nu)) return say('Enter a valid mobile number (10–15 digits).');
           if (np && np.length < 4) return say('New password needs at least 4 characters.');
           if (np !== np2) return say('New passwords do not match.');
           say('Saving…', true);
           try {
             let updated = null;
             await mutate(async list => {
-              const other = findUser(list, nu); if (other && other.u.toLowerCase() !== me.u.toLowerCase()) throw new Error('That user name is taken.');
+              const other = findUser(list, nu); if (other && keyOf(other.u) !== keyOf(me.u)) throw new Error('That mobile number is already registered.');
               const i = list.findIndex(x => x.u.toLowerCase() === me.u.toLowerCase()); if (i < 0) throw new Error('Account not found.');
               const base = np ? await makeUser(nu, np, list[i].role, list[i].status) : { ...list[i], u: nu };
               updated = { ...list[i], u: base.u, s: base.s, h: base.h }; list[i] = updated; return list;
@@ -11769,13 +11847,13 @@
 
         // ----- Settings: users (admin) -----
         function drawUsers() {
-          const pend = users.filter(u => u.status === 'pending').length; $('lgPendingBadge').textContent = pend ? pend + ' pending' : ''; if ($('stNavBadge')) $('stNavBadge').textContent = pend ? String(pend) : '';
+          const pend = 0; $('lgPendingBadge').textContent = pend ? pend + ' pending' : ''; if ($('stNavBadge')) $('stNavBadge').textContent = pend ? String(pend) : '';
           $('lgUsersList').innerHTML = users.map(u => {
             const self = me && u.u.toLowerCase() === me.u.toLowerCase();
             const esc = escapeHtml(u.u);
             return `<div class="lg-urow" data-u="${esc}"><span class="nm" title="${esc}">${esc}${self ? ' (you)' : ''}</span>` +
-              `<span class="bd ${u.role === 'admin' ? 'admin' : u.status}">${u.role === 'admin' ? 'admin' : u.status}</span>` +
-              (self ? '' : (u.status === 'pending' ? '<button data-a="approve">Approve</button>' : u.status === 'active' ? '<button data-a="disable">Disable</button>' : '<button data-a="approve">Enable</button>') +
+              `<span class="bd ${u.role === 'admin' ? 'admin' : (u.status === 'disabled' ? 'disabled' : 'active')}">${u.role === 'admin' ? 'admin' : (u.status === 'disabled' ? 'disabled' : 'active')}</span>` +
+              (self ? '' : (u.status === 'disabled' ? '<button data-a="approve">Enable</button>' : '<button data-a="disable">Disable</button>') +
                 (u.role === 'admin' ? '<button data-a="demote">Make user</button>' : '<button data-a="promote">Make admin</button>') + '<button class="del" data-a="del">Delete</button>') + '</div>';
           }).join('') || '<div style="font-size:0.72rem;color:#556;">No users yet.</div>';
         }
@@ -11801,6 +11879,12 @@
           } catch (err) { st.textContent = err.message || String(err); st.style.color = '#a02020'; }
         });
 
+        window.kcstAuth = {
+          fetchUsers, mutate, makeUser, keyOf, idOf, validMobile,
+          getMe: () => me,
+          isAdmin: () => !!me && me.role === 'admin' && me.status !== 'disabled',
+          onSelfChanged: u => { me = u; window.kcstUser = { name: u.u, role: u.role }; setToken(tokenOf(u), keepSigned()); const nu = $('lgNewUser'); if (nu) nu.value = u.u; if ($('stWhoName')) $('stWhoName').textContent = u.u; }
+        };
         start();
       })();
 
@@ -11815,6 +11899,339 @@
         };
         nav.addEventListener('click', e => { const b = e.target.closest('button[data-pane]'); if (b) show(b.dataset.pane); });
         window.stShowPane = show;
+      })();
+
+      // ==================== ADMIN PANEL (users + data manager; admins only) ====================
+      (function () {
+        const panel = document.getElementById('adminPanel');
+        const startBtn = document.getElementById('xpAdminBtn');
+        if (!panel || !startBtn) return;
+        const A = () => window.kcstAuth;
+        const esc = escapeHtml;
+        const TABLES = [['contacts', '👥 Contacts'], ['employees', '🧑‍💼 Employees'], ['invoices', '🧾 Invoices'], ['vehicles', '🚚 Vehicles'], ['stock_items', '📦 Stock items'],
+                        ['products', '🏷️ Products'], ['notes', '📝 Notes'], ['cash_collections', '💰 Cash collections'], ['packing_records', '📦 Packing records'], ['app_settings', '⚙️ App settings']];
+        const PROTECTED_KEYS = ['login_users', 'login_credentials'];       // account data is managed in the Users tab only
+        const TITLES = { dashboard: '📊 Dashboard', users: '👥 Users', data: '🗄️ Data manager' };
+        let tab = 'dashboard', dTable = 'contacts', dRows = [], dPk = null, dQ = '', uQ = '';
+
+        panel.innerHTML = `
+          <div class="ap-shell">
+            <nav class="ap-nav">
+              <div class="ap-brand"><span>🛡️</span><div>Admin Panel<small>KCST Skylight Pro</small></div></div>
+              <button type="button" data-tab="dashboard" class="active"><span class="ic">📊</span>Dashboard</button>
+              <button type="button" data-tab="users"><span class="ic">👥</span>Users</button>
+              <button type="button" data-tab="data"><span class="ic">🗄️</span>Data</button>
+              <div class="ap-who"><b id="apWho">—</b>Administrator</div>
+            </nav>
+            <div class="ap-main">
+              <div class="ap-top"><h2 id="apTitle"></h2><button type="button" class="ap-x" id="apClose" title="Close (Esc)">✕</button></div>
+              <div class="ap-body" id="apBody"></div>
+            </div>
+            <div class="ap-dw" id="apDw"></div>
+          </div>`;
+        const $ = id => document.getElementById(id);
+        const body = () => $('apBody');
+
+        // ----- dialogs -----
+        function dialog({ title, html, ok = 'Save', danger = false, wide = false, onOk }) {
+          const dw = $('apDw');
+          dw.innerHTML = `<div class="ap-dlg${wide ? ' wide' : ''}"><h4>${title}</h4>${html}<div class="ap-err" id="apErr"></div>
+            <div class="ap-foot"><button type="button" class="ap-btn" id="apDCancel">Cancel</button>${ok ? `<button type="button" class="ap-btn ${danger ? 'dng' : 'pri'}" id="apDOk">${ok}</button>` : ''}</div></div>`;
+          dw.classList.add('open');
+          const close = () => { dw.classList.remove('open'); dw.innerHTML = ''; };
+          $('apDCancel').onclick = close;
+          const okBtn = $('apDOk');
+          if (okBtn) okBtn.onclick = async () => {
+            $('apErr').textContent = ''; okBtn.disabled = true;
+            try { const r = await onOk(dw); if (r !== false) close(); else okBtn.disabled = false; }
+            catch (e) { $('apErr').textContent = (e && e.message) || String(e); okBtn.disabled = false; }
+          };
+          const first = dw.querySelector('input,select,textarea'); if (first) setTimeout(() => first.focus(), 40);
+          dw.querySelectorAll('input').forEach(i => i.addEventListener('keydown', e => { if (e.key === 'Enter' && okBtn) okBtn.click(); }));
+        }
+        const closeDialog = () => { const dw = $('apDw'); dw.classList.remove('open'); dw.innerHTML = ''; };
+        const dialogOpen = () => $('apDw').classList.contains('open');
+        function confirmDlg(title, message, okLabel = 'Delete') {
+          return new Promise(res => {
+            dialog({ title, html: `<div style="font-size:0.88rem;color:#334;">${message}</div>`, ok: okLabel, danger: true, onOk: async () => { res(true); } });
+            $('apDCancel').onclick = () => { closeDialog(); res(false); };
+          });
+        }
+        const toast = (m, k) => { try { showToast(m, k); } catch (e) {} };
+        const fmtDate = d => { try { const x = new Date(d); return isNaN(x) ? '—' : x.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }); } catch (e) { return '—'; } };
+
+        // ----- file helpers -----
+        function download(name, text, type) {
+          const b = new Blob([text], { type }), a = document.createElement('a');
+          a.href = URL.createObjectURL(b); a.download = name; document.body.appendChild(a); a.click();
+          setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 600);
+        }
+        const csvCell = v => { if (v == null) return ''; const t = typeof v === 'object' ? JSON.stringify(v) : String(v); return /[",\n\r]/.test(t) ? '"' + t.replace(/"/g, '""') + '"' : t; };
+        function toCsv(rows) {
+          const cols = []; rows.forEach(r => Object.keys(r).forEach(k => { if (!cols.includes(k)) cols.push(k); }));
+          return [cols.map(csvCell).join(',')].concat(rows.map(r => cols.map(c => csvCell(r[c])).join(','))).join('\n');
+        }
+        async function fetchAll(t) {
+          let all = [];
+          for (let p = 0; p < 20; p++) {
+            const { data, error } = await supabase.from(t).select('*').range(p * 1000, p * 1000 + 999);
+            if (error) throw error;
+            all = all.concat(data || []);
+            if (!data || data.length < 1000) break;
+          }
+          if (t === 'app_settings') all = all.filter(r => !PROTECTED_KEYS.includes(r.setting_key));
+          return all;
+        }
+
+        // ----- DASHBOARD -----
+        async function viewDashboard() {
+          body().innerHTML = '<div class="ap-load">Loading…</div>';
+          let users = []; try { users = await A().fetchUsers(); } catch (e) {}
+          const counts = await Promise.all(TABLES.map(async ([t, l]) => {
+            try { const r = await withTimeout(supabase.from(t).select('*', { count: 'exact', head: true }), 8000); return [t, l, (r && !r.error && r.count != null) ? r.count : null]; }
+            catch (e) { return [t, l, null]; }
+          }));
+          if (tab !== 'dashboard') return;
+          const active = users.filter(u => u.status !== 'disabled').length, admins = users.filter(u => u.role === 'admin').length;
+          body().innerHTML = `
+            <div class="ap-cards">
+              <div class="ap-stat"><div class="n">${users.length}</div><div class="l">Total users</div></div>
+              <div class="ap-stat"><div class="n">${active}</div><div class="l">Active</div></div>
+              <div class="ap-stat"><div class="n">${users.length - active}</div><div class="l">Disabled</div></div>
+              <div class="ap-stat"><div class="n">${admins}</div><div class="l">Admins</div></div>
+            </div>
+            <h3 class="ap-h">Database records <span style="font-weight:500;color:#6a7898;">— click a card to manage it</span></h3>
+            <div class="ap-cards">${counts.map(([t, l, n]) => `<button type="button" class="ap-stat" data-open="${t}"><div class="n">${n == null ? '—' : n}</div><div class="l">${esc(l)}</div></button>`).join('')}</div>
+            <div class="ap-tools"><button type="button" class="ap-btn pri" id="apBackup">⬇️ Download full backup (JSON)</button><button type="button" class="ap-btn" id="apDashRef">🔄 Refresh</button></div>
+            <div class="ap-note">The backup contains all data tables. Login accounts and password hashes are never included.</div>`;
+        }
+
+        // ----- USERS -----
+        async function viewUsers() {
+          body().innerHTML = '<div class="ap-load">Loading…</div>';
+          let list = [];
+          try { list = await A().fetchUsers(); } catch (e) { body().innerHTML = '<div class="ap-empty">Could not load users: ' + esc(e.message || e) + '</div>'; return; }
+          if (tab !== 'users') return;
+          const me = A().getMe();
+          const q = uQ.trim().toLowerCase();
+          const rows = list.filter(u => !q || String(u.u).toLowerCase().includes(q.replace(/[\s()+-]/g, '')) || String(u.u).toLowerCase().includes(q));
+          body().innerHTML = `
+            <div class="ap-tools">
+              <input class="ap-input" id="apUQ" placeholder="🔍 Search mobile number" value="${esc(uQ)}" style="min-width:220px;">
+              <span class="sp"></span>
+              <button type="button" class="ap-btn" id="apURef">🔄 Refresh</button>
+              <button type="button" class="ap-btn pri" id="apUAdd">➕ Add user</button>
+            </div>
+            <div class="ap-tw"><table class="ap-t"><thead><tr><th>📱 Mobile number</th><th>Role</th><th>Status</th><th>Created</th><th></th></tr></thead><tbody>
+              ${rows.map(u => {
+                const self = me && A().keyOf(u.u) === A().keyOf(me.u);
+                const st = u.status === 'disabled' ? 'disabled' : 'active';
+                return `<tr data-u="${esc(u.u)}"><td><b>${esc(u.u)}</b>${self ? ' <span style="color:#6a3fc8;font-size:0.7rem;">(you)</span>' : ''}</td>
+                  <td><span class="ap-bd ${u.role === 'admin' ? 'admin' : 'user'}">${u.role === 'admin' ? 'admin' : 'user'}</span></td>
+                  <td><span class="ap-bd ${st}">${st}</span></td><td>${fmtDate(u.at)}</td>
+                  <td class="act"><button type="button" class="ap-btn sm" data-a="edit">✏️ Edit</button> ${self ? '' : `<button type="button" class="ap-btn sm dng" data-a="del">🗑️</button>`}</td></tr>`;
+              }).join('') || '<tr><td colspan="5" class="ap-empty">No users found.</td></tr>'}
+            </tbody></table></div>
+            <div class="ap-note">${list.length} user${list.length === 1 ? '' : 's'} · Edit lets you change the mobile number, set a new password, change role or disable the account.</div>`;
+        }
+        const activeAdmins = list => list.filter(x => x.role === 'admin' && x.status !== 'disabled').length;
+        function userDialog(orig) {
+          const A_ = A(), me = A_.getMe(), isNew = !orig;
+          const self = !isNew && A_.keyOf(orig.u) === A_.keyOf(me.u);
+          dialog({
+            title: isNew ? '➕ Add user' : '✏️ Edit user', ok: isNew ? 'Add user' : 'Save changes',
+            html: `<label>📱 Mobile number</label><input class="ap-input" id="apFM" value="${isNew ? '' : esc(orig.u)}" inputmode="tel" placeholder="e.g. 9876543210">
+              <label>🔒 ${isNew ? 'Password' : 'New password (leave empty to keep)'}</label><input class="ap-input" id="apFP" type="text" autocomplete="off" placeholder="${isNew ? 'At least 4 characters' : 'Leave empty to keep the current password'}">
+              <label>Role</label><select class="ap-select" id="apFR" ${self ? 'disabled' : ''}><option value="user"${!isNew && orig.role !== 'admin' ? ' selected' : ''}>User</option><option value="admin"${!isNew && orig.role === 'admin' ? ' selected' : ''}>Admin</option></select>
+              ${isNew ? '' : `<label>Status</label><select class="ap-select" id="apFS" ${self ? 'disabled' : ''}><option value="active"${orig.status !== 'disabled' ? ' selected' : ''}>Active</option><option value="disabled"${orig.status === 'disabled' ? ' selected' : ''}>Disabled</option></select>`}
+              ${self ? '<div class="ap-note">This is your own account — role and status can’t be changed here.</div>' : ''}`,
+            onOk: async dw => {
+              const mob = A_.idOf(dw.querySelector('#apFM').value), pw = dw.querySelector('#apFP').value, role = dw.querySelector('#apFR').value;
+              const status = isNew ? 'active' : dw.querySelector('#apFS').value;
+              const legacyKept = !isNew && mob === orig.u;
+              if (!legacyKept && !A_.validMobile(mob)) throw new Error('Enter a valid mobile number (10–15 digits).');
+              if (isNew && pw.length < 4) throw new Error('Password needs at least 4 characters.');
+              if (!isNew && pw && pw.length < 4) throw new Error('New password needs at least 4 characters.');
+              let updated = null;
+              await A_.mutate(async list => {
+                const dup = list.find(x => A_.keyOf(x.u) === A_.keyOf(mob));
+                if (isNew) {
+                  if (dup) throw new Error('That mobile number is already registered.');
+                  return [...list, await A_.makeUser(mob, pw, role, 'active')];
+                }
+                const i = list.findIndex(x => A_.keyOf(x.u) === A_.keyOf(orig.u)); if (i < 0) throw new Error('User not found.');
+                if (dup && dup !== list[i]) throw new Error('That mobile number is already registered.');
+                const base = pw ? await A_.makeUser(mob, pw, role, status) : { ...list[i], u: mob };
+                const next = { ...list[i], u: base.u, s: base.s, h: base.h, role: self ? list[i].role : role, status: self ? list[i].status : status };
+                const copy = list.slice(); copy[i] = next;
+                if (activeAdmins(copy) < 1) throw new Error('Keep at least one active admin.');
+                updated = next; return copy;
+              });
+              if (self && updated) A_.onSelfChanged(updated);
+              toast(isNew ? '✅ User added' : '✅ User updated');
+              viewUsers();
+            }
+          });
+        }
+        async function deleteUser(name) {
+          const ok = await confirmDlg('🗑️ Delete user', `Delete <b>${esc(name)}</b>? They will no longer be able to sign in.`);
+          if (!ok) return;
+          try {
+            await A().mutate(async list => {
+              const me = A().getMe(); if (me && A().keyOf(name) === A().keyOf(me.u)) throw new Error('You cannot delete your own account.');
+              const copy = list.filter(x => A().keyOf(x.u) !== A().keyOf(name));
+              if (activeAdmins(copy) < 1) throw new Error('Keep at least one active admin.');
+              return copy;
+            });
+            toast('🗑️ User deleted'); viewUsers();
+          } catch (e) { toast('⚠️ ' + (e.message || e), 'warning'); }
+        }
+
+        // ----- DATA MANAGER -----
+        async function loadRows() {
+          let r = await supabase.from(dTable).select('*').order('id', { ascending: false }).limit(300);
+          if (r.error) r = await supabase.from(dTable).select('*').limit(300);
+          if (r.error) throw r.error;
+          let rows = r.data || [];
+          if (dTable === 'app_settings') rows = rows.filter(x => !PROTECTED_KEYS.includes(x.setting_key));
+          dRows = rows; dPk = rows[0] ? ('id' in rows[0] ? 'id' : (dTable === 'app_settings' ? 'setting_key' : null)) : (dTable === 'app_settings' ? 'setting_key' : 'id');
+        }
+        const cellHtml = v => {
+          if (v == null) return '<span class="ap-null">—</span>';
+          let t = typeof v === 'object' ? JSON.stringify(v) : String(v);
+          if (/^data:image\//.test(t)) return '🖼️ image';
+          if (t.length > 70) t = t.slice(0, 70) + '…';
+          return esc(t);
+        };
+        async function viewData() {
+          body().innerHTML = '<div class="ap-load">Loading…</div>';
+          try { await loadRows(); } catch (e) { body().innerHTML = `<div class="ap-tools"><select class="ap-select" id="apDT">${TABLES.map(([t, l]) => `<option value="${t}"${t === dTable ? ' selected' : ''}>${esc(l)}</option>`).join('')}</select></div><div class="ap-empty">Could not read “${esc(dTable)}”: ${esc(e.message || e)}</div>`; return; }
+          if (tab !== 'data') return;
+          const q = dQ.trim().toLowerCase();
+          const shown = dRows.map((r, i) => [r, i]).filter(([r]) => !q || JSON.stringify(r).toLowerCase().includes(q));
+          const cols = []; dRows.slice(0, 60).forEach(r => Object.keys(r).forEach(k => { if (!cols.includes(k)) cols.push(k); }));
+          if (dPk && cols.includes(dPk)) cols.splice(cols.indexOf(dPk), 1), cols.unshift(dPk);
+          const vis = cols.slice(0, 7), more = cols.length - vis.length;
+          body().innerHTML = `
+            <div class="ap-tools">
+              <select class="ap-select" id="apDT">${TABLES.map(([t, l]) => `<option value="${t}"${t === dTable ? ' selected' : ''}>${esc(l)}</option>`).join('')}</select>
+              <input class="ap-input" id="apDQ" placeholder="🔍 Filter rows" value="${esc(dQ)}" style="min-width:200px;">
+              <span class="sp"></span>
+              <button type="button" class="ap-btn" id="apDRef">🔄</button>
+              <button type="button" class="ap-btn" id="apDCsv">⬇️ CSV</button>
+              <button type="button" class="ap-btn" id="apDJson">⬇️ JSON</button>
+              <button type="button" class="ap-btn dng" id="apDClear" ${dTable === 'app_settings' || !dPk ? 'disabled' : ''}>Delete all rows</button>
+            </div>
+            <div class="ap-tw"><table class="ap-t"><thead><tr>${vis.map(c => `<th>${esc(c)}</th>`).join('')}<th></th></tr></thead><tbody>
+              ${shown.map(([r, i]) => {
+                const locked = dTable === 'app_settings' && PROTECTED_KEYS.includes(r.setting_key);
+                return `<tr data-i="${i}">${vis.map(c => `<td title="">${cellHtml(r[c])}</td>`).join('')}<td class="act">${dPk && !locked ? '<button type="button" class="ap-btn sm" data-a="redit">✏️</button> <button type="button" class="ap-btn sm dng" data-a="rdel">🗑️</button>' : '🔒'}</td></tr>`;
+              }).join('') || `<tr><td colspan="${vis.length + 1}" class="ap-empty">No rows${q ? ' match the filter' : ' in this table'}.</td></tr>`}
+            </tbody></table></div>
+            <div class="ap-note">Showing ${shown.length} of ${dRows.length} row${dRows.length === 1 ? '' : 's'} (latest 300)${more > 0 ? ` · ${more} more column${more > 1 ? 's' : ''} visible in ✏️ edit` : ''}${dTable === 'app_settings' ? ' · login accounts are hidden here — manage them in Users' : ''}.</div>`;
+        }
+        function editRow(i) {
+          const row = dRows[i]; if (!row || !dPk) return;
+          const editable = { ...row }; delete editable[dPk];
+          dialog({
+            title: `✏️ Edit row — ${esc(String(row[dPk]))}`, wide: true, ok: 'Save row',
+            html: `<label>Row data (JSON) — the ${esc(dPk)} cannot be changed</label><textarea class="ap-text" id="apJ" rows="14" spellcheck="false">${esc(JSON.stringify(editable, null, 2))}</textarea>`,
+            onOk: async dw => {
+              let obj; try { obj = JSON.parse(dw.querySelector('#apJ').value); } catch (e) { throw new Error('Invalid JSON: ' + e.message); }
+              if (!obj || typeof obj !== 'object' || Array.isArray(obj)) throw new Error('Must be a JSON object.');
+              delete obj[dPk];
+              const { error } = await supabase.from(dTable).update(obj).eq(dPk, row[dPk]);
+              if (error) throw error;
+              toast('✅ Row saved'); viewData();
+            }
+          });
+        }
+        async function deleteRow(i) {
+          const row = dRows[i]; if (!row || !dPk) return;
+          if (!(await confirmDlg('🗑️ Delete row', `Delete this row (<b>${esc(dPk)} = ${esc(String(row[dPk]))}</b>) from <b>${esc(dTable)}</b>? This cannot be undone.`))) return;
+          const { error } = await supabase.from(dTable).delete().eq(dPk, row[dPk]);
+          if (error) return toast('⚠️ ' + error.message, 'warning');
+          toast('🗑️ Row deleted'); viewData();
+        }
+        function clearTable() {
+          dialog({
+            title: '⚠️ Delete ALL rows', ok: 'Delete everything', danger: true,
+            html: `<div style="font-size:0.86rem;color:#334;">This permanently deletes <b>every row</b> in <b>${esc(dTable)}</b>. Type the table name to confirm.</div><label>Table name</label><input class="ap-input" id="apCT" placeholder="${esc(dTable)}" autocomplete="off">`,
+            onOk: async dw => {
+              if (dw.querySelector('#apCT').value.trim() !== dTable) throw new Error('Type “' + dTable + '” exactly to confirm.');
+              const { error } = await supabase.from(dTable).delete().not(dPk, 'is', null);
+              if (error) throw error;
+              toast('🗑️ Table cleared'); viewData();
+            }
+          });
+        }
+        async function exportTable(kind) {
+          try {
+            toast('⏳ Preparing export…');
+            const rows = await fetchAll(dTable), d = new Date().toISOString().slice(0, 10);
+            if (kind === 'csv') download(`${dTable}-${d}.csv`, toCsv(rows), 'text/csv;charset=utf-8');
+            else download(`${dTable}-${d}.json`, JSON.stringify(rows, null, 2), 'application/json');
+          } catch (e) { toast('⚠️ Export failed: ' + (e.message || e), 'warning'); }
+        }
+        async function backupAll() {
+          const btn = $('apBackup'); if (btn) btn.disabled = true;
+          try {
+            toast('⏳ Collecting all data…');
+            const out = { app: 'KCST Skylight Pro', exported_at: new Date().toISOString(), tables: {} };
+            for (const [t] of TABLES) { try { out.tables[t] = await fetchAll(t); } catch (e) { out.tables[t] = { error: String(e.message || e) }; } }
+            download(`skylight-backup-${new Date().toISOString().slice(0, 10)}.json`, JSON.stringify(out, null, 2), 'application/json');
+            toast('✅ Backup downloaded');
+          } finally { if (btn) btn.disabled = false; }
+        }
+
+        // ----- navigation / events -----
+        function show(t) {
+          tab = t; $('apTitle').textContent = TITLES[t];
+          panel.querySelectorAll('.ap-nav button[data-tab]').forEach(b => b.classList.toggle('active', b.dataset.tab === t));
+          closeDialog();
+          (t === 'users' ? viewUsers : t === 'data' ? viewData : viewDashboard)();
+        }
+        async function open(t) {
+          const au = A();
+          if (!au || !au.isAdmin()) return toast('⚠️ Admins only', 'warning');
+          try { const me = au.getMe(), list = await au.fetchUsers(), cur = list.find(x => au.keyOf(x.u) === au.keyOf(me.u)); if (!cur || cur.role !== 'admin' || cur.status === 'disabled') return toast('⚠️ Admins only', 'warning'); } catch (e) {}
+          $('apWho').textContent = au.getMe().u;
+          const sm = document.querySelector('.start-menu'); if (sm) sm.classList.remove('open');
+          panel.classList.add('open'); show(t || 'dashboard');
+        }
+        const close = () => { panel.classList.remove('open'); closeDialog(); };
+        startBtn.addEventListener('click', () => open('dashboard'));
+        const so = document.getElementById('lgOpenAdmin'); if (so) so.addEventListener('click', () => open('users'));
+        panel.addEventListener('mousedown', e => { if (e.target === panel) close(); });
+        document.addEventListener('keydown', e => { if (e.key === 'Escape' && panel.classList.contains('open')) { e.stopPropagation(); dialogOpen() ? closeDialog() : close(); } }, true);
+        panel.addEventListener('click', e => {
+          const t = e.target;
+          if (t.closest('#apClose')) return close();
+          const nav = t.closest('.ap-nav button[data-tab]'); if (nav) return show(nav.dataset.tab);
+          const op = t.closest('[data-open]'); if (op) { dTable = op.dataset.open; dQ = ''; return show('data'); }
+          if (t.closest('#apBackup')) return backupAll();
+          if (t.closest('#apDashRef')) return viewDashboard();
+          if (t.closest('#apURef')) return viewUsers();
+          if (t.closest('#apUAdd')) return userDialog(null);
+          if (t.closest('#apDRef')) return viewData();
+          if (t.closest('#apDCsv')) return exportTable('csv');
+          if (t.closest('#apDJson')) return exportTable('json');
+          if (t.closest('#apDClear')) return clearTable();
+          const b = t.closest('button[data-a]'); if (!b) return;
+          const tr = b.closest('tr');
+          if (b.dataset.a === 'edit' || b.dataset.a === 'del') {
+            const name = tr.dataset.u;
+            if (b.dataset.a === 'del') return deleteUser(name);
+            return A().fetchUsers().then(list => { const u = list.find(x => A().keyOf(x.u) === A().keyOf(name)); if (u) userDialog(u); });
+          }
+          if (b.dataset.a === 'redit') return editRow(Number(tr.dataset.i));
+          if (b.dataset.a === 'rdel') return deleteRow(Number(tr.dataset.i));
+        });
+        panel.addEventListener('input', e => {
+          if (e.target.id === 'apUQ') { uQ = e.target.value; clearTimeout(window.__apUT); window.__apUT = setTimeout(() => { const el = $('apUQ'); viewUsers().then(() => { const n = $('apUQ'); if (n) { n.focus(); n.setSelectionRange(n.value.length, n.value.length); } }); }, 250); }
+          if (e.target.id === 'apDQ') { dQ = e.target.value; clearTimeout(window.__apDT); window.__apDT = setTimeout(() => { viewData().then(() => { const n = $('apDQ'); if (n) { n.focus(); n.setSelectionRange(n.value.length, n.value.length); } }); }, 250); }
+        });
+        panel.addEventListener('change', e => { if (e.target.id === 'apDT') { dTable = e.target.value; dQ = ''; viewData(); } });
       })();
 
       // ==================== CONTACTS (name, section, mobile + Call / WhatsApp) ====================
