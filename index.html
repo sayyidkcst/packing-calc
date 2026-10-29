@@ -3152,6 +3152,13 @@
     html.mobile-app #reminderWindow, html.mobile-app #reminderGadget { display: none !important; }
 
     /* ==================== CONTACTS WINDOW ==================== */
+    .window-trip { width: 600px; max-width: calc(100vw - 40px); z-index: 24; height: min(720px, calc(100vh - var(--taskbar-height) - 20px)); }
+    .tp-content { display: flex; flex-direction: column; padding: 0; overflow: hidden; min-height: 0; background: #dfe7f3; }
+    .tp-bar { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; padding: 8px 10px; background: #eaf0fa; border-bottom: 1px solid #b8cce8; flex-shrink: 0; }
+    .tp-status { font-size: 0.72rem; font-weight: 700; color: #1e6b3a; margin-left: 4px; }
+    .tp-status.err { color: #a02020; }
+    .tp-scroll { flex: 1; min-height: 0; overflow: auto; padding: 12px; }
+    html.mobile-app #tripWindow { display: none !important; }
     .window-contact { width: 580px; max-width: calc(100vw - 40px); z-index: 23; height: min(620px, calc(100vh - var(--taskbar-height) - 20px)); }
     .ct-content { display: flex; flex-direction: column; gap: 8px; padding: 10px 12px; min-height: 0; overflow: hidden; }
     .ct-count { background: linear-gradient(180deg,#3f7ae0 0%,#15419c 100%); color: #fff; border-radius: 3px; padding: 1px 8px; font-size: 0.62rem; font-weight: 700; border: 1px solid #0a2862; margin-left: 6px; }
@@ -5083,6 +5090,29 @@
     </div>
   </div>
 
+  <!-- TRIP SHEET (daily vehicle / route / collection sheet — same layout as the paper form) -->
+  <div class="window window-trip" id="tripWindow">
+    <div class="title-bar" id="tripTitleBar">
+      <div class="title-text"><span>🗒️</span> Trip Sheet</div>
+      <div class="caption-buttons">
+        <div class="caption-btn minimize" data-minimize="tripWindow" title="Minimize">_</div>
+        <div class="caption-btn maximize" data-maximize="tripWindow" title="Maximize">□</div>
+        <div class="caption-btn close" data-close="tripWindow" title="Close (remove from taskbar)">✕</div>
+      </div>
+    </div>
+    <div class="window-content tp-content">
+      <div class="tp-bar">
+        <button class="aero-btn" id="tpNew" type="button"><span>🆕</span> New</button>
+        <button class="aero-btn success" id="tpSave" type="button"><span>💾</span> Save</button>
+        <button class="aero-btn" id="tpPrint" type="button"><span>🖨️</span> Print</button>
+        <button class="aero-btn" id="tpHistory" type="button"><span>📂</span> Saved</button>
+        <span class="tp-status" id="tpStatus"></span>
+      </div>
+      <div class="tp-scroll"><div id="tpPaperHost"></div></div>
+      <datalist id="tpVehicles"></datalist><datalist id="tpStaff"></datalist><datalist id="tpRoutes"></datalist>
+    </div>
+  </div>
+
   <!-- CONTACTS -->
   <div class="window window-contact" id="contactWindow">
     <div class="title-bar" id="contactTitleBar">
@@ -5283,6 +5313,10 @@
     <div class="taskbar-item" id="taskbarContact" data-restore="contactWindow" style="display:none;">
       <span class="tb-icon">📇</span>
       <span class="tb-label">Contacts</span>
+    </div>
+    <div class="taskbar-item" id="taskbarTrip" data-restore="tripWindow" style="display:none;">
+      <span class="tb-icon">🗒️</span>
+      <span class="tb-label">Trip Sheet</span>
     </div>
     <div class="taskbar-item" id="taskbarSettings" data-restore="settingsWindow" style="display:none;">
       <span class="tb-icon">⚙️</span>
@@ -6836,9 +6870,11 @@
       makeDraggable(numberWordWindow, numberWordTitleBar);
       const reminderWindow = document.getElementById('reminderWindow');
       const contactWindow = document.getElementById('contactWindow');
+      const tripWindow = document.getElementById('tripWindow');
       makeDraggable(rateWindow, rateTitleBar);
       makeDraggable(reminderWindow, document.getElementById('reminderTitleBar'));
       makeDraggable(contactWindow, document.getElementById('contactTitleBar'));
+      makeDraggable(tripWindow, document.getElementById('tripTitleBar'));
       makeDraggable(priceWindow, priceTitleBar);
       makeDraggable(loadWindow, loadTitleBar);
       makeDraggable(cashWindow, cashTitleBar);
@@ -6848,13 +6884,14 @@
       makeDraggable(settingsWindow, settingsTitleBar);
       makeDraggable(stockWindow, stockTitleBar);
 
-      [calcWindow, numberWordWindow, priceWindow, loadWindow, cashWindow, notepadWindow, vehicleWindow, invoiceWindow, stockWindow, settingsWindow, rateWindow, reminderWindow, contactWindow].forEach(addResizeHandles);
+      [calcWindow, numberWordWindow, priceWindow, loadWindow, cashWindow, notepadWindow, vehicleWindow, invoiceWindow, stockWindow, settingsWindow, rateWindow, reminderWindow, contactWindow, tripWindow].forEach(addResizeHandles);
 
       calcWindow.addEventListener('mousedown', () => bringToFront(calcWindow));
       numberWordWindow.addEventListener('mousedown', () => bringToFront(numberWordWindow));
       rateWindow.addEventListener('mousedown', () => bringToFront(rateWindow));
       reminderWindow.addEventListener('mousedown', () => bringToFront(reminderWindow));
       contactWindow.addEventListener('mousedown', () => bringToFront(contactWindow));
+      tripWindow.addEventListener('mousedown', () => bringToFront(tripWindow));
       priceWindow.addEventListener('mousedown', () => bringToFront(priceWindow));
       loadWindow.addEventListener('mousedown', () => bringToFront(loadWindow));
       cashWindow.addEventListener('mousedown', () => bringToFront(cashWindow));
@@ -6885,6 +6922,7 @@
         rateWindow: { minimized: false, maximized: false, origRect: null },
         reminderWindow: { minimized: false, maximized: false, origRect: null },
         contactWindow: { minimized: false, maximized: false, origRect: null },
+        tripWindow: { minimized: false, maximized: false, origRect: null },
         priceWindow: { minimized: false, maximized: false, origRect: null },
         loadWindow: { minimized: false, maximized: false, origRect: null },
         cashWindow: { minimized: false, maximized: false, origRect: null },
@@ -10815,7 +10853,8 @@
         { id: 'vehicleWindow', icon: '🚛', name: 'Vehicle Manager', desc: 'Manage fleet & documents' },
         { id: 'invoiceWindow', icon: '🧾', name: 'Invoice', desc: 'Create and manage invoices' },
         { id: 'stockWindow', icon: '📋', name: 'Stock List', desc: 'Track stock levels' },
-        { id: 'contactWindow', icon: '📇', name: 'Contacts', desc: 'Call & WhatsApp your contacts' }
+        { id: 'contactWindow', icon: '📇', name: 'Contacts', desc: 'Call & WhatsApp your contacts' },
+        { id: 'tripWindow', icon: '🗒️', name: 'Trip Sheet', desc: 'Daily route, sales & collection sheet' }
       ];
 
       // RIGHT panel: quick links + Settings + utilities
@@ -10996,10 +11035,11 @@
         const tbRate = document.getElementById('taskbarRate');
         const tbReminder = document.getElementById('taskbarReminder');
         const tbContact = document.getElementById('taskbarContact');
+        const tbTrip = document.getElementById('taskbarTrip');
         [
           ['calcWindow', tbCalc], ['numberWordWindow', tbNumberWord], ['priceWindow', tbPrice],
           ['loadWindow', tbLoad], ['cashWindow', tbCash], ['notepadWindow', tbNotepad],
-          ['vehicleWindow', tbVehicle], ['invoiceWindow', tbInvoice], ['stockWindow', tbStock], ['settingsWindow', tbSettings], ['rateWindow', tbRate], ['reminderWindow', tbReminder], ['contactWindow', tbContact]
+          ['vehicleWindow', tbVehicle], ['invoiceWindow', tbInvoice], ['stockWindow', tbStock], ['settingsWindow', tbSettings], ['rateWindow', tbRate], ['reminderWindow', tbReminder], ['contactWindow', tbContact], ['tripWindow', tbTrip]
         ].forEach(([id, tb]) => {
           const state = windowState[id];
           if (tb && tb.style.display !== 'none') {
@@ -11033,6 +11073,7 @@
         updateTaskbar();
         if (winId === 'contactWindow') { renderContacts(); if (!document.documentElement.classList.contains('mobile-app')) setTimeout(() => { const t = document.getElementById('ctSearch'); if (t) t.focus(); }, 50); }
         if (winId === 'reminderWindow') { renderReminders(); }
+        if (winId === 'tripWindow' && window.tpOnOpen) window.tpOnOpen();
         if (winId === 'numberWordWindow') {
           initReceiptSuggest();
           renderReceiptVoucher();
@@ -12234,6 +12275,235 @@
         panel.addEventListener('change', e => { if (e.target.id === 'apDT') { dTable = e.target.value; dQ = ''; viewData(); } });
       })();
 
+      // ==================== TRIP SHEET (same layout as the paper form; saved in app_settings 'trip_sheets') ====================
+      (function () {
+        const host = document.getElementById('tpPaperHost');
+        if (!host) return;
+        const $ = id => document.getElementById(id);
+        const esc = escapeHtml;
+        const KEY = 'trip_sheets', CACHE = 'trip_sheets_cache';
+        const NUM = new Set(['salesQty', 'salesAmt', 'retQty', 'retAmt', 'execCash', 'execUpi', 'salCash', 'salUpi', 'cheque', 'neft', 'petrol', 'diesel', 'porterQty', 'porterAmt', 'expense', 'balance', 'total']);
+        const AUTO = ['total', 'expense', 'balance'];
+        const AMT = new Set(['salesAmt', 'retAmt', 'execCash', 'execUpi', 'salCash', 'salUpi', 'cheque', 'neft', 'petrol', 'diesel', 'porterAmt', 'expense', 'balance', 'total']);   // money boxes (the qty boxes stay plain numbers)
+        const LISTS = { vehicle: 'tpVehicles', order: 'tpStaff', salesman: 'tpStaff', driver: 'tpStaff', route: 'tpRoutes' };
+        const todayIso = () => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
+        const dmy = iso => { const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || ''); return m ? `${m[3]}-${m[2]}-${m[1]}` : (iso || ''); };
+        const num = v => parseFloat(String(v == null ? '' : v).replace(/[₹,\s]/g, '')) || 0;
+        const fmt = n => (Math.round(n * 100) / 100).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        const money = n => (n < 0 ? '-₹' : '₹') + fmt(Math.abs(n));          // ₹1,25,000.00 (Indian digit grouping)
+        const moneyText = t => { const x = String(t == null ? '' : t).trim(); if (x === '') return ''; const n = parseFloat(x.replace(/[₹,\s]/g, '')); return isNaN(n) ? x : money(n); };
+        let curId = null, dirty = false, man = { total: false, expense: false, balance: false };
+
+        // ----- paper (shared by the window and the print page) -----
+        const CSS = `
+          .tp-paper{background:#fff;color:#1a1a1a;padding:14px;font-family:'Bookman Old Style','Book Antiqua',Georgia,serif;box-sizing:border-box;width:100%;max-width:640px;margin:0 auto;box-shadow:0 4px 18px rgba(0,20,60,.3);}
+          .tp-box{border:2px solid #222;margin-bottom:5px;}
+          .tp-row{display:flex;border-top:2px solid #222;} .tp-row:first-child{border-top:none;}
+          .tp-c{box-sizing:border-box;border-left:2px solid #222;min-width:0;display:flex;align-items:center;position:relative;min-height:50px;} .tp-c:first-child{border-left:none;}
+          .tp-h{justify-content:center;text-align:center;font-weight:800;font-size:1.08rem;letter-spacing:.04em;text-transform:uppercase;min-height:46px;}
+          .tp-l{font-weight:800;font-size:1.02rem;text-transform:uppercase;padding:2px 8px;letter-spacing:.01em;}
+          .tp-l.reg{font-weight:400;font-size:.95rem;line-height:1.25;}
+          .tp-sub{justify-content:center;font-weight:800;font-size:.76rem;font-family:Arial,Helvetica,sans-serif;min-height:34px;}
+          .tp-lab{font-weight:800;font-size:1.02rem;text-transform:uppercase;padding:0 4px 0 8px;white-space:nowrap;flex:0 0 auto;}
+          .tp-i{width:100%;height:100%;min-height:50px;flex:1;min-width:0;border:none;background:transparent;font:600 1rem 'Segoe UI',Arial,sans-serif;color:#0a2a7a;padding:4px 8px;outline:none;box-sizing:border-box;}
+          .tp-i:focus{background:#fff8cf;}
+          .tp-i[data-k="vehicle"]{font-size:.84rem;}
+          .tp-i.auto{background:#f1f6ff;} .tp-i.auto:focus{background:#fff8cf;}
+          .tp-t{display:block;width:100%;padding:6px 8px;font:600 1rem Arial,Helvetica,sans-serif;color:#000;word-break:break-word;}
+          .tp-total{border-width:3px;margin-top:6px;} .tp-total .tp-l{font-size:1.1rem;}
+        `;
+        function paper(v, mode) {
+          const print = mode === 'print';
+          const f = k => {
+            if (print) return `<span class="tp-t">${esc(k === 'date' ? dmy(v[k]) : (v[k] || ''))}</span>`;
+            const t = k === 'date' ? 'type="date"' : 'type="text" autocomplete="off"';
+            return `<input class="tp-i${AUTO.includes(k) ? ' auto' : ''}" data-k="${k}" ${t} ${NUM.has(k) ? 'inputmode="decimal"' : ''} ${LISTS[k] ? `list="${LISTS[k]}"` : ''} ${AUTO.includes(k) ? 'title="Auto-calculated — type to override, clear to go back to auto"' : ''} value="${esc(v[k] || '')}">`;
+          };
+          const c = (w, inner, cls = '') => `<div class="tp-c ${cls}" style="flex:0 0 ${w}%">${inner}</div>`;
+          const row = cells => `<div class="tp-row">${cells}</div>`;
+          const h3 = (a, b, d) => row(c(31, a, 'tp-h') + c(33, b, 'tp-h') + c(36, d, 'tp-h'));
+          const v3 = (a, b, d) => row(c(31, f(a)) + c(33, f(b)) + c(36, f(d)));
+          return `<div class="tp-paper" id="tpPaper">
+            <div class="tp-box">
+              ${h3('Date', 'Vehicle', 'Route')}${v3('date', 'vehicle', 'route')}
+              ${h3('Order', 'Salesman', 'Driver')}${v3('order', 'salesman', 'driver')}
+            </div>
+            <div class="tp-box">
+              ${row(c(46, 'Total Sales', 'tp-l') + c(15, f('salesQty')) + c(39, f('salesAmt')))}
+              ${row(c(46, 'Total Return', 'tp-l') + c(15, f('retQty')) + c(39, f('retAmt')))}
+              ${row(c(46, 'Cancelled Bill', 'tp-l') + c(54, f('cancelled')))}
+              ${row(c(33, '', 'tp-sub') + c(32, 'CASH', 'tp-sub') + c(35, 'UPI', 'tp-sub'))}
+              ${row(c(33, 'Executive<br>Collection', 'tp-l reg') + c(32, f('execCash')) + c(35, f('execUpi')))}
+              ${row(c(33, 'Salesman<br>Collection', 'tp-l reg') + c(32, f('salCash')) + c(35, f('salUpi')))}
+              ${row(c(50, '<span class="tp-lab">Cheque :</span>' + f('cheque')) + c(50, '<span class="tp-lab">NEFT :</span>' + f('neft')))}
+              ${row(c(50, '<span class="tp-lab">Petrol :</span>' + f('petrol')) + c(50, '<span class="tp-lab">Diesel :</span>' + f('diesel')))}
+              ${row(c(34, 'Porter', 'tp-l') + c(16, f('porterQty')) + c(50, f('porterAmt')))}
+              ${row(c(34, 'Expense', 'tp-l') + c(66, f('expense')))}
+              ${row(c(34, 'Balance', 'tp-l') + c(66, f('balance')))}
+            </div>
+            <div class="tp-box tp-total">${row(c(47, 'Total Collection', 'tp-l') + c(53, f('total')))}</div>
+          </div>`;
+        }
+        const st = document.createElement('style'); st.textContent = CSS; document.head.appendChild(st);
+        function blank() { return { date: todayIso() }; }
+        function mount(values, manual) {
+          host.innerHTML = paper(values, 'edit');
+          man = Object.assign({ total: false, expense: false, balance: false }, manual || {});
+          recalc();
+          host.querySelectorAll('.tp-i').forEach(e => { if (AMT.has(e.dataset.k)) e.value = moneyText(e.value); });
+        }
+
+        // ----- calculations -----
+        const el = k => host.querySelector(`[data-k="${k}"]`);
+        const get = k => { const e = el(k); return e ? num(e.value) : 0; };
+        const filled = ks => ks.some(k => { const e = el(k); return e && e.value.trim() !== ''; });
+        function setAuto(k, val, any) { if (man[k]) return; const e = el(k); if (e) e.value = any ? money(val) : ''; }
+        function recalc() {
+          // Total Collection = Executive (cash + UPI) + Salesman (cash + UPI)
+          const tIn = ['execCash', 'execUpi', 'salCash', 'salUpi'], eIn = ['petrol', 'diesel'];
+          setAuto('total', tIn.reduce((a, k) => a + get(k), 0), filled(tIn));
+          // Expense = Petrol + Diesel (the porter amount is taken off separately in Balance)
+          setAuto('expense', eIn.reduce((a, k) => a + get(k), 0), filled(eIn));
+          // Balance = Salesman cash − Porter amount − Expense   (the small Porter box is not used)
+          setAuto('balance', get('salCash') - get('porterAmt') - get('expense'), filled(['salCash', 'porterAmt', 'petrol', 'diesel', 'expense']));
+        }
+        function collect() {
+          const o = { id: curId, _m: { ...man } };
+          host.querySelectorAll('[data-k]').forEach(e => { o[e.dataset.k] = AMT.has(e.dataset.k) ? moneyText(e.value) : e.value.trim(); });
+          return o;
+        }
+        const status = (t, err) => { const s = $('tpStatus'); s.textContent = t || ''; s.classList.toggle('err', !!err); };
+
+        // ----- events -----
+        host.addEventListener('input', e => {
+          const k = e.target.dataset && e.target.dataset.k; if (!k) return;
+          if (NUM.has(k)) { const c = e.target.value.replace(/[^0-9.,-]/g, ''); if (c !== e.target.value) e.target.value = c; }
+          if (AUTO.includes(k)) man[k] = e.target.value.trim() !== '';
+          recalc(); dirty = true; status('');
+        });
+        // money boxes: plain number while typing, ₹1,25,000.00 when you leave the box
+        host.addEventListener('focusin', e => {
+          const k = e.target.dataset && e.target.dataset.k;
+          if (k && AMT.has(k)) { e.target.value = e.target.value.replace(/[₹,\s]/g, ''); if (e.target.select) e.target.select(); }
+        });
+        host.addEventListener('focusout', e => {
+          const k = e.target.dataset && e.target.dataset.k;
+          if (k && AMT.has(k)) e.target.value = moneyText(e.target.value);
+        });
+        host.addEventListener('keydown', e => {
+          if (e.key !== 'Enter' || !e.target.classList.contains('tp-i')) return;
+          e.preventDefault();
+          const all = Array.from(host.querySelectorAll('.tp-i')), i = all.indexOf(e.target);
+          if (all[i + 1]) { all[i + 1].focus(); all[i + 1].select && all[i + 1].select(); }
+        });
+
+        // ----- storage -----
+        async function fetchSheets() {
+          try {
+            const res = await withTimeout(supabase.from('app_settings').select('setting_value').eq('setting_key', KEY).maybeSingle(), 6000);
+            if (!res || res.error) throw (res && res.error) || new Error('Timed out');
+            const list = res.data && res.data.setting_value ? (JSON.parse(res.data.setting_value).sheets || []) : [];
+            try { localStorage.setItem(CACHE, JSON.stringify(list)); } catch (e) {}
+            return { list, ok: true };
+          } catch (err) {
+            try { return { list: JSON.parse(localStorage.getItem(CACHE) || '[]'), ok: false }; } catch (e) { return { list: [], ok: false }; }
+          }
+        }
+        async function writeSheets(list) {
+          const { error } = await supabase.from('app_settings').upsert({ setting_key: KEY, setting_value: JSON.stringify({ sheets: list }), updated_at: new Date().toISOString() }, { onConflict: 'setting_key' });
+          if (error) throw error;
+          try { localStorage.setItem(CACHE, JSON.stringify(list)); } catch (e) {}
+        }
+        const totalOf = d => num(d.total);
+        async function save() {
+          const d = collect();
+          if (!d.date) { status('⚠ Choose a date', true); return; }
+          if (!d.id) { d.id = 't' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5); }
+          const btn = $('tpSave'); btn.disabled = true; status('Saving…');
+          try {
+            const { list, ok } = await fetchSheets();
+            if (!ok) throw new Error('Cannot reach the database');
+            d.saved = new Date().toISOString();
+            const i = list.findIndex(x => x.id === d.id);
+            if (i >= 0) list[i] = d; else list.push(d);
+            list.sort((a, b) => String(b.date).localeCompare(String(a.date)) || String(b.saved).localeCompare(String(a.saved)));
+            await writeSheets(list.slice(0, 500));
+            curId = d.id; dirty = false; status('✓ Saved ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+            showToast('✅ Trip sheet saved');
+          } catch (err) { status('⚠ Not saved: ' + (err.message || err), true); showToast('⚠️ Trip sheet not saved: ' + (err.message || err), 'warning'); }
+          finally { btn.disabled = false; }
+        }
+
+        // ----- new / print / history -----
+        async function newSheet() {
+          if (dirty) {
+            const ok = await showConfirm({ title: '🆕 New Sheet', message: 'Discard the changes on this sheet?', confirmLabel: 'Discard', type: 'warning', icon: '🆕', parentWindow: $('tripWindow') });
+            if (!ok) return;
+          }
+          curId = null; dirty = false; mount(blank()); status('');
+        }
+        function printSheet() {
+          const d = collect();
+          const w = window.open('', '_blank', 'width=900,height=1000');
+          if (!w) { showToast('⚠️ Allow pop-ups to print', 'warning'); return; }
+          w.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>Trip Sheet ${esc(dmy(d.date))}</title><style>
+            @page{size:A4 portrait;margin:8mm} *{box-sizing:border-box} body{margin:0;background:#fff}
+            ${CSS} .tp-paper{max-width:none;box-shadow:none;padding:6mm 8mm} .tp-c{min-height:17mm} .tp-h{min-height:14mm} .tp-sub{min-height:10mm}
+            .tp-h{font-size:1.25rem} .tp-l,.tp-lab{font-size:1.2rem} .tp-l.reg{font-size:1.1rem} .tp-t{font-size:1.2rem;padding:8px 10px}
+            </style></head><body>${paper(d, 'print')}<script>window.onload=function(){setTimeout(function(){window.print();},400);};<\/script></body></html>`);
+          w.document.close();
+        }
+        async function history() {
+          const { list, ok } = await fetchSheets();
+          const rows = q => list.filter(x => !q || JSON.stringify(x).toLowerCase().includes(q)).map(x => `
+            <div class="tp-hrow" data-id="${esc(x.id)}">
+              <div class="tp-hmain"><b>${esc(dmy(x.date))}</b> <span>${esc(x.route || '—')}</span><small>${esc(x.vehicle || '')}${x.salesman ? ' · ' + esc(x.salesman) : ''}</small></div>
+              <div class="tp-htot">${x.total ? money(totalOf(x)) : '—'}</div>
+              <button type="button" class="aero-btn primary" data-a="open">Open</button><button type="button" class="aero-btn danger" data-a="del">🗑️</button>
+            </div>`).join('') || '<div style="padding:18px;text-align:center;color:#556;">No saved sheets yet.</div>';
+          const html = `<style>.tp-hl{display:flex;flex-direction:column;gap:5px;max-height:340px;overflow:auto;margin-top:8px}.tp-hrow{display:flex;align-items:center;gap:8px;padding:7px 9px;border:1px solid #b8cce8;border-radius:6px;background:#f6f9ff}.tp-hmain{flex:1;min-width:0;font-size:.8rem;display:flex;flex-direction:column}.tp-hmain small{color:#5a6a8c}.tp-htot{font-weight:800;color:#0a2862;font-size:.82rem}.tp-hrow .aero-btn{padding:3px 9px;font-size:.7rem}</style>
+            ${ok ? '' : '<div class="modal-error show">⚠ Offline — showing the copy saved on this device.</div>'}
+            <div class="modal-field"><div class="input-wrap"><input type="text" id="tpHQ" placeholder="🔍 Search date, route, vehicle…"></div></div>
+            <div class="tp-hl" id="tpHList">${rows('')}</div>`;
+          const overlay = openModal($('tripWindow'), '📂 Saved Trip Sheets (' + list.length + ')', html + '<div class="modal-actions"><button class="aero-btn" id="modalCancelBtn" type="button">Close</button></div>', () => true);
+          const listEl = overlay.querySelector('#tpHList');
+          overlay.querySelector('#tpHQ').addEventListener('input', e => { listEl.innerHTML = rows(e.target.value.trim().toLowerCase()); });
+          listEl.addEventListener('click', async e => {
+            const b = e.target.closest('button[data-a]'); if (!b) return;
+            const id = b.closest('.tp-hrow').dataset.id, item = list.find(x => x.id === id); if (!item) return;
+            if (b.dataset.a === 'open') {
+              if (dirty && !(await showConfirm({ title: '📂 Open sheet', message: 'Discard the changes on the current sheet?', confirmLabel: 'Discard', type: 'warning', icon: '📂', parentWindow: $('tripWindow') }))) return;
+              curId = item.id; dirty = false; mount(item, item._m); status('Opened ' + dmy(item.date));
+              closeWindowModal(overlay);
+            } else {
+              if (!(await showConfirm({ title: '🗑️ Delete sheet', message: `Delete the sheet of ${esc(dmy(item.date))}?`, parentWindow: $('tripWindow') }))) return;
+              try {
+                const cur = await fetchSheets(); await writeSheets(cur.list.filter(x => x.id !== id));
+                list.splice(list.indexOf(item), 1); listEl.innerHTML = rows(overlay.querySelector('#tpHQ').value.trim().toLowerCase());
+                if (curId === id) curId = null; showToast('🗑️ Sheet deleted');
+              } catch (err) { showToast('⚠️ ' + (err.message || err), 'warning'); }
+            }
+          });
+        }
+
+        // ----- suggestions for vehicle / staff / route -----
+        async function fillLists() {
+          try {
+            $('tpVehicles').innerHTML = (typeof vehicles !== 'undefined' ? vehicles : []).map(v => `<option value="${esc([v.name, v.number].filter(Boolean).join(' - '))}"></option>`).join('');
+            $('tpStaff').innerHTML = (typeof employeesList !== 'undefined' ? employeesList : []).map(e => `<option value="${esc(e.name)}"></option>`).join('');
+            const { list } = await fetchSheets();
+            $('tpRoutes').innerHTML = [...new Set(list.map(x => x.route).filter(Boolean))].sort().map(r => `<option value="${esc(r)}"></option>`).join('');
+          } catch (e) {}
+        }
+        window.tpOnOpen = () => { fillLists(); const d = el('date'); if (d && !d.value) d.value = todayIso(); setTimeout(() => { const f = el('vehicle'); if (f && !dirty && !curId) f.focus(); }, 60); };
+
+        $('tpNew').addEventListener('click', newSheet);
+        $('tpSave').addEventListener('click', save);
+        $('tpPrint').addEventListener('click', printSheet);
+        $('tpHistory').addEventListener('click', history);
+        mount(blank());
+      })();
+
       // ==================== CONTACTS (name, section, mobile + Call / WhatsApp) ====================
       const CT_TABLE = 'contacts';                 // real Supabase table: id, name, section, mobile, created_at
       const CT_CACHE_KEY = 'contacts_cache_v2';     // device copy (array of contacts)
@@ -12635,7 +12905,7 @@ create policy "contacts_open_access" on public.contacts
 
       // ==================== INIT ====================
       // Hide all windows BEFORE anything loads — no auto-open
-      ['calcWindow', 'numberWordWindow', 'priceWindow', 'loadWindow', 'cashWindow', 'notepadWindow', 'vehicleWindow', 'invoiceWindow', 'stockWindow', 'settingsWindow', 'rateWindow', 'reminderWindow', 'contactWindow'].forEach(id => {
+      ['calcWindow', 'numberWordWindow', 'priceWindow', 'loadWindow', 'cashWindow', 'notepadWindow', 'vehicleWindow', 'invoiceWindow', 'stockWindow', 'settingsWindow', 'rateWindow', 'reminderWindow', 'contactWindow', 'tripWindow'].forEach(id => {
         const winEl = document.getElementById(id);
         if (winEl) {
           winEl.classList.add('minimized');      // .minimized already hides the window; no inline display:none so it can open at any time
@@ -12670,7 +12940,7 @@ create policy "contacts_open_access" on public.contacts
       calculateCash();
 
       // Keep all windows closed after loading — user must open them via Start Menu
-      ['calcWindow', 'numberWordWindow', 'priceWindow', 'loadWindow', 'cashWindow', 'notepadWindow', 'vehicleWindow', 'invoiceWindow', 'stockWindow', 'settingsWindow', 'rateWindow', 'reminderWindow', 'contactWindow'].forEach(id => {
+      ['calcWindow', 'numberWordWindow', 'priceWindow', 'loadWindow', 'cashWindow', 'notepadWindow', 'vehicleWindow', 'invoiceWindow', 'stockWindow', 'settingsWindow', 'rateWindow', 'reminderWindow', 'contactWindow', 'tripWindow'].forEach(id => {
         const winEl = document.getElementById(id);
         if (winEl) {
           winEl.classList.add('minimized');
