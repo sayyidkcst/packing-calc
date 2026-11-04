@@ -4792,6 +4792,10 @@
         <button class="aero-btn" id="exportStockBtn" type="button" title="Export the listed stock to an Excel file">
           <span>📊</span> Export Excel
         </button>
+        <button class="aero-btn" id="orderBagBtn" type="button" title="Upload an Item Wise Order Excel and print Bags + Extra Pcs">
+          <span>📥</span> Order Excel → Bags
+        </button>
+        <input type="file" id="orderBagFile" accept=".xlsx,.xls,.csv" style="display:none;">
         <button class="aero-btn danger" id="clearAllStockBtn" type="button">
           <span>🗑️</span> Clear All
         </button>
@@ -9993,6 +9997,204 @@
           rows,
           colWidths: [5, 34, 12, 10, 8, 8, 12, 8]
         });
+      });
+
+      // ==================== ORDER EXCEL -> BAGS + EXTRA PCS PRINT ====================
+      // Upload an "Item Wise Order" Excel (Item Name / Base Quantity / Base Unit). Each item is matched with the
+      // Stock List (or, if missing there, the Price List) to get Size and Pcs/Bag, then printed as Bags + Extra Pcs.
+      const orderBagBtn = document.getElementById('orderBagBtn');
+      const orderBagFile = document.getElementById('orderBagFile');
+      const obKey = (s) => String(s || '').toUpperCase().replace(/[^A-Z0-9.]/g, '');
+      const OB_UNITS = { kg: ['KG', 'KGS'], gm: ['GM', 'GMS', 'G', 'GRAM', 'GRAMS'], ml: ['ML'], ltr: ['LTR', 'LTRS', 'LITRE', 'LITRES', 'LITER', 'L'] };
+
+      function obParseSize(name) {
+        const re = /(\d+(?:\.\d+)?)\s*(KGS?|GMS?|G|LITRES?|LTRS?|LITERS?|ML)\b/gi;
+        let m, last = null;
+        while ((m = re.exec(String(name || '')))) last = m;
+        if (!last) return { kg: 0, rest: obKey(name) };
+        const v = parseFloat(last[1]), u = last[2].toUpperCase();
+        const kg = /^(GM|GMS|G|ML)$/.test(u) ? v / 1000 : v;
+        const s = String(name);
+        return { kg, rest: obKey(s.slice(0, last.index) + ' ' + s.slice(last.index + last[0].length)) };
+      }
+
+      function obBuildIndex(list) {
+        const full = new Map(), sized = new Map();
+        list.forEach(it => {
+          const k = obKey(it.name);
+          full.set(k, full.has(k) ? null : it);   // null = same name used for several sizes (ambiguous)
+          const sz = parseFloat(it.size);
+          if (sz > 0) (OB_UNITS[it.sizeUnit] || []).forEach(u => {
+            const sk = k + obKey(String(parseFloat(sz.toFixed(3))) + u);
+            if (!sized.has(sk)) sized.set(sk, it);
+          });
+        });
+        return { list, full, sized };
+      }
+
+      function obFind(idx, name) {
+        const k = obKey(name);
+        if (idx.sized.has(k)) return idx.sized.get(k);
+        if (idx.full.get(k)) return idx.full.get(k);
+        const ps = obParseSize(name);
+        if (ps.kg > 0) {
+          const hit = idx.list.find(it => obKey(it.name) === ps.rest && Math.abs(sizeToKg(it.size, it.sizeUnit) - ps.kg) < 1e-6);
+          if (hit) return hit;
+        }
+        return null;
+      }
+
+      function obCompute(r) {
+        const per = parseFloat(r.perBag) || 0;
+        r.bags = per > 0 ? Math.floor(r.total / per + 1e-9) : null;
+        r.extra = per > 0 ? parseFloat((r.total - r.bags * per).toFixed(3)) : r.total;
+      }
+
+      function obBuildRows(aoa, stockIdx, priceIdx) {
+        const hi = aoa.findIndex(r => r.some(c => /item\s*name/i.test(String(c))));
+        if (hi < 0) throw new Error('Item Name column not found in this Excel');
+        const head = aoa[hi].map(c => String(c).toLowerCase().trim());
+        const cName = head.findIndex(h => /item\s*name/.test(h));
+        let cQty = head.findIndex(h => /base\s*quantity/.test(h)); if (cQty < 0) cQty = head.findIndex(h => /quantity|qty/.test(h));
+        let cUnit = head.findIndex(h => /base\s*unit/.test(h)); if (cUnit < 0) cUnit = head.findIndex(h => /unit/.test(h));
+        if (cQty < 0) throw new Error('Quantity column not found in this Excel');
+        const cAmt = head.findIndex(h => /amount/.test(h));
+        const title = aoa.slice(0, hi).map(r => String(r[0] || '')).join('\n').split(/\r?\n|\s-(?=From Date|Route|SubRoute|Delivery|Packing|Selected)/).map(s => s.trim()).filter(s => s && !/:\s*$/.test(s));
+        const rows = [];
+        aoa.slice(hi + 1).forEach(r => {
+          const name = String(r[cName] || '').trim();
+          const qty = parseFloat(r[cQty]);
+          if (!name || isNaN(qty) || /^total/i.test(name)) return;
+          const unit = String(cUnit >= 0 ? r[cUnit] : 'KG').toUpperCase().trim() || 'KG';
+          let item = obFind(stockIdx, name), src = 'Stock List';
+          if (!item) { item = obFind(priceIdx, name); src = item ? 'Price List' : ''; }
+          const ps = obParseSize(name);
+          const sizeKg = (item && sizeToKg(item.size, item.sizeUnit)) || ps.kg || 0;
+          const isPcsUnit = /^(PCS|PC|NOS|NO|PIECE|PIECES)$/.test(unit);
+          const kgQty = unit === 'GM' || unit === 'GMS' ? qty / 1000 : qty;
+          const amt = cAmt >= 0 ? parseFloat(r[cAmt]) : NaN;
+          const row = { name, qty, unit, item, src, sizeKg, amount: isNaN(amt) ? null : amt };
+          if (isPcsUnit) { row.countUnit = 'pcs'; row.total = qty; }
+          else if (sizeKg > 0) { row.countUnit = 'pcs'; row.total = parseFloat((kgQty / sizeKg).toFixed(3)); }
+          else { row.countUnit = 'kg'; row.total = kgQty; }
+          row.perBag = item && Number(item.pcsPerBag) > 0 ? Number(item.pcsPerBag) : '';
+          obCompute(row);
+          rows.push(row);
+        });
+        return { rows, title };
+      }
+
+      function obPrint(rows, title) {
+        const dateStr = formatDateTimeDDMMYYYY(new Date());
+        let totBags = 0, totAmt = 0, body = '';
+        const hasAmt = rows.some(r => r.amount !== null);
+        const money = (n) => Number(n).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        rows.forEach((r, i) => {
+          if (r.bags) totBags += r.bags;
+          if (r.amount !== null) totAmt += r.amount;
+          const per = parseFloat(r.perBag) || 0;
+          body += `<tr>
+            <td>${i + 1}</td><td>${escapeHtml(r.name)}</td>
+            <td style="text-align:center;">${formatQty(r.qty)} ${escapeHtml(r.unit)}</td>
+            <td style="text-align:center; font-weight:700;">${r.bags === null ? '—' : r.bags}</td>
+            <td style="text-align:center; font-weight:700;">${formatQty(r.extra)}${per > 0 ? '' : ' ' + r.countUnit}</td>
+            ${hasAmt ? `<td style="text-align:right;">${r.amount === null ? '—' : money(r.amount)}</td>` : ''}
+          </tr>`;
+        });
+        const w = window.open('', '_blank', 'width=900,height=700');
+        w.document.write(`
+          <!DOCTYPE html><html><head><title>Order Bags - ${escapeHtml(companySettings.name)}</title>
+            <style>
+              * { margin: 0; padding: 0; box-sizing: border-box; }
+              body { font-family: 'Tahoma', Arial, sans-serif; padding: 30px; color: #0a2862; }
+              .meta { display: flex; justify-content: space-between; font-size: 0.75rem; color: #15419c; margin-bottom: 15px; flex-wrap: wrap; gap: 8px; }
+              .meta span { background: #f0f6ff; padding: 4px 10px; border-radius: 3px; border: 1px solid #a8c8f0; }
+              table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+              thead th { background: linear-gradient(180deg, #f0f6ff 0%, #d8e8fb 100%); color: #0a2862; font-weight: 700; font-size: 0.72rem; padding: 9px 10px; text-align: left; border: 1px solid #a8c8f0; }
+              tbody td { padding: 7px 10px; border: 1px solid #d8e8fb; color: #000000; }
+              tbody tr:nth-child(even) { background: #f5f9ff; }
+              .total-row td { font-weight: 700; background: #d8e8fb !important; border-top: 2px solid #a8c8f0; }
+              .footer { margin-top: 20px; text-align: center; font-size: 0.7rem; color: #4a6a8a; border-top: 1px solid #a8c8f0; padding-top: 12px; }
+              .print-btn { position: fixed; top: 16px; right: 16px; padding: 10px 22px; background: #15419c; color: white; border: 1px solid #0a2862; border-radius: 3px; font-size: 0.85rem; font-weight: 700; cursor: pointer; }
+              @media print { body { padding: 15px; } .print-btn { display: none; } tr { page-break-inside: avoid; } }
+            </style></head><body>
+            <button class="print-btn" onclick="window.print()">🖨️ Print</button>
+            ${getCompanySettingsHeaderHTML(true)}
+            <div style="text-align:center; font-size:0.9rem; color:#15419c; font-weight:700; margin-bottom:12px;">🛍️ Order – Bags &amp; Extra Pcs</div>
+            <div class="meta">
+              ${title.map(t => `<span>${escapeHtml(t)}</span>`).join('')}
+              <span>📅 ${dateStr}</span>
+              <span>📦 Items: ${rows.length}</span>
+            </div>
+            <table><thead><tr>
+              <th style="width:40px;">#</th><th>Item Name</th>
+              <th style="text-align:center; width:90px;">Order Qty</th>
+              <th style="text-align:center; width:70px;">Bags</th>
+              <th style="text-align:center; width:80px;">Extra Pcs</th>
+              ${hasAmt ? '<th style="text-align:right; width:100px;">Amount</th>' : ''}
+            </tr></thead><tbody>
+              ${body}
+              <tr class="total-row"><td colspan="3" style="text-align:right;">Total:</td><td style="text-align:center;">${totBags} bags</td><td></td>${hasAmt ? `<td style="text-align:right;">₹ ${money(totAmt)}</td>` : ''}</tr>
+            </tbody></table>
+            <div class="footer">Generated by ${escapeHtml(companySettings.name || 'Skylight Pro')} · ${dateStr}</div>
+            <script>window.onload=function(){setTimeout(function(){window.print();},400);};<\/script>
+          </body></html>`);
+        w.document.close();
+      }
+
+      function openOrderBagModal(rows, title, fileName) {
+        const missing = rows.filter(r => !(parseFloat(r.perBag) > 0)).length;
+        const grand = rows.reduce((a, r) => a + (r.amount || 0), 0);
+        const grandTxt = rows.some(r => r.amount !== null) ? ` · 💰 Total ₹ ${grand.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '';
+        const html = `
+          <div class="stock-hint" style="margin-bottom:6px;">📄 ${escapeHtml(fileName)} · ${rows.length} items${grandTxt}${missing ? ` · <b style="color:#c0392b;">${missing} without Pcs/Bag (type it below, or leave blank to print the total only)</b>` : ' · all matched'}</div>
+          <div style="max-height:50vh; overflow:auto; border:1px solid #a8c8f0;">
+            <table class="price-table" style="width:100%;">
+              <thead><tr><th>Item</th><th style="text-align:center;">Order</th><th style="text-align:center;">Total</th><th style="text-align:center;">Pcs/Bag</th><th style="text-align:center;">Bags</th><th style="text-align:center;">Extra</th></tr></thead>
+              <tbody>
+                ${rows.map((r, i) => `<tr data-i="${i}" style="${parseFloat(r.perBag) > 0 ? '' : 'background:#fff1e8;'}">
+                  <td style="font-weight:700;">${escapeHtml(r.name)}<div class="stock-sub">${r.src ? '✔ ' + r.src : '⚠ not found in Stock / Price List'}</div></td>
+                  <td style="text-align:center;">${formatQty(r.qty)} ${escapeHtml(r.unit)}</td>
+                  <td style="text-align:center;">${formatQty(r.total)} ${r.countUnit}</td>
+                  <td style="text-align:center;"><input type="number" class="ob-per" min="0" step="1" value="${r.perBag}" style="width:64px; text-align:center;"></td>
+                  <td class="ob-bags" style="text-align:center; font-weight:700;">${r.bags === null ? '—' : r.bags}</td>
+                  <td class="ob-extra" style="text-align:center; font-weight:700;">${formatQty(r.extra)}</td>
+                </tr>`).join('')}
+              </tbody>
+            </table>
+          </div>
+          <div class="modal-actions">
+            <button class="aero-btn" id="modalCancelBtn" type="button">Close</button>
+            <button class="aero-btn primary" id="modalSaveBtn" type="button">🖨️ Print</button>
+          </div>`;
+        const overlay = openModal(stockWindow, '📥 Order → Bags & Extra Pcs', html, async () => { obPrint(rows, title); return false; });
+        overlay.querySelector('.window-modal').style.maxWidth = '820px';
+        overlay.querySelector('tbody').addEventListener('input', (e) => {
+          const inp = e.target.closest('.ob-per'); if (!inp) return;
+          const tr = inp.closest('tr'), r = rows[+tr.dataset.i];
+          r.perBag = inp.value; obCompute(r);
+          tr.querySelector('.ob-bags').textContent = r.bags === null ? '—' : r.bags;
+          tr.querySelector('.ob-extra').textContent = formatQty(r.extra);
+          tr.style.background = parseFloat(r.perBag) > 0 ? '' : '#fff1e8';
+        });
+      }
+
+      orderBagBtn.addEventListener('click', () => orderBagFile.click());
+      orderBagFile.addEventListener('change', async () => {
+        const file = orderBagFile.files && orderBagFile.files[0];
+        orderBagFile.value = '';
+        if (!file) return;
+        try {
+          showLoading('stock');
+          const X = await loadXlsxLib();
+          const wb = X.read(await file.arrayBuffer(), { type: 'array' });
+          const aoa = X.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header: 1, defval: '' });
+          const { rows, title } = obBuildRows(aoa, obBuildIndex(stockItems), obBuildIndex(products));
+          if (!rows.length) { showToast('No items found in this Excel', 'warning'); return; }
+          openOrderBagModal(rows, title, file.name);
+        } catch (err) {
+          showToast('Could not read Excel: ' + (err.message || err), 'warning');
+        } finally { hideLoading('stock'); }
       });
 
       // ==================== PRODUCT TABLE CLICKS ====================
