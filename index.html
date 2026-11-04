@@ -5613,7 +5613,7 @@
         const paise = pRaw ? parseInt(pRaw.padEnd(2, '0'), 10) : 0;
         let words = rupeesToWords(rupees);
         if (paise) words += ' and ' + numberToWords(String(paise)) + ' Paise';
-        return { rupees, paise, words: words + ' Only', display: String(rupees) + (paise ? '.' + String(paise).padStart(2, '0') : '') + '/-' };
+        return { rupees, paise, words: words + ' Only', display: rupees.toLocaleString('en-IN') + (paise ? '.' + String(paise).padStart(2, '0') : '') + '/-' };   // currency format: 1,50,000/- (paise only when present)
       }
 
       const RV_CSS = `
