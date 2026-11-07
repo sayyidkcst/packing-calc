@@ -6943,15 +6943,15 @@
       let isLoadingStaffRecord = false;
 
       const formatKg = (value) => {
-        if (value === 0) return '0.000';
+        if (!Number(value)) return '-';
         let str = value.toFixed(3);
         str = str.replace(/\.?0+$/, '');
         if (str === '' || str === '-') str = '0';
         return str;
       };
 
-      const formatPrice = (value) => '₹' + Number(value).toFixed(2);
-      const formatCurrency = (value) => '₹' + Number(value).toFixed(2);
+      const formatPrice = (value) => Number(value) === 0 ? '-' : '₹' + Number(value).toFixed(2);
+      const formatCurrency = (value) => Number(value) === 0 ? '-' : '₹' + Number(value).toFixed(2);
 
       function setOnlineStatus(online) {
         isOnline = online;
@@ -9086,6 +9086,7 @@
 
       const formatQty = (n) => {
         const v = Number(n) || 0;
+        if (v === 0) return '-';
         return Number.isInteger(v) ? String(v) : String(parseFloat(v.toFixed(3)));
       };
 
@@ -9211,8 +9212,8 @@
             <td class="stock-name-cell">${escapeHtml(s.name)}</td>
             <td class="stock-unit-cell">${s.size ? escapeHtml(s.size + ' ' + s.sizeUnit) : '—'}</td>
             <td class="stock-num-cell">${s.pcsPerBag || '—'}${bagKgText(s.size, s.sizeUnit, s.pcsPerBag) ? `<div class="stock-sub">${bagKgText(s.size, s.sizeUnit, s.pcsPerBag)}</div>` : ''}</td>
-            <td class="stock-num-cell">${s.bags}</td>
-            <td class="stock-num-cell">${s.pcs}</td>
+            <td class="stock-num-cell">${s.bags || '-'}</td>
+            <td class="stock-num-cell">${s.pcs || '-'}</td>
             <td class="stock-kg-cell">${isLiquidUnit(s.sizeUnit) ? stockTotalPcs(s) + ' pcs' : formatQty(s.totalKg)}</td>
             <td class="action-cell">
               <button class="row-stock-btn" data-stock-id="${s.id}" title="Update Stock (add / remove)">±</button>
@@ -9860,8 +9861,8 @@
             <td>${i + 1}</td><td>${escapeHtml(s.name)}</td>
             <td style="text-align:center;">${s.size ? escapeHtml(s.size + ' ' + s.sizeUnit) : '—'}</td>
             <td style="text-align:center;">${s.pcsPerBag || '—'}${bagKgText(s.size, s.sizeUnit, s.pcsPerBag) ? `<br><small style="color:#4a6a8a;">${bagKgText(s.size, s.sizeUnit, s.pcsPerBag)}</small>` : ''}</td>
-            <td style="text-align:center;">${s.bags}</td>
-            <td style="text-align:center;">${s.pcs}</td>
+            <td style="text-align:center;">${s.bags || '-'}</td>
+            <td style="text-align:center;">${s.pcs || '-'}</td>
             <td style="text-align:right;">${isLiquidUnit(s.sizeUnit) ? stockTotalPcs(s) + ' pcs' : formatQty(s.totalKg)}</td>
           </tr>`;
         });
@@ -10096,9 +10097,9 @@
           body += `<tr>
             <td>${i + 1}</td><td>${escapeHtml(r.name)}</td>
             <td style="text-align:center;">${formatQty(r.qty)} ${escapeHtml(r.unit)}</td>
-            <td style="text-align:center; font-weight:700;">${r.bags === null ? '—' : r.bags}</td>
+            <td style="text-align:center; font-weight:700;">${r.bags === null ? '—' : (r.bags || '-')}</td>
             <td style="text-align:center; font-weight:700;">${formatQty(r.extra)}${per > 0 ? '' : ' ' + r.countUnit}</td>
-            ${hasAmt ? `<td style="text-align:right;">${r.amount === null ? '—' : money(r.amount)}</td>` : ''}
+            ${hasAmt ? `<td style="text-align:right;">${r.amount === null ? '—' : (r.amount === 0 ? '-' : money(r.amount))}</td>` : ''}
           </tr>`;
         });
         const w = window.open('', '_blank', 'width=900,height=700');
@@ -10157,7 +10158,7 @@
                   <td style="text-align:center;">${formatQty(r.qty)} ${escapeHtml(r.unit)}</td>
                   <td style="text-align:center;">${formatQty(r.total)} ${r.countUnit}</td>
                   <td style="text-align:center;"><input type="number" class="ob-per" min="0" step="1" value="${r.perBag}" style="width:64px; text-align:center;"></td>
-                  <td class="ob-bags" style="text-align:center; font-weight:700;">${r.bags === null ? '—' : r.bags}</td>
+                  <td class="ob-bags" style="text-align:center; font-weight:700;">${r.bags === null ? '—' : (r.bags || '-')}</td>
                   <td class="ob-extra" style="text-align:center; font-weight:700;">${formatQty(r.extra)}</td>
                 </tr>`).join('')}
               </tbody>
