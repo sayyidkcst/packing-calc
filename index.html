@@ -973,7 +973,7 @@
     .window-invoice { width: 840px; max-width: calc(100vw - 40px); z-index: 16; }
     .window-stock { width: 780px; max-width: calc(100vw - 40px); z-index: 19; }
     .window-settings { width: 560px; max-width: calc(100vw - 40px); z-index: 17; }
-    .window-number-word { width: 660px; max-width: calc(100vw - 40px); z-index: 18; }
+    .window-number-word { width: 900px; max-width: calc(100vw - 40px); z-index: 18; }
 
     /* Products + Stock windows keep a fixed height (the list scrolls inside) so searching never resizes them */
     .window-price, .window-stock { height: min(560px, calc(100vh - var(--taskbar-height) - 20px)); }
@@ -4221,6 +4221,15 @@
     </div>
 
     <div class="window-content">
+     <div class="rv-layout">
+      <div class="rv-side">
+        <div class="rv-side-head">
+          <span>📋 Vouchers <span class="rv-count" id="rvCount">0</span></span>
+          <button type="button" class="rv-clear" id="rvClearAll" title="Remove all saved vouchers">Clear</button>
+        </div>
+        <div class="rv-list" id="rvList"></div>
+      </div>
+      <div class="rv-main">
       <div class="n2w-input-row">
         <div class="input-group">
           <label><span>👤</span> Received from</label>
@@ -4238,7 +4247,14 @@
         <button class="aero-btn primary" id="rvPrintBtn" type="button" style="align-self:flex-end;"><span>🖨️</span> Print</button>
       </div>
 
+      <div class="rv-nav">
+        <button class="aero-btn" id="rvPrevBtn" type="button" title="Previous voucher">◀ Prev</button>
+        <span class="rv-nav-info" id="rvNavInfo"></span>
+        <button class="aero-btn primary" id="rvNextBtn" type="button" title="Show next voucher">Next ▶</button>
+      </div>
       <div class="rv-scroll" id="rvPreview"></div>
+      </div>
+     </div>
     </div>
   </div>
 
@@ -5639,7 +5655,31 @@
         .rv-error { color: #c0392b; font: 700 0.85rem Arial, sans-serif; margin-bottom: 8px; }
       `;
       const rvStyle = document.createElement('style');
-      rvStyle.textContent = RV_CSS + '.rv-date-click { cursor: pointer; border-bottom: 1px dashed #1b2a8a; }';   // screen only, not printed
+      rvStyle.textContent = RV_CSS + `
+        .rv-date-click { cursor: pointer; border-bottom: 1px dashed #1b2a8a; }
+        .rv-layout { display: flex; gap: 10px; align-items: stretch; }
+        .rv-side { flex: 0 0 210px; width: 210px; display: flex; flex-direction: column; border: 1px solid rgba(90,110,150,0.45); border-radius: 6px; background: rgba(255,255,255,0.55); overflow: hidden; }
+        .rv-side-head { display: flex; justify-content: space-between; align-items: center; padding: 6px 8px; font: 700 0.78rem Tahoma, Arial, sans-serif; color: #1f3f78; background: rgba(120,150,210,0.28); border-bottom: 1px solid rgba(90,110,150,0.4); }
+        .rv-count { display: inline-block; min-width: 18px; padding: 0 5px; margin-left: 4px; border-radius: 9px; background: #1b6aa5; color: #fff; text-align: center; font-size: 0.7rem; }
+        .rv-clear { border: 1px solid #b9c4da; background: #fff; color: #a33; border-radius: 4px; font: 700 0.68rem Tahoma, Arial, sans-serif; padding: 2px 8px; cursor: pointer; }
+        .rv-list { overflow-y: auto; max-height: 440px; min-height: 160px; flex: 1; }
+        .rv-item { display: flex; align-items: center; gap: 6px; padding: 6px 8px; cursor: pointer; border-bottom: 1px solid rgba(90,110,150,0.2); font: 0.76rem Tahoma, Arial, sans-serif; color: #1c2f55; }
+        .rv-item:hover { background: rgba(80,130,220,0.15); }
+        .rv-item.active { background: rgba(40,100,200,0.28); font-weight: 700; }
+        .rv-item .rv-i-no { flex: 0 0 auto; color: #d32f2f; font-weight: 700; }
+        .rv-item .rv-i-body { flex: 1; min-width: 0; }
+        .rv-item .rv-i-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .rv-item .rv-i-amt { color: #1b4f86; font-size: 0.72rem; }
+        .rv-item .rv-i-del { flex: 0 0 auto; border: 0; background: transparent; color: #a33; cursor: pointer; font-size: 0.85rem; padding: 0 2px; }
+        .rv-item.rv-new { color: #1b6aa5; font-weight: 700; }
+        .rv-empty { padding: 12px 8px; font: italic 0.72rem Tahoma, Arial, sans-serif; color: #5b6b88; }
+        .rv-main { flex: 1; min-width: 0; }
+        .rv-nav { display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 2px; }
+        .rv-nav .aero-btn { padding: 4px 16px; font-weight: 700; }
+        .rv-nav .aero-btn:disabled { opacity: 0.45; cursor: default; }
+        .rv-nav-info { font: 700 0.8rem Tahoma, Arial, sans-serif; color: #1f3f78; min-width: 120px; text-align: center; }
+        @media (max-width: 760px) { .rv-layout { flex-direction: column; } .rv-side { flex-basis: auto; width: auto; } .rv-list { max-height: 150px; min-height: 0; } }
+      `;   // screen only, not printed
       document.head.appendChild(rvStyle);
 
       // Date: today unless the user picks another one by clicking the date on the voucher
@@ -5692,15 +5732,41 @@
       let rvLastSerial = 0;
       try { localStorage.removeItem('receipt_voucher_serial'); } catch (e) {}   // clear the number saved by the earlier version
       function rvNextSerial() { return rvLastSerial + 1; }
-      let rvLastCommit = null;       // the voucher that was just completed with Enter
-      let rvShowingCommit = false;   // true while the completed voucher stays on screen and both boxes are empty
+      // Completed vouchers are kept in a list on the left. rvViewIndex = which one is on screen (-1 = the new voucher being typed).
+      const rvList = [];
+      let rvViewIndex = -1;
+      const rvListEl = document.getElementById('rvList');
+      const rvCountEl = document.getElementById('rvCount');
+      const rvNavInfo = document.getElementById('rvNavInfo');
+      const rvPrevBtn = document.getElementById('rvPrevBtn');
+      const rvNextBtn = document.getElementById('rvNextBtn');
+      const rvClearAll = document.getElementById('rvClearAll');
+
+      function renderRvSide() {
+        rvCountEl.textContent = rvList.length;
+        let html = rvList.map((v, i) => `
+          <div class="rv-item${i === rvViewIndex ? ' active' : ''}" data-i="${i}" title="Show this voucher">
+            <span class="rv-i-no">#${escapeHtml(String(v.serial))}</span>
+            <span class="rv-i-body"><div class="rv-i-name">${escapeHtml(v.from)}</div><div class="rv-i-amt">₹ ${escapeHtml(v.amt.display)}</div></span>
+            <button type="button" class="rv-i-del" data-del="${i}" title="Remove this voucher">✕</button>
+          </div>`).join('');
+        html += `<div class="rv-item rv-new${rvViewIndex === -1 ? ' active' : ''}" data-i="-1">➕ New voucher (No. ${rvNextSerial()})</div>`;
+        rvListEl.innerHTML = html;
+        const act = rvListEl.querySelector('.rv-item.active');
+        if (act && act.scrollIntoView) act.scrollIntoView({ block: 'nearest' });
+        rvNavInfo.textContent = rvViewIndex >= 0 ? `Voucher ${rvViewIndex + 1} of ${rvList.length}` : (rvList.length ? `New voucher (No. ${rvNextSerial()})` : 'New voucher');
+        rvPrevBtn.disabled = !(rvViewIndex > 0 || (rvViewIndex === -1 && rvList.length > 0));
+        rvNextBtn.disabled = (rvViewIndex === -1);
+      }
 
       function renderReceiptVoucher() {
-        if (rvShowingCommit && !rvFromInput.value.trim() && !rvAmountInput.value.trim() && rvLastCommit) {
-          rvPreview.innerHTML = voucherHTML(rvLastCommit.from, rvLastCommit.amt, rvLastCommit.towards, rvLastCommit.serial, rvLastCommit.date);
+        renderRvSide();
+        if (rvViewIndex >= 0 && rvList[rvViewIndex]) {
+          const v = rvList[rvViewIndex];
+          rvPreview.innerHTML = voucherHTML(v.from, v.amt, v.towards, v.serial, v.date);
           return;
         }
-        rvShowingCommit = false;
+        rvViewIndex = -1;
         const amt = parseVoucherAmount(rvAmountInput.value.trim());
         const err = amt && amt.error ? `<div class="rv-error">${escapeHtml(amt.error)}</div>` : '';
         rvPreview.innerHTML = err + voucherHTML(rvFromInput.value.trim(), amt, rvCategory(), rvNextSerial(), rvCurrentDate());
@@ -5708,10 +5774,10 @@
 
       rvFromInput.addEventListener('input', () => {
         if (rvPicked && normKey(rvPicked.name) !== normKey(rvFromInput.value)) rvPicked = null;
-        rvShowingCommit = false;
+        rvViewIndex = -1;
         renderReceiptVoucher();
       });
-      rvAmountInput.addEventListener('input', () => { rvShowingCommit = false; renderReceiptVoucher(); });
+      rvAmountInput.addEventListener('input', () => { rvViewIndex = -1; renderReceiptVoucher(); });
 
       // Enter in Amount: complete the voucher, use up its serial number, clear both boxes and go back to "Received from"
       rvAmountInput.addEventListener('keydown', (e) => {
@@ -5723,8 +5789,8 @@
         if (!amt || amt.error) { renderReceiptVoucher(); rvAmountInput.focus(); return; }
         const serial = rvNextSerial();
         rvLastSerial = serial;
-        rvLastCommit = { from, amt, towards: rvCategory(), serial, date: rvCurrentDate() };
-        rvShowingCommit = true;
+        rvList.push({ from, amt, towards: rvCategory(), serial, date: rvCurrentDate() });
+        rvViewIndex = rvList.length - 1;   // show the one just completed; press Next for a fresh voucher
         rvPicked = null;
         rvFromInput.value = '';
         rvAmountInput.value = '';
@@ -5736,7 +5802,7 @@
       rvPreview.addEventListener('click', (e) => {
         const target = e.target.closest('.rv-date-click');
         if (!target) return;
-        const current = (rvShowingCommit && rvLastCommit) ? rvLastCommit.date : rvCurrentDate();
+        const current = (rvViewIndex >= 0 && rvList[rvViewIndex]) ? rvList[rvViewIndex].date : rvCurrentDate();
         const inp = document.createElement('input');
         inp.type = 'date';
         inp.value = current;
@@ -5747,7 +5813,7 @@
         inp.addEventListener('change', () => {
           if (inp.value) {
             rvDateManual = inp.value;
-            if (rvShowingCommit && rvLastCommit) rvLastCommit.date = inp.value;
+            if (rvViewIndex >= 0 && rvList[rvViewIndex]) rvList[rvViewIndex].date = inp.value;
             renderReceiptVoucher();
           }
           done();
@@ -5765,7 +5831,7 @@
         attachStockSuggest(rvFromInput, (emp, focusNext) => {
           rvPicked = emp;
           rvFromInput.value = emp.name;
-          rvShowingCommit = false;
+          rvViewIndex = -1;
           renderReceiptVoucher();
           if (focusNext) setTimeout(() => { rvAmountInput.focus(); rvAmountInput.select(); }, 30);
         }, {
@@ -5778,12 +5844,58 @@
         rvFromInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); hideStockSuggest(); rvAmountInput.focus(); rvAmountInput.select(); } });
       }
 
+      // Prev / Next: step through the saved vouchers; Next after the last one opens a fresh voucher
+      rvNextBtn.addEventListener('click', () => {
+        if (rvViewIndex < 0) return;
+        if (rvViewIndex < rvList.length - 1) rvViewIndex++;
+        else { rvViewIndex = -1; rvFromInput.value = ''; rvAmountInput.value = ''; rvPicked = null; setTimeout(() => rvFromInput.focus(), 0); }
+        renderReceiptVoucher();
+      });
+      rvPrevBtn.addEventListener('click', () => {
+        if (rvViewIndex === -1 && rvList.length) rvViewIndex = rvList.length - 1;
+        else if (rvViewIndex > 0) rvViewIndex--;
+        renderReceiptVoucher();
+      });
+      rvListEl.addEventListener('click', (e) => {
+        const del = e.target.closest('[data-del]');
+        if (del) {
+          e.stopPropagation();
+          const i = parseInt(del.getAttribute('data-del'), 10);
+          rvList.splice(i, 1);
+          if (rvViewIndex === i) rvViewIndex = Math.min(i, rvList.length - 1);   // stay on the neighbour (or -1 when empty)
+          else if (rvViewIndex > i) rvViewIndex--;
+          renderReceiptVoucher();
+          return;
+        }
+        const row = e.target.closest('.rv-item');
+        if (!row) return;
+        rvViewIndex = parseInt(row.getAttribute('data-i'), 10);
+        renderReceiptVoucher();
+        if (rvViewIndex === -1) rvFromInput.focus();
+      });
+      rvClearAll.addEventListener('click', () => {
+        if (!rvList.length || !confirm('Remove all ' + rvList.length + ' saved vouchers?')) return;
+        rvList.length = 0;
+        rvViewIndex = -1;
+        renderReceiptVoucher();
+      });
+
+      // Print button: same height as the text boxes (follows theme / window size changes)
+      const rvAmtWrap = rvAmountInput.closest('.input-wrap');
+      function rvSyncPrintHeight() {
+        const h = rvAmtWrap ? rvAmtWrap.offsetHeight : 0;
+        if (h) { rvPrintBtn.style.boxSizing = 'border-box'; rvPrintBtn.style.height = h + 'px'; rvPrintBtn.style.paddingTop = '0'; rvPrintBtn.style.paddingBottom = '0'; }
+      }
+      if (window.ResizeObserver && rvAmtWrap) new ResizeObserver(rvSyncPrintHeight).observe(rvAmtWrap);
+      rvSyncPrintHeight();
+
       rvPrintBtn.addEventListener('click', () => {
         const from = rvFromInput.value.trim();
         const amt = parseVoucherAmount(rvAmountInput.value.trim());
         let data;
-        if (from || amt) data = { from, amt, towards: rvCategory(), serial: rvNextSerial(), date: rvCurrentDate() };   // what is typed now
-        else if (rvLastCommit) data = rvLastCommit;                                                // boxes empty: print the one just completed
+        if (rvViewIndex >= 0 && rvList[rvViewIndex]) data = rvList[rvViewIndex];                   // a saved voucher is on screen: print that one
+        else if (from || amt) data = { from, amt, towards: rvCategory(), serial: rvNextSerial(), date: rvCurrentDate() };   // what is typed now
+        else if (rvList.length) data = rvList[rvList.length - 1];                                  // boxes empty: print the last completed
         else return;
         if (data.amt && data.amt.error) return;
         const w = window.open('', '_blank', 'width=900,height=600');
