@@ -9215,6 +9215,7 @@
       function sizeToKg(size, sizeUnit) {
         const v = parseFloat(size);
         if (!v || isNaN(v) || v < 0) return 0;
+        if (sizeUnit === 'pcs') return 0;   // pcs size is a count, not a weight
         return (sizeUnit === 'kg' || sizeUnit === 'ltr') ? v : v / 1000;   // gm / ml -> /1000 (1 ml ~ 1 gm)
       }
 
@@ -9225,7 +9226,8 @@
       }
 
       // ml / ltr products show their total in pieces instead of kg
-      const isLiquidUnit = (u) => u === 'ml' || u === 'ltr';
+      const isLiquidUnit = (u) => u === 'ml' || u === 'ltr' || u === 'pcs';   // ml / ltr / pcs show totals in pieces
+      const sizeKeyOf = (sz, un) => un === 'pcs' ? 'pcs:' + (Number(sz) || 0) : sizeToKg(sz, un).toFixed(6);
       const stockTotalPcs = (i) => (i.bags * (i.pcsPerBag || 0)) + i.pcs;
       const stockTotalText = (i, kg) => isLiquidUnit(i.sizeUnit) ? `${stockTotalPcs(i)} pcs` : `${formatQty(kg === undefined ? i.totalKg : kg)} kg`;
 
@@ -9751,6 +9753,7 @@
                   <option value="kg" ${sizeUnitVal === 'kg' ? 'selected' : ''}>kg (kilograms)</option>
                   <option value="ml" ${sizeUnitVal === 'ml' ? 'selected' : ''}>ml (millilitres)</option>
                   <option value="ltr" ${sizeUnitVal === 'ltr' ? 'selected' : ''}>ltr (litres)</option>
+                  <option value="pcs" ${sizeUnitVal === 'pcs' ? 'selected' : ''}>pcs (pieces)</option>
                 </select><span class="unit-arrow">▼</span>
               </div>
             </div>
@@ -9783,7 +9786,7 @@
           if (!Number.isInteger(ppb) || !Number.isInteger(bags) || !Number.isInteger(pcs)) return fail('⚠️ Pcs/Bag, Bag and Pcs must be whole numbers.', null);
           if (sizeRaw !== '' && (isNaN(sizeRaw) || Number(sizeRaw) < 0)) return fail('⚠️ Size must be 0 or more.', content.querySelector('#stockSize'));
           if (bags > 0 && ppb === 0) return fail('⚠️ Enter Pieces per Bag when bags are entered.', content.querySelector('#stockPpb'));
-          const sizeKey = (sz, un) => sizeToKg(sz, un).toFixed(6);   // 500 gm and 0.5 kg count as the same size
+          const sizeKey = sizeKeyOf;   // 500 gm and 0.5 kg count as the same size
           const dup = stockItems.some(i => (!isEdit || i.id !== existing.id) && normKey(i.name) === normKey(name) && sizeKey(i.size, i.sizeUnit) === sizeKey(sizeRaw, sizeUnitSel));
           if (dup) return fail('⚠️ This item (same name and size) is already in the stock list. Use ± Update Stock to change its quantity.', nameEl);
           const payload = { name, size: sizeRaw, sizeUnit: sizeUnitSel, pcsPerBag: ppb, bags, pcs, totalKg: kg };
@@ -9842,7 +9845,7 @@
           stockPicked = p;
           nameEl.value = p.name.toUpperCase();
           sizeEl.value = p.size || '';
-          sizeUnitEl.value = ['gm', 'kg', 'ml', 'ltr'].includes(p.sizeUnit) ? p.sizeUnit : 'kg';
+          sizeUnitEl.value = ['gm', 'kg', 'ml', 'ltr', 'pcs'].includes(p.sizeUnit) ? p.sizeUnit : 'kg';
           ppbEl.value = p.pcsPerBag || '';
           kgManual = false;
           recalcKg();
@@ -9852,7 +9855,11 @@
         nameEl.addEventListener('input', () => {
           if (stockPicked && nameEl.value.trim().toLowerCase() !== stockPicked.name.toLowerCase()) stockPicked = null;
         });
-        attachStockSuggest(nameEl, pickProduct, { source: () => stockItems, noneText: 'No stock items available', notFoundText: 'No stock items found' });
+        // Product list comes from the Price List (products), one row per name + size
+        attachStockSuggest(nameEl, pickProduct, {
+          source: () => { const seen = new Set(); return products.filter(p => { const k = normKey(p.name) + '|' + sizeKeyOf(p.size, p.sizeUnit); if (seen.has(k)) return false; seen.add(k); return true; }); },
+          noneText: 'No products in Price List', notFoundText: 'Not in Price List - will be saved with the typed name'
+        });
         [bagsEl, pcsEl, ppbEl, sizeEl, sizeUnitEl].forEach(el => el.addEventListener('input', () => { kgManual = false; recalcKg(); }));
         kgEl.addEventListener('input', () => { kgManual = true; });
         recalcKg();
@@ -9860,7 +9867,7 @@
         const stockErrEl = body.querySelector('#stockModalError');
         const showStockDup = () => {
           const nm = nameEl.value.trim();
-          const skey = (sz, un) => sizeToKg(sz, un).toFixed(6);
+          const skey = sizeKeyOf;
           const dupNow = nm && stockItems.some(i => (!isEdit || i.id !== existing.id) && normKey(i.name) === normKey(nm) && skey(i.size, i.sizeUnit) === skey(sizeEl.value, sizeUnitEl.value));
           if (dupNow) {
             stockErrEl.textContent = '⚠️ This item (same name and size) is already in the stock list. Use ± Update Stock to change its quantity.';
