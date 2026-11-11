@@ -8562,7 +8562,7 @@
           currentMatches = matches;
           highlightedIndex = matches.length > 0 ? 0 : -1;
           if (matches.length === 0) {
-            listContainer.innerHTML = `<div class="product-suggest-empty">${stockItems.length === 0 ? 'No stock items available' : 'No stock items found'}</div>`;
+            listContainer.innerHTML = `<div class="product-suggest-empty">${products.length === 0 ? 'No products in Price List' : 'No products found for this customer in Price List'}</div>`;
             listContainer.classList.add('open'); positionList(); return;
           }
           let html = '';
@@ -8587,16 +8587,16 @@
         function filterProducts(query) {
           const q = (query || '').trim().toLowerCase();
           const selectedCustomer = getCustomerFn ? (getCustomerFn() || '').trim() : '';
-          // items come from the Stock List; price / unit come from the customer's Price List entry when there is one
-          return stockItems.filter(st => !q || st.name.toLowerCase().includes(q)).map(st => {
-            const m = priceListMatch(st.name, selectedCustomer);
-            return {
-              id: st.id, name: m ? m.name : st.name,
-              pcsPerBag: (m && m.pcsPerBag) || st.pcsPerBag || 0,
-              unit: m ? (m.unit || 'Pcs') : 'Pcs', price: m ? m.price : 0,
-              size: st.size, sizeUnit: st.sizeUnit, _hasPrice: !!m
-            };
-          });
+          // items come straight from the Price List - only the selected customer's products (all products until a customer is chosen)
+          const c = selectedCustomer.toLowerCase();
+          return products
+            .filter(p => !c || (p.customer || '').trim().toLowerCase() === c)
+            .filter(p => !q || (p.name || '').toLowerCase().includes(q))
+            .map(p => ({
+              id: p.id, name: p.name, pcsPerBag: p.pcsPerBag || 0,
+              unit: p.unit || 'Pcs', price: p.price || 0,
+              size: p.size, sizeUnit: p.sizeUnit, _hasPrice: true
+            }));
         }
 
         anchorInput.addEventListener('input', () => renderList(filterProducts(anchorInput.value)));
