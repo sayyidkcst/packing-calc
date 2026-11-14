@@ -45,7 +45,16 @@
 
     :root {
       --taskbar-height: 40px;
+      --bar-h: 40px;
     }
+    /* ---- Taskbar auto-hide ---- */
+    html.tb-autohide { --taskbar-height: 0px; }
+    html.tb-autohide .startbar { height: var(--bar-h); transform: translateY(calc(100% + 24px)); pointer-events: none; will-change: transform; transition: transform 0.2s ease, opacity 0.6s ease; }
+    html.tb-autohide .startbar.tb-show { transform: translateY(0); pointer-events: auto; }
+    html.tb-autohide .start-menu { bottom: var(--bar-h); max-height: calc(100vh - var(--bar-h) - 20px); }
+    #tbHotzone { display: none; position: fixed; left: 0; right: 0; bottom: 0; height: 8px; z-index: 99997; }
+    html.tb-autohide #tbHotzone { display: block; }
+    html.mobile-app #tbHotzone { display: none !important; }
 
     .wallpaper-layer {
       position: fixed;
@@ -5052,6 +5061,14 @@
         <div style="margin-top:8px;font-size:0.68rem;font-weight:700;color:#0a2862;" id="themeStatus">Click a theme to apply it — it is saved automatically.</div>
       </div>
 
+      <div class="settings-section" id="taskbarSection">
+        <div class="settings-section-legend">📌 Taskbar</div>
+        <label style="display:flex;align-items:center;gap:8px;font-size:0.78rem;font-weight:700;color:#0a2862;cursor:pointer;">
+          <input type="checkbox" id="tbAutoHideChk"> Auto-hide the taskbar
+        </label>
+        <div style="margin-top:6px;font-size:0.68rem;font-weight:700;color:#0a2862;" id="tbAutoHideStatus">The taskbar slides away. Move the mouse to the bottom edge of the screen to bring it back.</div>
+      </div>
+
         </section>
         <section class="st-pane" data-pane="security">
       <div class="settings-section" id="loginSection">
@@ -5277,6 +5294,8 @@
     </div>
   </div>
 
+  <div id="tbHotzone"></div>
+
   <!-- START BAR (KCST Windows XP style) -->
   <div class="startbar" id="startbar">
     <div class="start-btn" id="startBtn">
@@ -5488,7 +5507,7 @@
 
     window.addEventListener('supabase-ready', async () => {
       const supabase = window.supabase;
-      const TASKBAR_HEIGHT = 40;
+      let TASKBAR_HEIGHT = 40;
 
       // ==================== DATE HELPERS ====================
       function formatDateDDMMYYYY(date) {
@@ -11921,6 +11940,82 @@
         saveTheme(t);
       });
       loadTheme();
+
+      // ==================== TASKBAR AUTO-HIDE — saved in database ====================
+      (function () {
+        const TB_KEY = 'ui_taskbar_autohide', TB_CACHE = 'ui_taskbar_autohide_cache';
+        const root = document.documentElement;
+        const bar = document.getElementById('startbar');
+        const menu = document.getElementById('startMenu');
+        const fly = document.getElementById('clockFlyout');
+        const hot = document.getElementById('tbHotzone');
+        const chk = document.getElementById('tbAutoHideChk');
+        const stat = document.getElementById('tbAutoHideStatus');
+        if (!bar || !hot) return;
+        let on = false, timer = null;
+        const setStat = (t, kind) => { if (!stat) return; stat.textContent = t; stat.style.color = kind === 'err' ? '#a02020' : kind === 'ok' ? '#1e6b3a' : '#0a2862'; };
+        const busy = () => menu.classList.contains('open') || (fly && fly.classList.contains('open')) || bar.matches(':hover');
+        function show() { if (!on) return; clearTimeout(timer); bar.classList.add('tb-show'); }
+        function scheduleHide(ms) {
+          if (!on) return;
+          clearTimeout(timer);
+          timer = setTimeout(() => { if (on && !busy()) bar.classList.remove('tb-show'); }, ms);
+        }
+        function apply(v) {
+          on = !!v && !root.classList.contains('mobile-app');
+          root.classList.toggle('tb-autohide', on);
+          TASKBAR_HEIGHT = on ? 0 : 40;
+          if (chk) chk.checked = on;
+          clearTimeout(timer);
+          bar.classList.remove('tb-show');
+          if (on) { bar.classList.add('tb-show'); scheduleHide(900); }
+        }
+        async function save(v) {
+          try { localStorage.setItem(TB_CACHE, v ? '1' : '0'); } catch (e) {}
+          setStat('Saving…');
+          try {
+            const { error } = await supabase.from('app_settings').upsert(
+              { setting_key: TB_KEY, setting_value: v ? '1' : '0', updated_at: new Date().toISOString() }, { onConflict: 'setting_key' });
+            if (error) throw error;
+            setStat(v ? '✓ Auto-hide ON — saved to database' : '✓ Auto-hide OFF — saved to database', 'ok');
+          } catch (err) {
+            console.warn('Could not save taskbar setting:', err);
+            setStat('⚠ Applied on this device only — DB error: ' + (err.message || err), 'err');
+          }
+        }
+        hot.addEventListener('mouseenter', show);
+        // like Windows: pushing the mouse to the bottom edge anywhere on screen reveals the taskbar
+        document.addEventListener('mousemove', e => {
+          if (!on) return;
+          if (e.clientY >= window.innerHeight - 5) show();
+          else if (bar.classList.contains('tb-show') && e.clientY < window.innerHeight - bar.offsetHeight - 2 && !busy()) scheduleHide(200);
+        }, true);
+        document.documentElement.addEventListener('mouseleave', e => { if (on && e.clientY >= window.innerHeight - 6) show(); });
+        hot.addEventListener('pointerdown', show);
+        hot.addEventListener('touchstart', show, { passive: true });
+        bar.addEventListener('mouseenter', () => clearTimeout(timer));
+        bar.addEventListener('mouseleave', () => scheduleHide(200));
+        const closed = () => { if (on && !menu.classList.contains('open') && !(fly && fly.classList.contains('open'))) scheduleHide(600); };
+        const mo = new MutationObserver(closed);
+        mo.observe(menu, { attributes: true, attributeFilter: ['class'] });
+        if (fly) mo.observe(fly, { attributes: true, attributeFilter: ['class'] });
+        if (chk) chk.addEventListener('change', () => { apply(chk.checked); save(chk.checked); });
+        window.addEventListener('keydown', e => { if (on && (e.key === 'Meta' || e.key === 'OS')) show(); });
+
+        let cached = null;
+        try { cached = localStorage.getItem(TB_CACHE); } catch (e) {}
+        apply(cached === '1');
+        (async () => {
+          try {
+            const r = await withTimeout(supabase.from('app_settings').select('setting_value').eq('setting_key', TB_KEY).maybeSingle(), 4000);
+            const v = r && r.data && r.data.setting_value;
+            if (v === '0' || v === '1') {
+              try { localStorage.setItem(TB_CACHE, v); } catch (e) {}
+              apply(v === '1');
+            }
+          } catch (err) { console.warn('Could not load taskbar setting:', err && err.message); }
+        })();
+      })();
 
       // ==================== CLOCK FLYOUT (calendar popup from the taskbar clock) ====================
       (function () {
