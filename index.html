@@ -5526,10 +5526,12 @@
         const dd = String(d.getDate()).padStart(2, '0');
         const mm = String(d.getMonth() + 1).padStart(2, '0');
         const yyyy = d.getFullYear();
-        const hh = String(d.getHours()).padStart(2, '0');
+        const h24 = d.getHours();
+        const hh = String(h24 % 12 || 12).padStart(2, '0');
         const mi = String(d.getMinutes()).padStart(2, '0');
         const ss = String(d.getSeconds()).padStart(2, '0');
-        return `${dd}-${mm}-${yyyy} ${hh}:${mi}:${ss}`;
+        const ap = h24 >= 12 ? 'PM' : 'AM';
+        return `${dd}-${mm}-${yyyy} ${hh}:${mi}:${ss} ${ap}`;
       }
 
       function isoToDDMMYYYY(isoStr) {
@@ -10199,7 +10201,7 @@
         if (cQty < 0) throw new Error('Quantity column not found in this Excel');
         const cTax = head.findIndex(h => /taxable/.test(h));
         const cAmt = head.findIndex((h, i) => i !== cTax && /amount/.test(h));
-        const title = aoa.slice(0, hi).map(r => String(r[0] || '')).join('\n').split(/\r?\n|\s-(?=From Date|Route|SubRoute|Delivery|Packing|Selected)/).map(s => s.trim()).filter(s => s && !/:\s*$/.test(s));
+        const title = aoa.slice(0, hi).map(r => String(r[0] || '')).join('\n').split(/\r?\n|\s-(?=From Date|Route|SubRoute|Delivery|Packing|Selected)/).map(s => s.trim().replace(/^selected\s*staff\s*:?\s*/i, '').replace(/^(item\s*-?\s*wise\s*order)\s*[-–—:].*$/i, '$1')).filter(s => s && !/:\s*$/.test(s));
         const rows = [];
         aoa.slice(hi + 1).forEach(r => {
           const name = String(r[cName] || '').trim();
