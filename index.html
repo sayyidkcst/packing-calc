@@ -2584,6 +2584,18 @@
     .bulk-prod-row .input-wrap, .bulk-prod-row .unit-select-wrap { width: 100%; min-width: 0; }
     .bulk-prod-row input, .bulk-prod-row select { width: 100%; box-sizing: border-box; }
     .bulk-prod-row input[type=number] { text-align: center; padding-left: 4px; padding-right: 4px; }
+    /* ---------- STOCK LIST: top buttons collapsed into a menu ---------- */
+    .window-stock .stock-menu-wrap { position: relative; }
+    .stock-menu-panel {
+      display: none; position: fixed; z-index: 100000; min-width: 220px; max-width: calc(100vw - 16px);
+      max-height: calc(100vh - 80px); overflow-y: auto; padding: 4px;
+      background: #f4f8ff; border: 1px solid #7f9db9; border-radius: 4px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+    }
+    .stock-menu-panel.open { display: block; }
+    .stock-menu-panel .aero-btn { display: flex; align-items: center; gap: 8px; width: 100%; justify-content: flex-start; text-align: left; margin: 0 0 3px; }
+    .stock-menu-panel .aero-btn:last-child { margin-bottom: 0; }
+    .stock-menu-sep { height: 1px; background: #a8c8f0; margin: 4px 2px 6px; }
     /* ---------- STOCK WINDOW SPECIFIC ---------- */
     .window-stock .price-table tbody td.stock-name-cell { font-weight: 700; color: #0a2862; }
     .window-stock .price-table tbody td.stock-unit-cell { text-align: center; font-weight: 700; color: #0a2862; font-size: 0.72rem; }
@@ -2621,12 +2633,15 @@
     .window-stock .stock-bulk-note { grid-column: 1 / -1; font-size: 0.64rem; color: #4a6a8a; min-height: 0; margin-top: -2px; }
     .window-stock .stock-bulk-note.err { color: #c0392b; font-weight: 700; }
     .window-stock .stock-sub { font-size: 0.62rem; font-weight: 500; color: #4a6a8a; margin-top: 1px; }
-    .window-stock .stock-kg-field .input-wrap { width: 120px; }
     .window-stock .stock-kg-field input { width: 100%; text-align: right; }
+    .window-stock .price-table.hide-mrp .mrp-col { display: none; }
+    .window-stock .price-table tbody td.stock-mrp-cell { text-align: right; font-weight: 700; color: #0a2862; }
     .window-stock .stock-hint { font-size: 0.66rem; color: #4a6a8a; margin-top: 3px; }
-    .window-stock .stock-mini-row { display: flex; gap: 10px; align-items: flex-start; }
-    .window-stock .stock-mini-row .modal-field { flex: 0 0 auto; margin-bottom: 8px; }
-    .window-stock .stock-mini-row .input-wrap { width: 84px; }
+    .window-stock .stock-mini-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-start; }
+    .window-stock .stock-mini-row .modal-field { flex: 1 1 80px; min-width: 0; margin-bottom: 8px; }
+    .window-stock .stock-mini-row .modal-field.stock-kg-field { flex: 1.3 1 100px; }
+    .window-stock .stock-mini-row .input-wrap { width: 100%; }
+    .window-stock .stock-kg-field .input-wrap { width: 100%; }
     .window-stock .stock-mini-row input { width: 100%; text-align: center; padding-left: 6px; padding-right: 6px; }
 
     /* ---------- INVOICE WINDOW SPECIFIC ---------- */
@@ -4802,29 +4817,38 @@
     </div>
 
     <div class="window-content" style="flex:1; display:flex; flex-direction:column;">
-      <div class="price-top-actions">
+      <div class="price-top-actions stock-menu-wrap">
         <button class="aero-btn primary" id="addStockBtn" type="button">
           <span>📋</span> Add Stock
         </button>
         <button class="aero-btn" id="updateStockBtn" type="button">
           <span>🔄</span> Update Stock
         </button>
-        <button class="aero-btn" id="bulkStockBtn" type="button">
-          <span>📦</span> Bulk Update
-        </button>
         <button class="aero-btn" id="printStockBtn" type="button">
           <span>🖨️</span> Print
-        </button>
-        <button class="aero-btn" id="exportStockBtn" type="button" title="Export the listed stock to an Excel file">
-          <span>📊</span> Export Excel
         </button>
         <button class="aero-btn" id="orderBagBtn" type="button" title="Upload an Item Wise Order Excel and print Bags + Extra Pcs">
           <span>📥</span> Order Excel → Bags
         </button>
         <input type="file" id="orderBagFile" accept=".xlsx,.xls,.csv" style="display:none;">
+        <button class="aero-btn" id="stockMenuBtn" type="button" aria-haspopup="true" aria-expanded="false">
+          <span>☰</span> Menu <span style="font-size:0.6rem;">▼</span>
+        </button>
+        <div class="stock-menu-panel" id="stockMenuPanel">
+        <button class="aero-btn" id="bulkStockBtn" type="button">
+          <span>📦</span> Bulk Update
+        </button>
+        <button class="aero-btn" id="mrpToggleBtn" type="button" title="Show / hide the MRP column">
+          <span>🏷️</span> MRP: Off
+        </button>
+        <button class="aero-btn" id="exportStockBtn" type="button" title="Export the listed stock to an Excel file">
+          <span>📊</span> Export Excel
+        </button>
+        <div class="stock-menu-sep"></div>
         <button class="aero-btn danger" id="clearAllStockBtn" type="button">
           <span>🗑️</span> Clear All
         </button>
+      </div>
       </div>
 
       <div class="top-row">
@@ -4836,11 +4860,12 @@
       </div>
 
       <div class="table-container">
-        <table class="price-table">
+        <table class="price-table hide-mrp" id="stockTable">
           <thead>
             <tr>
               <th>Item Name</th>
               <th style="text-align:center;">Size</th>
+              <th class="mrp-col" style="text-align:right;">MRP</th>
               <th style="text-align:center;">Pcs/Bag</th>
               <th style="text-align:center;">Bag</th>
               <th style="text-align:center;">Pcs</th>
@@ -4849,7 +4874,7 @@
             </tr>
           </thead>
           <tbody id="stockTableBody">
-            <tr><td colspan="7">
+            <tr><td colspan="8">
               <div class="no-results">📋 No stock yet<span class="small">Click "Add Stock" to create your first entry</span></div>
             </td></tr>
           </tbody>
@@ -9239,11 +9264,13 @@
 
       // ==================== STOCK LIST ====================
       // Requires Supabase table "stock_items":
-      //   id uuid pk, name text, size numeric, size_unit text, pcs_per_bag int, bags int, pcs int, total_kg numeric, created_at timestamptz
+      //   id uuid pk, name text, size numeric, size_unit text, pcs_per_bag int, bags int, pcs int, total_kg numeric, mrp numeric, created_at timestamptz
+      // MRP needs this one-time SQL:  alter table stock_items add column if not exists mrp numeric default 0;
       const mapStockRow = (r) => ({
         id: r.id, name: (r.name || '').toUpperCase(), size: r.size === null || r.size === undefined ? '' : String(r.size), sizeUnit: r.size_unit || 'kg',
         pcsPerBag: Number(r.pcs_per_bag) || 0, bags: Number(r.bags) || 0,
-        pcs: Number(r.pcs) || 0, totalKg: Number(r.total_kg) || 0
+        pcs: Number(r.pcs) || 0, totalKg: Number(r.total_kg) || 0,
+        mrp: r.mrp === null || r.mrp === undefined ? 0 : Number(r.mrp) || 0
       });
 
       const formatQty = (n) => {
@@ -9303,14 +9330,14 @@
           if (raw === 'Timeout') msg = 'The database did not respond in time. Check your internet connection and press Retry.';
           else if (err.code === 'PGRST205' || err.code === '42P01' || /stock_items/.test(raw) && /(not find|does not exist)/i.test(raw)) msg = 'The "stock_items" table was not found. Create it in Supabase (SQL editor), then press Retry.';
           else msg = raw || 'Check that the "stock_items" table exists';
-          stockTableBody.innerHTML = `<tr><td colspan="7"><div class="no-results">⚠️ Database error<span class="small">${escapeHtml(msg)}</span><button class="aero-btn" id="stockRetryBtn" type="button" style="margin-top:10px;"><span>🔄</span> Retry</button></div></td></tr>`;
+          stockTableBody.innerHTML = `<tr><td colspan="8"><div class="no-results">⚠️ Database error<span class="small">${escapeHtml(msg)}</span><button class="aero-btn" id="stockRetryBtn" type="button" style="margin-top:10px;"><span>🔄</span> Retry</button></div></td></tr>`;
         } finally { hideLoading('stock'); }
       }
       stockTableBody.addEventListener('click', (e) => {
         if (e.target.closest('#stockRetryBtn')) { e.stopPropagation(); loadStock(); }
       });
 
-      const stockPayload = (i) => ({ name: (i.name || '').toUpperCase(), size: i.size === '' || i.size === undefined ? null : Number(i.size), size_unit: i.sizeUnit || 'kg', pcs_per_bag: i.pcsPerBag, bags: i.bags, pcs: i.pcs, total_kg: i.totalKg });
+      const stockPayload = (i) => ({ name: (i.name || '').toUpperCase(), size: i.size === '' || i.size === undefined ? null : Number(i.size), size_unit: i.sizeUnit || 'kg', pcs_per_bag: i.pcsPerBag, bags: i.bags, pcs: i.pcs, total_kg: i.totalKg, mrp: Number(i.mrp) || 0 });
 
       async function saveStock(item) {
         stockStatusDot.className = 'status-dot syncing';
@@ -9365,8 +9392,8 @@
       function renderStockTable() {
         stockCount.textContent = filteredStock.length;
         if (filteredStock.length === 0) {
-          if (stockItems.length === 0) stockTableBody.innerHTML = `<tr><td colspan="7"><div class="no-results">📋 No stock yet<span class="small">Click "Add Stock" to create your first entry</span></div></td></tr>`;
-          else stockTableBody.innerHTML = `<tr><td colspan="7"><div class="no-results">🔍 No stock matches your search<span class="small">Try a different item name</span></div></td></tr>`;
+          if (stockItems.length === 0) stockTableBody.innerHTML = `<tr><td colspan="8"><div class="no-results">📋 No stock yet<span class="small">Click "Add Stock" to create your first entry</span></div></td></tr>`;
+          else stockTableBody.innerHTML = `<tr><td colspan="8"><div class="no-results">🔍 No stock matches your search<span class="small">Try a different item name</span></div></td></tr>`;
           return;
         }
         let html = '';
@@ -9375,6 +9402,7 @@
           html += `<tr class="${selected}" data-id="${s.id}">
             <td class="stock-name-cell">${escapeHtml(s.name)}</td>
             <td class="stock-unit-cell">${s.size ? escapeHtml(s.size + ' ' + s.sizeUnit) : '—'}</td>
+            <td class="stock-mrp-cell mrp-col">${s.mrp ? '₹' + formatQty(s.mrp) : '—'}</td>
             <td class="stock-num-cell">${s.pcsPerBag || '—'}${bagKgText(s.size, s.sizeUnit, s.pcsPerBag) ? `<div class="stock-sub">${bagKgText(s.size, s.sizeUnit, s.pcsPerBag)}</div>` : ''}</td>
             <td class="stock-num-cell">${s.bags || '-'}</td>
             <td class="stock-num-cell">${s.pcs || '-'}</td>
@@ -9809,6 +9837,7 @@
             </div>
           </div>
           <div class="stock-mini-row">
+            <div class="modal-field"><label>MRP ₹</label><div class="input-wrap"><input type="number" id="stockMrp" min="0" step="0.01" placeholder="0" value="${isEdit && s.mrp ? s.mrp : ''}"></div></div>
             <div class="modal-field"><label>Pcs/Bag</label><div class="input-wrap"><input type="number" id="stockPpb" min="0" step="1" placeholder="40" value="${isEdit && s.pcsPerBag ? s.pcsPerBag : ''}"></div><div class="stock-hint" id="stockBagKg" style="text-align:center; min-height:1em;"></div></div>
             <div class="modal-field"><label>Bag</label><div class="input-wrap"><input type="number" id="stockBags" min="0" step="1" placeholder="0" value="${isEdit ? s.bags : ''}"></div></div>
             <div class="modal-field"><label>Pcs</label><div class="input-wrap"><input type="number" id="stockPcs" min="0" step="1" placeholder="0" value="${isEdit ? s.pcs : ''}"></div></div>
@@ -9830,16 +9859,16 @@
           const sizeRaw = content.querySelector('#stockSize').value.trim();
           const sizeUnitSel = content.querySelector('#stockSizeUnit').value;
           const num = (id) => { const v = content.querySelector(id).value.trim(); return v === '' ? 0 : Number(v); };
-          const ppb = num('#stockPpb'), bags = num('#stockBags'), pcs = num('#stockPcs'), kg = isLiquidUnit(sizeUnitSel) ? parseFloat((((bags * ppb) + pcs) * sizeToKg(sizeRaw, sizeUnitSel)).toFixed(3)) : num('#stockKg');
+          const mrp = num('#stockMrp'), ppb = num('#stockPpb'), bags = num('#stockBags'), pcs = num('#stockPcs'), kg = isLiquidUnit(sizeUnitSel) ? parseFloat((((bags * ppb) + pcs) * sizeToKg(sizeRaw, sizeUnitSel)).toFixed(3)) : num('#stockKg');
           if (name === '') return fail('⚠️ Item name is required.', nameEl);
-          if ([ppb, bags, pcs, kg].some(v => isNaN(v) || v < 0)) return fail('⚠️ Numbers must be 0 or more.', null);
+          if ([mrp, ppb, bags, pcs, kg].some(v => isNaN(v) || v < 0)) return fail('⚠️ Numbers must be 0 or more.', null);
           if (!Number.isInteger(ppb) || !Number.isInteger(bags) || !Number.isInteger(pcs)) return fail('⚠️ Pcs/Bag, Bag and Pcs must be whole numbers.', null);
           if (sizeRaw !== '' && (isNaN(sizeRaw) || Number(sizeRaw) < 0)) return fail('⚠️ Size must be 0 or more.', content.querySelector('#stockSize'));
           if (bags > 0 && ppb === 0) return fail('⚠️ Enter Pieces per Bag when bags are entered.', content.querySelector('#stockPpb'));
           const sizeKey = sizeKeyOf;   // 500 gm and 0.5 kg count as the same size
           const dup = stockItems.some(i => (!isEdit || i.id !== existing.id) && normKey(i.name) === normKey(name) && sizeKey(i.size, i.sizeUnit) === sizeKey(sizeRaw, sizeUnitSel));
           if (dup) return fail('⚠️ This item (same name and size) is already in the stock list. Use ± Update Stock to change its quantity.', nameEl);
-          const payload = { name, size: sizeRaw, sizeUnit: sizeUnitSel, pcsPerBag: ppb, bags, pcs, totalKg: kg };
+          const payload = { name, size: sizeRaw, sizeUnit: sizeUnitSel, pcsPerBag: ppb, bags, pcs, totalKg: kg, mrp };
           saveBtn.disabled = true;
           saveBtn.textContent = isEdit ? '⏳ Updating…' : '⏳ Saving…';
           try {
@@ -9862,6 +9891,7 @@
           }
         });
 
+        overlay.querySelector('.window-modal').style.maxWidth = '560px';   // wider so MRP / Pcs/Bag / Bag / Pcs / Total fit in one row
         // Auto-fill from matching product + auto-calc Total kg
         const body = overlay.querySelector('.modal-body');
         const nameEl = body.querySelector('#stockName');
@@ -9893,6 +9923,7 @@
         };
         const pickProduct = (p, focusNext) => {
           stockPicked = p;
+          { const mEl = body.querySelector('#stockMrp'); const pm = Number(p.mrp) || 0; if (mEl && pm && !mEl.value) mEl.value = pm; }
           nameEl.value = p.name.toUpperCase();
           sizeEl.value = p.size || '';
           sizeUnitEl.value = ['gm', 'kg', 'ml', 'ltr', 'pcs'].includes(p.sizeUnit) ? p.sizeUnit : 'kg';
@@ -9932,7 +9963,7 @@
         sizeUnitEl.addEventListener('change', showStockDup);
         setTimeout(() => (isEdit ? sizeEl : nameEl).focus(), 50);   // product search ready for typing / arrow keys
         // Enter moves to the next box; Enter on the last box saves
-        const enterOrder = [nameEl, sizeEl, ppbEl, bagsEl, pcsEl, kgEl];
+        const enterOrder = [nameEl, sizeEl, body.querySelector('#stockMrp'), ppbEl, bagsEl, pcsEl, kgEl];
         enterOrder.forEach((el, i) => el.addEventListener('keydown', (e) => {
           if (e.key !== 'Enter') return;
           e.preventDefault();
@@ -10017,6 +10048,41 @@
         finally { hideLoading('stock'); }
       });
 
+      // ---- MRP column show / hide option ----
+      const mrpToggleBtn = document.getElementById('mrpToggleBtn');
+      const stockTableEl = document.getElementById('stockTable');
+      let showMrp = false;
+      try { showMrp = localStorage.getItem('stockShowMrp') === '1'; } catch (e) {}
+      const applyMrpToggle = () => {
+        stockTableEl.classList.toggle('hide-mrp', !showMrp);
+        mrpToggleBtn.innerHTML = '<span>🏷️</span> MRP: ' + (showMrp ? 'On' : 'Off');
+      };
+      mrpToggleBtn.addEventListener('click', () => {
+        showMrp = !showMrp;
+        try { localStorage.setItem('stockShowMrp', showMrp ? '1' : '0'); } catch (e) {}
+        applyMrpToggle();
+      });
+      applyMrpToggle();
+
+      // ---- Stock List: all top buttons live in one dropdown menu ----
+      const stockMenuBtn = document.getElementById('stockMenuBtn');
+      const stockMenuPanel = document.getElementById('stockMenuPanel');
+      const closeStockMenu = () => { stockMenuPanel.classList.remove('open'); stockMenuBtn.setAttribute('aria-expanded', 'false'); };
+      const openStockMenu = () => {
+        stockMenuPanel.classList.add('open');
+        const r = stockMenuBtn.getBoundingClientRect();
+        const w = stockMenuPanel.offsetWidth;
+        stockMenuPanel.style.left = Math.max(8, Math.min(r.left, window.innerWidth - w - 8)) + 'px';
+        stockMenuPanel.style.top = (r.bottom + 2) + 'px';
+        stockMenuBtn.setAttribute('aria-expanded', 'true');
+      };
+      stockMenuBtn.addEventListener('click', (e) => { e.stopPropagation(); stockMenuPanel.classList.contains('open') ? closeStockMenu() : openStockMenu(); });
+      stockMenuPanel.addEventListener('click', (e) => { if (e.target.closest('button')) setTimeout(closeStockMenu, 0); });
+      document.addEventListener('click', (e) => { if (!e.target.closest('#stockMenuPanel')) closeStockMenu(); });
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeStockMenu(); });
+      window.addEventListener('resize', closeStockMenu);
+      stockTableEl.parentElement.addEventListener('scroll', closeStockMenu);
+
       printStockBtn.addEventListener('click', () => {
         if (filteredStock.length === 0) return;
         const dateStr = formatDateTimeDDMMYYYY(new Date());
@@ -10029,6 +10095,7 @@
           rows += `<tr>
             <td>${i + 1}</td><td>${escapeHtml(s.name)}</td>
             <td style="text-align:center;">${s.size ? escapeHtml(s.size + ' ' + s.sizeUnit) : '—'}</td>
+            ${showMrp ? `<td style="text-align:right;">${s.mrp ? '₹' + formatQty(s.mrp) : '—'}</td>` : ''}
             <td style="text-align:center;">${s.pcsPerBag || '—'}${bagKgText(s.size, s.sizeUnit, s.pcsPerBag) ? `<br><small style="color:#4a6a8a;">${bagKgText(s.size, s.sizeUnit, s.pcsPerBag)}</small>` : ''}</td>
             <td style="text-align:center;">${s.bags || '-'}</td>
             <td style="text-align:center;">${s.pcs || '-'}</td>
@@ -10062,12 +10129,13 @@
             </div>
             <table><thead><tr>
               <th style="width:50px;">#</th><th>Item Name</th><th style="text-align:center; width:90px;">Size</th>
+              ${showMrp ? '<th style="text-align:right; width:80px;">MRP</th>' : ''}
               <th style="text-align:center; width:90px;">Pcs/Bag</th>
               <th style="text-align:center; width:80px;">Bag</th><th style="text-align:center; width:80px;">Pcs</th>
               <th style="text-align:right; width:110px;">Total kg / Pcs</th>
             </tr></thead><tbody>
               ${rows}
-              <tr class="total-row"><td colspan="4" style="text-align:right;">Total:</td>
+              <tr class="total-row"><td colspan="${showMrp ? 5 : 4}" style="text-align:right;">Total:</td>
                 <td style="text-align:center;">${totBags}</td><td style="text-align:center;">${totPcs}</td>
                 <td style="text-align:right;">${totKg > 0 || totLiquidPcs === 0 ? formatQty(parseFloat(totKg.toFixed(3))) + ' kg' : ''}${totKg > 0 && totLiquidPcs > 0 ? '<br>' : ''}${totLiquidPcs > 0 ? totLiquidPcs + ' pcs' : ''}</td></tr>
             </tbody></table>
@@ -10150,22 +10218,23 @@
           return [
             i + 1, s.name,
             s.size ? `${s.size} ${s.sizeUnit}` : '',
+            s.mrp || '',
             s.pcsPerBag || '',
             s.bags, s.pcs,
             liquid ? stockTotalPcs(s) : Number(parseFloat((Number(s.totalKg) || 0).toFixed(3))),
             liquid ? 'pcs' : 'kg'
           ];
         });
-        rows.push(['', 'TOTAL', '', '', totBags, totPcs,
+        rows.push(['', 'TOTAL', '', '', '', totBags, totPcs,
           totKg > 0 || totLiquidPcs === 0 ? Number(parseFloat(totKg.toFixed(3))) : totLiquidPcs,
           totKg > 0 || totLiquidPcs === 0 ? 'kg' : 'pcs']);
-        if (totKg > 0 && totLiquidPcs > 0) rows.push(['', '', '', '', '', '', totLiquidPcs, 'pcs']);
+        if (totKg > 0 && totLiquidPcs > 0) rows.push(['', '', '', '', '', '', '', totLiquidPcs, 'pcs']);
         exportTableToExcel({
           fileBase: 'Stock_List_' + exportDateStamp(),
           sheetName: 'Stock List',
-          headers: ['#', 'Item Name', 'Size', 'Pcs/Bag', 'Bag', 'Pcs', 'Total Qty', 'Unit'],
+          headers: ['#', 'Item Name', 'Size', 'MRP', 'Pcs/Bag', 'Bag', 'Pcs', 'Total Qty', 'Unit'],
           rows,
-          colWidths: [5, 34, 12, 10, 8, 8, 12, 8]
+          colWidths: [5, 34, 12, 10, 10, 8, 8, 12, 8]
         });
       });
 
