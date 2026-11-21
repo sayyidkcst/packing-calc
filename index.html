@@ -2584,6 +2584,49 @@
     .bulk-prod-row .input-wrap, .bulk-prod-row .unit-select-wrap { width: 100%; min-width: 0; }
     .bulk-prod-row input, .bulk-prod-row select { width: 100%; box-sizing: border-box; }
     .bulk-prod-row input[type=number] { text-align: center; padding-left: 4px; padding-right: 4px; }
+    .window-sreturn { width: 540px; max-width: calc(100vw - 40px); z-index: 25; height: min(520px, calc(100vh - var(--taskbar-height) - 20px)); }
+    .window-sreturn .sr-tabs { display: flex; gap: 6px; margin-bottom: 10px; }
+    .window-sreturn .sr-tabs .aero-btn { flex: 1; justify-content: center; }
+    .window-sreturn .sr-tabs #srSavedCount { background: #15419c; color: #fff; border-radius: 9px; padding: 0 7px; font-size: 0.66rem; margin-left: 4px; }
+    .window-sreturn .sr-date { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 0.78rem; font-weight: 700; color: #15419c; }
+    .window-sreturn .sr-date input { border: 1px solid #7f9db9; border-radius: 3px; padding: 3px 6px; font: inherit; font-weight: 600; color: #0a2a7a; background: #fff; }
+    .sr-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+    .sr-chip { border: 1px solid #7f9db9; background: #f4f8ff; color: #0a2862; border-radius: 14px; padding: 3px 12px; font: inherit; font-size: 0.74rem; font-weight: 700; cursor: pointer; }
+    .sr-chip.active { background: linear-gradient(180deg, #3f7ae0 0%, #15419c 100%); color: #fff; border-color: #0a2862; }
+    .sr-badge { background: #15419c; color: #fff; border-radius: 4px; padding: 0 7px; font-size: 0.72rem; margin-right: 6px; }
+    html.mobile-app .sr-chip { padding: 7px 14px; font-size: 0.82rem; }
+    html.mobile-app .window-sreturn .sr-date { flex-wrap: wrap; }
+    .sr-card {  background: #f4f8ff; border: 1px solid #a8c8f0; border-radius: 6px; padding: 8px 10px; margin-bottom: 8px; }
+    .sr-card-head { display: flex; align-items: center; gap: 8px; font-weight: 700; color: #0a2862; font-size: 0.8rem; }
+    .sr-card-head .sr-card-title { flex: 1; min-width: 0; }
+    .sr-card-head .sr-card-total { color: #15419c; white-space: nowrap; }
+    .sr-card-head .aero-btn { padding: 2px 8px; min-height: 24px; }
+    .sr-card ul { list-style: none; margin: 6px 0 0; padding: 0; font-size: 0.76rem; color: #1a2a4a; }
+    .sr-card li { display: flex; justify-content: space-between; gap: 8px; padding: 2px 0; border-top: 1px dashed #c7d8f0; }
+    .sr-card li span:last-child { font-weight: 700; white-space: nowrap; }
+    .sr-empty { text-align: center; color: #4a6a8a; padding: 24px 8px; font-size: 0.8rem; }
+    html.mobile-app .window-sreturn .sr-tabs .aero-btn { min-height: 42px; }
+    html.mobile-app .window-sreturn .sr-date input { height: 40px; }
+    html.mobile-app .sr-card-head .aero-btn { min-height: 36px; padding: 4px 12px; }
+    .window-sreturn .sr-content { flex: 1; min-height: 0; overflow-y: auto; padding: 10px 12px; }
+    .window-sreturn .sr-foot { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; margin-top: 10px; }
+    .window-sreturn .sr-msg { min-height: 1.1em; font-size: 0.74rem; font-weight: 700; margin-top: 6px; }
+    .window-sreturn .sr-msg.ok { color: #1a7a2a; }
+    .window-sreturn .sr-msg.err { color: #b3261e; }
+    html.mobile-app .window-sreturn .sr-head { display: none; }
+    html.mobile-app .sr-row { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 40px; gap: 8px; padding: 8px; margin-bottom: 8px; background: #f4f8ff; border: 1px solid #a8c8f0; border-radius: 6px; }
+    html.mobile-app .sr-row .sr-item-wrap { grid-column: 1 / -1; }
+    html.mobile-app .sr-row .input-wrap input { height: 40px; }
+    html.mobile-app .sr-row .sr-total { text-align: left; font-size: 0.9rem; }
+    html.mobile-app .sr-row .sr-del { width: 40px; height: 40px; }
+    html.mobile-app .window-sreturn .sr-foot .aero-btn, html.mobile-app .window-sreturn #srAddRow { min-height: 42px; }
+    html.mobile-app .window-sreturn .sr-foot { position: sticky; bottom: 0; background: #ece9d8; padding: 8px 0 2px; }
+    .sr-row { display: grid; grid-template-columns: minmax(0, 1fr) 72px 92px 26px; gap: 6px; align-items: center; margin-bottom: 6px; }
+    .sr-row .input-wrap { width: 100%; }
+    .sr-row .sr-total { text-align: right; font-weight: 700; color: #0a2862; font-size: 0.78rem; white-space: nowrap; }
+    .sr-row .sr-del { width: 26px; height: 26px; padding: 0; line-height: 1; }
+    .sr-head { display: grid; grid-template-columns: minmax(0, 1fr) 72px 92px 26px; gap: 6px; font-size: 0.68rem; font-weight: 700; color: #15419c; margin-bottom: 2px; }
+    .sr-head span:nth-child(3) { text-align: right; }
     /* ---------- STOCK LIST: top buttons collapsed into a menu ---------- */
     .window-stock .stock-menu-wrap { position: relative; }
     .stock-menu-panel {
@@ -2637,6 +2680,7 @@
     .window-stock .price-table.hide-mrp .mrp-col { display: none; }
     .window-stock .price-table tbody td.stock-mrp-cell { text-align: right; font-weight: 700; color: #0a2862; }
     .window-stock .stock-hint { font-size: 0.66rem; color: #4a6a8a; margin-top: 3px; }
+    .window-sreturn .stock-hint { font-size: 0.7rem; color: #4a5a78; margin: 2px 0; }
     .window-stock .stock-mini-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-start; }
     .window-stock .stock-mini-row .modal-field { flex: 1 1 80px; min-width: 0; margin-bottom: 8px; }
     .window-stock .stock-mini-row .modal-field.stock-kg-field { flex: 1.3 1 100px; }
@@ -3273,7 +3317,7 @@
     /* the one visible app screen */
     html.mobile-app #priceWindow.mobile-active, html.mobile-app #stockWindow.mobile-active,
     html.mobile-app #loadWindow.mobile-active,  html.mobile-app #calcWindow.mobile-active,
-    html.mobile-app #contactWindow.mobile-active {
+    html.mobile-app #contactWindow.mobile-active, html.mobile-app #salesReturnWindow.mobile-active {
       display: flex !important; flex-direction: column;
       position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important;
       bottom: calc(58px + env(safe-area-inset-bottom, 0px)) !important;
@@ -3282,7 +3326,7 @@
       border: none !important; border-radius: 0 !important; box-shadow: none !important;
     }
     html.mobile-app #loadWindow.mobile-active > .window-content,
-    html.mobile-app #calcWindow.mobile-active > .window-content { flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+    html.mobile-app #calcWindow.mobile-active > .window-content, html.mobile-app #salesReturnWindow.mobile-active > .window-content { flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; }
     html.mobile-app .window-content { overflow-x: hidden; }
     /* 16px inputs stop iOS from zooming the page when a box is tapped */
     html.mobile-app input, html.mobile-app select, html.mobile-app textarea { font-size: 16px !important; }
@@ -4838,6 +4882,9 @@
         <button class="aero-btn" id="bulkStockBtn" type="button">
           <span>📦</span> Bulk Update
         </button>
+        <button class="aero-btn" id="salesReturnBtn" type="button">
+          <span>↩️</span> Sales Return
+        </button>
         <button class="aero-btn" id="mrpToggleBtn" type="button" title="Show / hide the MRP column">
           <span>🏷️</span> MRP: Off
         </button>
@@ -5154,6 +5201,46 @@
   </div>
 
   <!-- TRIP SHEET (daily vehicle / route / collection sheet — same layout as the paper form) -->
+  <div class="window window-sreturn" id="salesReturnWindow">
+    <div class="title-bar" id="srTitleBar">
+      <div class="title-text"><span>↩️</span> Sales Return</div>
+      <div class="caption-buttons">
+        <div class="caption-btn minimize" data-minimize="salesReturnWindow" title="Minimize">_</div>
+        <div class="caption-btn maximize" data-maximize="salesReturnWindow" title="Maximize">□</div>
+        <div class="caption-btn close" data-close="salesReturnWindow" title="Close (remove from taskbar)">✕</div>
+      </div>
+    </div>
+    <div class="window-content sr-content">
+      <div class="sr-tabs">
+        <button class="aero-btn primary" id="srTabNew" type="button">➕ New Return</button>
+        <button class="aero-btn" id="srTabList" type="button">📂 Saved <span id="srSavedCount">0</span></button>
+      </div>
+
+      <div id="srFormView">
+        <datalist id="srStockList"></datalist>
+        <datalist id="srListNames"></datalist>
+        <div class="sr-date"><label for="srListName">📋 List</label><input type="text" id="srListName" list="srListNames" placeholder="e.g. BB" maxlength="20" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" style="text-transform:uppercase; width:110px;"><label for="srDate" style="margin-left:6px;">📅 Date</label><input type="date" id="srDate"></div>
+        <div class="sr-head"><span>Product</span><span>Pcs</span><span>Total</span><span></span></div>
+        <div id="srRows"></div>
+        <div style="margin:6px 0 8px;"><button class="aero-btn" id="srAddRow" type="button">➕ Add Product</button></div>
+        <div class="stock-hint" id="srSummary" style="min-height:1.2em; font-weight:700; color:#15419c;"></div>
+        <div class="stock-hint">Product names come from the Stock List. Saving a return does not change the stock.</div>
+        <div class="sr-msg" id="srMsg"></div>
+        <div class="sr-foot">
+          <button class="aero-btn" id="srClear" type="button">🧹 Clear</button>
+          <button class="aero-btn primary" id="srSave" type="button">💾 Save Return</button>
+        </div>
+      </div>
+
+      <div id="srListView" style="display:none;">
+        <div class="sr-msg" id="srListMsg"></div>
+        <div class="sr-chips" id="srChips"></div>
+        <div class="stock-hint" id="srListTotal" style="min-height:1.2em; font-weight:700; color:#15419c; margin-bottom:6px;"></div>
+        <div id="srSavedList"></div>
+      </div>
+    </div>
+  </div>
+
   <div class="window window-trip" id="tripWindow">
     <div class="title-bar" id="tripTitleBar">
       <div class="title-text"><span>🗒️</span> Trip Sheet</div>
@@ -5367,6 +5454,10 @@
       <span class="tb-icon">📋</span>
       <span class="tb-label">Stock List</span>
     </div>
+    <div class="taskbar-item" id="taskbarSalesReturn" data-restore="salesReturnWindow" style="display:none;">
+      <span class="tb-icon">↩️</span>
+      <span class="tb-label">Sales Return</span>
+    </div>
     <div class="taskbar-item" id="taskbarRate" data-restore="rateWindow" style="display:none;">
       <span class="tb-icon">🧮</span>
       <span class="tb-label">Rate Calculator</span>
@@ -5460,6 +5551,7 @@
   <nav id="mobileNav" aria-label="App sections">
     <button type="button" data-mtab="priceWindow"><span class="mn-icon">💰</span><span>Price List</span></button>
     <button type="button" data-mtab="stockWindow"><span class="mn-icon">📋</span><span>Stock List</span></button>
+    <button type="button" data-mtab="salesReturnWindow"><span class="mn-icon">↩️</span><span>Return</span></button>
     <button type="button" data-mtab="loadWindow"><span class="mn-icon">🚚</span><span>Load Calc</span></button>
     <button type="button" data-mtab="calcWindow"><span class="mn-icon">📦</span><span>Packing Calc</span></button>
     <button type="button" data-mtab="contactWindow"><span class="mn-icon">📇</span><span>Contacts</span></button>
@@ -7038,6 +7130,8 @@
       makeDraggable(reminderWindow, document.getElementById('reminderTitleBar'));
       makeDraggable(contactWindow, document.getElementById('contactTitleBar'));
       makeDraggable(tripWindow, document.getElementById('tripTitleBar'));
+      const salesReturnWindow = document.getElementById('salesReturnWindow');
+      makeDraggable(salesReturnWindow, document.getElementById('srTitleBar'));
       makeDraggable(priceWindow, priceTitleBar);
       makeDraggable(loadWindow, loadTitleBar);
       makeDraggable(cashWindow, cashTitleBar);
@@ -7047,7 +7141,7 @@
       makeDraggable(settingsWindow, settingsTitleBar);
       makeDraggable(stockWindow, stockTitleBar);
 
-      [calcWindow, numberWordWindow, priceWindow, loadWindow, cashWindow, notepadWindow, vehicleWindow, invoiceWindow, stockWindow, settingsWindow, rateWindow, reminderWindow, contactWindow, tripWindow].forEach(addResizeHandles);
+      [calcWindow, numberWordWindow, priceWindow, loadWindow, cashWindow, notepadWindow, vehicleWindow, invoiceWindow, stockWindow, settingsWindow, rateWindow, reminderWindow, contactWindow, tripWindow, salesReturnWindow].forEach(addResizeHandles);
 
       calcWindow.addEventListener('mousedown', () => bringToFront(calcWindow));
       numberWordWindow.addEventListener('mousedown', () => bringToFront(numberWordWindow));
@@ -7055,6 +7149,7 @@
       reminderWindow.addEventListener('mousedown', () => bringToFront(reminderWindow));
       contactWindow.addEventListener('mousedown', () => bringToFront(contactWindow));
       tripWindow.addEventListener('mousedown', () => bringToFront(tripWindow));
+      salesReturnWindow.addEventListener('mousedown', () => bringToFront(salesReturnWindow));
       priceWindow.addEventListener('mousedown', () => bringToFront(priceWindow));
       loadWindow.addEventListener('mousedown', () => bringToFront(loadWindow));
       cashWindow.addEventListener('mousedown', () => bringToFront(cashWindow));
@@ -7086,6 +7181,7 @@
         reminderWindow: { minimized: false, maximized: false, origRect: null },
         contactWindow: { minimized: false, maximized: false, origRect: null },
         tripWindow: { minimized: false, maximized: false, origRect: null },
+        salesReturnWindow: { minimized: false, maximized: false, origRect: null },
         priceWindow: { minimized: false, maximized: false, origRect: null },
         loadWindow: { minimized: false, maximized: false, origRect: null },
         cashWindow: { minimized: false, maximized: false, origRect: null },
@@ -9516,6 +9612,231 @@
       }
 
       // ---- Update Stock: add (stock in) / remove (stock out) on an existing item ----
+      // ==================== SALES RETURN WINDOW ====================
+      // Pick products from the stock list, enter Pcs -> total kg (or total pcs for ml/ltr/pcs items) is worked out
+      // automatically. Saving only records the return (stock is NOT changed). Records live in app_settings 'sales_returns'.
+      function srSetup() {
+        const win = document.getElementById('salesReturnWindow');
+        const $ = (id) => document.getElementById(id);
+        const rowsEl = $('srRows'), listEl = $('srStockList'), sumEl = $('srSummary'), msgEl = $('srMsg');
+        const saveBtn = $('srSave'), dateEl = $('srDate'), listNameEl = $('srListName'), namesDl = $('srListNames');
+        let curFilter = 'ALL';
+        const KEY = 'sales_returns', CACHE = 'sales_returns_cache';
+        const todayIso = () => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
+        const dmy = (iso) => { const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || ''); return m ? `${m[3]}-${m[2]}-${m[1]}` : (iso || ''); };
+        const label = (i) => i.name.toUpperCase() + (i.size ? ` – ${formatQty(i.size)} ${i.sizeUnit}` : '');
+        const findItem = (v) => {
+          const t = (v || '').trim().toLowerCase();
+          if (!t) return null;
+          const exact = stockItems.find(i => label(i).toLowerCase() === t);
+          if (exact) return exact;
+          const byName = stockItems.filter(i => i.name.toLowerCase() === t);
+          return byName.length === 1 ? byName[0] : null;
+        };
+        const refreshOptions = () => { listEl.innerHTML = stockItems.map(i => `<option value="${escapeHtml(label(i))}"></option>`).join(''); };
+        const rowHtml = () => `
+          <div class="sr-row">
+            <div class="input-wrap sr-item-wrap"><input type="text" class="sr-item" list="srStockList" placeholder="Product…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" style="text-transform:uppercase;"></div>
+            <div class="input-wrap"><input type="number" class="sr-pcs" inputmode="numeric" min="1" step="1" placeholder="Pcs"></div>
+            <div class="sr-total">—</div>
+            <button class="aero-btn sr-del" type="button" title="Remove row">✕</button>
+          </div>`;
+        const setMsg = (el, text, kind) => { el.textContent = text || ''; el.className = 'sr-msg' + (kind ? ' ' + kind : ''); };
+        const calcRow = (item, pcs) => {
+          if (!item || !pcs) return null;
+          if (isLiquidUnit(item.sizeUnit)) return { pcs, kg: 0, text: `${pcs} pcs`, liquid: true };
+          const w = sizeToKg(item.size, item.sizeUnit);
+          if (!w) return { pcs, kg: 0, text: '—', noSize: true };
+          const kg = parseFloat((pcs * w).toFixed(3));
+          return { pcs, kg, text: `${formatQty(kg)} kg` };
+        };
+        const readRows = () => [...rowsEl.querySelectorAll('.sr-row')].map(r => {
+          const raw = r.querySelector('.sr-pcs').value.trim();
+          const typed = r.querySelector('.sr-item').value.trim();
+          return { row: r, typed, item: findItem(typed), pcs: raw === '' ? 0 : Number(raw), raw };
+        });
+        const totalText = (kg, pcs) => { const p = []; if (kg > 0) p.push(`${formatQty(parseFloat(kg.toFixed(3)))} kg`); if (pcs > 0) p.push(`${pcs} pcs`); return p.join(' + '); };
+        const refresh = () => {
+          let totKg = 0, totPcs = 0;
+          readRows().forEach(x => {
+            const valid = x.item && Number.isInteger(x.pcs) && x.pcs > 0;
+            const c = valid ? calcRow(x.item, x.pcs) : null;
+            const t = x.row.querySelector('.sr-total');
+            t.textContent = c ? c.text : '—';
+            t.title = c && c.noSize ? 'This item has no Size set, so kg cannot be worked out' : '';
+            if (c) { totKg += c.kg; if (c.liquid) totPcs += c.pcs; }
+          });
+          const tt = totalText(totKg, totPcs);
+          sumEl.textContent = tt ? 'Total return: ' + tt : '';
+        };
+        const reset = () => { rowsEl.innerHTML = rowHtml(); dateEl.value = todayIso(); refresh(); };
+        reset();
+
+        // ----- storage -----
+        let returns = [];
+        try { returns = JSON.parse(localStorage.getItem(CACHE) || '[]'); } catch (e) { returns = []; }
+        const listOf = (r) => (r.list || '').trim().toUpperCase();
+        const updateCount = () => {
+          $('srSavedCount').textContent = returns.length;
+          const names = [...new Set(returns.map(listOf).filter(Boolean))].sort();
+          namesDl.innerHTML = names.map(n => `<option value="${escapeHtml(n)}"></option>`).join('');
+        };
+        async function fetchReturns() {
+          try {
+            const res = await withTimeout(supabase.from('app_settings').select('setting_value').eq('setting_key', KEY).maybeSingle(), 6000);
+            if (!res || res.error) throw (res && res.error) || new Error('Timed out');
+            const list = res.data && res.data.setting_value ? (JSON.parse(res.data.setting_value).returns || []) : [];
+            try { localStorage.setItem(CACHE, JSON.stringify(list)); } catch (e) {}
+            return { list, ok: true };
+          } catch (err) { return { list: returns, ok: false }; }
+        }
+        async function writeReturns(list) {
+          const { error } = await supabase.from('app_settings').upsert({ setting_key: KEY, setting_value: JSON.stringify({ returns: list }), updated_at: new Date().toISOString() }, { onConflict: 'setting_key' });
+          if (error) throw error;
+          try { localStorage.setItem(CACHE, JSON.stringify(list)); } catch (e) {}
+        }
+        const sortReturns = (list) => list.slice().sort((a, b) => (b.date || '').localeCompare(a.date || '') || (b.createdAt || '').localeCompare(a.createdAt || ''));
+
+        // ----- saved list -----
+        const listMsg = $('srListMsg'), savedEl = $('srSavedList');
+        function renderSaved() {
+          updateCount();
+          const names = [...new Set(returns.map(listOf).filter(Boolean))].sort();
+          const hasNone = returns.some(r => !listOf(r));
+          if (curFilter !== 'ALL' && curFilter !== '__NONE__' && !names.includes(curFilter)) curFilter = 'ALL';
+          if (curFilter === '__NONE__' && !hasNone) curFilter = 'ALL';
+          const countOf = (n) => returns.filter(r => listOf(r) === n).length;
+          const chip = (key, text) => `<button type="button" class="sr-chip${curFilter === key ? ' active' : ''}" data-f="${escapeHtml(key)}">${escapeHtml(text)}</button>`;
+          $('srChips').innerHTML = returns.length
+            ? chip('ALL', `All (${returns.length})`) + names.map(n => chip(n, `${n} (${countOf(n)})`)).join('') + (hasNone ? chip('__NONE__', `No list (${returns.filter(r => !listOf(r)).length})`) : '')
+            : '';
+          const shown = returns.filter(r => curFilter === 'ALL' || (curFilter === '__NONE__' ? !listOf(r) : listOf(r) === curFilter));
+          let k = 0, p = 0; shown.forEach(r => { k += r.totalKg || 0; p += r.totalPcs || 0; });
+          $('srListTotal').textContent = shown.length && curFilter !== 'ALL' ? `Total of this list: ${totalText(k, p) || '—'}` : '';
+          if (!shown.length) { savedEl.innerHTML = '<div class="sr-empty">📂 No saved returns yet</div>'; return; }
+          savedEl.innerHTML = sortReturns(shown).map(r => {
+            const lines = (r.items || []).map(i => `<li><span>${escapeHtml(i.label)}</span><span>${escapeHtml(String(i.pcs))} pcs${i.liquid ? '' : (i.kg ? ' = ' + escapeHtml(formatQty(i.kg)) + ' kg' : '')}</span></li>`).join('');
+            const nm = listOf(r);
+            return `<div class="sr-card" data-id="${escapeHtml(r.id)}">
+              <div class="sr-card-head"><span class="sr-card-title">${nm ? `<span class="sr-badge">${escapeHtml(nm)}</span>` : ''}📅 ${escapeHtml(dmy(r.date))} · ${(r.items || []).length} item${(r.items || []).length === 1 ? '' : 's'}</span><span class="sr-card-total">${escapeHtml(totalText(r.totalKg || 0, r.totalPcs || 0))}</span><button class="aero-btn danger sr-card-del" type="button" title="Delete this return">🗑️</button></div>
+              <ul>${lines}</ul></div>`;
+          }).join('');
+        }
+        async function loadSaved() {
+          setMsg(listMsg, '');
+          renderSaved();
+          const res = await fetchReturns();
+          returns = res.list;
+          renderSaved();
+          if (!res.ok) setMsg(listMsg, '⚠️ Could not reach the database — showing the last saved copy on this device.', 'err');
+        }
+        const showView = (v) => {
+          const list = v === 'list';
+          $('srFormView').style.display = list ? 'none' : '';
+          $('srListView').style.display = list ? '' : 'none';
+          $('srTabNew').classList.toggle('primary', !list);
+          $('srTabList').classList.toggle('primary', list);
+          if (list) loadSaved();
+        };
+        $('srChips').addEventListener('click', (e) => { const c = e.target.closest('.sr-chip'); if (!c) return; curFilter = c.dataset.f; renderSaved(); });
+        $('srTabNew').addEventListener('click', () => showView('new'));
+        $('srTabList').addEventListener('click', () => showView('list'));
+        savedEl.addEventListener('click', async (e) => {
+          const btn = e.target.closest('.sr-card-del');
+          if (!btn) return;
+          const id = btn.closest('.sr-card').dataset.id;
+          const rec = returns.find(r => r.id === id);
+          if (!rec) return;
+          const ok = await showConfirm({ title: '🗑️ Delete return', message: `Delete the return of ${escapeHtml(dmy(rec.date))}?`, confirmLabel: 'Yes, Delete', type: 'danger', icon: '🗑️', parentWindow: win });
+          if (!ok) return;
+          try {
+            const fresh = (await fetchReturns()).list.filter(r => r.id !== id);
+            await writeReturns(fresh);
+            returns = fresh; renderSaved(); setMsg(listMsg, '🗑️ Return deleted.', 'ok');
+          } catch (err) { setMsg(listMsg, '❌ Failed to delete: ' + (err.message || 'Unknown error'), 'err'); }
+        });
+
+        // ----- form events -----
+        rowsEl.addEventListener('input', () => { setMsg(msgEl, ''); refresh(); });
+        rowsEl.addEventListener('change', refresh);
+        rowsEl.addEventListener('focusin', (e) => { if (e.target.classList.contains('sr-item')) refreshOptions(); });
+        rowsEl.addEventListener('click', (e) => {
+          const del = e.target.closest('.sr-del');
+          if (!del) return;
+          if (rowsEl.querySelectorAll('.sr-row').length > 1) del.closest('.sr-row').remove();
+          else { rowsEl.querySelector('.sr-item').value = ''; rowsEl.querySelector('.sr-pcs').value = ''; }
+          refresh();
+        });
+        $('srAddRow').addEventListener('click', () => {
+          rowsEl.insertAdjacentHTML('beforeend', rowHtml());
+          rowsEl.lastElementChild.querySelector('.sr-item').focus();
+        });
+        $('srClear').addEventListener('click', () => { reset(); setMsg(msgEl, ''); });
+        // Enter on the product moves to Pcs; Enter on Pcs goes to the next row (or adds one)
+        rowsEl.addEventListener('keydown', (e) => {
+          if (e.key !== 'Enter') return;
+          const row = e.target.closest('.sr-row');
+          if (!row) return;
+          e.preventDefault();
+          if (e.target.classList.contains('sr-item')) row.querySelector('.sr-pcs').focus();
+          else if (e.target.classList.contains('sr-pcs')) {
+            if (row.nextElementSibling) row.nextElementSibling.querySelector('.sr-item').focus();
+            else $('srAddRow').click();
+          }
+        });
+
+        saveBtn.addEventListener('click', async () => {
+          setMsg(msgEl, '');
+          const listName = listNameEl.value.trim().toUpperCase();
+          if (!listName) { setMsg(msgEl, '⚠️ Enter the list name (for example BB).', 'err'); listNameEl.focus(); return; }
+          if (!dateEl.value) { setMsg(msgEl, '⚠️ Choose a date.', 'err'); dateEl.focus(); return; }
+          const rows = readRows().filter(x => x.typed !== '' || x.raw !== '');
+          if (!rows.length) { setMsg(msgEl, '⚠️ Add at least one product.', 'err'); return; }
+          for (const x of rows) {
+            if (!x.item) { setMsg(msgEl, '⚠️ Pick each product from the stock list.', 'err'); x.row.querySelector('.sr-item').focus(); return; }
+            if (!Number.isInteger(x.pcs) || x.pcs <= 0) { setMsg(msgEl, '⚠️ Pcs must be a whole number greater than 0.', 'err'); x.row.querySelector('.sr-pcs').focus(); return; }
+          }
+          let totKg = 0, totPcs = 0;
+          const items = rows.map(x => {
+            const c = calcRow(x.item, x.pcs);
+            totKg += c.kg; if (c.liquid) totPcs += c.pcs;
+            return { label: label(x.item), pcs: x.pcs, kg: c.kg, liquid: !!c.liquid };
+          });
+          const rec = {
+            id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+            list: listName, date: dateEl.value, createdAt: new Date().toISOString(),
+            items, totalKg: parseFloat(totKg.toFixed(3)), totalPcs: totPcs
+          };
+          saveBtn.disabled = true; saveBtn.textContent = '⏳ Saving…';
+          try {
+            const fresh = (await fetchReturns()).list;
+            fresh.push(rec);
+            await writeReturns(fresh);
+            returns = fresh; updateCount();
+            reset();
+            curFilter = listName;
+            setMsg(msgEl, `✅ Return saved in list ${listName}.`, 'ok');
+          } catch (err) {
+            setMsg(msgEl, '❌ Failed to save: ' + (err.message || 'Unknown error'), 'err');
+          } finally {
+            saveBtn.disabled = false; saveBtn.textContent = '💾 Save Return';
+          }
+        });
+
+        window.srOnOpen = () => {
+          refreshOptions();
+          updateCount();
+          fetchReturns().then(r => { returns = r.list; updateCount(); if ($('srListView').style.display !== 'none') renderSaved(); });
+          if (!document.documentElement.classList.contains('mobile-app')) setTimeout(() => { const f = rowsEl.querySelector('.sr-item'); if ($('srFormView').style.display !== 'none' && f) f.focus(); }, 50);
+        };
+        refreshOptions(); updateCount();
+      }
+      srSetup();
+      function openSalesReturnWindow() {
+        if (document.documentElement.classList.contains('mobile-app')) { mobileShowTab('salesReturnWindow'); if (window.srOnOpen) window.srOnOpen(); }
+        else restoreWindowFromTaskbar('salesReturnWindow');
+      }
+
       function openStockUpdateModal(preItem = null) {
         hideStockSuggest();
         let picked = preItem;
@@ -9811,6 +10132,7 @@
 
       document.getElementById('updateStockBtn').addEventListener('click', () => openStockUpdateModal());
       document.getElementById('bulkStockBtn').addEventListener('click', openStockBulkModal);
+      document.getElementById('salesReturnBtn').addEventListener('click', openSalesReturnWindow);
 
       function openStockModal(existing = null) {
         const isEdit = !!existing;
@@ -10364,7 +10686,6 @@
             </style></head><body>
             <button class="print-btn" onclick="window.print()">🖨️ Print</button>
             ${getCompanySettingsHeaderHTML(true)}
-            <div style="text-align:center; font-size:0.9rem; color:#15419c; font-weight:700; margin-bottom:12px;">🛍️ Order – Bags &amp; Extra Pcs</div>
             <div class="meta">
               ${title.map(t => `<span>${escapeHtml(t)}</span>`).join('')}
               <span>📅 ${dateStr}</span>
@@ -11297,6 +11618,7 @@
         { id: 'vehicleWindow', icon: '🚛', name: 'Vehicle Manager', desc: 'Manage fleet & documents' },
         { id: 'invoiceWindow', icon: '🧾', name: 'Invoice', desc: 'Create and manage invoices' },
         { id: 'stockWindow', icon: '📋', name: 'Stock List', desc: 'Track stock levels' },
+        { id: 'salesReturnWindow', icon: '↩️', name: 'Sales Return', desc: 'Add returned items back to stock' },
         { id: 'contactWindow', icon: '📇', name: 'Contacts', desc: 'Call & WhatsApp your contacts' },
         { id: 'tripWindow', icon: '🗒️', name: 'Trip Sheet', desc: 'Daily route, sales & collection sheet' }
       ];
@@ -11480,10 +11802,11 @@
         const tbReminder = document.getElementById('taskbarReminder');
         const tbContact = document.getElementById('taskbarContact');
         const tbTrip = document.getElementById('taskbarTrip');
+        const tbSalesReturn = document.getElementById('taskbarSalesReturn');
         [
           ['calcWindow', tbCalc], ['numberWordWindow', tbNumberWord], ['priceWindow', tbPrice],
           ['loadWindow', tbLoad], ['cashWindow', tbCash], ['notepadWindow', tbNotepad],
-          ['vehicleWindow', tbVehicle], ['invoiceWindow', tbInvoice], ['stockWindow', tbStock], ['settingsWindow', tbSettings], ['rateWindow', tbRate], ['reminderWindow', tbReminder], ['contactWindow', tbContact], ['tripWindow', tbTrip]
+          ['vehicleWindow', tbVehicle], ['invoiceWindow', tbInvoice], ['stockWindow', tbStock], ['settingsWindow', tbSettings], ['rateWindow', tbRate], ['reminderWindow', tbReminder], ['contactWindow', tbContact], ['tripWindow', tbTrip], ['salesReturnWindow', tbSalesReturn]
         ].forEach(([id, tb]) => {
           const state = windowState[id];
           if (tb && tb.style.display !== 'none') {
@@ -11518,6 +11841,7 @@
         if (winId === 'contactWindow') { renderContacts(); if (!document.documentElement.classList.contains('mobile-app')) setTimeout(() => { const t = document.getElementById('ctSearch'); if (t) t.focus(); }, 50); }
         if (winId === 'reminderWindow') { renderReminders(); }
         if (winId === 'tripWindow' && window.tpOnOpen) window.tpOnOpen();
+        if (winId === 'salesReturnWindow' && window.srOnOpen) window.srOnOpen();
         if (winId === 'numberWordWindow') {
           initReceiptSuggest();
           renderReceiptVoucher();
@@ -13401,7 +13725,7 @@ create policy "contacts_open_access" on public.contacts
 
       // ==================== MOBILE APP MODE ====================
       const IS_MOBILE_APP = document.documentElement.classList.contains('mobile-app');
-      const MOBILE_TABS = ['priceWindow', 'stockWindow', 'loadWindow', 'calcWindow', 'contactWindow'];
+      const MOBILE_TABS = ['priceWindow', 'stockWindow', 'salesReturnWindow', 'loadWindow', 'calcWindow', 'contactWindow'];
       function mobileShowTab(winId) {
         if (!MOBILE_TABS.includes(winId)) winId = MOBILE_TABS[0];
         MOBILE_TABS.forEach(id => {
@@ -13425,7 +13749,7 @@ create policy "contacts_open_access" on public.contacts
 
       // ==================== INIT ====================
       // Hide all windows BEFORE anything loads — no auto-open
-      ['calcWindow', 'numberWordWindow', 'priceWindow', 'loadWindow', 'cashWindow', 'notepadWindow', 'vehicleWindow', 'invoiceWindow', 'stockWindow', 'settingsWindow', 'rateWindow', 'reminderWindow', 'contactWindow', 'tripWindow'].forEach(id => {
+      ['calcWindow', 'numberWordWindow', 'priceWindow', 'loadWindow', 'cashWindow', 'notepadWindow', 'vehicleWindow', 'invoiceWindow', 'stockWindow', 'settingsWindow', 'rateWindow', 'reminderWindow', 'contactWindow', 'tripWindow', 'salesReturnWindow'].forEach(id => {
         const winEl = document.getElementById(id);
         if (winEl) {
           winEl.classList.add('minimized');      // .minimized already hides the window; no inline display:none so it can open at any time
@@ -13460,7 +13784,7 @@ create policy "contacts_open_access" on public.contacts
       calculateCash();
 
       // Keep all windows closed after loading — user must open them via Start Menu
-      ['calcWindow', 'numberWordWindow', 'priceWindow', 'loadWindow', 'cashWindow', 'notepadWindow', 'vehicleWindow', 'invoiceWindow', 'stockWindow', 'settingsWindow', 'rateWindow', 'reminderWindow', 'contactWindow', 'tripWindow'].forEach(id => {
+      ['calcWindow', 'numberWordWindow', 'priceWindow', 'loadWindow', 'cashWindow', 'notepadWindow', 'vehicleWindow', 'invoiceWindow', 'stockWindow', 'settingsWindow', 'rateWindow', 'reminderWindow', 'contactWindow', 'tripWindow', 'salesReturnWindow'].forEach(id => {
         const winEl = document.getElementById(id);
         if (winEl) {
           winEl.classList.add('minimized');
